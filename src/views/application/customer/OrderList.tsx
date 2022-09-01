@@ -30,7 +30,7 @@ import MainCard from 'ui-component/cards/MainCard';
 import { Order } from 'types/customer';
 import { useDispatch, useSelector } from 'store';
 import { getOrders } from 'store/slices/customer';
-
+import { getOrdersList } from '../../../APIs/orders';
 // assets
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterListTwoTone';
@@ -232,9 +232,12 @@ const OrderList = () => {
     const [search, setSearch] = React.useState<string>('');
     const [rows, setRows] = React.useState<Order[]>([]);
     const { orders } = useSelector((state) => state.customer);
+    // React.useEffect(() => {
+    //     dispatch(getOrders());
+    // }, [dispatch]);
     React.useEffect(() => {
-        dispatch(getOrders());
-    }, [dispatch]);
+        getOrdersList();
+    }, [])
     React.useEffect(() => {
         setRows(orders);
     }, [orders]);
