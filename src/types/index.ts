@@ -18,13 +18,14 @@ import { CalendarStateProps } from './calendar';
 import { MailStateProps } from './mail';
 import { UserStateProps } from './user';
 import { SnackbarProps } from './snackbar';
+
+// APIs data types
 import { OrderListingReq, OrderListingResp } from "./orders-listing";
 import { getBranchesReq, GetBranchesResp } from "./branches";
 import { GlobalSettingsReq, GlobalSettingsResp } from "./globalSettings";
 import { OrderStatusReq, OrderStatusResp } from "./order-statuses";
 import { BusinesssDetailsReq, BusinessDetailsResp } from "./businenss-details";
-// APIs data types
-
+import { OrdersCityFilterReq, OrdersCityFilterResp } from "./OrdersCityFilter";
 declare module '@mui/styles/defaultTheme' {
     // eslint-disable-next-line @typescript-eslint/no-empty-interface
     interface DefaultTheme extends Theme {}
@@ -36,6 +37,7 @@ export interface APIsRequest {
     getGlobalSettings: GlobalSettingsReq;
     getOrderStatues: OrderStatusReq;
     getBusinessDetails: BusinesssDetailsReq;
+    getOrderCitiesFilter: OrdersCityFilterReq;
 }
 export interface APIsResponse {
     getOrders: OrderListingResp;
@@ -43,7 +45,7 @@ export interface APIsResponse {
     getGlobalSettings: GlobalSettingsResp;
     getOrderStatues: OrderStatusResp;
     getBusinessDetails: BusinessDetailsResp;
-
+    getOrderCitiesFilter: OrdersCityFilterResp;
 }
 export type ArrangementOrder = 'asc' | 'desc' | undefined;
 

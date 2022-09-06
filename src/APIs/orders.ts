@@ -2,6 +2,21 @@ import axios from "axios";
 // import useAxios from 'axios-hooks';
 import { APIsRequest, APIsResponse } from "../types";
 
+export const getOrderCitiesFilter = async () => {
+  try {
+    const formData = new FormData();
+    formData.append("eatout_id", JSON.stringify(12277));
+    formData.append("source", "biz");
+    formData.append("admin_id", JSON.stringify(292968));
+    const data = axios.post<APIsRequest["getOrderCitiesFilter"]>(
+      "https://beta1.tossdown.com/api/order_city_filter",
+      formData
+    );
+  } catch (error) {
+    console.log("order cities failed");
+  }
+};
+
 // Eatout Details
 export const getBusinessDetails = async () => {
   try {
