@@ -4,29 +4,19 @@ import { Autocomplete, TextField } from "@mui/material";
 
 type DropDownType<T extends React.ElementType> = {
   disableClearable?: boolean;
-
   disablePortal?: boolean;
-
   sx?: Object;
-
   options: {
     label: string;
-
     id: number;
   }[];
-
   defaultValue?: {
     label: string;
-
     id: number;
   };
-
   size?: "small" | "medium" | "large";
-
   style?: React.CSSProperties;
-
   label?: "string";
-
   renderInput?: (params?: React.MouseEvent<HTMLButtonElement>) => void;
 } & React.ComponentPropsWithoutRef<T>;
 
