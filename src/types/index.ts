@@ -26,6 +26,8 @@ import { GlobalSettingsReq, GlobalSettingsResp } from "./globalSettings";
 import { OrderStatusReq, OrderStatusResp } from "./order-statuses";
 import { BusinesssDetailsReq, BusinessDetailsResp } from "./businenss-details";
 import { OrdersCityFilterReq, OrdersCityFilterResp } from "./OrdersCityFilter";
+import { MenuCategoryReq, MenuCategoryResp } from  "./menu-category";
+import { orderTimelinenReq, OrderTimelinenResp } from "./order-timeline";
 declare module '@mui/styles/defaultTheme' {
     // eslint-disable-next-line @typescript-eslint/no-empty-interface
     interface DefaultTheme extends Theme {}
@@ -38,6 +40,8 @@ export interface APIsRequest {
     getOrderStatues: OrderStatusReq;
     getBusinessDetails: BusinesssDetailsReq;
     getOrderCitiesFilter: OrdersCityFilterReq;
+    getMenuCategory: MenuCategoryReq;
+    getOrderTimeline: orderTimelinenReq;
 }
 export interface APIsResponse {
     getOrders: OrderListingResp;
@@ -46,6 +50,8 @@ export interface APIsResponse {
     getOrderStatues: OrderStatusResp;
     getBusinessDetails: BusinessDetailsResp;
     getOrderCitiesFilter: OrdersCityFilterResp;
+    getMenuCategory: MenuCategoryResp;
+    getOrderTimeline: OrderTimelinenResp;
 }
 export type ArrangementOrder = 'asc' | 'desc' | undefined;
 
