@@ -10,6 +10,7 @@ type customRadioButton<T extends React.ElementType>={
   sx?: Object,
     
 }& React.ComponentPropsWithoutRef<T>
+
   const customRadioButton=<T extends React.ElementType = "select">
   ({
     onChange,
@@ -25,7 +26,7 @@ type customRadioButton<T extends React.ElementType>={
    value={defualtValue} 
    {...rest}
    >
-{options?.map((option:any, index) => (
+{options?.map<object>((option, index) => (
   <FormControlLabel value={option.value} key={index} control={<Radio />} label={option.label}/>  ))}
   </RadioGroup> 
     </FormControl>
