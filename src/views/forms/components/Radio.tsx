@@ -15,7 +15,7 @@ import { gridSpacing } from 'store/constant';
 const UIRadio = () => {
     const theme = useTheme();
 
-    const [valueBasic, setValueBasic] = React.useState('female');
+    const [valueBasic, setValueBasic] = React.useState('male');
     const [valueLabel, setValueLabel] = React.useState('checked');
     const [valuePlacement, setValuePlacement] = React.useState('top');
     const [valueSize, setValueSize] = React.useState('md');
