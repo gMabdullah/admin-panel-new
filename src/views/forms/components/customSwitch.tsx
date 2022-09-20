@@ -1,7 +1,8 @@
 import React from 'react'
 import { FormGroup, FormControlLabel, Switch } from '@mui/material';
 import { withStyles } from "@mui/styles";
-type switchType={
+import { rest } from 'lodash';
+type switchType<T extends React.ElementType> ={
   onChange?: (event?:React.ChangeEvent<HTMLInputElement>) => void,
   label?:string,
   checked?:boolean,
@@ -22,11 +23,12 @@ const PurpleSwitch = withStyles({
   track: {},
 })(Switch);
 
-const  CustomizedSwitch=({checked,
+const  CustomizedSwitch=<T extends React.ElementType = "button">({checked,
   onChange,
   value,
   label,
-  name}:switchType)=> {
+  name,
+...rest}:switchType<T>): JSX.Element => {
   return (
     <>
     <FormGroup>
@@ -34,10 +36,12 @@ const  CustomizedSwitch=({checked,
     <FormControlLabel
         control={
           <PurpleSwitch
+            {...rest}
             checked={checked}
             onChange={onChange}
             value={value}
             name={name}
+
           />
         }
         label={label}
