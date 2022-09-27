@@ -9,7 +9,7 @@ import EmailIcon from '@mui/icons-material/Email';
 
 import { TextField } from '@mui/material';
 import moment from 'moment';
-type TextFieldType={
+type TextFieldType<T extends React.ElementType> ={
     type?:string,
     disableprevDates?:boolean,
     defaultValue?:string,
@@ -26,7 +26,7 @@ type TextFieldType={
    Adornment?:boolean,
    closeIcon?:boolean,
    
-}
+} & React.ComponentPropsWithoutRef<T>;
 const useStyles = makeStyles((theme) => ({
   textField: {
     width: "100%",
@@ -129,7 +129,7 @@ const CssTextField = withStyles({
     },    
   }),
 })(TextField);
-const TdTextField=({type,disableprevDates,label,id,disabled,multiline,onKeyPress,row,textTransform,helperText,onChange,onBlur,Adornment,closeIcon,defaultValue}:TextFieldType)=> {
+const TdTextField=<T extends React.ElementType = "input">({type,disableprevDates,label,id,disabled,multiline,onKeyPress,row,textTransform,helperText,onChange,onBlur,Adornment,closeIcon,defaultValue,  ...rest}:TextFieldType<T>): JSX.Element=> {
   const classes = useStyles();
   const [values, setValues] = React.useState({
     showPassword: false,
@@ -206,6 +206,7 @@ const TdTextField=({type,disableprevDates,label,id,disabled,multiline,onKeyPress
     onChange={onChange}
     onBlur={onBlur}
     defaultValue={defaultValue}
+    {...rest}
     />
   )
 }
