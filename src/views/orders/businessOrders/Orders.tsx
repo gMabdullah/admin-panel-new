@@ -166,7 +166,7 @@ const rows = [
     user_city: "Lahore",
     user_area: "Bhati",
     status: "Pending",
-    grand_total: 400,
+    grand_total: 500,
   },
   {
     id: 2,
