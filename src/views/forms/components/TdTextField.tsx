@@ -4,15 +4,15 @@ import { InputAdornment } from '@mui/material';
 import { IconButton } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import SearchIcon from "@mui/icons-material/Search";
-
-
+import SearchIcon from '@mui/icons-material/Search';
+import EmailIcon from '@mui/icons-material/Email';
 
 import { TextField } from '@mui/material';
 import moment from 'moment';
 type TextFieldType={
     type?:string,
     disableprevDates?:boolean,
+    defaultValue?:string,
     label?:string,
     id?:number,
     disabled?:boolean,
@@ -129,7 +129,7 @@ const CssTextField = withStyles({
     },    
   }),
 })(TextField);
-const TdTextField=({type,disableprevDates,label,id,disabled,multiline,onKeyPress,row,textTransform,helperText,onChange,onBlur,Adornment,closeIcon}:TextFieldType)=> {
+const TdTextField=({type,disableprevDates,label,id,disabled,multiline,onKeyPress,row,textTransform,helperText,onChange,onBlur,Adornment,closeIcon,defaultValue}:TextFieldType)=> {
   const classes = useStyles();
   const [values, setValues] = React.useState({
     showPassword: false,
@@ -144,6 +144,9 @@ const TdTextField=({type,disableprevDates,label,id,disabled,multiline,onKeyPress
   return (    
     <CssTextField
     InputProps={{ 
+      startAdornment:   type === "search" &&  (
+        <InputAdornment style={{ cursor: "pointer" }} position="start"><SearchIcon/></InputAdornment>
+      ),
         inputProps: {
           min:
             type === "date"
@@ -163,17 +166,13 @@ const TdTextField=({type,disableprevDates,label,id,disabled,multiline,onKeyPress
                 {values.showPassword ? <Visibility /> : <VisibilityOff />}
               </IconButton>
             </InputAdornment>
-          ) : type === "search" ? (
-            <InputAdornment style={{ cursor: "pointer" }} position="end">
+          ) : type === "email" ? (
+            <InputAdornment style={{ cursor: "pointer" }} position="start">
              
-              {/* <SearchIcon
-                onClick={onSearchClick}
-                thickness={4}
-                size={24}
-                style={{ color: "#c4c4c2" }}
-              /> */}
-            </InputAdornment>
-          ) : (
+              <EmailIcon
+            
+              />
+            </InputAdornment>): (
             <InputAdornment position="start">
               {/* <ColorCircularProgress thickness={4} size={24} /> */}
             </InputAdornment>
@@ -181,8 +180,17 @@ const TdTextField=({type,disableprevDates,label,id,disabled,multiline,onKeyPress
         ) : null
     }}
     
-    type={type}
+    type={
+      type
+        ? type === "password"
+          ? values.showPassword
+            ? "text"
+            : "password"
+          : type
+        : "text"
+    }
     inputProps={{ min: "0", step: "1" }}
+   
     label={label}
     id={id}
     className={classes.textField}
@@ -197,6 +205,7 @@ const TdTextField=({type,disableprevDates,label,id,disabled,multiline,onKeyPress
     helperText={helperText}
     onChange={onChange}
     onBlur={onBlur}
+    defaultValue={defaultValue}
     />
   )
 }

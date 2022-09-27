@@ -53,13 +53,13 @@ const TextFieldPage = () => (
                 <SubCard title="Variant">
                     <Grid container spacing={3}>
                         <Grid item xs={12}>
-                        <TdTextField type="date"/>
+                        <TdTextField type="search" Adornment/>
                            </Grid>
                         <Grid item xs={12}>
-                            <TextField fullWidth id="filled-basic" label="Filled" variant="filled" />
+                        <TdTextField type="Date" Adornment/>
                         </Grid>
                         <Grid item xs={12}>
-                            <TextField fullWidth id="standard-basic" label="Standard" variant="standard" />
+                        <TdTextField type="password" Adornment    defaultValue="demo@company.com"/>
                         </Grid>
                     </Grid>
                 </SubCard>
@@ -68,7 +68,7 @@ const TextFieldPage = () => (
                 <SubCard title="General">
                     <Grid container spacing={3}>
                         <Grid item xs={12}>
-                            <TextField fullWidth id="outlined-email-address" placeholder="Email Address" />
+                        <TdTextField type="email" Adornment/>
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
