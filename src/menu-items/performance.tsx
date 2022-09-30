@@ -1,16 +1,16 @@
 import { IconBrandProducthunt } from "@tabler/icons";
 import { OverrideIcon } from "types";
 
-interface PerformanceTypeObj {
+interface PerformanceSideBarMenu {
   id: string;
-  title: React.ReactNode | string;
+  title: string;
   type: string;
   url: string;
   icon: OverrideIcon;
   breadcrumbs: boolean;
 }
 
-const Performance: PerformanceTypeObj = {
+const Performance: PerformanceSideBarMenu = {
   id: "performance",
   title: "Performance",
   type: "item",
