@@ -1,16 +1,16 @@
 import { IconBrandProducthunt } from "@tabler/icons";
 import { OverrideIcon } from "types";
 
-interface AccessManagementTypeObj {
+interface AccessManagementSideBarMenu {
   id: string;
-  title: React.ReactNode | string;
+  title: string;
   type: string;
   url: string;
   icon: OverrideIcon;
   breadcrumbs: boolean;
 }
 
-const AccessManagement: AccessManagementTypeObj = {
+const AccessManagement: AccessManagementSideBarMenu = {
   id: "accessManagement",
   title: "AccessManagement",
   type: "item",
