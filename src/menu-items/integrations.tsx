@@ -1,16 +1,16 @@
 import { IconBrandProducthunt } from "@tabler/icons";
 import { OverrideIcon } from "types";
 
-interface IntegrationsTypeObj {
+interface IntegrationsSideBarMenu {
   id: string;
-  title: React.ReactNode | string;
+  title: string;
   type: string;
   url: string;
   icon: OverrideIcon;
   breadcrumbs: boolean;
 }
 
-const Integrations: IntegrationsTypeObj = {
+const Integrations: IntegrationsSideBarMenu = {
   id: "integrations",
   title: "Integrations",
   type: "item",
