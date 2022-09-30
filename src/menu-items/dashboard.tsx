@@ -3,16 +3,16 @@ import { OverrideIcon } from "types";
 
 // ==============================|| DASHBOARD MENU ITEMS ||============================== //
 
-interface DashboardMenuProps {
+interface DashboardSideBarMenu {
   id: string;
-  title: React.ReactNode | string;
+  title: string;
   type: string;
   url: string;
   icon: OverrideIcon;
   breadcrumbs: boolean;
 }
 
-const Dashboard: DashboardMenuProps = {
+const Dashboard: DashboardSideBarMenu = {
   id: "dashboard",
   title: "Dashboard",
   type: "item",

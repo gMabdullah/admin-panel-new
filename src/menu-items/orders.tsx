@@ -1,21 +1,21 @@
 import { IconBrandProducthunt } from "@tabler/icons";
 import { OverrideIcon } from "types";
 
-interface OrdersTypeObj {
+interface OrdersSideBarMenu {
   id: string;
-  title: React.ReactNode | string;
+  title: string;
   type: string;
   icon: OverrideIcon;
   children: {
     id: string;
-    title: React.ReactNode | string;
+    title: string;
     type: string;
     url: string;
     breadcrumbs: boolean;
   }[];
 }
 
-const Orders: OrdersTypeObj = {
+const Orders: OrdersSideBarMenu = {
   id: "orders",
   title: "Orders",
   type: "collapse",

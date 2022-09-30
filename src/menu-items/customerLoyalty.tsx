@@ -1,21 +1,21 @@
 import { IconBrandProducthunt } from "@tabler/icons";
 import { OverrideIcon } from "types";
 
-interface CustomerLoyaltyTypeObj {
+interface CustomerLoyaltySideBarMenu {
   id: string;
-  title: React.ReactNode | string;
+  title: string;
   type: string;
   icon: OverrideIcon;
   children: {
     id: string;
-    title: React.ReactNode | string;
+    title: string;
     type: string;
     url: string;
     breadcrumbs: boolean;
   }[];
 }
 
-const CustomerLoyalty: CustomerLoyaltyTypeObj = {
+const CustomerLoyalty: CustomerLoyaltySideBarMenu = {
   id: "customerLoyalty",
   title: "CustomerLoyalty",
   type: "collapse",
