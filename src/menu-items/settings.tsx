@@ -1,16 +1,16 @@
 import { IconBrandProducthunt } from "@tabler/icons";
 import { OverrideIcon } from "types";
 
-interface SettingsTypeObj {
+interface SettingsSideBarMenu {
   id: string;
-  title: React.ReactNode | string;
+  title: string;
   type: string;
   url: string;
   icon: OverrideIcon;
   breadcrumbs: boolean;
 }
 
-const Settings: SettingsTypeObj = {
+const Settings: SettingsSideBarMenu = {
   id: "settings",
   title: "Settings",
   type: "item",
