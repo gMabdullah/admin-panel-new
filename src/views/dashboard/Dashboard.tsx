@@ -1,8 +1,12 @@
+import TabsComponent from "ui-component/Tabs";
+
 const Dashboard = () => {
-  return (
-    <div>
-      <h1>Dashboard Component</h1>
-    </div>
-  );
+  const tabData = {
+    labels: ["Sales", "Orders", "Customers"],
+    to: ["/dashboard/sales", "/dashboard/orders", "/dashboard/customers"],
+  };
+
+  return <TabsComponent tabData={tabData} />;
 };
+
 export default Dashboard;

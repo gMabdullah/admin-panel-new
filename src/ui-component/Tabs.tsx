@@ -17,10 +17,10 @@ type TabDataType = {
   };
 };
 
-const TabsComponent = (tabData: TabDataType) => {
+const TabsComponent = ({ tabData }: TabDataType) => {
   const { pathname } = useLocation();
 
-  const { labels, to } = tabData.tabData;
+  const { labels, to } = tabData;
 
   let selectedTab = 0;
   switch (pathname) {
@@ -94,17 +94,9 @@ const TabsComponent = (tabData: TabDataType) => {
               variant="scrollable"
               onChange={handleChange}
               sx={{
-                // px: 1,
-                // pl: "22px",
-                // pr: "25px",
-                pb: "40px",
-                // height: "54px",
-                // width: "100%",
+                pb: "32px",
                 "& a": {
                   minWidth: 10,
-                  // px: 1,
-                  // py: 1.5,
-                  // mr: 2.25,
                   p: "17px 20px",
                   color: "grey.600",
                   display: "flex",

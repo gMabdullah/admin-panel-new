@@ -1,8 +1,140 @@
+import React from "react";
+
+import { SelectChangeEvent } from "@mui/material/Select";
+import { Typography, Grid } from "@mui/material";
+import SearchField from "ui-component/SearchField";
+import CustomButton from "views/forms/components/CustomButton";
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import AddTwoToneIcon from "@mui/icons-material/AddTwoTone";
+import MultiSelectDropDown from "ui-component/MultiSelectDropDown";
+import MainCard from "ui-component/cards/MainCard";
+
+// dropdown data
+const branches = [
+  { label: "All Branches", id: 1 },
+  { label: "Model Town Branch", id: 2 },
+  { label: "Johar Town Branch", id: 3 },
+  { label: "Iqbal Town Branch", id: 4 },
+];
+
+const ordersType = [
+  { label: "Orders Type", id: 1 },
+  { label: "Pickup", id: 2 },
+  { label: "Delivery", id: 3 },
+  { label: "COD", id: 4 },
+];
+
 const Categories = () => {
+  const [branchName, setBranchName] = React.useState<string[]>([
+    branches[0].label,
+  ]);
+  const [orderType, setOrderType] = React.useState<string[]>([
+    ordersType[0].label,
+  ]);
+
+  const handleBranchChange = (event: SelectChangeEvent<typeof branchName>) => {
+    const {
+      target: { value },
+    } = event;
+
+    setBranchName(
+      // On autofill we get a stringified value.
+      typeof value === "string" ? value.split(",") : value
+    );
+  };
+
+  const handleOrderTypeChange = (
+    event: SelectChangeEvent<typeof orderType>
+  ) => {
+    const {
+      target: { value },
+    } = event;
+
+    setOrderType(
+      // On autofill we get a stringified value.
+      typeof value === "string" ? value.split(",") : value
+    );
+  };
+
   return (
-    <div>
-      <h1>Product Categories Component</h1>
-    </div>
+    <MainCard
+      title={
+        <Grid container spacing={2}>
+          <Grid
+            item
+            xs={6}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <Typography
+              variant="h3"
+              sx={{
+                fontFamily: "Roboto",
+                fontStyle: "normal",
+                fontWeight: 600,
+                fontSize: "24px",
+                lineHeight: "28px",
+                color: "#212121",
+              }}
+            >
+              Categories
+            </Typography>
+
+            <SearchField
+              iconPrimary={SearchOutlinedIcon}
+              placeholder="Search Order"
+              sx={{
+                width: "260px",
+                height: "40px",
+                marginLeft: "36px",
+              }}
+            />
+          </Grid>
+          <Grid
+            item
+            xs={6}
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              alignItems: "center",
+            }}
+          >
+            <CustomButton
+              variant={"contained"}
+              color={"secondary"}
+              startIcon={<AddTwoToneIcon />}
+              sx={{
+                p: "12px 22px",
+                height: "44px",
+                width: "169px",
+              }}
+            >
+              New Category
+            </CustomButton>
+          </Grid>
+        </Grid>
+      } // MainCard opening tag closed here
+    >
+      <Grid container>
+        <Grid item xs={12}>
+          <MultiSelectDropDown
+            value={branchName}
+            onChange={handleBranchChange}
+            dropDownList={branches}
+            sx={{ width: "160px", height: "40px" }}
+          />
+          <MultiSelectDropDown
+            value={orderType}
+            onChange={handleOrderTypeChange}
+            dropDownList={ordersType}
+            sx={{ width: "160px", height: "40px", ml: "8px" }}
+          />
+        </Grid>
+      </Grid>
+    </MainCard>
   );
 };
+
 export default Categories;

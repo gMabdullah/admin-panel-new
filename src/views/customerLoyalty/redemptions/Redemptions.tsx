@@ -1,8 +1,15 @@
+import TabsComponent from "ui-component/Tabs";
+
 const Redemptions = () => {
-  return (
-    <div>
-      <h1>Customer Loyalty Component</h1>
-    </div>
-  );
+  const tabData = {
+    labels: ["Coupon Redemptions", "Loyalty Redemptions"],
+    to: [
+      "/customer-loyalty/redemptions/coupon-redemption",
+      "/customer-loyalty/redemptions/loyalty-redemption",
+    ],
+  };
+
+  return <TabsComponent tabData={tabData} />;
 };
+
 export default Redemptions;
