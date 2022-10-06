@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Checkbox, ListItemText, FormControl, MenuItem } from "@mui/material";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import CustomButton from "ui-component/CustomButton";
+import CustomButton from "views/forms/components/CustomButton";
 
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 

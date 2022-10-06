@@ -1,5 +1,4 @@
 import { Button } from "@mui/material";
-
 import React from "react";
 
 type FormButtonType<T extends React.ElementType> = {
@@ -43,7 +42,13 @@ const CustomButton = <T extends React.ElementType = "button">({
       isLoading={isLoading}
       isCompleted={isCompleted}
       variant={variant}
-      sx={sx}
+      sx={{
+        boxShadow: "unset",
+        borderRadius: "8px",
+        justifyContent: "center",
+        alignItems: "center",
+        ...sx,
+      }}
       style={style}
       color={color}
       size={size}
