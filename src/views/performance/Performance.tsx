@@ -1,8 +1,16 @@
+import TabsComponent from "ui-component/Tabs";
+
 const Performance = () => {
-  return (
-    <div>
-      <h1>Performance Component</h1>
-    </div>
-  );
+  const tabData = {
+    labels: ["Custom Reports", "POS Reports", "Feedback"],
+    to: [
+      "/performance/custom-reports",
+      "/performance/pos-report",
+      "/performance/feedback",
+    ],
+  };
+
+  return <TabsComponent tabData={tabData} />;
 };
+
 export default Performance;

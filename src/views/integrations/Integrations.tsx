@@ -1,8 +1,12 @@
+import TabsComponent from "ui-component/Tabs";
+
 const Integrations = () => {
-  return (
-    <div>
-      <h1>Integration Component</h1>
-    </div>
-  );
+  const tabData = {
+    labels: ["Payments", "Firebase"],
+    to: ["/integration/payments", "/integration/firebase"],
+  };
+
+  return <TabsComponent tabData={tabData} />;
 };
+
 export default Integrations;

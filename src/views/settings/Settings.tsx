@@ -1,8 +1,28 @@
-const Setting = () => {
-  return (
-    <div>
-      <h1>Settings Component</h1>
-    </div>
-  );
+import TabsComponent from "ui-component/Tabs";
+
+const Settings = () => {
+  const tabData = {
+    labels: [
+      "Business Info",
+      "Orders",
+      "Business Hours",
+      "Reservations",
+      "Email",
+      "SMS",
+      "POS Settings",
+    ],
+    to: [
+      "/settings/business-info",
+      "/settings/orders",
+      "/settings/business-hours",
+      "/settings/reservation",
+      "/settings/email",
+      "/settings/sms",
+      "/settings/pos",
+    ],
+  };
+
+  return <TabsComponent tabData={tabData} />;
 };
-export default Setting;
+
+export default Settings;

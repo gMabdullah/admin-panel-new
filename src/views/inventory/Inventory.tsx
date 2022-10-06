@@ -1,8 +1,17 @@
+import TabsComponent from "ui-component/Tabs";
+
 const Inventory = () => {
-  return (
-    <div>
-      <h1>Inventory Component</h1>
-    </div>
-  );
+  const tabData = {
+    labels: ["Stock", "Purchases", "Purchase Order", "Setup"],
+    to: [
+      "/inventory/stock",
+      "/inventory/purchases",
+      "/inventory/purchaseOrders",
+      "/inventory/setup",
+    ],
+  };
+
+  return <TabsComponent tabData={tabData} />;
 };
+
 export default Inventory;
