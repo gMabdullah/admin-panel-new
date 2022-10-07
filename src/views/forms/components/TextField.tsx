@@ -14,6 +14,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import LockTwoToneIcon from '@mui/icons-material/LockTwoTone';
 import EmailTwoToneIcon from '@mui/icons-material/EmailTwoTone';
 import ModeEditTwoToneIcon from '@mui/icons-material/ModeEditTwoTone';
+import TdTextField from './TdTextField';
 
 // select options
 const currencies = [
@@ -52,13 +53,13 @@ const TextFieldPage = () => (
                 <SubCard title="Variant">
                     <Grid container spacing={3}>
                         <Grid item xs={12}>
-                            <TextField fullWidth id="outlined-basic" label="Outlined" />
+                        <TdTextField type="search" Adornment/>
+                           </Grid>
+                        <Grid item xs={12}>
+                        <TdTextField type="Date" Adornment/>
                         </Grid>
                         <Grid item xs={12}>
-                            <TextField fullWidth id="filled-basic" label="Filled" variant="filled" />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField fullWidth id="standard-basic" label="Standard" variant="standard" />
+                        <TdTextField type="password" Adornment    defaultValue="demo@company.com"/>
                         </Grid>
                     </Grid>
                 </SubCard>
@@ -67,7 +68,7 @@ const TextFieldPage = () => (
                 <SubCard title="General">
                     <Grid container spacing={3}>
                         <Grid item xs={12}>
-                            <TextField fullWidth id="outlined-email-address" placeholder="Email Address" />
+                        <TdTextField type="email" Adornment/>
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
