@@ -7,7 +7,7 @@ import SubCard from 'ui-component/cards/SubCard';
 import MainCard from 'ui-component/cards/MainCard';
 import SecondaryAction from 'ui-component/cards/CardSecondaryAction';
 import { gridSpacing } from 'store/constant';
-
+import CustomCheckbox from './CustomCheckbox';
 // ==============================|| CHECKBOX ||============================== //
 
 const UICheckbox = () => {
@@ -29,7 +29,7 @@ const UICheckbox = () => {
                                 />
                             </Grid>
                             <Grid item>
-                                <Checkbox defaultChecked color="primary" />
+                                <CustomCheckbox defaultChecked   />
                             </Grid>
                             <Grid item>
                                 <Checkbox color="secondary" />
