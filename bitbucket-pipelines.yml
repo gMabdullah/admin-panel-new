@@ -1,0 +1,57 @@
+image: node:12.2.0
+
+pipelines:
+#  default:
+  branches:
+   develop:
+#    - parallel:
+    - step:
+        size: 2x
+        name: Build and Test
+        caches:
+          - node
+        script:
+          - rm -rf package-lock.json
+          - rm -rf yarn.lock.json
+          - rm -rf node_modules
+          - yarn upgrade
+          - yarn install
+          - yarn run build
+        artifacts:
+          - build/**
+    - step:
+        name: Deploy to Staging
+        deployment: Staging
+        # trigger: manual  # Uncomment to make this a manual deployment.
+        script:
+          - pipe: atlassian/scp-deploy:0.3.3
+            variables:
+              USER: $SSH_USER
+              SERVER: $SERVER
+              REMOTE_PATH: '/tmp/pos_admin_staging'
+              LOCAL_PATH: '*'
+              EXTRA_ARGS: ['-o', 'StrictHostKeyChecking=no']
+   master:
+#    - parallel:
+    - step:
+        size: 2x
+        name: Build and Test
+        caches:
+          - node
+        script:
+          - npm install
+          - npm run build
+        artifacts:
+          - build/**
+    - step:
+        name: Deploy to Staging
+        deployment: Production
+        # trigger: manual  # Uncomment to make this a manual deployment.
+        script:
+          - pipe: atlassian/scp-deploy:0.3.3
+            variables:
+              USER: $SSH_USER
+              SERVER: $SERVER
+              REMOTE_PATH: '/tmp/pos_admin'
+              LOCAL_PATH: '*'
+              EXTRA_ARGS: ['-o', 'StrictHostKeyChecking=no']
