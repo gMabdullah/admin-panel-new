@@ -11,12 +11,8 @@ pipelines:
         caches:
           - node
         script:
-          - rm -rf package-lock.json
-          - rm -rf yarn.lock.json
-          - rm -rf node_modules
-          - yarn upgrade
-          - yarn install
-          - yarn run build
+          - npm install
+          - npm run build
         artifacts:
           - build/**
     - step:
@@ -28,7 +24,7 @@ pipelines:
             variables:
               USER: $SSH_USER
               SERVER: $SERVER
-              REMOTE_PATH: '/tmp/pos_admin_staging'
+              REMOTE_PATH: $REMOTE_PATH
               LOCAL_PATH: '*'
               EXTRA_ARGS: ['-o', 'StrictHostKeyChecking=no']
    master:
@@ -44,7 +40,7 @@ pipelines:
         artifacts:
           - build/**
     - step:
-        name: Deploy to Staging
+        name: Deploy to Production
         deployment: Production
         # trigger: manual  # Uncomment to make this a manual deployment.
         script:
@@ -52,6 +48,6 @@ pipelines:
             variables:
               USER: $SSH_USER
               SERVER: $SERVER
-              REMOTE_PATH: '/tmp/pos_admin'
+              REMOTE_PATH: $REMOTE_PATH
               LOCAL_PATH: '*'
               EXTRA_ARGS: ['-o', 'StrictHostKeyChecking=no']
