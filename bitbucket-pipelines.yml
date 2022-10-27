@@ -1,4 +1,4 @@
-image: node:12.2.0
+image: node:14.17.6
 
 pipelines:
 #  default:
@@ -11,8 +11,8 @@ pipelines:
         caches:
           - node
         script:
-          - npm install
-          - npm run build
+          - yarn install
+          - CI=false yarn run build
         artifacts:
           - build/**
     - step:
@@ -35,8 +35,8 @@ pipelines:
         caches:
           - node
         script:
-          - npm install
-          - npm run build
+          - yarn install
+          - CI=false yarn run build
         artifacts:
           - build/**
     - step:
