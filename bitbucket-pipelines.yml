@@ -25,7 +25,7 @@ pipelines:
               USER: $SSH_USER
               SERVER: $SERVER
               REMOTE_PATH: $REMOTE_PATH
-              LOCAL_PATH: '*'
+              LOCAL_PATH: 'build/*'
               EXTRA_ARGS: ['-o', 'StrictHostKeyChecking=no']
    master:
 #    - parallel:
@@ -49,5 +49,5 @@ pipelines:
               USER: $SSH_USER
               SERVER: $SERVER
               REMOTE_PATH: $REMOTE_PATH
-              LOCAL_PATH: '*'
+              LOCAL_PATH: 'build/*'
               EXTRA_ARGS: ['-o', 'StrictHostKeyChecking=no']
