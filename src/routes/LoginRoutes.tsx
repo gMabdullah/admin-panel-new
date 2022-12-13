@@ -4,7 +4,7 @@ import { lazy } from 'react';
 import GuestGuard from 'utils/route-guard/GuestGuard';
 import MinimalLayout from 'layout/minimalLayout';
 import NavMotion from 'layout/NavMotion';
-import Loadable from 'uiComponent/Loadable';
+import Loadable from 'components/Loadable';
 
 // login routing
 const AuthLogin = Loadable(lazy(() => import('views/pages/authentication/authentication3/Login3')));

@@ -5,7 +5,7 @@ import { useRoutes } from "react-router-dom";
 import MainRoutes from "./MainRoutes";
 import LoginRoutes from "./LoginRoutes";
 import AuthenticationRoutes from "./AuthenticationRoutes";
-import Loadable from "uiComponent/Loadable";
+import Loadable from "components/Loadable";
 
 const PagesLanding = Loadable(lazy(() => import("login/Login")));
 
