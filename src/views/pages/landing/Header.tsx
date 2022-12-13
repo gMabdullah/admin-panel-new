@@ -9,8 +9,8 @@ import { motion } from 'framer-motion';
 
 // project imports
 // project imports
-import Avatar from 'ui-component/extended/Avatar';
-import AnimateButton from 'ui-component/extended/AnimateButton';
+import Avatar from 'components/extended/Avatar';
+import AnimateButton from 'components/extended/AnimateButton';
 import { gridSpacing } from 'store/constant';
 
 // assets

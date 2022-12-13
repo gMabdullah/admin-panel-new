@@ -7,9 +7,9 @@ import { Button, Grid, Typography, useMediaQuery } from '@mui/material';
 // project imports
 import AuthWrapper1 from '../AuthWrapper1';
 import AuthCardWrapper from '../AuthCardWrapper';
-import Logo from 'ui-component/Logo';
-import AnimateButton from 'ui-component/extended/AnimateButton';
-import AuthFooter from 'ui-component/cards/AuthFooter';
+import Logo from 'assets/Logo';
+import AnimateButton from 'components/extended/AnimateButton';
+import AuthFooter from 'components/cards/AuthFooter';
 
 // assets
 

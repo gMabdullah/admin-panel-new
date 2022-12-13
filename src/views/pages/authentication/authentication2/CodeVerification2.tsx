@@ -7,12 +7,12 @@ import { Box, Button, Divider, Grid, Stack, Typography, useMediaQuery } from '@m
 // project imports
 import AuthWrapper2 from '../AuthWrapper2';
 import AuthCardWrapper from '../AuthCardWrapper';
-import Logo from 'ui-component/Logo';
-import AnimateButton from 'ui-component/extended/AnimateButton';
+import Logo from 'assets/Logo';
+import AnimateButton from 'components/extended/AnimateButton';
 import AuthCodeVerification from '../auth-forms/AuthCodeVerification';
-import BackgroundPattern2 from 'ui-component/cards/BackgroundPattern2';
-import AuthFooter from 'ui-component/cards/AuthFooter';
-import AuthSlider from 'ui-component/cards/AuthSlider';
+import BackgroundPattern2 from 'components/cards/BackgroundPattern2';
+import AuthFooter from 'components/cards/AuthFooter';
+import AuthSlider from 'components/cards/AuthSlider';
 import { AuthSliderProps } from 'types';
 
 // assets

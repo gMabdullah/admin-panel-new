@@ -1,60 +1,61 @@
-import React from "react";
+import React from 'react'
 
-import { SelectChangeEvent } from "@mui/material/Select";
-import { Typography, Grid } from "@mui/material";
-import SearchField from "ui-component/SearchField";
-import CustomButton from "views/forms/components/CustomButton";
-import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
-import AddTwoToneIcon from "@mui/icons-material/AddTwoTone";
-import MultiSelectDropDown from "ui-component/MultiSelectDropDown";
-import MainCard from "ui-component/cards/MainCard";
+import { SelectChangeEvent } from '@mui/material/Select'
+import { Typography, Grid } from '@mui/material'
+import SearchField from 'components/SearchField'
+import CustomButton from 'components/CustomButton'
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined'
+import AddTwoToneIcon from '@mui/icons-material/AddTwoTone'
+import MultiSelectDropDown from 'components/MultiSelectDropDown'
+import { useTheme } from '@mui/material/styles'
+import MainCard from 'components/cards/MainCard'
 
 // dropdown data
 const branches = [
-  { label: "All Branches", id: 1 },
-  { label: "Model Town Branch", id: 2 },
-  { label: "Johar Town Branch", id: 3 },
-  { label: "Iqbal Town Branch", id: 4 },
-];
+  { label: 'All Branches', value: "1" },
+  { label: 'Model Town Branch', value: "2" },
+  { label: 'Johar Town Branch', value: "3" },
+  { label: 'Iqbal Town Branch', value: "4" },
+]
 
 const ordersType = [
-  { label: "Orders Type", id: 1 },
-  { label: "Pickup", id: 2 },
-  { label: "Delivery", id: 3 },
-  { label: "COD", id: 4 },
-];
+  { label: 'Orders Type', value: "1" },
+  { label: 'Pickup', value: "2" },
+  { label: 'Delivery', value: "3 "},
+  { label: 'COD', value: "4" },
+]
 
 const Categories = () => {
   const [branchName, setBranchName] = React.useState<string[]>([
     branches[0].label,
-  ]);
+  ])
   const [orderType, setOrderType] = React.useState<string[]>([
     ordersType[0].label,
-  ]);
+  ])
 
   const handleBranchChange = (event: SelectChangeEvent<typeof branchName>) => {
     const {
       target: { value },
-    } = event;
+    } = event
 
     setBranchName(
       // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
-    );
-  };
+      typeof value === 'string' ? value.split(',') : value,
+    )
+  }
 
   const handleOrderTypeChange = (
-    event: SelectChangeEvent<typeof orderType>
+    event: SelectChangeEvent<typeof orderType>,
   ) => {
     const {
       target: { value },
-    } = event;
+    } = event
 
     setOrderType(
       // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
-    );
-  };
+      typeof value === 'string' ? value.split(',') : value,
+    )
+  }
 
   return (
     <MainCard
@@ -64,19 +65,19 @@ const Categories = () => {
             item
             xs={6}
             sx={{
-              display: "flex",
-              alignItems: "center",
+              display: 'flex',
+              alignItems: 'center',
             }}
           >
             <Typography
               variant="h3"
               sx={{
-                fontFamily: "Roboto",
-                fontStyle: "normal",
+                fontFamily: 'Roboto',
+                fontStyle: 'normal',
                 fontWeight: 600,
-                fontSize: "24px",
-                lineHeight: "28px",
-                color: "#212121",
+                fontSize: '24px',
+                lineHeight: '28px',
+                color: '#212121',
               }}
             >
               Categories
@@ -86,9 +87,9 @@ const Categories = () => {
               iconPrimary={SearchOutlinedIcon}
               placeholder="Search Order"
               sx={{
-                width: "260px",
-                height: "40px",
-                marginLeft: "36px",
+                width: '260px',
+                height: '40px',
+                marginLeft: '36px',
               }}
             />
           </Grid>
@@ -96,19 +97,19 @@ const Categories = () => {
             item
             xs={6}
             sx={{
-              display: "flex",
-              justifyContent: "flex-end",
-              alignItems: "center",
+              display: 'flex',
+              justifyContent: 'flex-end',
+              alignItems: 'center',
             }}
           >
             <CustomButton
-              variant={"contained"}
-              color={"secondary"}
-              startIcon={<AddTwoToneIcon />}
+              variant={'contained'}
+              color={'secondary'}
+              //startIcon={<AddTwoToneIcon />}
               sx={{
-                p: "12px 22px",
-                height: "44px",
-                width: "169px",
+                p: '12px 22px',
+                height: '44px',
+                width: '169px',
               }}
             >
               New Category
@@ -123,18 +124,18 @@ const Categories = () => {
             value={branchName}
             onChange={handleBranchChange}
             dropDownList={branches}
-            sx={{ width: "160px", height: "40px" }}
+            sx={{ width: '160px', height: '40px' }}
           />
           <MultiSelectDropDown
             value={orderType}
             onChange={handleOrderTypeChange}
             dropDownList={ordersType}
-            sx={{ width: "160px", height: "40px", ml: "8px" }}
+            sx={{ width: '160px', height: '40px', ml: '8px' }}
           />
         </Grid>
       </Grid>
     </MainCard>
-  );
-};
+  )
+}
 
-export default Categories;
+export default Categories

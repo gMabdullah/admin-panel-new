@@ -9,8 +9,8 @@ import Layouts from './Layouts';
 import KeyFeature from './KeyFeature';
 import Subscribe from './Subscribe';
 import Footer from './Footer';
-import Customization from 'layout/Customization';
-import AppBar from 'ui-component/extended/AppBar';
+import Customization from 'layout/customization';
+import AppBar from 'components/extended/AppBar';
 
 const HeaderWrapper = styled('div')(({ theme }) => ({
     paddingTop: 30,
