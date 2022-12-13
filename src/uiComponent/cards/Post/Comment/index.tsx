@@ -27,8 +27,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 
 // project imports
 import Reply from './Reply';
-import Avatar from 'uiComponent/extended/Avatar';
-import AnimateButton from 'uiComponent/extended/AnimateButton';
+import Avatar from 'components/extended/Avatar';
+import AnimateButton from 'components/extended/AnimateButton';
 import { Comment as CommentProps, CommentData, PostProps, Profile } from 'types/user-profile';
 
 // assets
