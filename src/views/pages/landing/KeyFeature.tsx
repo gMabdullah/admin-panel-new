@@ -4,8 +4,8 @@ import { Avatar, Button, Container, Grid, Link, Typography } from '@mui/material
 
 // project imports
 import FadeInWhenVisible from './Animation';
-import SubCard from 'ui-component/cards/SubCard';
-import AnimateButton from 'ui-component/extended/AnimateButton';
+import SubCard from 'uiComponent/cards/SubCard';
+import AnimateButton from 'uiComponent/extended/AnimateButton';
 import { gridSpacing } from 'store/constant';
 
 // assets

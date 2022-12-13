@@ -3,9 +3,9 @@ import { styled, useTheme } from '@mui/material/styles';
 import { Container, Grid, Typography } from '@mui/material';
 
 // project imports
-import AppBar from 'ui-component/extended/AppBar';
-import MainCard from 'ui-component/cards/MainCard';
-import Accordion from 'ui-component/extended/Accordion';
+import AppBar from 'uiComponent/extended/AppBar';
+import MainCard from 'uiComponent/cards/MainCard';
+import Accordion from 'uiComponent/extended/Accordion';
 import { gridSpacing } from 'store/constant';
 
 // assets

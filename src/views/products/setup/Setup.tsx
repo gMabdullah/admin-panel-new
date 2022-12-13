@@ -1,4 +1,4 @@
-import TabsComponent from "ui-component/Tabs";
+import TabsComponent from "uiComponent/Tabs";
 
 const Setup = () => {
   const tabData = {

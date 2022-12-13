@@ -8,10 +8,10 @@ import { Box, Divider, Grid, Stack, Typography, useMediaQuery } from '@mui/mater
 import AuthWrapper2 from '../AuthWrapper2';
 import AuthCardWrapper from '../AuthCardWrapper';
 import AuthLogin from '../auth-forms/AuthLogin';
-import Logo from 'ui-component/Logo';
-import BackgroundPattern2 from 'ui-component/cards/BackgroundPattern2';
-import AuthFooter from 'ui-component/cards/AuthFooter';
-import AuthSlider from 'ui-component/cards/AuthSlider';
+import Logo from 'assets/Logo';
+import BackgroundPattern2 from 'uiComponent/cards/BackgroundPattern2';
+import AuthFooter from 'uiComponent/cards/AuthFooter';
+import AuthSlider from 'uiComponent/cards/AuthSlider';
 import { AuthSliderProps } from 'types';
 
 // assets

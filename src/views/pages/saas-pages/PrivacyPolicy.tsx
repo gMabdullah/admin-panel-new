@@ -4,8 +4,8 @@ import { Container, Grid, Typography, Stack } from '@mui/material';
 import Link from '@mui/material/Link';
 
 // project imports
-import AppBar from 'ui-component/extended/AppBar';
-import MainCard from 'ui-component/cards/MainCard';
+import AppBar from 'uiComponent/extended/AppBar';
+import MainCard from 'uiComponent/cards/MainCard';
 import { gridSpacing } from 'store/constant';
 
 // assets

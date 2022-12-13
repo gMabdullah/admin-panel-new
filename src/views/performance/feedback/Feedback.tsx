@@ -3,13 +3,13 @@ import React from "react";
 import { Typography, Grid } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material/Select";
 
-import MultiSelectDropDown from "ui-component/MultiSelectDropDown";
+import MultiSelectDropDown from "uiComponent/MultiSelectDropDown";
 
 // dropdown data
 const branches = [
-  { label: "All Branches", id: 1 },
-  { label: "Model Town Branch", id: 2 },
-  { label: "Johar Town Branch", id: 3 },
+  { label: "All Branches", value:" 1" },
+  { label: "Model Town Branch", value: "2" },
+  { label: "Johar Town Branch", value: "3" },
 ];
 
 const Feedback = () => {

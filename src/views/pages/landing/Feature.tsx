@@ -4,8 +4,8 @@ import { Container, Grid, Typography } from '@mui/material';
 
 // project imports
 import FadeInWhenVisible from './Animation';
-import SubCard from 'ui-component/cards/SubCard';
-import Avatar from 'ui-component/extended/Avatar';
+import SubCard from 'uiComponent/cards/SubCard';
+import Avatar from 'uiComponent/extended/Avatar';
 import { gridSpacing } from 'store/constant';
 
 // assets

@@ -3,24 +3,24 @@ import React from "react";
 import { Typography, Grid } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material/Select";
 
-import SearchField from "ui-component/SearchField";
-import CustomButton from "views/forms/components/CustomButton";
+import SearchField from "uiComponent/SearchField";
+import CustomButton from "uiComponent/CustomButton";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
-import MultiSelectDropDown from "ui-component/MultiSelectDropDown";
+import MultiSelectDropDown from "uiComponent/MultiSelectDropDown";
 
 // dropdown data
 
 const reports = [
-  { label: "Reports", id: 1 },
-  { label: "Pickup", id: 2 },
-  { label: "Delivery", id: 3 },
+  { label: "Reports", value: "1" },
+  { label: "Pickup", value: "2" },
+  { label: "Delivery", value: "3" },
 ];
 
 const branches = [
-  { label: "All Branches", id: 1 },
-  { label: "Model Town Branch", id: 2 },
-  { label: "Johar Town Branch", id: 3 },
-  { label: "Iqbal Town Branch", id: 4 },
+  { label: "All Branches", value: "1" },
+  { label: "Model Town Branch", value: "2" },
+  { label: "Johar Town Branch", value: "3" },
+  { label: "Iqbal Town Branch", value: "4" },
 ];
 
 const CustomReport = () => {

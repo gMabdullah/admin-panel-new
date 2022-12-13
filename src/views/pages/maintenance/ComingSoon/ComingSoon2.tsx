@@ -6,7 +6,7 @@ import { Button, Card, CardContent, CardMedia, Grid, TextField, Typography } fro
 import { useTimer } from 'react-timer-hook';
 
 // project imports
-import AnimateButton from 'ui-component/extended/AnimateButton';
+import AnimateButton from 'uiComponent/extended/AnimateButton';
 import { gridSpacing } from 'store/constant';
 
 // assets
