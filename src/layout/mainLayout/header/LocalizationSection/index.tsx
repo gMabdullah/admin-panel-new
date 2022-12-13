@@ -17,7 +17,7 @@ import {
 } from '@mui/material';
 
 // project imports
-import Transitions from 'uiComponent/extended/Transitions';
+import Transitions from 'components/extended/Transitions';
 
 // assets
 import TranslateTwoToneIcon from '@mui/icons-material/TranslateTwoTone';

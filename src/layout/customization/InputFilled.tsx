@@ -3,7 +3,7 @@ import { Grid, Stack, Switch, TextField } from '@mui/material';
 
 // project imports
 import useConfig from 'hooks/useConfig';
-import SubCard from 'uiComponent/cards/SubCard';
+import SubCard from 'components/cards/SubCard';
 
 const InputFilled = () => {
     const { outlinedFilled, onChangeOutlinedField } = useConfig();

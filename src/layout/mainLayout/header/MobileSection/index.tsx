@@ -6,7 +6,7 @@ import { AppBar, Box, IconButton, ClickAwayListener, Grid, Paper, Popper, Toolba
 
 // project imports
 import LocalizationSection from '../LocalizationSection';
-import Transitions from 'uiComponent/extended/Transitions';
+import Transitions from 'components/extended/Transitions';
 
 // assets
 import { IconDotsVertical } from '@tabler/icons';

@@ -3,7 +3,7 @@ import { FormControl, FormControlLabel, Switch } from '@mui/material';
 
 // project imports
 import useConfig from 'hooks/useConfig';
-import SubCard from 'uiComponent/cards/SubCard';
+import SubCard from 'components/cards/SubCard';
 
 const BoxContainer = () => {
     const { container, onChangeContainer } = useConfig();

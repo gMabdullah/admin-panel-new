@@ -19,8 +19,8 @@ import {
 } from '@mui/material';
 
 // project imports
-import MainCard from 'uiComponent/cards/MainCard';
-import Transitions from 'uiComponent/extended/Transitions';
+import MainCard from 'components/cards/MainCard';
+import Transitions from 'components/extended/Transitions';
 
 // assets
 import Banner from './Banner';

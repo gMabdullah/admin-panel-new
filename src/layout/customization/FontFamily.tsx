@@ -6,7 +6,7 @@ import { FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material'
 
 // project imports
 import useConfig from 'hooks/useConfig';
-import SubCard from 'uiComponent/cards/SubCard';
+import SubCard from 'components/cards/SubCard';
 
 const FontFamily = () => {
     const theme = useTheme();

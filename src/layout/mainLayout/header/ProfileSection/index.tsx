@@ -29,8 +29,8 @@ import {
 import PerfectScrollbar from 'react-perfect-scrollbar';
 
 // project imports
-import MainCard from 'uiComponent/cards/MainCard';
-import Transitions from 'uiComponent/extended/Transitions';
+import MainCard from 'components/cards/MainCard';
+import Transitions from 'components/extended/Transitions';
 import UpgradePlanCard from './UpgradePlanCard';
 import useAuth from 'hooks/useAuth';
 import User1 from 'assets/images/users/user-round.svg';

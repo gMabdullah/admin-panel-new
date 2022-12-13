@@ -14,7 +14,7 @@ import { openDrawer } from "store/slices/menu";
 import { IconMenu2 } from "@tabler/icons";
 import CustomDateRangePicker, {
   DateRange,
-} from "uiComponent/datePicker/CustomDateRangerPicker";
+} from "components/datePicker/CustomDateRangerPicker";
 import { setDate } from "store/slices/Main";
 import Orders, { applyDates } from "orders/businessOrders/Orders";
 

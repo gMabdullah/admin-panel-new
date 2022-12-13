@@ -5,7 +5,7 @@ import { IconChecks } from '@tabler/icons';
 
 // project imports
 import useConfig from 'hooks/useConfig';
-import SubCard from 'uiComponent/cards/SubCard';
+import SubCard from 'components/cards/SubCard';
 
 // color import
 import colors from 'assets/scss/_themes-vars.module.scss';

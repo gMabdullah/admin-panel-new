@@ -4,7 +4,7 @@ import { Grid, Slider, Typography } from '@mui/material';
 
 // project imports
 import useConfig from 'hooks/useConfig';
-import SubCard from 'uiComponent/cards/SubCard';
+import SubCard from 'components/cards/SubCard';
 
 // concat 'px'
 function valueText(value: number) {

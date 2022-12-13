@@ -13,7 +13,7 @@ import LogoSection from "../logoSection";
 import { openDrawer } from "store/slices/menu";
 import { useDispatch, useSelector } from "store";
 import { drawerWidth } from "store/constant";
-import Chip from "uiComponent/extended/Chip";
+import Chip from "components/extended/Chip";
 
 // ==============================|| SIDEBAR DRAWER ||============================== //
 

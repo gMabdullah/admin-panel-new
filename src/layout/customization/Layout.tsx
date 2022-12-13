@@ -4,7 +4,7 @@ import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, Switch, Pa
 
 // project imports
 import useConfig from 'hooks/useConfig';
-import SubCard from 'uiComponent/cards/SubCard';
+import SubCard from 'components/cards/SubCard';
 
 const Layout = () => {
     const theme = useTheme();

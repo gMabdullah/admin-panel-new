@@ -15,7 +15,7 @@ import PresetColor from './PresetColor';
 import FontFamily from './FontFamily';
 import InputFilled from './InputFilled';
 import BoxContainer from './BoxContainer';
-import AnimateButton from 'uiComponent/extended/AnimateButton';
+import AnimateButton from 'components/extended/AnimateButton';
 import { gridSpacing } from 'store/constant';
 
 // ==============================|| LIVE CUSTOMIZATION ||============================== //

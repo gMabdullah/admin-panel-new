@@ -8,7 +8,7 @@ import { Avatar, Box, Card, Grid, InputAdornment, OutlinedInput, Popper } from '
 import PopupState, { bindPopper, bindToggle } from 'material-ui-popup-state';
 
 // project imports
-import Transitions from 'uiComponent/extended/Transitions';
+import Transitions from 'components/extended/Transitions';
 
 // assets
 import { IconAdjustmentsHorizontal, IconSearch, IconX } from '@tabler/icons';
