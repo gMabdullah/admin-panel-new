@@ -15,10 +15,12 @@ import userReducer from './slices/user';
 import cartReducer from './slices/cart';
 import kanbanReducer from './slices/kanban';
 import menuReducer from './slices/menu';
+import mainReducer from './slices/Main';
 
 // ==============================|| COMBINE REDUCER ||============================== //
 
 const reducer = combineReducers({
+    main: mainReducer,
     snackbar: snackbarReducer,
     cart: persistReducer(
         {
