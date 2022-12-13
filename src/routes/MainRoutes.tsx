@@ -1,9 +1,8 @@
 import { lazy } from "react";
 
 // project imports
-import MainLayout from "layout/MainLayout";
-import Loadable from "ui-component/Loadable";
-import AuthGuard from "utils/route-guard/AuthGuard";
+import MainLayout from "layout/mainLayout";
+import Loadable from "uiComponent/Loadable";
 
 // dashboard routing
 const Dashboard = Loadable(lazy(() => import("views/dashboard/Dashboard")));
@@ -18,12 +17,11 @@ const DashboardCustomers = Loadable(
 );
 
 // orders routing
-// const Orders = Loadable(lazy(() => import("views/orders")));
 const BusinessOrders = Loadable(
-  lazy(() => import("views/orders/businessOrders/Orders"))
+  lazy(() => import("orders/businessOrders/Orders"))
 );
 const OrdersCartAbandonment = Loadable(
-  lazy(() => import("views/orders/cartAbandonment/CartAbandonment"))
+  lazy(() => import("orders/cartAbandonment/CartAbandonment"))
 );
 
 // performance routing
@@ -147,11 +145,7 @@ const POSSettings = Loadable(
 
 const MainRoutes = {
   path: "/",
-  element: (
-    <AuthGuard>
-      <MainLayout />
-    </AuthGuard>
-  ),
+  element: <MainLayout />,
   children: [
     {
       path: "/dashboard",
@@ -171,20 +165,6 @@ const MainRoutes = {
         },
       ],
     },
-    // {
-    //   path: "/orders",
-    //   element: <Orders />,
-    //   children: [
-    //     {
-    //       path: "business-orders",
-    //       element: <BusinessOrders />,
-    //     },
-    //     {
-    //       path: "cart-abandonment",
-    //       element: <OrdersCartAbandonment />,
-    //     },
-    //   ],
-    // },
     {
       path: "/orders",
       element: <BusinessOrders />,

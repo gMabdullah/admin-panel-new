@@ -2,9 +2,9 @@ import { lazy } from 'react';
 
 // project imports
 import GuestGuard from 'utils/route-guard/GuestGuard';
-import MinimalLayout from 'layout/MinimalLayout';
+import MinimalLayout from 'layout/minimalLayout';
 import NavMotion from 'layout/NavMotion';
-import Loadable from 'ui-component/Loadable';
+import Loadable from 'uiComponent/Loadable';
 
 // login routing
 const AuthLogin = Loadable(lazy(() => import('views/pages/authentication/authentication3/Login3')));
@@ -15,26 +15,26 @@ const AuthForgotPassword = Loadable(lazy(() => import('views/pages/authenticatio
 
 const LoginRoutes = {
     path: '/',
-    element: (
-        <NavMotion>
-            <GuestGuard>
-                <MinimalLayout />
-            </GuestGuard>
-        </NavMotion>
-    ),
+    // element: (
+    //     <NavMotion>
+    //         <GuestGuard>
+    //             <MinimalLayout />
+    //         </GuestGuard>
+    //     </NavMotion>
+    // ),
     children: [
-        {
-            path: '/login',
-            element: <AuthLogin />
-        },
-        {
-            path: '/register',
-            element: <AuthRegister />
-        },
-        {
-            path: '/forgot',
-            element: <AuthForgotPassword />
-        }
+        // {
+        //     path: '/login',
+        //     element: <AuthLogin />
+        // },
+        // {
+        //     path: '/register',
+        //     element: <AuthRegister />
+        // },
+        // {
+        //     path: '/forgot',
+        //     element: <AuthForgotPassword />
+        // }
     ]
 };
 
