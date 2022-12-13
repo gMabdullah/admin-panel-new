@@ -3,7 +3,7 @@ import { useLocation, Link, Outlet } from "react-router-dom";
 
 import { Box, Grid, Tab, Tabs } from "@mui/material";
 
-import MainCard from "uiComponent/cards/MainCard";
+import MainCard from "components/cards/MainCard";
 
 function a11yProps(index: number) {
   return {

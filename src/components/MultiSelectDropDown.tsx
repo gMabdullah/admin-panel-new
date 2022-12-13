@@ -4,7 +4,7 @@ import { Checkbox, ListItemText, FormControl, MenuItem } from "@mui/material";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 
-import CustomButton from "uiComponent/CustomButton";
+import CustomButton from "components/CustomButton";
 
 const theme = createTheme({
   typography: {
