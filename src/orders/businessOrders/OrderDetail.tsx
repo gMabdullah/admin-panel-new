@@ -32,15 +32,15 @@ import {
   HighlightOffTwoTone,
 } from "@mui/icons-material";
 
-import { OrderListingSkeleton } from "uiComponent/skeleton/OrderListingSkeleton";
-import Notify from "uiComponent/Notify";
-import MainCard from "uiComponent/cards/MainCard";
-import CustomButton from "uiComponent/CustomButton";
-import GoogleMapFrame from "uiComponent/GoogleMapFrame";
-import ExcelExport from "uiComponent/ExcelExport";
-import TdTextField from "uiComponent/TdTextField";
-import Progress from "uiComponent/Progress";
-import CustomRadioButton from "uiComponent/CustomRadioButton";
+import { OrderListingSkeleton } from "components/skeleton/OrderListingSkeleton";
+import Notify from "components/Notify";
+import MainCard from "components/cards/MainCard";
+import CustomButton from "components/CustomButton";
+import GoogleMapFrame from "components/GoogleMapFrame";
+import ExcelExport from "components/ExcelExport";
+import TdTextField from "components/TdTextField";
+import Progress from "components/Progress";
+import CustomRadioButton from "components/CustomRadioButton";
 
 import {
   AMANAT_BUSINESS_ID,
