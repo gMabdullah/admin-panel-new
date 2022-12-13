@@ -7,7 +7,7 @@ import {
   HighlightOffTwoTone as CloseIcon,
 } from "@mui/icons-material";
 
-import MainCard from "uiComponent/cards/MainCard";
+import MainCard from "components/cards/MainCard";
 
 import SelectOptionSet2 from "../optionSet2/SelectOptionSet2";
 import { OptionSetContext } from "orders/context/OptionSetContext";

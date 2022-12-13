@@ -2,7 +2,7 @@ import { useContext, useState, SyntheticEvent, useEffect } from "react";
 
 import { Typography, Grid, Tab, Tabs } from "@mui/material";
 
-import CustomButton from "uiComponent/CustomButton";
+import CustomButton from "components/CustomButton";
 
 import { getHeaderString, getMinMaxAndRequired } from "../../HelperFunctions";
 import OptionSetLayer2 from "./OptionSetLayer2";
