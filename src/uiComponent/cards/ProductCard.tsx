@@ -6,7 +6,7 @@ import { Button, CardContent, CardMedia, Grid, Rating, Stack, Typography } from 
 
 // project import
 import MainCard from './MainCard';
-import SkeletonProductPlaceholder from 'ui-component/cards/Skeleton/ProductPlaceholder';
+import SkeletonProductPlaceholder from 'uiComponent/cards/Skeleton/ProductPlaceholder';
 import { useDispatch, useSelector } from 'store';
 import { addProduct } from 'store/slices/cart';
 import { openSnackbar } from 'store/slices/snackbar';

@@ -30,9 +30,9 @@ import gfm from 'remark-gfm';
 import Comment from './Comment';
 import MainCard from '../MainCard';
 import useAuth from 'hooks/useAuth';
-import AnimateButton from 'ui-component/extended/AnimateButton';
-import ImageList from 'ui-component/extended/ImageList';
-import Avatar from 'ui-component/extended/Avatar';
+import AnimateButton from 'uiComponent/extended/AnimateButton';
+import ImageList from 'uiComponent/extended/ImageList';
+import Avatar from 'uiComponent/extended/Avatar';
 import { FormInputProps } from 'types';
 import { CommentData, PostProps, Reply } from 'types/user-profile';
 
