@@ -1,15 +1,16 @@
-import SourceAdminId from "./commons";
+// import SourceAdminId from "./Commons";
 
-export interface GlobalSettingsReq extends SourceAdminId {
+interface GlobalSettingsRequest extends SourceAdminId {
   restaurant_id: number;
 }
-export interface GlobalSettingsResp {
+
+interface GlobalSettingsResponse {
   message: string;
-  result: Result;
+  result: GlobalSettingsResponse_Result;
   status: string;
 }
 
-export interface Result {
+interface GlobalSettingsResponse_Result {
   currency: string;
   decimal_places: string;
   delivery_charges: string;
@@ -36,38 +37,38 @@ export interface Result {
   timezone: string;
 }
 
-export interface DeliveryServices {
+interface DeliveryServices {
   service_action: string;
   service_name: string;
   status: string;
 }
 
-export interface ExtraSettings {
+interface ExtraSettings {
   cat_min_max: any[];
 }
 
-export interface LoyaltyModule {
+interface LoyaltyModule {
   campaign: boolean;
   points_difference: number;
   status: number;
   voucher: boolean;
 }
 
-export interface LoyaltyProgram {
+interface LoyaltyProgram {
   campaigns: string;
   status: string;
 }
 
-export interface MarketingModule {
+interface MarketingModule {
   message: string;
   status: string;
 }
 
-export interface PaymentSettings {
+interface PaymentSettings {
   stripe_settings: StripeSettings;
 }
 
-export interface StripeSettings {
+interface StripeSettings {
   account_id: string;
   active: boolean;
   message: string;
@@ -75,22 +76,22 @@ export interface StripeSettings {
   status: number;
 }
 
-export interface Settings {
+interface Settings {
   coupon: Coupon;
   editor: Editor;
   gratuity: Gratuity;
   product: Product;
 }
 
-export interface Coupon {
+interface Coupon {
   override: boolean;
 }
 
-export interface Editor {
+interface Editor {
   enabled: boolean;
 }
 
-export interface Gratuity {
+interface Gratuity {
   delivery: boolean;
   enabled: boolean;
   label: string;
@@ -99,6 +100,6 @@ export interface Gratuity {
   value: number;
 }
 
-export interface Product {
+interface Product {
   show_out_of_stock_price: boolean;
 }

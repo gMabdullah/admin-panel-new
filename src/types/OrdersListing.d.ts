@@ -1,40 +1,40 @@
-import SourceAdminId from "./commons";
+// import SourceAdminId from "./Commons";
 
-export interface OrderListingReq extends SourceAdminId {
-  attributes?: number;
-  bid?: number;
+interface OrderListingRequest extends SourceAdminId {
+  attributes?: number | string;
+  bid?: number | string[] | string;
   canada_post?: number | string;
-  check: number | string;
-  city?: string;
+  check: number;
+  city?: string | string[];
   eatout_id: number;
-  from_date?: Date | string;
+  from_date?: Date | string | null;
   key?: string;
-  limit: number | string;
-  offset: number;
-  order_type?: number | string;
-  pre_auth?: number | string;
-  return_statuses: number | string;
-  status?: string;
-  to_date?: Date | string;
-  type: string;
+  limit?: number | string;
+  offset?: number;
+  order_type?: number | string | string[];
+  pre_auth?: string | number;
+  return_statuses?: number;
+  status?: string | string[];
+  to_date?: Date | string | null;
+  type?: string;
 }
 
-export interface OrderListingResp {
-  menu_type_categories: Array<MenuTypeCategory[]>;
+interface OrderListingResponse {
+  menu_type_categories: Array<OrderListingResponse_MenuTypeCategory[]>;
   status: string;
   message: string;
-  result: Result[];
+  result: OrderListingResponse_Result[] | [];
   apply: string;
   url: string;
   count: number;
 }
 
-export interface MenuTypeCategory {
+interface OrderListingResponse_MenuTypeCategory {
   category_id: string;
   category_name: string;
 }
 
-export interface Result {
+interface OrderListingResponse_Result {
   address: string;
   canada_post: string;
   cash_received: string;
@@ -69,7 +69,7 @@ export interface Result {
   mobile_number: string;
   name: string;
   note: string;
-  order_detail: OrderDetail[];
+  order_detail: OrderListingResponse_OrderDetail[];
   order_id: string;
   order_type: string;
   order_type_flag: string;
@@ -81,7 +81,7 @@ export interface Result {
   pos_id: string;
   postal_code: string;
   pre_auth: string;
-  pre_auth_trans: PreAuthTran[];
+  pre_auth_trans: OrderListingResponse_PreAuthTran[];
   receipt_no: string;
   sales_date: Date;
   service_charges: string;
@@ -104,22 +104,23 @@ export interface Result {
   user_longitude: string;
 }
 
-export interface OrderDetail {
+// writing string | number because getting string order object and getting number from product item object
+interface OrderListingResponse_OrderDetail {
   attributes?: any[];
   brand_id: string;
   brand_name?: string;
   category_id: string;
   comment: string;
-  coupon_discount: string;
-  coupon_discount_value: string;
+  coupon_discount: string | number;
+  coupon_discount_value: string | number;
   discount: string;
   item_cat_id: string;
   item_id: string;
-  item_level_discount_value: string;
-  item_level_grand_total: string;
-  item_level_tax_value: string;
+  item_level_discount_value: string | number;
+  item_level_grand_total: string | number;
+  item_level_tax_value: string | number;
   item_name: string;
-  options: string;
+  options: any;
   order_detail_id: string;
   price: string;
   product_code: string;
@@ -127,17 +128,21 @@ export interface OrderDetail {
   status: string;
   status_comment: string;
   tax: string;
-  total: string;
-  type: string;
-  weight_unit: WeightUnit;
+  total: string | number;
+  type: string | number;
+  weight_unit: string;
   weight_value: string;
+  weight?: number;
+  label?: string;
+  item_brand?: OrderListingResponse_ItemBrand[];
 }
 
-export enum WeightUnit {
-  Kg = "Kg",
+interface OrderListingResponse_ItemBrand {
+  brand_id: string;
+  brand_name: string;
 }
 
-export interface PreAuthTran {
+interface OrderListingResponse_PreAuthTran {
   orderid: string;
   pre_auth_id: string;
   trans_amount: string;
