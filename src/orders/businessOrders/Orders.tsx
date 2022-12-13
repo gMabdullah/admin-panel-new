@@ -13,16 +13,16 @@ import {
 import { Box, Chip, Typography, Grid, Stack } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material/Select";
 
-import MainCard from "uiComponent/cards/MainCard";
-import CustomButton from "uiComponent/CustomButton";
-import ExcelExport from "uiComponent/ExcelExport";
-import TdTextField from "uiComponent/TdTextField";
-import Progress from "uiComponent/Progress";
+import MainCard from "components/cards/MainCard";
+import CustomButton from "components/CustomButton";
+import ExcelExport from "components/ExcelExport";
+import TdTextField from "components/TdTextField";
+import Progress from "components/Progress";
 import MultiSelectDropDown, {
   DropDownListType,
-} from "uiComponent/MultiSelectDropDown";
-import { OrderListingSkeleton } from "uiComponent/skeleton/OrderListingSkeleton";
-import { OrderListingNoRowsOverlay } from "uiComponent/skeleton/OrderListingNoRowsOverlay";
+} from "components/MultiSelectDropDown";
+import { OrderListingSkeleton } from "components/skeleton/OrderListingSkeleton";
+import { OrderListingNoRowsOverlay } from "components/skeleton/OrderListingNoRowsOverlay";
 
 import { OptionSetProvider } from "orders/context/OptionSetContext";
 import { IQBAL_BUSINESS_ID } from "constants/BusinessIds";
