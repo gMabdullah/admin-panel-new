@@ -2,10 +2,10 @@
 import Routes from 'routes';
 
 // project imports
-import Locales from 'uiComponent/Locales';
+import Locales from 'components/Locales';
 import NavigationScroll from 'layout/NavigationScroll';
-import RTLLayout from 'uiComponent/RTLLayout';
-import Snackbar from 'uiComponent/extended/Snackbar';
+import RTLLayout from 'components/RTLLayout';
+import Snackbar from 'components/extended/Snackbar';
 import ThemeCustomization from 'themes';
 
 // auth provider
