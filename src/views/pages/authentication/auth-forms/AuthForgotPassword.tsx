@@ -9,7 +9,7 @@ import * as Yup from 'yup';
 import { Formik } from 'formik';
 
 // project imports
-import AnimateButton from 'uiComponent/extended/AnimateButton';
+import AnimateButton from 'components/extended/AnimateButton';
 import useAuth from 'hooks/useAuth';
 import useScriptRef from 'hooks/useScriptRef';
 import { openSnackbar } from 'store/slices/snackbar';

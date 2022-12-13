@@ -9,7 +9,7 @@ import AuthWrapper1 from '../AuthWrapper1';
 import AuthCardWrapper from '../AuthCardWrapper';
 import Logo from 'assets/Logo';
 import AuthForgotPassword from '../auth-forms/AuthForgotPassword';
-import AuthFooter from 'uiComponent/cards/AuthFooter';
+import AuthFooter from 'components/cards/AuthFooter';
 import useAuth from 'hooks/useAuth';
 
 // ============================|| AUTH3 - FORGOT PASSWORD ||============================ //

@@ -6,7 +6,7 @@ import { Button, Card, CardContent, CardMedia, Grid, Typography } from '@mui/mat
 
 // project imports
 import { DASHBOARD_PATH } from 'config';
-import AnimateButton from 'uiComponent/extended/AnimateButton';
+import AnimateButton from 'components/extended/AnimateButton';
 import { gridSpacing } from 'store/constant';
 
 // assets

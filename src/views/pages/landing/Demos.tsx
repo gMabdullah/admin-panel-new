@@ -5,7 +5,7 @@ import { Button, ButtonBase, Container, Grid, Typography } from '@mui/material';
 
 // project imports
 import FadeInWhenVisible from './Animation';
-import AnimateButton from 'uiComponent/extended/AnimateButton';
+import AnimateButton from 'components/extended/AnimateButton';
 import { gridSpacing } from 'store/constant';
 
 // assets

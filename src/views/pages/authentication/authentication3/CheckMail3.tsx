@@ -8,8 +8,8 @@ import { Button, Grid, Typography, useMediaQuery } from '@mui/material';
 import AuthWrapper1 from '../AuthWrapper1';
 import AuthCardWrapper from '../AuthCardWrapper';
 import Logo from 'assets/Logo';
-import AnimateButton from 'uiComponent/extended/AnimateButton';
-import AuthFooter from 'uiComponent/cards/AuthFooter';
+import AnimateButton from 'components/extended/AnimateButton';
+import AuthFooter from 'components/cards/AuthFooter';
 
 // assets
 

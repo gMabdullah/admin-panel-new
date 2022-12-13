@@ -30,7 +30,7 @@ import useAuth from 'hooks/useAuth';
 import useConfig from 'hooks/useConfig';
 import useScriptRef from 'hooks/useScriptRef';
 import Google from 'assets/images/icons/social-google.svg';
-import AnimateButton from 'uiComponent/extended/AnimateButton';
+import AnimateButton from 'components/extended/AnimateButton';
 import { strengthColor, strengthIndicator } from 'utils/password-strength';
 
 // assets

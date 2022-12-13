@@ -3,7 +3,7 @@ import { styled } from '@mui/material/styles';
 
 // project imports
 import ContactCard from './ContactCard';
-import AppBar from 'uiComponent/extended/AppBar';
+import AppBar from 'components/extended/AppBar';
 
 // assets
 import headerBackground from 'assets/images/landing/header-bg.jpg';

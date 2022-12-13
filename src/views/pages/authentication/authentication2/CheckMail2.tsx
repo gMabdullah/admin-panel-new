@@ -8,10 +8,10 @@ import { Box, Button, Grid, Stack, Typography, useMediaQuery } from '@mui/materi
 import AuthWrapper2 from '../AuthWrapper2';
 import AuthCardWrapper from '../AuthCardWrapper';
 import Logo from 'assets/Logo';
-import AnimateButton from 'uiComponent/extended/AnimateButton';
-import BackgroundPattern2 from 'uiComponent/cards/BackgroundPattern2';
-import AuthFooter from 'uiComponent/cards/AuthFooter';
-import AuthSlider from 'uiComponent/cards/AuthSlider';
+import AnimateButton from 'components/extended/AnimateButton';
+import BackgroundPattern2 from 'components/cards/BackgroundPattern2';
+import AuthFooter from 'components/cards/AuthFooter';
+import AuthSlider from 'components/cards/AuthSlider';
 import { AuthSliderProps } from 'types';
 
 // assets

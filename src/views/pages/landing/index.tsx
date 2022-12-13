@@ -10,7 +10,7 @@ import KeyFeature from './KeyFeature';
 import Subscribe from './Subscribe';
 import Footer from './Footer';
 import Customization from 'layout/customization';
-import AppBar from 'uiComponent/extended/AppBar';
+import AppBar from 'components/extended/AppBar';
 
 const HeaderWrapper = styled('div')(({ theme }) => ({
     paddingTop: 30,

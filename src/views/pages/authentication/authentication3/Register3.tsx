@@ -9,7 +9,7 @@ import AuthWrapper1 from '../AuthWrapper1';
 import AuthCardWrapper from '../AuthCardWrapper';
 import Logo from 'assets/Logo';
 import AuthRegister from '../auth-forms/AuthRegister';
-import AuthFooter from 'uiComponent/cards/AuthFooter';
+import AuthFooter from 'components/cards/AuthFooter';
 import useAuth from 'hooks/useAuth';
 
 // assets

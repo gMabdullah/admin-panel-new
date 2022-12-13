@@ -8,9 +8,9 @@ import { Button, Grid, Stack, Typography, useMediaQuery } from '@mui/material';
 import AuthWrapper1 from '../AuthWrapper1';
 import AuthCardWrapper from '../AuthCardWrapper';
 import Logo from 'assets/Logo';
-import AnimateButton from 'uiComponent/extended/AnimateButton';
-import BackgroundPattern1 from 'uiComponent/cards/BackgroundPattern1';
-import AuthSlider from 'uiComponent/cards/AuthSlider';
+import AnimateButton from 'components/extended/AnimateButton';
+import BackgroundPattern1 from 'components/cards/BackgroundPattern1';
+import AuthSlider from 'components/cards/AuthSlider';
 import { AuthSliderProps } from 'types';
 
 // assets

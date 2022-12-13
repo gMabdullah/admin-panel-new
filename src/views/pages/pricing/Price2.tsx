@@ -6,7 +6,7 @@ import { Box, Button, ButtonGroup, Card, CardContent, Grid, Stack, Typography } 
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
 // project imports
-import MainCard from 'uiComponent/cards/MainCard';
+import MainCard from 'components/cards/MainCard';
 import { gridSpacing } from 'store/constant';
 
 // assets
