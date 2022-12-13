@@ -8,7 +8,7 @@ import { LOGIN, LOGOUT } from 'store/actions';
 import accountReducer from 'store/accountReducer';
 
 // project imports
-import Loader from 'uiComponent/Loader';
+import Loader from 'components/Loader';
 import { AWS_API } from 'config';
 import { AWSCognitoContextType, InitialLoginContextProps } from 'types/auth';
 
