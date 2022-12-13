@@ -5,7 +5,7 @@ import { useDispatch as useAppDispatch, useSelector as useAppSelector, TypedUseS
 import { persistStore } from 'redux-persist';
 
 // project imports
-import rootReducer from './reducer';
+import rootReducer from './Reducer';
 
 // ==============================|| REDUX - MAIN STORE ||============================== //
 
