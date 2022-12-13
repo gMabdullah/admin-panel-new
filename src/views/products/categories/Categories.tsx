@@ -2,13 +2,13 @@ import React from 'react'
 
 import { SelectChangeEvent } from '@mui/material/Select'
 import { Typography, Grid } from '@mui/material'
-import SearchField from 'uiComponent/SearchField'
-import CustomButton from 'uiComponent/CustomButton'
+import SearchField from 'components/SearchField'
+import CustomButton from 'components/CustomButton'
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined'
 import AddTwoToneIcon from '@mui/icons-material/AddTwoTone'
-import MultiSelectDropDown from 'uiComponent/MultiSelectDropDown'
+import MultiSelectDropDown from 'components/MultiSelectDropDown'
 import { useTheme } from '@mui/material/styles'
-import MainCard from 'uiComponent/cards/MainCard'
+import MainCard from 'components/cards/MainCard'
 
 // dropdown data
 const branches = [

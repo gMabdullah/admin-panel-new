@@ -3,10 +3,10 @@ import React from "react";
 import { Typography, Grid } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material/Select";
 
-import SearchField from "uiComponent/SearchField";
-import CustomButton from "uiComponent/CustomButton";
+import SearchField from "components/SearchField";
+import CustomButton from "components/CustomButton";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
-import MultiSelectDropDown from "uiComponent/MultiSelectDropDown";
+import MultiSelectDropDown from "components/MultiSelectDropDown";
 
 // dropdown data
 

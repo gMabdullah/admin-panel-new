@@ -3,7 +3,7 @@ import React from "react";
 import { Typography, Grid } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material/Select";
 
-import MultiSelectDropDown from "uiComponent/MultiSelectDropDown";
+import MultiSelectDropDown from "components/MultiSelectDropDown";
 
 // dropdown data
 const branches = [
