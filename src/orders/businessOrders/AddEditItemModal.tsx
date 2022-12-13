@@ -16,11 +16,11 @@ import {
   ArrowBackOutlined,
 } from "@mui/icons-material";
 
-import MainCard from "uiComponent/cards/MainCard";
-import TdTextField from "uiComponent/TdTextField";
-import CustomButton from "uiComponent/CustomButton";
-import Progress from "uiComponent/Progress";
-import Notify from "uiComponent/Notify";
+import MainCard from "components/cards/MainCard";
+import TdTextField from "components/TdTextField";
+import CustomButton from "components/CustomButton";
+import Progress from "components/Progress";
+import Notify from "components/Notify";
 
 import { OptionSetContext } from "orders/context/OptionSetContext";
 

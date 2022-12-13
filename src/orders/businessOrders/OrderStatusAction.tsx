@@ -12,11 +12,11 @@ import {
   TimelineItem,
 } from "@mui/lab";
 
-import Progress from "uiComponent/Progress";
-import CustomButton from "uiComponent/CustomButton";
-import MainCard from "uiComponent/cards/MainCard";
-import TdTextField from "uiComponent/TdTextField";
-import Notify from "uiComponent/Notify";
+import Progress from "components/Progress";
+import CustomButton from "components/CustomButton";
+import MainCard from "components/cards/MainCard";
+import TdTextField from "components/TdTextField";
+import Notify from "components/Notify";
 
 import { convertMinutesInToHours } from "orders/HelperFunctions";
 import { OptionSetContext } from "orders/context/OptionSetContext";
