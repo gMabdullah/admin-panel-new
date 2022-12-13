@@ -9,7 +9,7 @@ import { LOGIN, LOGOUT } from 'store/actions';
 import accountReducer from 'store/accountReducer';
 
 // project imports
-import Loader from 'ui-component/Loader';
+import Loader from 'uiComponent/Loader';
 import axios from 'utils/axios';
 
 // types
