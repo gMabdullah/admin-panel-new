@@ -5,7 +5,7 @@ import { Stack, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import LibraryBooksTwoToneIcon from "@mui/icons-material/LibraryBooksTwoTone";
 
-import CustomButton from "uiComponent/CustomButton";
+import CustomButton from "components/CustomButton";
 
 import { AnyObject } from "immer/dist/internal";
 
