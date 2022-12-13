@@ -2,9 +2,9 @@ import React, { useState } from "react";
 
 import { Grid, Typography, Card, Checkbox, Paper } from "@mui/material";
 
-import CustomButton from "uiComponent/CustomButton";
-import TdTextField from "uiComponent/TdTextField";
-import Notify from "uiComponent/Notify";
+import CustomButton from "components/CustomButton";
+import TdTextField from "components/TdTextField";
+import Notify from "components/Notify";
 import Logo from "assets/Logo";
 import { useNavigate } from "react-router-dom";
 
