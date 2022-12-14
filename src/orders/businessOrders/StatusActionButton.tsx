@@ -45,7 +45,7 @@ const StatusActionButton = ({
 
   //======================================= API Calls & Handlers =======================================//
 
-  const confirmPaymentPayload = (item: OrderDetailTypes) => {
+  const preAuthPaymentAPIPayload = (item: OrderDetailTypes) => {
     const formData = new FormData();
     formData.append("business_id", `${item["business_id"]}`);
     IQBAL_BUSINESS_ID == eatout_id &&
@@ -61,7 +61,7 @@ const StatusActionButton = ({
   const status200Url = `${PRE_AUTH_CONFIRM_PAYMENT}/stripe_subaccount/capture_payment`;
 
   // Pre-auth - Global Settings payment status 200
-  const [{}, refetch] = useAxios(
+  const [{}, preAuthPaymentAPICall] = useAxios(
     {
       url: IQBAL_BUSINESS_ID == eatout_id ? iqbalsUrl : status200Url,
       method: "post",
@@ -112,8 +112,8 @@ const StatusActionButton = ({
 
         // tezmart
         if (paymentSettings.preauth && paymentSettings.status === 200) {
-          result = await refetch({
-            data: confirmPaymentPayload({
+          result = await preAuthPaymentAPICall({
+            data: preAuthPaymentAPIPayload({
               business_id: eatout_id,
               amount: grand_total,
               order_id: selectedOrderContext.pre_auth_trans[0]?.orderid,
@@ -124,8 +124,8 @@ const StatusActionButton = ({
           });
         } else if (IQBAL_BUSINESS_ID == eatout_id) {
           // iqbal
-          result = await refetch({
-            data: confirmPaymentPayload({
+          result = await preAuthPaymentAPICall({
+            data: preAuthPaymentAPIPayload({
               business_id: eatout_id,
               transaction_id: selectedOrderContext.pre_auth_trans[0]?.trans_id,
               amount: grand_total,

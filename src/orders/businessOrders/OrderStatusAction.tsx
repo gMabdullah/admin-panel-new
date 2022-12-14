@@ -44,14 +44,13 @@ const useStyles = makeStyles(() => ({
   },
 
   TimelineItem: {
-    //  padding:"16px 0px !important",
     "&::before": {
-      //content: '"unset"',
       padding: "0px",
       postion: "unset",
       flex: "unset", // "''" will also work.
     },
   },
+
   TimelineDot: {
     background: " #fff",
     display: "block",
@@ -61,9 +60,9 @@ const useStyles = makeStyles(() => ({
     margin: "unset !important",
     padding: "unset !important",
     transform: "translate(-50%, -50%)",
-
     border: "4px solid #DB154D",
   },
+
   TimelineDotInActive: {
     background: " #fff",
     display: "block",
@@ -73,7 +72,6 @@ const useStyles = makeStyles(() => ({
     margin: "unset !important",
     padding: "unset !important",
     transform: "translate(-50%, -50%)",
-
     border: "4px solid #757575",
   },
 
@@ -83,9 +81,6 @@ const useStyles = makeStyles(() => ({
     marginTop: "-11px",
     marginBottom: "16px",
     paddingRight: "unset !important",
-  },
-  TimeLineSperater: {
-    //  marginTop:"15px !important"
   },
 }));
 
@@ -144,7 +139,7 @@ const OrderStatusAction = ({
 
   const [
     { data: notifyResponse, loading: getNotifyLoader, error: getNotifyError },
-    refetching,
+    orderStatusNotificationAPICall,
   ] = useAxios(
     {
       url: `/send_in_process_email`,
@@ -178,7 +173,7 @@ const OrderStatusAction = ({
   // Get Order Timeline
   const [
     { data: getOrderTimeline, loading: loadingTimeline, error: timelineError },
-    refetch,
+    timelineAPICall,
   ] = useAxios({
     url: `/get_order_timeline`,
     method: "post",
@@ -191,7 +186,7 @@ const OrderStatusAction = ({
     }),
   });
 
-  const NotifyPayload = (item: OrderStatusNotifyRequest) => {
+  const orderStatusNotificationPayload = (item: OrderStatusNotifyRequest) => {
     const formData = new FormData();
 
     formData.append("eatout_id", `${item["eatout_id"]}`);
@@ -205,8 +200,8 @@ const OrderStatusAction = ({
   };
 
   const sendEmailNotification = () => {
-    refetching({
-      data: NotifyPayload({
+    orderStatusNotificationAPICall({
+      data: orderStatusNotificationPayload({
         eatout_id,
         order_id,
         admin_id: user_id,
@@ -218,7 +213,7 @@ const OrderStatusAction = ({
   };
 
   const refetchTimelineCallback = () => {
-    refetch({
+    timelineAPICall({
       data: timelinePayload({
         eatout_id,
         type: "order",
@@ -230,7 +225,7 @@ const OrderStatusAction = ({
   };
 
   useEffect(() => {
-    refetch({
+    timelineAPICall({
       data: timelinePayload({
         eatout_id,
         type: "order",
@@ -249,7 +244,7 @@ const OrderStatusAction = ({
       const cancelComment =
         timeline &&
         timeline.filter(
-          (status: OrderTimelineResponse_Result_Timeline) =>
+          (status: OrderTimelineResponseResultTimeline) =>
             status.click === "0" && status.status === "Cancel" && status
         );
       setCancelReason(cancelComment[0]?.comment);
@@ -355,10 +350,7 @@ const OrderStatusAction = ({
                   className={classes.TimelineItem}
                   key={timelineIndex}
                 >
-                  <TimelineSeparator
-                    sx={{ display: "flex", direction: "row" }}
-                    className={classes.TimeLineSperater}
-                  >
+                  <TimelineSeparator sx={{ display: "flex", direction: "row" }}>
                     <TimelineDot
                       color="secondary"
                       className={

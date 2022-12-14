@@ -34,8 +34,8 @@ configure({ axios });
 interface AddEditItemProps {
   setAddEditItemModal: React.Dispatch<React.SetStateAction<boolean>>;
   openAddEditItemModal: boolean;
-  getNewItemCallback: (item: ProductResponse_Item) => void;
-  getEditItemCallback: (item: OrderListingResponse_OrderDetail) => void;
+  getNewItemCallback: (item: ProductResponseItem) => void;
+  getEditItemCallback: (item: OrderListingResponseOrderDetail) => void;
   editItemFlag: boolean;
 }
 
@@ -418,11 +418,7 @@ const AddEditItemModal = ({
           }
         >
           {isItemSelected ? (
-            isOptionSetLayer && (
-              <SelectOptionSet
-              //  editAbleItemProp={editAbleItemProp}
-              />
-            )
+            isOptionSetLayer && <SelectOptionSet />
           ) : (
             <>
               {!editItemFlag && (
