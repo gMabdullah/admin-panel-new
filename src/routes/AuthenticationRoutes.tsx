@@ -21,7 +21,6 @@ const AuthResetPassword2 = Loadable(lazy(() => import('views/pages/authenticatio
 const AuthCodeVerification2 = Loadable(lazy(() => import('views/pages/authentication/authentication2/CodeVerification2')));
 
 // login option 3 routing
-//const AuthLogin3 = Loadable(lazy(() => import('views/pages/authentication/authentication3/Login3')));
 const AuthRegister3 = Loadable(lazy(() => import('views/pages/authentication/authentication3/Register3')));
 const AuthForgotPassword3 = Loadable(lazy(() => import('views/pages/authentication/authentication3/ForgotPassword3')));
 const AuthCheckMail3 = Loadable(lazy(() => import('views/pages/authentication/authentication3/CheckMail3')));
@@ -95,11 +94,6 @@ const AuthenticationRoutes = {
             path: '/pages/code-verification/code-verification2',
             element: <AuthCodeVerification2 />
         },
-
-        // {
-        //     path: '/pages/login/login3',
-        //     element: <AuthLogin3 />
-        // },
         {
             path: '/pages/register/register3',
             element: <AuthRegister3 />
