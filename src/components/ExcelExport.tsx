@@ -5,7 +5,7 @@ import { Stack, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import LibraryBooksTwoToneIcon from "@mui/icons-material/LibraryBooksTwoTone";
 
-import CustomButton from "uiComponent/CustomButton";
+import CustomButton from "components/CustomButton";
 
 import { AnyObject } from "immer/dist/internal";
 
@@ -31,8 +31,8 @@ type TableData = {
 
 type ExcelExportPropsType = {
   tableData: TableData[];
-  orderListData?: OrderListingResponse_Result[];
-  orderDetailData?: OrderListingResponse_OrderDetail[];
+  orderListData?: OrderListingResponseResult[];
+  orderDetailData?: OrderListingResponseOrderDetail[];
   OrderDetailStatic?: any;
   exportType: string;
 };
@@ -185,7 +185,7 @@ const ExcelExport = ({
           let optionSetArr = "";
           OrderDetailStatic &&
             OrderDetailStatic.order_detail.map(
-              (item: OrderListingResponse_OrderDetail) => {
+              (item: OrderListingResponseOrderDetail) => {
                 let row = item;
                 let textToShow = "";
                 let options: AnyObject = {};
