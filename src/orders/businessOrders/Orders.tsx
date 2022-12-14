@@ -781,18 +781,7 @@ const Orders = () => {
                   alignItems: "center",
                 }}
               >
-                <Box
-                  sx={{
-                    width: "100%",
-                    maxWidth: "108px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Typography variant="h3">Orders</Typography>
-                  <Box>{getOrderLoader && <Progress type="circle" />}</Box>
-                </Box>
+                <Typography variant="h3">Orders</Typography>
 
                 <TdTextField
                   type="search"
@@ -801,7 +790,7 @@ const Orders = () => {
                   sx={{
                     width: "260px",
                     height: "40px",
-                    marginLeft: "12px",
+                    marginLeft: "48px",
 
                     "& .MuiOutlinedInput-input": {
                       background: "#F5F5F5",
