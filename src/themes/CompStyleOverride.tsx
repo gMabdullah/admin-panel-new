@@ -25,7 +25,6 @@ export default function componentStyleOverrides(
           fontWeight: 500,
           borderRadius: "4px",
           "&:hover ": {
-            // backgroundColor: theme.palette.secondary,
             boxShadow: "none",
           },
         },
@@ -351,6 +350,19 @@ export default function componentStyleOverrides(
             fontSize: "0.875rem",
             color: theme.palette.grey[600],
             fontWeight: 500,
+          },
+        },
+      },
+    },
+    MuiTimelineItem: {
+      styleOverrides: {
+        root: {
+          "& MuiTimelineItem-root": {
+            "&::before": {
+              flex: "unset",
+              content: "unset",
+              position: "unset",
+            },
           },
         },
       },

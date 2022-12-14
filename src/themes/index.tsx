@@ -7,9 +7,9 @@ import { createTheme, ThemeOptions, ThemeProvider, Theme } from '@mui/material/s
 // project import
 import useConfig from 'hooks/useConfig';
 import Palette from './palette';
-import Typography from './typography';
+import Typography from './Typography';
 
-import componentStyleOverrides from './compStyleOverride';
+import componentStyleOverrides from './CompStyleOverride';
 import customShadows from './shadows';
 
 // types
