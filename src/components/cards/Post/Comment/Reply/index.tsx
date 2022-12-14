@@ -5,7 +5,7 @@ import { useTheme } from '@mui/material/styles';
 import { Box, Button, ButtonBase, Card, Grid, Menu, MenuItem, Stack, Typography } from '@mui/material';
 
 // project imports
-import Avatar from 'ui-component/extended/Avatar';
+import Avatar from 'components/extended/Avatar';
 import { CommentData, UserProfile } from 'types/user-profile';
 
 // assets

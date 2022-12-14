@@ -22,7 +22,7 @@ import {
 } from '@mui/material';
 
 // project imports
-import Logo from 'ui-component/Logo';
+import Logo from 'assets/Logo';
 
 // assets
 import { IconBook, IconCreditCard, IconDashboard, IconHome2 } from '@tabler/icons';

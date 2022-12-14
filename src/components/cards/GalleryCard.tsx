@@ -5,7 +5,7 @@ import { useTheme } from '@mui/material/styles';
 import { ButtonBase, Card, CardContent, CardMedia, Grid, Menu, MenuItem, Typography } from '@mui/material';
 
 // project imports
-import Avatar from 'ui-component/extended/Avatar';
+import Avatar from 'components/extended/Avatar';
 import { gridSpacing } from 'store/constant';
 import { GenericCardProps } from 'types';
 

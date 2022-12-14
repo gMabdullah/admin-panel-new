@@ -19,10 +19,9 @@ interface FormControlProps {
   placeholder?: string;
   textPrimary?: string;
   textSecondary?: string;
-  sx?: object;
 }
 
-const SearchField = ({
+const FormControl = ({
   captionLabel,
   formState,
   iconPrimary,
@@ -30,7 +29,6 @@ const SearchField = ({
   placeholder,
   textPrimary,
   textSecondary,
-  sx,
 }: FormControlProps) => {
   const theme = useTheme();
   const IconPrimary = iconPrimary!;
@@ -46,22 +44,12 @@ const SearchField = ({
   const errorState = formState === "error";
 
   return (
-    <MUIFormControl fullWidth error={errorState} sx={sx}>
-      {/* <InputLabel>{captionLabel}</InputLabel> */}
+    <MUIFormControl fullWidth error={errorState}>
+      <InputLabel>{captionLabel}</InputLabel>
       <OutlinedInput
         placeholder={placeholder}
         type="text"
         label={captionLabel}
-        sx={{
-          background: "#F5F5F5",
-          "& .MuiOutlinedInput-input": {
-            background: "#F5F5F5",
-            padding: "10px 3px !important",
-          },
-          "& .MuiOutlinedInput-notchedOutline": {
-            border: "unset",
-          },
-        }}
         startAdornment={
           <>
             {primaryIcon && (
@@ -96,4 +84,4 @@ const SearchField = ({
   );
 };
 
-export default SearchField;
+export default FormControl;

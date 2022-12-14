@@ -37,6 +37,8 @@ export interface MainCardProps extends KeyedObject {
   className?: string;
   contentClass?: string;
   contentSX?: CardContentProps["sx"];
+  headerSX?: CardHeaderProps["sx"];
+  dividerSX?: CardProps["sx"];
   darkTitle?: boolean;
   sx?: CardProps["sx"];
   secondary?: CardHeaderProps["action"];
@@ -54,6 +56,8 @@ const MainCard = React.forwardRef(
       content = true,
       contentClass = "",
       contentSX = {},
+      headerSX = {},
+      dividerSX = {},
       darkTitle,
       secondary,
       shadow,
@@ -90,11 +94,11 @@ const MainCard = React.forwardRef(
       >
         {/* card header and action */}
         {!darkTitle && title && (
-          <CardHeader sx={headerSX} title={title} action={secondary} />
+          <CardHeader sx={{ ...headerSX }} title={title} action={secondary} />
         )}
         {darkTitle && title && (
           <CardHeader
-            sx={headerSX}
+            sx={{ ...headerSX }}
             title={<Typography variant="h3">{title}</Typography>}
             action={secondary}
           />
@@ -107,6 +111,7 @@ const MainCard = React.forwardRef(
               marginRight: "24px !important",
               marginLeft: "22px !important",
               border: "1px solid #EEEEEE",
+              ...dividerSX,
             }}
           />
         )}
