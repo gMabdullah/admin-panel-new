@@ -134,16 +134,7 @@ const Orders = () => {
   const prevPageState = useRef<number | undefined>();
   const prevPageSizeState = useRef<number | undefined>();
 
-  //======================================= API Calls & Handlers =======================================//
-
-  useEffect(() => {
-    dispatch(
-      setDate({
-        startDate: moment().subtract(48, "hours"),
-        endDate: moment(),
-      })
-    );
-  }, []);
+  //======================================= API Call Payloads =======================================//
 
   const citiesPayload = (cityData: OrdersCityFilterRequest) => {
     const formData = new FormData();
@@ -163,48 +154,7 @@ const Orders = () => {
     return formData;
   };
 
-  const handleSearchChange = async (e: { target: { value: string } }) => {
-    clearTimeout(timeOut);
-
-    let query = e.target.value;
-
-    timeOut = setTimeout(async () => {
-      refetch({
-        data: ordersPayload({
-          eatout_id,
-          type: "Live",
-          return_statuses: 1,
-          attributes: 1,
-          admin_id: user_id,
-          source: "biz",
-          check: 1,
-          key: query,
-        }),
-      });
-    }, 1000);
-  };
-
-  useEffect(() => {
-    last48Hours = false;
-
-    applyDates(
-      refetch({
-        data: ordersPayload({
-          eatout_id,
-          type: "Live",
-          return_statuses: 1,
-          attributes: 1,
-          admin_id: user_id,
-          source: "biz",
-          check: 1,
-          from_date: startDate,
-          to_date: endDate,
-        }),
-      })
-    );
-  }, [startDate, endDate]);
-
-  const ordersPayload = (item: OrderListingRequest) => {
+  const ordersAPIPayload = (item: OrderListingRequest) => {
     const formData = new FormData();
 
     formData.append("eatout_id", eatout_id);
@@ -245,6 +195,8 @@ const Orders = () => {
     return formData;
   };
 
+  //======================================= API Calls =======================================//
+
   const [{ data: globalSetting }] = useAxios({
     url: `/eatout_global_settings?restaurant_id=${eatout_id}&source=biz&admin_id=${user_id}`,
   });
@@ -264,19 +216,20 @@ const Orders = () => {
     }),
   });
 
-  const [{ data: allOrders, loading: getOrderLoader }, refetch] = useAxios({
-    url: `/order_get`,
-    method: "post",
-    data: ordersPayload({
-      eatout_id,
-      type: "Live",
-      return_statuses: 1,
-      attributes: 1,
-      admin_id: user_id,
-      source: "biz",
-      check: 1,
-    }),
-  });
+  const [{ data: allOrders, loading: getOrderLoader }, ordersAPICall] =
+    useAxios({
+      url: `/order_get`,
+      method: "post",
+      data: ordersAPIPayload({
+        eatout_id,
+        type: "Live",
+        return_statuses: 1,
+        attributes: 1,
+        admin_id: user_id,
+        source: "biz",
+        check: 1,
+      }),
+    });
 
   const [{ data: allCities }] = useAxios({
     url: "/order_city_filter",
@@ -287,6 +240,17 @@ const Orders = () => {
       admin_id: user_id,
     }),
   });
+
+  //======================================= useEffect Hooks =======================================//
+
+  useEffect(() => {
+    dispatch(
+      setDate({
+        startDate: moment().subtract(48, "hours"),
+        endDate: moment(),
+      })
+    );
+  }, []);
 
   useEffect(() => {
     if (allOrders) {
@@ -334,10 +298,8 @@ const Orders = () => {
     if (prevOrderDetailModalState.current) return; // return for the very first time when useEffect works as componentDidMount
 
     if (!orderDetailModal) {
-      refetch({
-        url: `${process.env.REACT_APP_BASEURL}/order_get`,
-        method: "post",
-        data: ordersPayload({
+      ordersAPICall({
+        data: ordersAPIPayload({
           eatout_id,
           type: "Live",
           return_statuses: 1,
@@ -356,10 +318,8 @@ const Orders = () => {
       page * pageSize === orders.length
     ) {
       // to stop the api call if the next page orders already exists in orders array (when moving back & forth on pages)
-      refetch({
-        url: `${process.env.REACT_APP_BASEURL}/order_get`,
-        method: "post",
-        data: ordersPayload({
+      ordersAPICall({
+        data: ordersAPIPayload({
           eatout_id,
           type: "Live",
           return_statuses: 1,
@@ -374,10 +334,8 @@ const Orders = () => {
 
   useEffect(() => {
     if (prevPageSizeState.current !== undefined) {
-      refetch({
-        url: `${process.env.REACT_APP_BASEURL}/order_get`,
-        method: "post",
-        data: ordersPayload({
+      ordersAPICall({
+        data: ordersAPIPayload({
           eatout_id,
           type: "Live",
           return_statuses: 1,
@@ -445,10 +403,8 @@ const Orders = () => {
   useEffect(() => {
     // api call to update the orders list according to filters
     if (applyFilters) {
-      refetch({
-        url: `${process.env.REACT_APP_BASEURL}/order_get`,
-        method: "post",
-        data: ordersPayload({
+      ordersAPICall({
+        data: ordersAPIPayload({
           eatout_id,
           type: "Live",
           return_statuses: 1,
@@ -460,6 +416,49 @@ const Orders = () => {
       });
     }
   }, [applyFilters]);
+
+  useEffect(() => {
+    last48Hours = false;
+
+    applyDates(
+      ordersAPICall({
+        data: ordersAPIPayload({
+          eatout_id,
+          type: "Live",
+          return_statuses: 1,
+          attributes: 1,
+          admin_id: user_id,
+          source: "biz",
+          check: 1,
+          from_date: startDate,
+          to_date: endDate,
+        }),
+      })
+    );
+  }, [startDate, endDate]);
+
+  //======================================= Handlers Functions =======================================//
+
+  const handleSearchChange = async (e: { target: { value: string } }) => {
+    clearTimeout(timeOut);
+
+    let query = e.target.value;
+
+    timeOut = setTimeout(async () => {
+      ordersAPICall({
+        data: ordersAPIPayload({
+          eatout_id,
+          type: "Live",
+          return_statuses: 1,
+          attributes: 1,
+          admin_id: user_id,
+          source: "biz",
+          check: 1,
+          key: query,
+        }),
+      });
+    }, 1000);
+  };
 
   const handleBranchChange = (event: SelectChangeEvent<typeof branchName>) => {
     const {
