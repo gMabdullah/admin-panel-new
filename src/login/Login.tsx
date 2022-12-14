@@ -57,8 +57,8 @@ const Login = () => {
     return formData;
   };
 
-  // login API call
-  const [{}, refetch] = useAxios(
+  // login API
+  const [{}, loginAPICall] = useAxios(
     {
       url: "/eatout_user_login",
       method: "post",
@@ -96,7 +96,7 @@ const Login = () => {
     // login API call
     const {
       data: { status, result, message },
-    } = await refetch({ data: loginAPIPayload() });
+    } = await loginAPICall({ data: loginAPIPayload() });
 
     if (status === "1") {
       localStorage.setItem("businessInfo", JSON.stringify(result[7]));
@@ -124,6 +124,7 @@ const Login = () => {
               item
               xs={6}
               sx={{
+                position: "relative",
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
@@ -241,6 +242,31 @@ const Login = () => {
                     Sign in
                   </CustomButton>
                 </Grid>
+              </Grid>
+              <Grid
+                item
+                xs={12}
+                sx={{
+                  position: "absolute",
+                  bottom: "0px",
+                  width: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  mb: "32px",
+                }}
+              >
+                <Typography
+                  sx={{
+                    fontFamily: "Roboto",
+                    fontStyle: " normal",
+                    fontWeight: 400,
+                    fontSize: " 14px",
+                    color: "#757575",
+                  }}
+                >
+                  Powered by tossdown.com
+                </Typography>
               </Grid>
             </Grid>
             <Grid item xs={6}>
