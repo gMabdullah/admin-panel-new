@@ -152,11 +152,9 @@ const OrderDetail = ({
   const [rowSkeletonLoader, setRowSkeletonLoader] = useState(false);
 
   const [orderFromAPI, setOrderFromAPI] = useState<
-    OrderListingResponse_Result[]
+    OrderListingResponseResult[]
   >([]);
-  // const [editAbleItem, setEditAbleItem] = useState<
-  //   OrderListingResponse_Result["order_detail"]
-  // >([]);
+
   const [openAddEditItemModal, setAddEditItemModal] = useState<boolean>(false);
 
   const [editItemFlag, setEditItemFlag] = useState<boolean>(false);
@@ -315,7 +313,7 @@ const OrderDetail = ({
   );
 
   // Delivery charges
-  const orderDeliveryAreasPayload = (item: OrderDeliveryAreasRequest) => {
+  const orderDeliveryChargesAPIPayload = (item: OrderDeliveryAreasRequest) => {
     const formData = new FormData();
 
     formData.append("eatout_id", `${eatout_id}`);
@@ -329,11 +327,11 @@ const OrderDetail = ({
     return formData;
   };
 
-  const [{ data: canadaPostSetting }, refetch] = useAxios(
+  const [{ data: canadaPostSetting }, orderDeliveryChargesAPICall] = useAxios(
     {
       url: "/get_order_delivery_areas",
       method: "post",
-      data: orderDeliveryAreasPayload({
+      data: orderDeliveryChargesAPIPayload({
         eatout_id,
         lat: selectedOrderContext.user_latitude,
         lng: selectedOrderContext.user_longitude,
@@ -357,7 +355,7 @@ const OrderDetail = ({
       const { result } = canadaPostSetting.canada_post_settings;
       const canadaPostOptions =
         result &&
-        result.map((option: CanadaPostSettings_Result) => ({
+        result.map((option: CanadaPostSettingsResult) => ({
           label: `${option.name} (${option.price} CAD)`,
           value: option.price,
         }));
@@ -376,8 +374,8 @@ const OrderDetail = ({
 
       setCustomerDetailLoader(true);
 
-      refetch({
-        data: orderDeliveryAreasPayload({
+      orderDeliveryChargesAPICall({
+        data: orderDeliveryChargesAPIPayload({
           eatout_id,
           lat: user_latitude,
           lng: user_longitude,
@@ -504,17 +502,10 @@ const OrderDetail = ({
   const closeNotify = () => setNotify(false);
 
   const linearLoader = () => {
-    // if (orderFromAPI.length === 0) {
-    //   // loader for the first time when we have no orders
-    //   return <OrderListingSkeleton />;
-    // }
-
     return <Progress type="linear" />;
   };
 
-  const getEditItemCallback = (
-    editedItem: OrderListingResponse_OrderDetail
-  ) => {
+  const getEditItemCallback = (editedItem: OrderListingResponseOrderDetail) => {
     let selectedOrder = orderFromAPI;
 
     const editedOrderDetail = selectedOrder[0].order_detail.map((item) =>
@@ -530,7 +521,7 @@ const OrderDetail = ({
   };
 
   // getting new item in order
-  const getNewItemCallback = (item: ProductResponse_Item) => {
+  const getNewItemCallback = (item: ProductResponseItem) => {
     if (checkItemExistence(item)) {
       setNotifyMessage("Item already exists with this option set");
       setNotifyType("error");
@@ -557,7 +548,8 @@ const OrderDetail = ({
       objectToAppendInOrderDetail.options = item.options;
       objectToAppendInOrderDetail.brand_id = item.item_brand[0].brand_id;
       objectToAppendInOrderDetail.label = item.label;
-      // handling preauth for biz delivery calculations
+
+      // handling pre-auth for biz delivery calculations
       if (orderFromAPI[0].pre_auth == "1") {
         if (typeof item.calculated_weight === "undefined")
           objectToAppendInOrderDetail.weight = item.weight_value
@@ -592,7 +584,7 @@ const OrderDetail = ({
     }
   };
 
-  const checkItemExistence = (newItem: ProductResponse_Item) => {
+  const checkItemExistence = (newItem: ProductResponseItem) => {
     return orderFromAPI[0].order_detail.some(
       (orderItem) => orderItem.item_id === newItem.menu_item_id
     );
@@ -713,7 +705,8 @@ const OrderDetail = ({
         }
         item.option = formatOptionSet(item);
         let makeAKey = `${item.slug}${optionSetName}`;
-        // make session object with menuItemIdOptionNameSlug keyswith their respective values
+
+        // make session object with menuItemIdOptionNameSlug keys with their respective values
         itemsSessionObj[makeAKey] = item;
       });
     }
@@ -1790,10 +1783,7 @@ const OrderDetail = ({
                             classes.pdf_print_user_phone_location_IconColor
                           }
                         />
-                        <Typography
-                          variant={"subtitle1"}
-                          // sx={{ maxWidth: "170px" }}
-                        >
+                        <Typography variant={"subtitle1"}>
                           {orderFromAPI[0].name}
                         </Typography>
                       </Stack>
@@ -1840,10 +1830,7 @@ const OrderDetail = ({
                               classes.pdf_print_user_phone_location_IconColor
                             }
                           />
-                          <Typography
-                            variant={"subtitle1"}
-                            // sx={{ maxWidth: "215px" }}
-                          >
+                          <Typography variant={"subtitle1"}>
                             {`${orderFromAPI[0].user_area}, ${orderFromAPI[0].user_city}`}
                           </Typography>
                         </Stack>
@@ -2789,7 +2776,6 @@ const OrderDetail = ({
         <AddEditItemModal
           openAddEditItemModal={openAddEditItemModal}
           setAddEditItemModal={setAddEditItemModal}
-          // editAbleItemProp={editAbleItem}
           getNewItemCallback={getNewItemCallback}
           getEditItemCallback={getEditItemCallback}
           editItemFlag={editItemFlag}
