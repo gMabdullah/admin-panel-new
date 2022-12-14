@@ -17,42 +17,14 @@ import { ChatStateProps } from './chat';
 import { CalendarStateProps } from './calendar';
 import { MailStateProps } from './mail';
 import { UserStateProps } from './user';
+
 import { SnackbarProps } from './snackbar';
 
-// APIs data types
-import { OrderListingReq, OrderListingResp } from "./orders-listing";
-import { getBranchesReq, GetBranchesResp } from "./branches";
-import { GlobalSettingsReq, GlobalSettingsResp } from "./globalSettings";
-import { OrderStatusReq, OrderStatusResp } from "./order-statuses";
-import { BusinesssDetailsReq, BusinessDetailsResp } from "./businenss-details";
-import { OrdersCityFilterReq, OrdersCityFilterResp } from "./OrdersCityFilter";
-import { MenuCategoryReq, MenuCategoryResp } from  "./menu-category";
-import { orderTimelinenReq, OrderTimelinenResp } from "./order-timeline";
 declare module '@mui/styles/defaultTheme' {
     // eslint-disable-next-line @typescript-eslint/no-empty-interface
     interface DefaultTheme extends Theme {}
 }
 
-export interface APIsRequest {
-    getOrders:  OrderListingReq;
-    getBranches: getBranchesReq;
-    getGlobalSettings: GlobalSettingsReq;
-    getOrderStatues: OrderStatusReq;
-    getBusinessDetails: BusinesssDetailsReq;
-    getOrderCitiesFilter: OrdersCityFilterReq;
-    getMenuCategory: MenuCategoryReq;
-    getOrderTimeline: orderTimelinenReq;
-}
-export interface APIsResponse {
-    getOrders: OrderListingResp;
-    getBranches: GetBranchesResp;
-    getGlobalSettings: GlobalSettingsResp;
-    getOrderStatues: OrderStatusResp;
-    getBusinessDetails: BusinessDetailsResp;
-    getOrderCitiesFilter: OrdersCityFilterResp;
-    getMenuCategory: MenuCategoryResp;
-    getOrderTimeline: OrderTimelinenResp;
-}
 export type ArrangementOrder = 'asc' | 'desc' | undefined;
 
 export type DateRange = { start: number | Date; end: number | Date };

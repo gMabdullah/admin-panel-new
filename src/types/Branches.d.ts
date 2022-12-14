@@ -1,11 +1,11 @@
-import SourceAdminId from "./commons";
+// import SourceAdminId from "./Commons";
 
-export interface getBranchesReq extends SourceAdminId {
+interface GetBranchesRequest extends SourceAdminId {
   restaurant_id: number;
   uid: number;
 }
 
-export interface GetBranchesResp {
+interface GetBranchesResponse {
   address: string;
   area: string;
   branch_id: string;
@@ -24,17 +24,17 @@ export interface GetBranchesResp {
   rname: string;
   service_charges: string;
   service_charges_type: string;
-  settings: Settings;
+  settings: GetBranchesResponseSettings;
   tax_type: string;
   tax_value: string;
   website: string;
 }
 
-export interface Settings {
+interface GetBranchesResponseSettings {
   cart: Cart;
 }
 
-export interface Cart {
+interface Cart {
   discount: number | string;
   minimum_spent: number | string;
   online_payment_tax: number | string;

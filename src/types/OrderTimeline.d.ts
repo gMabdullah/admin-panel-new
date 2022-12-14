@@ -1,23 +1,24 @@
-import SourceAdminId from "./commons";
+// import SourceAdminId from "./Commons";
 
-export interface orderTimelinenReq extends SourceAdminId {
+interface OrderTimelineRequest extends SourceAdminId {
   eatout_id: number;
   type: string;
   order_id: number;
 }
-export interface OrderTimelinenResp {
+
+interface OrderTimelineResponse {
   status: string;
   message: string;
   current_status_index: number[];
-  result: Result;
+  result: OrderTimelineResponseResult;
 }
 
-export interface Result {
-  timeline: Timeline[];
+interface OrderTimelineResponseResult {
+  timeline: OrderTimelineResponseResultTimeline[];
   total_minutes: string;
 }
 
-export interface Timeline {
+interface OrderTimelineResponseResultTimeline {
   time: string;
   date: string;
   color: string;

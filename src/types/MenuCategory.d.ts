@@ -1,18 +1,18 @@
-import SourceAdminId from "./commons";
+// import SourceAdminId from "./Commons";
 
-export interface MenuCategoryReq extends SourceAdminId {
+interface MenuCategoryRequest extends SourceAdminId {
   eatout_id: number;
 }
 
-export interface MenuCategoryResp {
+interface MenuCategoryResponse {
   status: string;
   message: string;
-  result: Result[];
+  result: MenuCategoryResponseResult[];
 }
 
-export interface Result {
+interface MenuCategoryResponseResult {
   category_id: string;
-  description: Description;
+  description: MenuCategoryResponseDescription;
   menu_type_id: string;
   display_source: string;
   category_name: string;
@@ -22,7 +22,7 @@ export interface Result {
   slug: null | string;
 }
 
-export enum Description {
+enum MenuCategoryResponseDescription {
   DescriptionPTestP = "<p>test</p>",
   Empty = "",
   PTestP = "<p>Test</p>",

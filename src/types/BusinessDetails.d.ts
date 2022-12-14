@@ -1,17 +1,18 @@
-import SourceAdminId from "./commons";
+// import SourceAdminId from "./Commons";
 
-export interface BusinesssDetailsReq extends  SourceAdminId {
-	restaurant_id: number;
-}
-export interface BusinessDetailsResp {
-	message: string;
-	result:  Result;
-	status:  string;
+interface BusinessDetailsRequest extends SourceAdminId {
+  restaurant_id: number;
 }
 
-export interface Result {
+interface BusinessDetailsResponse {
+  message: string;
+  result: BusinessDetailsResponseResult;
+  status: string;
+}
+
+interface BusinessDetailsResponseResult {
   about: string;
-  address: Address[];
+  address: BusinessDetailsResponseResultAddress[];
   already_follow: string;
   budget: string;
   currency: string;
@@ -52,7 +53,7 @@ export interface Result {
   votes: string;
 }
 
-export interface Address {
+interface BusinessDetailsResponseResultAddress {
   admin_area_1: string;
   admin_area_2: string;
   area: string;
@@ -61,13 +62,13 @@ export interface Address {
   email: string;
   formatted_address: string;
   locality: string;
-  location: Location;
+  location: BusinessDetailsResponseResultAddressLocation;
   phone: string;
   post_code: string;
   street_address: string;
 }
 
-export interface Location {
+interface BusinessDetailsResponseResultAddressLocation {
   lon: string;
   lat: string;
 }
