@@ -12,7 +12,7 @@ interface OrderDeliveryAreasRequest {
 interface OrderDeliveryAreasResponce {
   status: string;
   message: string;
-  result: OrderDeliveryAreasResponce_BranchDetails[];
+  result: OrderDeliveryAreasResponceBranchDetails[];
   radius: Radius[];
   user_distance: number;
   delivery_charges_tax: string;
@@ -27,10 +27,10 @@ interface CanadaPostSettings {
   message: string;
   title: string;
   note: string;
-  result: CanadaPostSettings_Result[];
+  result: CanadaPostSettingsResult[];
 }
 
-interface CanadaPostSettings_Result {
+interface CanadaPostSettingsResult {
   name: string;
   currency: string;
   price: string;
@@ -45,7 +45,7 @@ interface Radius {
   minimum_spend: string;
 }
 
-interface OrderDeliveryAreasResponce_BranchDetails {
+interface OrderDeliveryAreasResponceBranchDetails {
   area: string;
   country: string;
   city: string;

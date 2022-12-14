@@ -10,15 +10,15 @@ interface OrderTimelineResponse {
   status: string;
   message: string;
   current_status_index: number[];
-  result: OrderTimelineResponse_Result;
+  result: OrderTimelineResponseResult;
 }
 
-interface OrderTimelineResponse_Result {
-  timeline: OrderTimelineResponse_Result_Timeline[];
+interface OrderTimelineResponseResult {
+  timeline: OrderTimelineResponseResultTimeline[];
   total_minutes: string;
 }
 
-interface OrderTimelineResponse_Result_Timeline {
+interface OrderTimelineResponseResultTimeline {
   time: string;
   date: string;
   color: string;

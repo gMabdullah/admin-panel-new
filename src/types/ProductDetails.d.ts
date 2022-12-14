@@ -6,13 +6,13 @@ interface ItemDetailsRequest extends SourceAdminId {
 }
 
 interface ItemDetailsResponse {
-  items: ItemDetailsResponse_Item[];
+  items: ItemDetailsResponseItem[];
 }
 
-interface ItemDetailsResponse_Item {
+interface ItemDetailsResponseItem {
   slots: null;
   time_bound_availability: boolean;
-  product_settings: ItemDetailsResponse_Item_ProductSettings;
+  product_settings: ItemDetailsResponseItemProductSettings;
   max_distance: number;
   available_in_distance: string;
   canada_post_distance: number;
@@ -33,7 +33,7 @@ interface ItemDetailsResponse_Item {
   category: string;
   image: string;
   large_image: string;
-  options: ItemDetailsResponse_Item_Options[];
+  options: ItemDetailsResponseItemOptions[];
   discount_display: string;
   discount_value: string;
   discount: string;
@@ -46,7 +46,7 @@ interface ItemDetailsResponse_Item {
   status: string;
   display_source: string;
   brand: any[];
-  item_brand: ItemDetailsResponse_Item_ItemBrand[];
+  item_brand: ItemDetailsResponseItemItemBrand[];
   carton: string;
   pallet: string;
   carton_price: string;
@@ -73,12 +73,12 @@ interface ItemDetailsResponse_Item {
   product_tags: any[];
 }
 
-interface ItemDetailsResponse_Item_ItemBrand {
+interface ItemDetailsResponseItemItemBrand {
   brand_id: string;
   brand_name: string;
 }
 
-interface ItemDetailsResponse_Item_Options_OptionItems {
+interface ItemDetailsResponseItemOptionsOptionItems {
   id: string;
   cat_id: string;
   name: string;
@@ -90,18 +90,18 @@ interface ItemDetailsResponse_Item_Options_OptionItems {
   weight: string;
   weight_value: string;
   weight_unit: string;
-  items: ItemDetailsResponse_Item_Options[];
+  items: ItemDetailsResponseItemOptions[];
 }
 
-interface ItemDetailsResponse_Item_Options {
+interface ItemDetailsResponseItemOptions {
   menu_item_id: string;
   id: string;
   name: string;
   quantity: string;
   min_quantity: string;
-  items: ItemDetailsResponse_Item_Options_OptionItems[];
+  items: ItemDetailsResponseItemOptionsOptionItems[];
 }
 
-interface ItemDetailsResponse_Item_ProductSettings {
+interface ItemDetailsResponseItemProductSettings {
   apply_delivery_charges: boolean;
 }

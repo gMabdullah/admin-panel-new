@@ -6,13 +6,13 @@ interface BusinessDetailsRequest extends SourceAdminId {
 
 interface BusinessDetailsResponse {
   message: string;
-  result: BusinessDetailsResponse_Result;
+  result: BusinessDetailsResponseResult;
   status: string;
 }
 
-interface BusinessDetailsResponse_Result {
+interface BusinessDetailsResponseResult {
   about: string;
-  address: BusinessDetailsResponse_Result_Address[];
+  address: BusinessDetailsResponseResultAddress[];
   already_follow: string;
   budget: string;
   currency: string;
@@ -53,7 +53,7 @@ interface BusinessDetailsResponse_Result {
   votes: string;
 }
 
-interface BusinessDetailsResponse_Result_Address {
+interface BusinessDetailsResponseResultAddress {
   admin_area_1: string;
   admin_area_2: string;
   area: string;
@@ -62,13 +62,13 @@ interface BusinessDetailsResponse_Result_Address {
   email: string;
   formatted_address: string;
   locality: string;
-  location: BusinessDetailsResponse_Result_Address_Location;
+  location: BusinessDetailsResponseResultAddressLocation;
   phone: string;
   post_code: string;
   street_address: string;
 }
 
-interface BusinessDetailsResponse_Result_Address_Location {
+interface BusinessDetailsResponseResultAddressLocation {
   lon: string;
   lat: string;
 }

@@ -20,21 +20,21 @@ interface OrderListingRequest extends SourceAdminId {
 }
 
 interface OrderListingResponse {
-  menu_type_categories: Array<OrderListingResponse_MenuTypeCategory[]>;
+  menu_type_categories: Array<OrderListingResponseMenuTypeCategory[]>;
   status: string;
   message: string;
-  result: OrderListingResponse_Result[] | [];
+  result: OrderListingResponseResult[] | [];
   apply: string;
   url: string;
   count: number;
 }
 
-interface OrderListingResponse_MenuTypeCategory {
+interface OrderListingResponseMenuTypeCategory {
   category_id: string;
   category_name: string;
 }
 
-interface OrderListingResponse_Result {
+interface OrderListingResponseResult {
   address: string;
   canada_post: string;
   cash_received: string;
@@ -69,7 +69,7 @@ interface OrderListingResponse_Result {
   mobile_number: string;
   name: string;
   note: string;
-  order_detail: OrderListingResponse_OrderDetail[];
+  order_detail: OrderListingResponseOrderDetail[];
   order_id: string;
   order_type: string;
   order_type_flag: string;
@@ -81,7 +81,7 @@ interface OrderListingResponse_Result {
   pos_id: string;
   postal_code: string;
   pre_auth: string;
-  pre_auth_trans: OrderListingResponse_PreAuthTran[];
+  pre_auth_trans: OrderListingResponsePreAuthTran[];
   receipt_no: string;
   sales_date: Date;
   service_charges: string;
@@ -105,7 +105,7 @@ interface OrderListingResponse_Result {
 }
 
 // writing string | number because getting string order object and getting number from product item object
-interface OrderListingResponse_OrderDetail {
+interface OrderListingResponseOrderDetail {
   attributes?: any[];
   brand_id: string;
   brand_name?: string;
@@ -134,15 +134,15 @@ interface OrderListingResponse_OrderDetail {
   weight_value: string;
   weight?: number;
   label?: string;
-  item_brand?: OrderListingResponse_ItemBrand[];
+  item_brand?: OrderListingResponseItemBrand[];
 }
 
-interface OrderListingResponse_ItemBrand {
+interface OrderListingResponseItemBrand {
   brand_id: string;
   brand_name: string;
 }
 
-interface OrderListingResponse_PreAuthTran {
+interface OrderListingResponsePreAuthTran {
   orderid: string;
   pre_auth_id: string;
   trans_amount: string;

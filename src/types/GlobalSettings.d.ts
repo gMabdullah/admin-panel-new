@@ -6,11 +6,11 @@ interface GlobalSettingsRequest extends SourceAdminId {
 
 interface GlobalSettingsResponse {
   message: string;
-  result: GlobalSettingsResponse_Result;
+  result: GlobalSettingsResponseResult;
   status: string;
 }
 
-interface GlobalSettingsResponse_Result {
+interface GlobalSettingsResponseResult {
   currency: string;
   decimal_places: string;
   delivery_charges: string;

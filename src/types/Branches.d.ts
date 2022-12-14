@@ -24,13 +24,13 @@ interface GetBranchesResponse {
   rname: string;
   service_charges: string;
   service_charges_type: string;
-  settings: GetBranchesResponse_Settings;
+  settings: GetBranchesResponseSettings;
   tax_type: string;
   tax_value: string;
   website: string;
 }
 
-interface GetBranchesResponse_Settings {
+interface GetBranchesResponseSettings {
   cart: Cart;
 }
 

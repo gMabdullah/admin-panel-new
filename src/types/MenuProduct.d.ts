@@ -13,23 +13,23 @@ interface ProductRequest {
 interface ProductResponse {
   status: string;
   message: string;
-  info: ProductResponse_Info;
+  info: ProductResponseInfo;
   filters: any[];
   tax: string;
   discount: string;
   inventory: string;
-  items: ProductResponse_Item[];
+  items: ProductResponseItem[];
   items_count: string;
   items_count_all: number;
   credentials: any[];
   categories: any[];
   discounted_items_count: string;
-  menu_types: ProductResponse_MenuType[];
+  menu_types: ProductResponseMenuType[];
   brands: any[];
   menu_items: any[];
 }
 
-interface ProductResponse_Info {
+interface ProductResponseInfo {
   tax: string;
   discount: string;
   minimum_spend: string;
@@ -49,7 +49,7 @@ interface ProductResponse_Info {
   inventory: string;
 }
 
-interface ProductResponse_Item {
+interface ProductResponseItem {
   comment: string;
   quantity: string;
   slots: null;
@@ -91,7 +91,7 @@ interface ProductResponse_Item {
   status: string;
   status_note: string;
   brand: any[];
-  item_brand: ProductResponse_ItemBrand[];
+  item_brand: ProductResponseItemBrand[];
   carton: string;
   pallet: string;
   carton_price: string;
@@ -99,7 +99,7 @@ interface ProductResponse_Item {
   product_code: string;
   upc: string;
   suggestions: any[];
-  images: ProductResponse_Image[];
+  images: ProductResponseImage[];
   calculated_price: number;
   branches: string;
   is_selected: boolean;
@@ -126,19 +126,19 @@ interface ProductResponse_Item {
   label?: string;
 }
 
-interface ProductResponse_Image {
+interface ProductResponseImage {
   image_thumbnail: string;
   image: string;
   image_id: null | string;
   image_position: null | string;
 }
 
-interface ProductResponse_ItemBrand {
+interface ProductResponseItemBrand {
   brand_id: string;
   brand_name: string;
 }
 
-interface ProductResponse_MenuType {
+interface ProductResponseMenuType {
   id: string;
   name: string;
 }
