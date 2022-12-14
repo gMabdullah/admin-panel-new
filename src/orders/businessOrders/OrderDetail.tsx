@@ -32,7 +32,13 @@ import {
   HighlightOffTwoTone,
 } from "@mui/icons-material";
 
-import { OrderListingSkeleton } from "components/skeleton/OrderListingSkeleton";
+import {
+  OrderIdSectionSkeleton,
+  UserDetailsSkeleton,
+  OrderDeliveryDetailsSkeleton,
+  TableSkeleton,
+  CalculationSectionSkeleton,
+} from "components/skeleton/OrderDetailSkeleton";
 import Notify from "components/Notify";
 import MainCard from "components/cards/MainCard";
 import CustomButton from "components/CustomButton";
@@ -96,6 +102,9 @@ const useStyles = makeStyles(() => ({
     fontWeight: 500,
     fontSize: "14px",
     lineHeight: "20px",
+  },
+  tableItemNoColumn: {
+    paddingLeft: "unset !important",
   },
 }));
 
@@ -229,13 +238,14 @@ const OrderDetail = ({
 
       setSelectedOrderContext(result[0]);
       setOrderFromAPI(result);
-      setOrderDetailLoader(false);
 
       // give delivery charges to delivery charges state
       setDeliveryChargesField(result[0].delivery_charges);
 
       // update weights
       weightUpdate(result[0]);
+
+      setOrderDetailLoader(false);
     })();
   }, []);
 
@@ -1302,7 +1312,7 @@ const OrderDetail = ({
               sx={{ alignItems: "center", mt: "5px" }}
             >
               {row.item_level_discount_value &&
-                row.item_level_discount_value.toString().charAt(0) > 0 && ( // converting toString() because getting this in number from biz_delivery API
+                Number(row.item_level_discount_value) > 0 && (
                   <Stack direction={"row"} spacing={0.4}>
                     <Typography
                       sx={{
@@ -1329,7 +1339,7 @@ const OrderDetail = ({
                   </Stack>
                 )}
 
-              {row.tax && row.tax.charAt(0) > 0 && (
+              {row.tax && Number(row.tax) > 0 && (
                 <Stack direction={"row"} spacing={0.4}>
                   <Typography
                     sx={{
@@ -1414,16 +1424,16 @@ const OrderDetail = ({
       field: "item_id",
       headerName: "Item#",
       flex: 0.6,
-      headerAlign: "right",
-      align: "right",
       sortable: false,
+      headerClassName: classes.tableItemNoColumn,
+      cellClassName: classes.tableItemNoColumn,
       renderCell: rowSkeleton,
     },
     {
       field: "item_name",
       headerName: "Item Name",
-      sortable: false,
       flex: 2,
+      sortable: false,
       renderCell: productFormatting,
     },
     {
@@ -1447,9 +1457,9 @@ const OrderDetail = ({
     {
       field: "price",
       headerName: "Price",
-      flex: 1,
       headerAlign: "right",
       align: "right",
+      flex: 1,
       sortable: false,
       renderCell: addCurrency,
     },
@@ -1590,8 +1600,7 @@ const OrderDetail = ({
         />
       )}
 
-      {/* Order Detail Modal */}
-      <Modal
+      <Modal // Order Detail Modal
         open={orderDetailModal}
         className={classes.modalStyle1}
         BackdropProps={{
@@ -1635,32 +1644,25 @@ const OrderDetail = ({
                     alignItems: "center",
                   }}
                 >
-                  <Box
-                    sx={{
-                      width: "100%",
-                      maxWidth: "265px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <Typography variant="h1">
-                      Order
-                      {orderFromAPI[0] !== undefined &&
-                        ` ${orderFromAPI[0].order_id}`}
-                    </Typography>
-                    <Box>{orderDetailLoader && <Progress type="circle" />}</Box>
-                  </Box>
-
-                  <Typography
-                    variant={"subtitle1"}
-                    sx={{ fontWeight: "400", ml: "16px" }}
-                  >
+                  <Typography variant="h1">
+                    Order
                     {orderFromAPI[0] !== undefined &&
-                      moment(orderFromAPI[0].date).format(
-                        "MMM Do, YYYY hh:mm a"
-                      )}
+                      ` ${orderFromAPI[0].order_id}`}
                   </Typography>
+
+                  {orderFromAPI.length === 0 ? (
+                    <OrderIdSectionSkeleton />
+                  ) : (
+                    <Typography
+                      variant={"subtitle1"}
+                      sx={{ fontWeight: "400", ml: "16px" }}
+                    >
+                      {orderFromAPI[0] !== undefined &&
+                        moment(orderFromAPI[0].date).format(
+                          "MMM Do, YYYY hh:mm a"
+                        )}
+                    </Typography>
+                  )}
                 </Grid>
 
                 <Grid
@@ -1759,65 +1761,40 @@ const OrderDetail = ({
                     flexWrap: "wrap",
                   }}
                 >
-                  <Stack
-                    spacing={3}
-                    direction="row"
-                    divider={
-                      <Divider
-                        orientation="vertical"
-                        sx={{ border: "1px solid #EEEEEE" }}
-                        flexItem
-                      />
-                    }
-                  >
-                    {orderFromAPI[0] !== undefined && orderFromAPI[0].name && (
+                  <Grid item xs={10}>
+                    {orderFromAPI.length === 0 ? (
+                      <UserDetailsSkeleton />
+                    ) : (
                       <Stack
+                        spacing={3}
                         direction="row"
-                        sx={{
-                          alignItems: "center",
-                        }}
-                        spacing={1}
-                      >
-                        <AccountCircleTwoTone
-                          className={
-                            classes.pdf_print_user_phone_location_IconColor
-                          }
-                        />
-                        <Typography variant={"subtitle1"}>
-                          {orderFromAPI[0].name}
-                        </Typography>
-                      </Stack>
-                    )}
-
-                    <Stack
-                      direction="row"
-                      sx={{
-                        alignItems: "center",
-                      }}
-                      spacing={1}
-                    >
-                      <SmartphoneTwoTone
-                        className={
-                          classes.pdf_print_user_phone_location_IconColor
+                        divider={
+                          <Divider
+                            orientation="vertical"
+                            sx={{ border: "1px solid #EEEEEE" }}
+                            flexItem
+                          />
                         }
-                        fontSize="small"
-                      />
-                      <Typography
-                        variant={"subtitle1"}
-                        sx={{
-                          maxWidth: "107px",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                        }}
                       >
-                        {orderFromAPI[0] !== undefined &&
-                          orderFromAPI[0].mobile_number}
-                      </Typography>
-                    </Stack>
+                        {orderFromAPI[0] !== undefined && orderFromAPI[0].name && (
+                          <Stack
+                            direction="row"
+                            sx={{
+                              alignItems: "center",
+                            }}
+                            spacing={1}
+                          >
+                            <AccountCircleTwoTone
+                              className={
+                                classes.pdf_print_user_phone_location_IconColor
+                              }
+                            />
+                            <Typography variant={"subtitle1"}>
+                              {orderFromAPI[0].name}
+                            </Typography>
+                          </Stack>
+                        )}
 
-                    {orderFromAPI[0] !== undefined &&
-                      orderFromAPI[0].user_area &&
-                      orderFromAPI[0].user_city && (
                         <Stack
                           direction="row"
                           sx={{
@@ -1825,36 +1802,69 @@ const OrderDetail = ({
                           }}
                           spacing={1}
                         >
-                          <PinDropTwoTone
+                          <SmartphoneTwoTone
                             className={
                               classes.pdf_print_user_phone_location_IconColor
                             }
+                            fontSize="small"
                           />
-                          <Typography variant={"subtitle1"}>
-                            {`${orderFromAPI[0].user_area}, ${orderFromAPI[0].user_city}`}
+                          <Typography
+                            variant={"subtitle1"}
+                            sx={{
+                              maxWidth: "107px",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                            }}
+                          >
+                            {orderFromAPI[0] !== undefined &&
+                              orderFromAPI[0].mobile_number}
                           </Typography>
                         </Stack>
-                      )}
-                  </Stack>
 
-                  <Stack direction="row">
-                    <CustomButton
-                      variant="contained"
-                      startIcon={<EditTwoTone />}
-                      sx={{
-                        background: "#F5F5F5 ",
-                        color: "#212121",
-                        p: "9px 20px",
+                        {orderFromAPI[0] !== undefined &&
+                          orderFromAPI[0].user_area &&
+                          orderFromAPI[0].user_city && (
+                            <Stack
+                              direction="row"
+                              sx={{
+                                alignItems: "center",
+                              }}
+                              spacing={1}
+                            >
+                              <PinDropTwoTone
+                                className={
+                                  classes.pdf_print_user_phone_location_IconColor
+                                }
+                              />
+                              <Typography variant={"subtitle1"}>
+                                {`${orderFromAPI[0].user_area}, ${orderFromAPI[0].user_city}`}
+                              </Typography>
+                            </Stack>
+                          )}
+                      </Stack>
+                    )}
+                  </Grid>
 
-                        "&:hover": {
-                          backgroundColor: "#F5F5F5",
-                        },
-                      }}
-                      onClick={toggleCustomerDetailModal}
-                    >
-                      Edit
-                    </CustomButton>
-                  </Stack>
+                  <Grid item xs={1}>
+                    <Stack direction="row">
+                      <CustomButton
+                        variant="contained"
+                        startIcon={<EditTwoTone />}
+                        sx={{
+                          background: "#F5F5F5 ",
+                          color: "#212121",
+                          p: "9px 20px",
+
+                          "&:hover": {
+                            backgroundColor: "#F5F5F5",
+                          },
+                        }}
+                        onClick={toggleCustomerDetailModal}
+                      >
+                        Edit
+                      </CustomButton>
+                    </Stack>
+                  </Grid>
                 </Box>
 
                 <Box
@@ -1867,7 +1877,7 @@ const OrderDetail = ({
                   }}
                 >
                   <Stack direction="column">
-                    <Stack // address stack
+                    <Stack // delivery details heading stack
                       direction="row"
                       sx={{
                         alignItems: "center",
@@ -1875,11 +1885,7 @@ const OrderDetail = ({
                       }}
                     >
                       <Stack direction="row">
-                        <Typography variant="subtitle1">Address:</Typography>
-                        <Typography variant="h5" sx={{ ml: "64px" }}>
-                          {orderFromAPI[0] !== undefined &&
-                            orderFromAPI[0].address}
-                        </Typography>
+                        <Typography variant="h4">Delivery Details</Typography>
                       </Stack>
                       <Stack>
                         <CustomButton
@@ -1901,65 +1907,88 @@ const OrderDetail = ({
                       </Stack>
                     </Stack>
 
-                    <Stack // order type stack
-                      direction="row"
-                      sx={{ mt: "4px" }}
-                    >
-                      <Typography variant="subtitle1">Order type:</Typography>
-                      <Typography variant="h5" sx={{ ml: "52px" }}>
+                    {orderFromAPI.length === 0 ? (
+                      <OrderDeliveryDetailsSkeleton />
+                    ) : (
+                      <>
+                        <Stack // address stack
+                          direction="row"
+                          sx={{ mt: "15px" }}
+                        >
+                          <Typography variant="subtitle1">Address:</Typography>
+                          <Typography variant="h5" sx={{ ml: "64px" }}>
+                            {orderFromAPI[0] !== undefined &&
+                              orderFromAPI[0].address}
+                          </Typography>
+                        </Stack>
+
+                        <Stack // order type stack
+                          direction="row"
+                          sx={{ mt: "16px" }}
+                        >
+                          <Typography variant="subtitle1">
+                            Order type:
+                          </Typography>
+                          <Typography variant="h5" sx={{ ml: "52px" }}>
+                            {orderFromAPI[0] !== undefined &&
+                              toCapitalizeFirstLetter(
+                                orderFromAPI[0].order_type
+                              )}
+                          </Typography>
+                        </Stack>
+
                         {orderFromAPI[0] !== undefined &&
-                          toCapitalizeFirstLetter(orderFromAPI[0].order_type)}
-                      </Typography>
-                    </Stack>
+                          orderFromAPI[0].order_type_flag === "0" && //for delivery (0) & for pickup (1)
+                          orderFromAPI[0].delivery_date !==
+                            "0000-00-00 00:00:00" &&
+                          orderFromAPI[0].delivery_date !== "" && (
+                            <Stack // delivery time stack
+                              direction="row"
+                              sx={{ mt: "16px" }}
+                            >
+                              <Typography variant="subtitle1">
+                                Delivery Time:
+                              </Typography>
+                              <Typography variant="h5" sx={{ ml: "32px" }}>
+                                {moment(orderFromAPI[0].delivery_date).format(
+                                  "MMM Do, YYYY h:mm A"
+                                )}
+                              </Typography>
+                            </Stack>
+                          )}
 
-                    {orderFromAPI[0] !== undefined &&
-                      orderFromAPI[0].order_type_flag === "0" && //for delivery (0) & for pickup (1)
-                      orderFromAPI[0].delivery_date !== "0000-00-00 00:00:00" &&
-                      orderFromAPI[0].delivery_date !== "" && (
-                        <Stack // delivery time stack
-                          direction="row"
-                          sx={{ mt: "16px" }}
-                        >
-                          <Typography variant="subtitle1">
-                            Delivery Time:
-                          </Typography>
-                          <Typography variant="h5" sx={{ ml: "32px" }}>
-                            {moment(orderFromAPI[0].delivery_date).format(
-                              "MMM Do, YYYY h:mm A"
-                            )}
-                          </Typography>
-                        </Stack>
-                      )}
+                        {orderFromAPI[0] !== undefined &&
+                          orderFromAPI[0].order_type_flag === "1" && //for delivery (0) & for pickup (1)
+                          orderFromAPI[0].pickup_time !==
+                            "0000-00-00 00:00:00" &&
+                          orderFromAPI[0].pickup_time !== "" && (
+                            <Stack // pickup time stack
+                              direction="row"
+                              sx={{ mt: "16px" }}
+                            >
+                              <Typography variant="subtitle1">
+                                Pickup Time:
+                              </Typography>
+                              <Typography variant="h5" sx={{ ml: "38px" }}>
+                                {moment(orderFromAPI[0].pickup_time).format(
+                                  "MMM Do, YYYY h:mm A"
+                                )}
+                              </Typography>
+                            </Stack>
+                          )}
 
-                    {orderFromAPI[0] !== undefined &&
-                      orderFromAPI[0].order_type_flag === "1" && //for delivery (0) & for pickup (1)
-                      orderFromAPI[0].pickup_time !== "0000-00-00 00:00:00" &&
-                      orderFromAPI[0].pickup_time !== "" && (
-                        <Stack // pickup time stack
-                          direction="row"
-                          sx={{ mt: "16px" }}
-                        >
-                          <Typography variant="subtitle1">
-                            Pickup Time:
-                          </Typography>
-                          <Typography variant="h5" sx={{ ml: "38px" }}>
-                            {moment(orderFromAPI[0].pickup_time).format(
-                              "MMM Do, YYYY h:mm A"
-                            )}
-                          </Typography>
-                        </Stack>
-                      )}
-
-                    {orderFromAPI[0] !== undefined && orderFromAPI[0].note && (
-                      <Stack //Note Stack
-                        direction="row"
-                        sx={{ mt: "16px" }}
-                      >
-                        <Typography variant="subtitle1">Note:</Typography>
-                        <Typography variant="h5" sx={{ ml: "86px" }}>
-                          {orderFromAPI[0].note}
-                        </Typography>
-                      </Stack>
+                        {orderFromAPI[0] !== undefined && orderFromAPI[0].note && (
+                          <Stack //Note Stack
+                            direction="row"
+                            sx={{ mt: "16px" }}
+                          >
+                            <Typography variant="subtitle1">Note:</Typography>
+                            <Typography variant="h5" sx={{ ml: "86px" }}>
+                              {orderFromAPI[0].note}
+                            </Typography>
+                          </Stack>
+                        )}
+                      </>
                     )}
                   </Stack>
                 </Box>
@@ -2051,7 +2080,7 @@ const OrderDetail = ({
                   }
                 >
                   {orderFromAPI.length === 0 ? (
-                    <OrderListingSkeleton />
+                    <TableSkeleton />
                   ) : (
                     <Box
                       sx={{
@@ -2101,7 +2130,6 @@ const OrderDetail = ({
                         },
                       }}
                     >
-                      {/* <OrderListingSkeleton /> */}
                       <DataGrid
                         rows={(() => {
                           if (!orderFromAPI[0]) return [];
@@ -2128,395 +2156,416 @@ const OrderDetail = ({
                       background: "#F5F5F5",
                       borderRadius: "8px",
                       p: "24px 31px",
+                      mt: "2px",
                     }}
                   >
                     <Grid item xs={5.5}>
-                      <Stack
-                        direction={"row"}
-                        sx={{ justifyContent: "space-between" }}
-                      >
-                        <Stack direction={"column"}>
-                          <Stack // Sub Total
+                      {orderFromAPI.length === 0 ? (
+                        <CalculationSectionSkeleton />
+                      ) : (
+                        <>
+                          <Stack
                             direction={"row"}
-                            sx={{ justifyContent: "end" }}
+                            sx={{ justifyContent: "space-between" }}
                           >
-                            <Typography variant="subtitle1">
-                              Sub Total
-                            </Typography>
-                          </Stack>
-
-                          {orderFromAPI[0] !== undefined &&
-                            (Number(orderFromAPI[0].loyalty_points) > 0 ||
-                              Number(orderFromAPI[0].custom_code_discount) >
-                                0) && (
-                              <Stack // Loyalty Points && Custom code discount
+                            <Stack direction={"column"}>
+                              <Stack // Sub Total
                                 direction={"row"}
-                                sx={{ mt: "14px", justifyContent: "end" }}
-                              >
-                                <Typography // switch loyalty points and custom code
-                                  variant="subtitle1"
-                                >
-                                  {parseInt(orderFromAPI[0].loyalty_points) > 0
-                                    ? `Loyalty Points (${orderFromAPI[0].loyalty_points})`
-                                    : `Coupon Code (${orderFromAPI[0].custom_code_discount}%)`}
-                                </Typography>
-                              </Stack>
-                            )}
-
-                          {orderFromAPI[0] !== undefined &&
-                            haveWeight &&
-                            totalWeight !== 0 && (
-                              <Stack // Total weight
-                                direction={"row"}
-                                sx={{ mt: "14px", justifyContent: "end" }}
+                                sx={{ justifyContent: "end" }}
                               >
                                 <Typography variant="subtitle1">
-                                  Total Weight
+                                  Sub Total
                                 </Typography>
                               </Stack>
-                            )}
 
-                          {orderFromAPI[0] !== undefined &&
-                            Number(orderFromAPI[0].discount) > 0 && (
-                              <Stack // Discount
-                                direction={"row"}
-                                sx={{ mt: "14px", justifyContent: "end" }}
-                              >
-                                <Typography variant="subtitle1">
-                                  Discount
-                                </Typography>
-                              </Stack>
-                            )}
-
-                          <Stack // Delivery Charges
-                            direction={"row"}
-                            sx={{ mt: "14px", justifyContent: "end" }}
-                          >
-                            <Typography
-                              variant="subtitle1"
-                              sx={{ display: "flex", alignItems: "end" }}
-                            >
-                              Delivery Charges
-                              {selectedOrderContext.status === "Pending" && (
-                                <IconButton
-                                  sx={{ p: "unset", ml: "5px" }}
-                                  onClick={openDeliveryModal}
-                                >
-                                  <EditTwoTone sx={{ fontSize: "1.3rem" }} />
-                                </IconButton>
-                              )}
-                            </Typography>
-                          </Stack>
-
-                          {orderFromAPI[0] !== undefined &&
-                            Number(orderFromAPI[0].tax) > 0 && (
-                              <Stack // Tax
-                                direction={"row"}
-                                sx={{ mt: "14px", justifyContent: "end" }}
-                              >
-                                <Typography variant="subtitle1">Tax</Typography>
-                              </Stack>
-                            )}
-
-                          {orderFromAPI[0] !== undefined &&
-                            Number(orderFromAPI[0].tip) > 0 && (
-                              <Stack // Tip
-                                direction={"row"}
-                                sx={{ mt: "14px", justifyContent: "end" }}
-                              >
-                                <Typography variant="subtitle1">Tip</Typography>
-                              </Stack>
-                            )}
-
-                          {orderFromAPI[0] !== undefined &&
-                            Number(orderFromAPI[0].service_charges) > 0 && (
-                              <Stack // Service Charges
-                                direction={"row"}
-                                sx={{ mt: "14px", justifyContent: "end" }}
-                              >
-                                <Typography variant="subtitle1">
-                                  Service Charges
-                                </Typography>
-                              </Stack>
-                            )}
-                        </Stack>
-
-                        <Stack direction={"column"}>
-                          <Stack // Sub Total
-                            direction="row"
-                            spacing={0.25}
-                            sx={{
-                              justifyContent: "end",
-                              alignItems: "end",
-                            }}
-                          >
-                            <Typography
-                              sx={{
-                                fontFamily: "Roboto",
-                                fontStyle: "normal",
-                                fontWeight: "400",
-                                fontSize: "12px",
-                                color: "#757575",
-                              }}
-                            >
                               {orderFromAPI[0] !== undefined &&
-                                orderFromAPI[0].currency}
-                            </Typography>
-                            <Typography variant="h4">
-                              {orderFromAPI[0] !== undefined &&
-                                parseFloat(orderFromAPI[0].total).toFixed(
-                                  decimalPlaces
-                                )}
-                            </Typography>
-                          </Stack>
-
-                          {orderFromAPI[0] !== undefined &&
-                            (Number(orderFromAPI[0].loyalty_points) > 0 ||
-                              Number(orderFromAPI[0].custom_code_discount) >
-                                0) && (
-                              <Stack // Loyalty Points && Custom code discount
-                                direction={"row"}
-                                sx={{
-                                  mt: "14px",
-                                  justifyContent: "end",
-                                  alignItems: "end",
-                                }}
-                              >
-                                <Typography variant="h5">
-                                  {parseInt(orderFromAPI[0].loyalty_points) > 0
-                                    ? parseInt(
+                                (Number(orderFromAPI[0].loyalty_points) > 0 ||
+                                  Number(orderFromAPI[0].custom_code_discount) >
+                                    0) && (
+                                  <Stack // Loyalty Points && Custom code discount
+                                    direction={"row"}
+                                    sx={{ mt: "14px", justifyContent: "end" }}
+                                  >
+                                    <Typography // switch loyalty points and custom code
+                                      variant="subtitle1"
+                                    >
+                                      {parseInt(
                                         orderFromAPI[0].loyalty_points
-                                      ).toFixed(decimalPlaces)
-                                    : parseInt(
-                                        orderFromAPI[0]
-                                          .custom_code_discount_value
-                                      )}
+                                      ) > 0
+                                        ? `Loyalty Points (${orderFromAPI[0].loyalty_points})`
+                                        : `Coupon Code (${orderFromAPI[0].custom_code_discount}%)`}
+                                    </Typography>
+                                  </Stack>
+                                )}
+
+                              {orderFromAPI[0] !== undefined &&
+                                haveWeight &&
+                                totalWeight !== 0 && (
+                                  <Stack // Total weight
+                                    direction={"row"}
+                                    sx={{ mt: "14px", justifyContent: "end" }}
+                                  >
+                                    <Typography variant="subtitle1">
+                                      Total Weight
+                                    </Typography>
+                                  </Stack>
+                                )}
+
+                              {orderFromAPI[0] !== undefined &&
+                                Number(orderFromAPI[0].discount) > 0 && (
+                                  <Stack // Discount
+                                    direction={"row"}
+                                    sx={{ mt: "14px", justifyContent: "end" }}
+                                  >
+                                    <Typography variant="subtitle1">
+                                      Discount
+                                    </Typography>
+                                  </Stack>
+                                )}
+
+                              <Stack // Delivery Charges
+                                direction={"row"}
+                                sx={{ mt: "14px", justifyContent: "end" }}
+                              >
+                                <Typography
+                                  variant="subtitle1"
+                                  sx={{ display: "flex", alignItems: "end" }}
+                                >
+                                  Delivery Charges
+                                  {selectedOrderContext.status ===
+                                    "Pending" && (
+                                    <IconButton
+                                      sx={{ p: "unset", ml: "5px" }}
+                                      onClick={openDeliveryModal}
+                                    >
+                                      <EditTwoTone
+                                        sx={{ fontSize: "1.3rem" }}
+                                      />
+                                    </IconButton>
+                                  )}
                                 </Typography>
                               </Stack>
-                            )}
 
-                          {orderFromAPI[0] !== undefined &&
-                            haveWeight &&
-                            totalWeight !== 0 && (
-                              <Stack // Total weight
-                                direction={"row"}
+                              {orderFromAPI[0] !== undefined &&
+                                Number(orderFromAPI[0].tax) > 0 && (
+                                  <Stack // Tax
+                                    direction={"row"}
+                                    sx={{ mt: "14px", justifyContent: "end" }}
+                                  >
+                                    <Typography variant="subtitle1">
+                                      Tax
+                                    </Typography>
+                                  </Stack>
+                                )}
+
+                              {orderFromAPI[0] !== undefined &&
+                                Number(orderFromAPI[0].tip) > 0 && (
+                                  <Stack // Tip
+                                    direction={"row"}
+                                    sx={{ mt: "14px", justifyContent: "end" }}
+                                  >
+                                    <Typography variant="subtitle1">
+                                      Tip
+                                    </Typography>
+                                  </Stack>
+                                )}
+
+                              {orderFromAPI[0] !== undefined &&
+                                Number(orderFromAPI[0].service_charges) > 0 && (
+                                  <Stack // Service Charges
+                                    direction={"row"}
+                                    sx={{ mt: "14px", justifyContent: "end" }}
+                                  >
+                                    <Typography variant="subtitle1">
+                                      Service Charges
+                                    </Typography>
+                                  </Stack>
+                                )}
+                            </Stack>
+
+                            <Stack direction={"column"}>
+                              <Stack // Sub Total
+                                direction="row"
                                 spacing={0.25}
                                 sx={{
-                                  mt: "14px",
                                   justifyContent: "end",
                                   alignItems: "end",
                                 }}
                               >
-                                <Typography variant="h5">
-                                  {`${totalWeight.toFixed(decimalPlaces)}
+                                <Typography
+                                  sx={{
+                                    fontFamily: "Roboto",
+                                    fontStyle: "normal",
+                                    fontWeight: "400",
+                                    fontSize: "12px",
+                                    color: "#757575",
+                                  }}
+                                >
+                                  {orderFromAPI[0] !== undefined &&
+                                    orderFromAPI[0].currency}
+                                </Typography>
+                                <Typography variant="h4">
+                                  {orderFromAPI[0] !== undefined &&
+                                    parseFloat(orderFromAPI[0].total).toFixed(
+                                      decimalPlaces
+                                    )}
+                                </Typography>
+                              </Stack>
+
+                              {orderFromAPI[0] !== undefined &&
+                                (Number(orderFromAPI[0].loyalty_points) > 0 ||
+                                  Number(orderFromAPI[0].custom_code_discount) >
+                                    0) && (
+                                  <Stack // Loyalty Points && Custom code discount
+                                    direction={"row"}
+                                    sx={{
+                                      mt: "14px",
+                                      justifyContent: "end",
+                                      alignItems: "end",
+                                    }}
+                                  >
+                                    <Typography variant="h5">
+                                      {parseInt(
+                                        orderFromAPI[0].loyalty_points
+                                      ) > 0
+                                        ? parseInt(
+                                            orderFromAPI[0].loyalty_points
+                                          ).toFixed(decimalPlaces)
+                                        : parseInt(
+                                            orderFromAPI[0]
+                                              .custom_code_discount_value
+                                          )}
+                                    </Typography>
+                                  </Stack>
+                                )}
+
+                              {orderFromAPI[0] !== undefined &&
+                                haveWeight &&
+                                totalWeight !== 0 && (
+                                  <Stack // Total weight
+                                    direction={"row"}
+                                    spacing={0.25}
+                                    sx={{
+                                      mt: "14px",
+                                      justifyContent: "end",
+                                      alignItems: "end",
+                                    }}
+                                  >
+                                    <Typography variant="h5">
+                                      {`${totalWeight.toFixed(decimalPlaces)}
                             ${
                               orderFromAPI[0].pre_auth === "1"
                                 ? "Kg"
                                 : weightUnit
                             }`}
-                                </Typography>
-                              </Stack>
-                            )}
-
-                          {orderFromAPI[0] !== undefined &&
-                            Number(orderFromAPI[0].discount) > 0 && (
-                              <Stack // discount
-                                direction={"row"}
-                                spacing={0.25}
-                                sx={{
-                                  mt: "14px",
-                                  justifyContent: "end",
-                                  alignItems: "end",
-                                }}
-                              >
-                                <Typography
-                                  sx={{
-                                    fontFamily: "Roboto",
-                                    fontStyle: "normal",
-                                    fontWeight: "400",
-                                    fontSize: "12px",
-                                    color: "#757575",
-                                  }}
-                                >
-                                  {orderFromAPI[0].currency}
-                                </Typography>
-                                <Typography variant="h4">
-                                  {parseFloat(orderFromAPI[0].discount).toFixed(
-                                    decimalPlaces
-                                  )}
-                                </Typography>
-                              </Stack>
-                            )}
-
-                          {orderFromAPI[0] !== undefined && (
-                            <Stack // delivery charges
-                              direction={"row"}
-                              spacing={0.25}
-                              sx={{
-                                mt: "14px",
-                                justifyContent: "end",
-                                alignItems: "end",
-                              }}
-                            >
-                              <Typography
-                                sx={{
-                                  fontFamily: "Roboto",
-                                  fontStyle: "normal",
-                                  fontWeight: "400",
-                                  fontSize: "12px",
-                                  color: "#757575",
-                                }}
-                              >
-                                {orderFromAPI[0].currency}
-                              </Typography>
-                              <Typography variant="h4">
-                                {parseFloat(
-                                  orderFromAPI[0].delivery_charges
-                                ).toFixed(decimalPlaces)}
-                              </Typography>
-                            </Stack>
-                          )}
-
-                          {orderFromAPI[0] !== undefined &&
-                            Number(orderFromAPI[0].tax) > 0 && (
-                              <Stack // tax
-                                direction={"row"}
-                                spacing={0.25}
-                                sx={{
-                                  mt: "14px",
-                                  justifyContent: "end",
-                                  alignItems: "end",
-                                }}
-                              >
-                                <Typography
-                                  sx={{
-                                    fontFamily: "Roboto",
-                                    fontStyle: "normal",
-                                    fontWeight: "400",
-                                    fontSize: "12px",
-                                    color: "#757575",
-                                  }}
-                                >
-                                  {orderFromAPI[0].currency}
-                                </Typography>
-                                <Typography variant="h4">
-                                  {parseFloat(orderFromAPI[0].tax).toFixed(
-                                    decimalPlaces
-                                  )}
-                                </Typography>
-                              </Stack>
-                            )}
-
-                          {orderFromAPI[0] !== undefined &&
-                            Number(orderFromAPI[0].tip) > 0 && (
-                              <Stack // tip
-                                direction={"row"}
-                                spacing={0.25}
-                                sx={{
-                                  mt: "14px",
-                                  justifyContent: "end",
-                                  alignItems: "end",
-                                }}
-                              >
-                                <Typography
-                                  sx={{
-                                    fontFamily: "Roboto",
-                                    fontStyle: "normal",
-                                    fontWeight: "400",
-                                    fontSize: "12px",
-                                    color: "#757575",
-                                  }}
-                                >
-                                  {orderFromAPI[0].currency}
-                                </Typography>
-                                <Typography variant="h4">
-                                  {parseFloat(orderFromAPI[0].tip).toFixed(
-                                    decimalPlaces
-                                  )}
-                                </Typography>
-                              </Stack>
-                            )}
-
-                          {orderFromAPI[0] !== undefined &&
-                            Number(orderFromAPI[0].service_charges) > 0 && (
-                              <Stack // service charges
-                                direction={"row"}
-                                spacing={0.25}
-                                sx={{
-                                  justifyContent: "end",
-                                  alignItems: "end",
-                                }}
-                              >
-                                <Typography
-                                  sx={{
-                                    fontFamily: "Roboto",
-                                    fontStyle: "normal",
-                                    fontWeight: "400",
-                                    fontSize: "12px",
-                                    color: "#757575",
-                                  }}
-                                >
-                                  {orderFromAPI[0].currency}
-                                </Typography>
-                                <Typography variant="h4">
-                                  {parseFloat(
-                                    orderFromAPI[0].service_charges
-                                  ).toFixed(decimalPlaces)}
-                                </Typography>
-                              </Stack>
-                            )}
-                        </Stack>
-                      </Stack>
-
-                      <Divider
-                        sx={{
-                          m: "24px 0px",
-                          border: " 1px solid rgba(0, 0, 0, 0.06)",
-                        }}
-                      />
-
-                      <Stack direction={"row"} justifyContent={"space-between"}>
-                        <Stack direction={"column"}>
-                          <Stack // total
-                            direction={"row"}
-                            sx={{
-                              justifyContent: "end",
-                              ml: "71px",
-                            }}
-                          >
-                            <Typography variant="h4">Total</Typography>
-                          </Stack>
-                        </Stack>
-                        <Stack direction={"column"}>
-                          <Stack // total
-                            direction="row"
-                            spacing={0.25}
-                            sx={{
-                              justifyContent: "end",
-                              alignItems: "end",
-                            }}
-                          >
-                            <Typography
-                              sx={{
-                                fontFamily: "Roboto",
-                                fontStyle: "normal",
-                                fontWeight: "400",
-                                fontSize: "12px",
-                                color: "#757575",
-                              }}
-                            >
-                              {orderFromAPI[0] !== undefined &&
-                                orderFromAPI[0].currency}
-                            </Typography>
-                            <Typography variant="h4">
-                              {orderFromAPI[0] !== undefined &&
-                                parseFloat(orderFromAPI[0].grand_total).toFixed(
-                                  decimalPlaces
+                                    </Typography>
+                                  </Stack>
                                 )}
-                            </Typography>
+
+                              {orderFromAPI[0] !== undefined &&
+                                Number(orderFromAPI[0].discount) > 0 && (
+                                  <Stack // discount
+                                    direction={"row"}
+                                    spacing={0.25}
+                                    sx={{
+                                      mt: "14px",
+                                      justifyContent: "end",
+                                      alignItems: "end",
+                                    }}
+                                  >
+                                    <Typography
+                                      sx={{
+                                        fontFamily: "Roboto",
+                                        fontStyle: "normal",
+                                        fontWeight: "400",
+                                        fontSize: "12px",
+                                        color: "#757575",
+                                      }}
+                                    >
+                                      {orderFromAPI[0].currency}
+                                    </Typography>
+                                    <Typography variant="h4">
+                                      {parseFloat(
+                                        orderFromAPI[0].discount
+                                      ).toFixed(decimalPlaces)}
+                                    </Typography>
+                                  </Stack>
+                                )}
+
+                              {orderFromAPI[0] !== undefined && (
+                                <Stack // delivery charges
+                                  direction={"row"}
+                                  spacing={0.25}
+                                  sx={{
+                                    mt: "14px",
+                                    justifyContent: "end",
+                                    alignItems: "end",
+                                  }}
+                                >
+                                  <Typography
+                                    sx={{
+                                      fontFamily: "Roboto",
+                                      fontStyle: "normal",
+                                      fontWeight: "400",
+                                      fontSize: "12px",
+                                      color: "#757575",
+                                    }}
+                                  >
+                                    {orderFromAPI[0].currency}
+                                  </Typography>
+                                  <Typography variant="h4">
+                                    {parseFloat(
+                                      orderFromAPI[0].delivery_charges
+                                    ).toFixed(decimalPlaces)}
+                                  </Typography>
+                                </Stack>
+                              )}
+
+                              {orderFromAPI[0] !== undefined &&
+                                Number(orderFromAPI[0].tax) > 0 && (
+                                  <Stack // tax
+                                    direction={"row"}
+                                    spacing={0.25}
+                                    sx={{
+                                      mt: "14px",
+                                      justifyContent: "end",
+                                      alignItems: "end",
+                                    }}
+                                  >
+                                    <Typography
+                                      sx={{
+                                        fontFamily: "Roboto",
+                                        fontStyle: "normal",
+                                        fontWeight: "400",
+                                        fontSize: "12px",
+                                        color: "#757575",
+                                      }}
+                                    >
+                                      {orderFromAPI[0].currency}
+                                    </Typography>
+                                    <Typography variant="h4">
+                                      {parseFloat(orderFromAPI[0].tax).toFixed(
+                                        decimalPlaces
+                                      )}
+                                    </Typography>
+                                  </Stack>
+                                )}
+
+                              {orderFromAPI[0] !== undefined &&
+                                Number(orderFromAPI[0].tip) > 0 && (
+                                  <Stack // tip
+                                    direction={"row"}
+                                    spacing={0.25}
+                                    sx={{
+                                      mt: "14px",
+                                      justifyContent: "end",
+                                      alignItems: "end",
+                                    }}
+                                  >
+                                    <Typography
+                                      sx={{
+                                        fontFamily: "Roboto",
+                                        fontStyle: "normal",
+                                        fontWeight: "400",
+                                        fontSize: "12px",
+                                        color: "#757575",
+                                      }}
+                                    >
+                                      {orderFromAPI[0].currency}
+                                    </Typography>
+                                    <Typography variant="h4">
+                                      {parseFloat(orderFromAPI[0].tip).toFixed(
+                                        decimalPlaces
+                                      )}
+                                    </Typography>
+                                  </Stack>
+                                )}
+
+                              {orderFromAPI[0] !== undefined &&
+                                Number(orderFromAPI[0].service_charges) > 0 && (
+                                  <Stack // service charges
+                                    direction={"row"}
+                                    spacing={0.25}
+                                    sx={{
+                                      justifyContent: "end",
+                                      alignItems: "end",
+                                    }}
+                                  >
+                                    <Typography
+                                      sx={{
+                                        fontFamily: "Roboto",
+                                        fontStyle: "normal",
+                                        fontWeight: "400",
+                                        fontSize: "12px",
+                                        color: "#757575",
+                                      }}
+                                    >
+                                      {orderFromAPI[0].currency}
+                                    </Typography>
+                                    <Typography variant="h4">
+                                      {parseFloat(
+                                        orderFromAPI[0].service_charges
+                                      ).toFixed(decimalPlaces)}
+                                    </Typography>
+                                  </Stack>
+                                )}
+                            </Stack>
                           </Stack>
-                        </Stack>
-                      </Stack>
+
+                          <Divider
+                            sx={{
+                              m: "24px 0px",
+                              border: " 1px solid rgba(0, 0, 0, 0.06)",
+                            }}
+                          />
+
+                          <Stack
+                            direction={"row"}
+                            justifyContent={"space-between"}
+                          >
+                            <Stack direction={"column"}>
+                              <Stack // total
+                                direction={"row"}
+                                sx={{
+                                  justifyContent: "end",
+                                  ml: "71px",
+                                }}
+                              >
+                                <Typography variant="h4">Total</Typography>
+                              </Stack>
+                            </Stack>
+                            <Stack direction={"column"}>
+                              <Stack // total
+                                direction="row"
+                                spacing={0.25}
+                                sx={{
+                                  justifyContent: "end",
+                                  alignItems: "end",
+                                }}
+                              >
+                                <Typography
+                                  sx={{
+                                    fontFamily: "Roboto",
+                                    fontStyle: "normal",
+                                    fontWeight: "400",
+                                    fontSize: "12px",
+                                    color: "#757575",
+                                  }}
+                                >
+                                  {orderFromAPI[0] !== undefined &&
+                                    orderFromAPI[0].currency}
+                                </Typography>
+                                <Typography variant="h4">
+                                  {orderFromAPI[0] !== undefined &&
+                                    parseFloat(
+                                      orderFromAPI[0].grand_total
+                                    ).toFixed(decimalPlaces)}
+                                </Typography>
+                              </Stack>
+                            </Stack>
+                          </Stack>
+                        </>
+                      )}
                     </Grid>
                   </Box>
                 </MainCard>
