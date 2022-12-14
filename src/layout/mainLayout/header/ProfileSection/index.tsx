@@ -43,12 +43,6 @@ import useConfig from 'hooks/useConfig';
 
 const ProfileSection = () => {
     const {eatout_logo,eatout_username}  =JSON.parse(`${localStorage.getItem('businessInfo')}`);
-//     if (typeof data === 'string') {
-//         const parse = JSON.parse(data)
-//         console.log("eatout_logo",JSON.parse(parse))
-//  // ok
-    
-//     }
     const theme = useTheme();
     const { borderRadius } = useConfig();
     const navigate = useNavigate();
