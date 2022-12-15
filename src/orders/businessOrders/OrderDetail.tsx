@@ -37,7 +37,10 @@ import {
   UserDetailsSkeleton,
   OrderDeliveryDetailsSkeleton,
   TableSkeleton,
+  TableBoxHeaderSkeleton,
   CalculationSectionSkeleton,
+  OrderTimelineSkeleton,
+  MapSectionSkeleton,
 } from "components/skeleton/OrderDetailSkeleton";
 import Notify from "components/Notify";
 import MainCard from "components/cards/MainCard";
@@ -1644,24 +1647,26 @@ const OrderDetail = ({
                     alignItems: "center",
                   }}
                 >
-                  <Typography variant="h1">
-                    Order
-                    {orderFromAPI[0] !== undefined &&
-                      ` ${orderFromAPI[0].order_id}`}
-                  </Typography>
-
                   {orderFromAPI.length === 0 ? (
                     <OrderIdSectionSkeleton />
                   ) : (
-                    <Typography
-                      variant={"subtitle1"}
-                      sx={{ fontWeight: "400", ml: "16px" }}
-                    >
-                      {orderFromAPI[0] !== undefined &&
-                        moment(orderFromAPI[0].date).format(
-                          "MMM Do, YYYY hh:mm a"
-                        )}
-                    </Typography>
+                    <>
+                      <Typography variant="h1">
+                        Order
+                        {orderFromAPI[0] !== undefined &&
+                          ` ${orderFromAPI[0].order_id}`}
+                      </Typography>
+
+                      <Typography
+                        variant={"subtitle1"}
+                        sx={{ fontWeight: "400", ml: "16px" }}
+                      >
+                        {orderFromAPI[0] !== undefined &&
+                          moment(orderFromAPI[0].date).format(
+                            "MMM Do, YYYY hh:mm a"
+                          )}
+                      </Typography>
+                    </>
                   )}
                 </Grid>
 
@@ -1746,7 +1751,7 @@ const OrderDetail = ({
         >
           <Grid container>
             <Grid item xs={12} sx={{ display: "flex" }}>
-              <Grid item xs={8}>
+              <Grid item xs={8.3}>
                 <Box
                   sx={{
                     display: "flex",
@@ -1756,9 +1761,6 @@ const OrderDetail = ({
                     borderRadius: "8px",
                     p: "10px 13px 10px 18px",
                     mb: "12px",
-                    boxSizing: "border-box",
-                    flexDirection: "row",
-                    flexWrap: "wrap",
                   }}
                 >
                   <Grid item xs={10}>
@@ -1845,49 +1847,9 @@ const OrderDetail = ({
                     )}
                   </Grid>
 
-                  <Grid item xs={1}>
-                    <Stack direction="row">
-                      <CustomButton
-                        variant="contained"
-                        startIcon={<EditTwoTone />}
-                        sx={{
-                          background: "#F5F5F5 ",
-                          color: "#212121",
-                          p: "9px 20px",
-
-                          "&:hover": {
-                            backgroundColor: "#F5F5F5",
-                          },
-                        }}
-                        onClick={toggleCustomerDetailModal}
-                      >
-                        Edit
-                      </CustomButton>
-                    </Stack>
-                  </Grid>
-                </Box>
-
-                <Box
-                  sx={{
-                    border: "1px solid #EEEEEE",
-                    borderRadius: "8px",
-                    p: "17px 12px 24px 16px",
-                    mb: "16px",
-                    boxSizing: "border-box",
-                  }}
-                >
-                  <Stack direction="column">
-                    <Stack // delivery details heading stack
-                      direction="row"
-                      sx={{
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <Stack direction="row">
-                        <Typography variant="h4">Delivery Details</Typography>
-                      </Stack>
-                      <Stack>
+                  <Grid item xs={2}>
+                    <Stack direction="row" sx={{ justifyContent: "end" }}>
+                      {orderFromAPI.length > 0 && ( // to hide button for  skeleton loader
                         <CustomButton
                           variant="contained"
                           startIcon={<EditTwoTone />}
@@ -1904,13 +1866,57 @@ const OrderDetail = ({
                         >
                           Edit
                         </CustomButton>
-                      </Stack>
+                      )}
                     </Stack>
+                  </Grid>
+                </Box>
 
+                <Box
+                  sx={{
+                    border: "1px solid #EEEEEE",
+                    borderRadius: "8px",
+                    p: "17px 12px 24px 16px",
+                    mb: "16px",
+                    boxSizing: "border-box",
+                  }}
+                >
+                  <Stack direction="column">
                     {orderFromAPI.length === 0 ? (
                       <OrderDeliveryDetailsSkeleton />
                     ) : (
                       <>
+                        <Stack // delivery details heading stack
+                          direction="row"
+                          sx={{
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <Stack direction="row">
+                            <Typography variant="h4">
+                              Delivery Details
+                            </Typography>
+                          </Stack>
+                          <Stack>
+                            <CustomButton
+                              variant="contained"
+                              startIcon={<EditTwoTone />}
+                              sx={{
+                                background: "#F5F5F5 ",
+                                color: "#212121",
+                                p: "9px 20px",
+
+                                "&:hover": {
+                                  backgroundColor: "#F5F5F5",
+                                },
+                              }}
+                              onClick={toggleCustomerDetailModal}
+                            >
+                              Edit
+                            </CustomButton>
+                          </Stack>
+                        </Stack>
+
                         <Stack // address stack
                           direction="row"
                           sx={{ mt: "15px" }}
@@ -2016,66 +2022,72 @@ const OrderDetail = ({
                         alignItems: "center",
                       }}
                     >
-                      <Typography variant={"h4"}>Order Items</Typography>
-                      <Stack direction={"row"} spacing={1.5}>
-                        {cancelUpdateButtonToggle && (
-                          <>
+                      {orderFromAPI.length === 0 ? (
+                        <TableBoxHeaderSkeleton />
+                      ) : (
+                        <>
+                          <Typography variant={"h4"}>Order Items</Typography>
+                          <Stack direction={"row"} spacing={1.5}>
+                            {cancelUpdateButtonToggle && (
+                              <>
+                                <CustomButton
+                                  variant="contained"
+                                  color="secondary"
+                                  onClick={cancelOrderUpdate}
+                                  sx={{
+                                    p: "10px 23px",
+                                    fontFamily: "Roboto",
+                                    fontStyle: "normal",
+                                    fontWeight: 500,
+                                    fontSize: "13px",
+                                    backgroundColor: "#D84315",
+
+                                    "&:hover": {
+                                      backgroundColor: "#D84315",
+                                    },
+                                  }}
+                                >
+                                  Cancel Update
+                                </CustomButton>
+                                <CustomButton
+                                  variant="contained"
+                                  color="secondary"
+                                  onClick={updateOrder}
+                                  sx={{
+                                    p: "10px 26px",
+                                    fontFamily: "Roboto",
+                                    fontStyle: "normal",
+                                    fontWeight: 500,
+                                    fontSize: "13px",
+                                    backgroundColor: "#24335E",
+
+                                    "&:hover": {
+                                      backgroundColor: "#24335E",
+                                    },
+                                  }}
+                                >
+                                  Update Order
+                                </CustomButton>
+                              </>
+                            )}
                             <CustomButton
                               variant="contained"
                               color="secondary"
-                              onClick={cancelOrderUpdate}
+                              startIcon={<AddTwoTone />}
+                              onClick={addItemClick}
                               sx={{
-                                p: "10px 23px",
+                                p: "10px 24px",
                                 fontFamily: "Roboto",
                                 fontStyle: "normal",
                                 fontWeight: 500,
                                 fontSize: "13px",
-                                backgroundColor: "#D84315",
-
-                                "&:hover": {
-                                  backgroundColor: "#D84315",
-                                },
                               }}
                             >
-                              Cancel Update
+                              Add Item
                             </CustomButton>
-                            <CustomButton
-                              variant="contained"
-                              color="secondary"
-                              onClick={updateOrder}
-                              sx={{
-                                p: "10px 26px",
-                                fontFamily: "Roboto",
-                                fontStyle: "normal",
-                                fontWeight: 500,
-                                fontSize: "13px",
-                                backgroundColor: "#24335E",
-
-                                "&:hover": {
-                                  backgroundColor: "#24335E",
-                                },
-                              }}
-                            >
-                              Update Order
-                            </CustomButton>
-                          </>
-                        )}
-                        <CustomButton
-                          variant="contained"
-                          color="secondary"
-                          startIcon={<AddTwoTone />}
-                          onClick={addItemClick}
-                          sx={{
-                            p: "10px 24px",
-                            fontFamily: "Roboto",
-                            fontStyle: "normal",
-                            fontWeight: 500,
-                            fontSize: "13px",
-                          }}
-                        >
-                          Add Item
-                        </CustomButton>
-                      </Stack>
+                          </Stack>
+                        </>
+                      )}
                     </Stack>
                   }
                 >
@@ -2571,47 +2583,70 @@ const OrderDetail = ({
                 </MainCard>
               </Grid>
 
-              <Grid item xs={4} sx={{ ml: "19px" }}>
-                <OrderStatusAction // order  status component
-                  selectedOrder={selectedOrder}
-                  order_id={selectedOrder.order_id}
-                  user_email={selectedOrder.user_email}
-                />
-
-                <MainCard // google map card
-                  dividerSX={{ m: "0px 0px 18px 0px !important" }}
-                  headerSX={{ p: "unset !important", mb: "24px" }}
-                  contentSX={{
-                    "& .MuiCardContent-root": {
-                      p: "unset !important",
-                    },
-                    m: "unset",
-                    p: "unset !important",
-                  }}
-                  sx={{
-                    m: "unset",
-                    p: "24px 16px",
-                    borderColor: "#EEEEEE",
-                  }}
-                  title={<Typography variant="h4">Geo Location</Typography>}
-                >
-                  <GoogleMapFrame
-                    longitude={
-                      orderFromAPI[0] !== undefined
-                        ? orderFromAPI[0].user_latitude
-                        : ""
-                    }
-                    latitude={
-                      orderFromAPI[0] !== undefined
-                        ? orderFromAPI[0].user_latitude
-                        : ""
-                    }
-                    title={""}
-                    width={"100%"}
-                    height={"279px"}
-                    style={{ border: "none", borderRadius: "8px" }}
+              <Grid item xs={3.7} sx={{ ml: "19px" }}>
+                {orderFromAPI.length === 0 ? (
+                  <Box
+                    sx={{
+                      p: "0px 16px 24px 16px",
+                      border: "1px solid #EEEEEE",
+                      mb: "24px",
+                    }}
+                  >
+                    <OrderTimelineSkeleton />
+                  </Box>
+                ) : (
+                  <OrderStatusAction // order  status component
+                    selectedOrder={selectedOrder}
+                    order_id={selectedOrder.order_id}
+                    user_email={selectedOrder.user_email}
                   />
-                </MainCard>
+                )}
+
+                {orderFromAPI.length === 0 ? (
+                  <Box
+                    sx={{
+                      p: "24px 16px",
+                      border: "1px solid #EEEEEE",
+                    }}
+                  >
+                    <MapSectionSkeleton />
+                  </Box>
+                ) : (
+                  <MainCard // google map card
+                    dividerSX={{ m: "0px 0px 18px 0px !important" }}
+                    headerSX={{ p: "unset !important", mb: "24px" }}
+                    contentSX={{
+                      "& .MuiCardContent-root": {
+                        p: "unset !important",
+                      },
+                      m: "unset",
+                      p: "unset !important",
+                    }}
+                    sx={{
+                      m: "unset",
+                      p: "24px 16px",
+                      borderColor: "#EEEEEE",
+                    }}
+                    title={<Typography variant="h4">Geo Location</Typography>}
+                  >
+                    <GoogleMapFrame
+                      longitude={
+                        orderFromAPI[0] !== undefined
+                          ? orderFromAPI[0].user_latitude
+                          : ""
+                      }
+                      latitude={
+                        orderFromAPI[0] !== undefined
+                          ? orderFromAPI[0].user_latitude
+                          : ""
+                      }
+                      title={""}
+                      width={"100%"}
+                      height={"279px"}
+                      style={{ border: "none", borderRadius: "8px" }}
+                    />
+                  </MainCard>
+                )}
               </Grid>
             </Grid>
           </Grid>
