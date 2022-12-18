@@ -61,25 +61,10 @@ const ProfileSection = () => {
   const anchorRef = useRef<any>(null);
 
   const handleLogout = async () => {
-    try {
-      await logout();
-    } catch (err) {
-      console.error(err);
-    }
+    navigate("/");
+    localStorage.removeItem("businessInfo");
+    localStorage.removeItem("tdLogin");
   };
-
-  //   const handleListItemClick = (
-  //     event: React.MouseEvent<HTMLDivElement>,
-  //     index: number,
-  //     route: string = ""
-  //   ) => {
-  //     setSelectedIndex(index);
-  //     handleClose(event);
-
-  //     if (route && route !== "") {
-  //       navigate(route);
-  //     }
-  //   };
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
