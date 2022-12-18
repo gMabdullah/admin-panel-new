@@ -43,7 +43,6 @@ import Notify from "components/Notify";
 import MainCard from "components/cards/MainCard";
 import CustomButton from "components/CustomButton";
 import GoogleMapFrame from "components/GoogleMapFrame";
-// import ExcelExport from "components/ExcelExport";
 import TdTextField from "components/TdTextField";
 import Progress from "components/Progress";
 import CustomRadioButton from "components/CustomRadioButton";
@@ -53,12 +52,12 @@ import {
   DWP_BUSINESS_ID,
   DWP_STAGING_BUSINESS_ID,
   AMANAT_STAGING_BUSINESS_ID,
+  OrderDetailColumns
 } from "constants/BusinessIds";
 import { OptionSetContext } from "orders/context/OptionSetContext";
 import { toCapitalizeFirstLetter } from "orders/HelperFunctions";
 
 import OrderStatusAction from "./OrderStatusAction";
-// import AddEditItemModal from "./AddEditItemModal";
 import { useSelector } from "store";
 import moment from "moment";
 
@@ -105,22 +104,6 @@ const useStyles = makeStyles(() => ({
     paddingLeft: "unset !important",
   },
 }));
-
-const tableData = [
-  { header: "Item #", key: "item_no" },
-  { header: "Category", key: "category" },
-  { header: "Item ID", key: "item_id" },
-  { header: "Item Name", key: "item_name" },
-  { header: "Brand", key: "brand" },
-  { header: "Quantity", key: "quantity" },
-  { header: "Weight", key: "weight" },
-  { header: "Price", key: "price" },
-  { header: "Amount", key: "amount" },
-  { header: "Total", key: "total" },
-  { header: "Options", key: "options" },
-  { header: "Note", key: "note" },
-  { header: "Instructions", key: "instructions" },
-];
 
 interface orderDetailsProps {
   selectedOrder: SelectedOrderDetailTypes;
@@ -1586,13 +1569,11 @@ const OrderDetail = ({
       });
     setTotalWeight(tWeight);
   };
-  
+
   // load add item when it's needed
   const AddEditItemModal = lazy(() => (
     import("./AddEditItemModal")
-      .then(AddEditItemModal => (
-        AddEditItemModal
-      ))
+      .then(AddEditItemModal => AddEditItemModal)
   ));
 
   // load export excel when  it's needed
@@ -1609,6 +1590,17 @@ const OrderDetail = ({
           type={notifyType}
           notify={notify}
           closeNotify={closeNotify}
+        />
+      )}
+
+      {/* Add edit item modal */}
+      {openAddEditItemModal && (
+        <AddEditItemModal
+          openAddEditItemModal={openAddEditItemModal}
+          setAddEditItemModal={setAddEditItemModal}
+          getNewItemCallback={getNewItemCallback}
+          getEditItemCallback={getEditItemCallback}
+          editItemFlag={editItemFlag}
         />
       )}
 
@@ -1687,7 +1679,7 @@ const OrderDetail = ({
                   }}
                 >
                   <ExcelExport
-                    tableData={tableData}
+                    tableData={OrderDetailColumns}
                     orderDetailData={(() => {
                       if (!orderFromAPI[0]) return [];
                       return orderFromAPI[0].order_detail;
@@ -2832,16 +2824,6 @@ const OrderDetail = ({
           </CardContent>
         </MainCard>
       </Modal>
-
-      {openAddEditItemModal && (
-        <AddEditItemModal
-          openAddEditItemModal={openAddEditItemModal}
-          setAddEditItemModal={setAddEditItemModal}
-          getNewItemCallback={getNewItemCallback}
-          getEditItemCallback={getEditItemCallback}
-          editItemFlag={editItemFlag}
-        />
-      )}
     </>
   );
 };

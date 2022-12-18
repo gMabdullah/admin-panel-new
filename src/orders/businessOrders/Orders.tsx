@@ -15,7 +15,6 @@ import { SelectChangeEvent } from "@mui/material/Select";
 
 import MainCard from "components/cards/MainCard";
 import CustomButton from "components/CustomButton";
-// import ExcelExport from "components/ExcelExport";
 import TdTextField from "components/TdTextField";
 import Progress from "components/Progress";
 import MultiSelectDropDown, {
@@ -25,10 +24,8 @@ import { OrderListingSkeleton } from "components/skeleton/OrderListingSkeleton";
 import { OrderListingNoRowsOverlay } from "components/skeleton/OrderListingNoRowsOverlay";
 
 import { OptionSetProvider } from "orders/context/OptionSetContext";
-import { IQBAL_BUSINESS_ID } from "constants/BusinessIds";
+import { IQBAL_BUSINESS_ID, orderListingColumns, ordersType } from "constants/BusinessIds";
 import { setDate, setGlobalSettings } from "store/slices/Main";
-
-// import OrderDetail from "./OrderDetail";
 import { useDispatch, useSelector } from "store";
 import moment from "moment";
 
@@ -52,33 +49,6 @@ const useStyles = makeStyles(() => ({
 export const applyDates = (refetch: any) => {
   return refetch;
 };
-
-const ordersType = [
-  { value: "", label: "All Order Type" },
-  { value: "1", label: "Pick Up" },
-  { value: "0", label: "Delivery" },
-  { value: "1", label: "Canada Post" },
-];
-
-export const tableData = [
-  { header: "Order ID", key: "order_id" },
-  { header: "Date", key: "date" },
-  { header: "Name", key: "name" },
-  { header: "Note", key: "note" },
-  { header: "Tip", key: "tip" },
-  { header: "Payment Method", key: "payment_type" },
-  { header: "Grand Total", key: "grand_total" },
-  { header: "Status", key: "status" },
-  { header: "Source", key: "source" },
-  { header: "Area", key: "user_area" },
-  { header: "Address", key: "address" },
-  { header: "City", key: "user_city" },
-  { header: "Tel #", key: "landline_number" },
-  { header: "Mobile No", key: "mobile_number" },
-  { header: "CNIC", key: "cnic" },
-  { header: "Email", key: "user_email" },
-  { header: "Status Comment", key: "statuscomment" },
-];
 
 export let last48Hours = true;
 
@@ -851,7 +821,7 @@ const Orders = () => {
                   Packing Slip
                 </CustomButton>
                 <ExcelExport
-                  tableData={tableData}
+                  tableData={orderListingColumns}
                   orderListData={orders}
                   exportType={"OrdersList"}
                 />
