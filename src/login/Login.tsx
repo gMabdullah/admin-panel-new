@@ -8,10 +8,7 @@ import Notify from "components/Notify";
 import Logo from "assets/Logo";
 import { useNavigate } from "react-router-dom";
 
-import useAxios, { configure } from "axios-hooks";
-import { axios } from "config";
-
-configure({ axios });
+import useAxios from "axios-hooks";
 
 const styles = {
   paper: {

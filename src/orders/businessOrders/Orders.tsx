@@ -32,10 +32,7 @@ import OrderDetail from "./OrderDetail";
 import { useDispatch, useSelector } from "store";
 import moment from "moment";
 
-import useAxios, { configure } from "axios-hooks";
-import { axios } from "config";
-
-configure({ axios });
+import useAxios from "axios-hooks";
 
 const useStyles = makeStyles(() => ({
   colStyle1: {

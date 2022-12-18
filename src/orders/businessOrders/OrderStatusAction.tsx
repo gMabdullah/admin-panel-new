@@ -23,10 +23,7 @@ import { OptionSetContext } from "orders/context/OptionSetContext";
 
 import StatusActionButton from "./StatusActionButton";
 
-import useAxios, { configure } from "axios-hooks";
-import { axios } from "config";
-
-configure({ axios });
+import useAxios from "axios-hooks";
 
 const useStyles = makeStyles(() => ({
   TimeLineRoot: {

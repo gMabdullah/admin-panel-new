@@ -10,10 +10,8 @@ import { OrderTimelineProp } from "./OrderStatusAction";
 import { useSelector } from "store";
 import { IQBAL_BUSINESS_ID } from "constants/BusinessIds";
 
-import useAxios, { configure } from "axios-hooks";
-import { axios, PRE_AUTH_CONFIRM_PAYMENT, TOSSDOWN_SITE } from "config";
-
-configure({ axios });
+import useAxios from "axios-hooks";
+import { PRE_AUTH_CONFIRM_PAYMENT, TOSSDOWN_SITE } from "config";
 
 // Local Storage
 const { eatout_id, user_id } = JSON.parse(

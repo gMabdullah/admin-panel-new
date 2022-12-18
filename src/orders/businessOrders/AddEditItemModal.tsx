@@ -26,10 +26,7 @@ import { OptionSetContext } from "orders/context/OptionSetContext";
 
 import SelectOptionSet from "./SelectOptionSet";
 
-import useAxios, { configure } from "axios-hooks";
-import { axios } from "config";
-
-configure({ axios });
+import useAxios from "axios-hooks";
 
 interface AddEditItemProps {
   setAddEditItemModal: React.Dispatch<React.SetStateAction<boolean>>;

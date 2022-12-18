@@ -62,10 +62,8 @@ import AddEditItemModal from "./AddEditItemModal";
 import { useSelector } from "store";
 import moment from "moment";
 
-import useAxios, { configure } from "axios-hooks";
-import { axios } from "config";
+import useAxios from "axios-hooks";
 
-configure({ axios });
 
 const useStyles = makeStyles(() => ({
   backDrop: {
