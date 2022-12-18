@@ -1,68 +1,39 @@
-import React, { lazy, useContext, useEffect, useState } from "react";
+import useAxios from 'axios-hooks';
+import MainCard from 'components/cards/MainCard';
+import CustomButton from 'components/CustomButton';
+import CustomRadioButton from 'components/CustomRadioButton';
+import GoogleMapFrame from 'components/GoogleMapFrame';
+import Notify from 'components/Notify';
+import Progress from 'components/Progress';
+import {
+    CalculationSectionSkeleton, OrderDeliveryDetailsSkeleton, OrderIdSectionSkeleton, TableSkeleton,
+    UserDetailsSkeleton
+} from 'components/skeleton/OrderDetailSkeleton';
+import TdTextField from 'components/TdTextField';
+import {
+    AMANAT_BUSINESS_ID, AMANAT_STAGING_BUSINESS_ID, DWP_BUSINESS_ID, DWP_STAGING_BUSINESS_ID,
+    OrderDetailColumns
+} from 'constants/BusinessIds';
+import moment from 'moment';
+import { OptionSetContext } from 'orders/context/OptionSetContext';
+import { toCapitalizeFirstLetter } from 'orders/HelperFunctions';
+import React, { lazy, useContext, useEffect, useState } from 'react';
+import { useSelector } from 'store';
 
 import {
-  GridColumns,
-  DataGrid,
-  GridActionsCellItem,
-  GridRowParams,
-  GridSelectionModel,
-  GridRenderCellParams,
-} from "@mui/x-data-grid";
-import { makeStyles } from "@mui/styles";
+    AccountCircleTwoTone, AddTwoTone, DeleteTwoTone, EditTwoTone, HighlightOffTwoTone,
+    PictureAsPdfTwoTone, PinDropTwoTone, PrintTwoTone, SmartphoneTwoTone
+} from '@mui/icons-material';
 import {
-  Typography,
-  Stack,
-  Box,
-  Grid,
-  Divider,
-  Modal,
-  IconButton,
-  CardContent,
-  Skeleton,
-} from "@mui/material";
+    Box, CardContent, Divider, Grid, IconButton, Modal, Skeleton, Stack, Typography
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import {
-  AddTwoTone,
-  PictureAsPdfTwoTone,
-  PrintTwoTone,
-  AccountCircleTwoTone,
-  SmartphoneTwoTone,
-  PinDropTwoTone,
-  DeleteTwoTone,
-  EditTwoTone,
-  HighlightOffTwoTone,
-} from "@mui/icons-material";
+    DataGrid, GridActionsCellItem, GridColumns, GridRenderCellParams, GridRowParams,
+    GridSelectionModel
+} from '@mui/x-data-grid';
 
-import {
-  OrderIdSectionSkeleton,
-  UserDetailsSkeleton,
-  OrderDeliveryDetailsSkeleton,
-  TableSkeleton,
-  CalculationSectionSkeleton,
-} from "components/skeleton/OrderDetailSkeleton";
-import Notify from "components/Notify";
-import MainCard from "components/cards/MainCard";
-import CustomButton from "components/CustomButton";
-import GoogleMapFrame from "components/GoogleMapFrame";
-import TdTextField from "components/TdTextField";
-import Progress from "components/Progress";
-import CustomRadioButton from "components/CustomRadioButton";
-
-import {
-  AMANAT_BUSINESS_ID,
-  DWP_BUSINESS_ID,
-  DWP_STAGING_BUSINESS_ID,
-  AMANAT_STAGING_BUSINESS_ID,
-  OrderDetailColumns
-} from "constants/BusinessIds";
-import { OptionSetContext } from "orders/context/OptionSetContext";
-import { toCapitalizeFirstLetter } from "orders/HelperFunctions";
-
-import OrderStatusAction from "./OrderStatusAction";
-import { useSelector } from "store";
-import moment from "moment";
-
-import useAxios from "axios-hooks";
-
+import OrderStatusAction from './OrderStatusAction';
 
 const useStyles = makeStyles(() => ({
   backDrop: {
