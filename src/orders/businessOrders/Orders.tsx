@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, lazy } from "react";
 
 import { makeStyles } from "@mui/styles";
 import {
@@ -15,7 +15,7 @@ import { SelectChangeEvent } from "@mui/material/Select";
 
 import MainCard from "components/cards/MainCard";
 import CustomButton from "components/CustomButton";
-import ExcelExport from "components/ExcelExport";
+// import ExcelExport from "components/ExcelExport";
 import TdTextField from "components/TdTextField";
 import Progress from "components/Progress";
 import MultiSelectDropDown, {
@@ -28,7 +28,7 @@ import { OptionSetProvider } from "orders/context/OptionSetContext";
 import { IQBAL_BUSINESS_ID } from "constants/BusinessIds";
 import { setDate, setGlobalSettings } from "store/slices/Main";
 
-import OrderDetail from "./OrderDetail";
+// import OrderDetail from "./OrderDetail";
 import { useDispatch, useSelector } from "store";
 import moment from "moment";
 
@@ -433,7 +433,7 @@ const Orders = () => {
       })
     );
   }, [startDate, endDate]);
-
+  
   //======================================= Handlers Functions =======================================//
 
   const handleSearchChange = async (e: { target: { value: string } }) => {
@@ -764,9 +764,31 @@ const Orders = () => {
     setPageSize(pageSizeNo);
   };
 
+  // load Order Details when  it's needed
+  const OrderDetail = lazy(() => (
+    import("./OrderDetail")
+      .then(OrderDetail => (
+        OrderDetail
+      ))
+  ));
+
+  // load excel export when  it's needed
+  const ExcelExport = lazy(() => (
+    import("components/ExcelExport")
+      .then(ExcelExport => ExcelExport)
+  ));
   return (
-    <>
-      <OptionSetProvider>
+    <OptionSetProvider>
+        <>
+         {/* Order Detail modal */}
+         {orderDetailModal && 
+          <OrderDetail
+            selectedOrder={selectedOrder}
+            orderDetailModal={orderDetailModal}
+            setOrderDetailModal={setOrderDetailModal}
+            setSelectionModel={setSelectionModel}
+          />
+        }
         <MainCard
           title={
             <Grid container spacing={2}>
@@ -953,19 +975,10 @@ const Orders = () => {
               }}
             />
           </Box>
-
-          {/* Order Detail modal */}
-          {orderDetailModal && (
-            <OrderDetail
-              selectedOrder={selectedOrder}
-              orderDetailModal={orderDetailModal}
-              setOrderDetailModal={setOrderDetailModal}
-              setSelectionModel={setSelectionModel}
-            />
-          )}
+          
         </MainCard>
+      </>
       </OptionSetProvider>
-    </>
   );
 };
 

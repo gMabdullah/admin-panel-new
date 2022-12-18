@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { lazy, useContext, useEffect, useState } from "react";
 
 import {
   GridColumns,
@@ -43,7 +43,7 @@ import Notify from "components/Notify";
 import MainCard from "components/cards/MainCard";
 import CustomButton from "components/CustomButton";
 import GoogleMapFrame from "components/GoogleMapFrame";
-import ExcelExport from "components/ExcelExport";
+// import ExcelExport from "components/ExcelExport";
 import TdTextField from "components/TdTextField";
 import Progress from "components/Progress";
 import CustomRadioButton from "components/CustomRadioButton";
@@ -58,7 +58,7 @@ import { OptionSetContext } from "orders/context/OptionSetContext";
 import { toCapitalizeFirstLetter } from "orders/HelperFunctions";
 
 import OrderStatusAction from "./OrderStatusAction";
-import AddEditItemModal from "./AddEditItemModal";
+// import AddEditItemModal from "./AddEditItemModal";
 import { useSelector } from "store";
 import moment from "moment";
 
@@ -1586,7 +1586,21 @@ const OrderDetail = ({
       });
     setTotalWeight(tWeight);
   };
+  
+  // load add item when it's needed
+  const AddEditItemModal = lazy(() => (
+    import("./AddEditItemModal")
+      .then(AddEditItemModal => (
+        AddEditItemModal
+      ))
+  ));
 
+  // load export excel when  it's needed
+  const ExcelExport = lazy(() => (
+    import("components/ExcelExport")
+      .then(ExcelExport => ExcelExport)
+  ));
+  // returns start
   return (
     <>
       {notify && (
