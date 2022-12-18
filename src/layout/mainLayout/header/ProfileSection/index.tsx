@@ -6,54 +6,34 @@ import { useTheme } from "@mui/material/styles";
 import {
   Avatar,
   Box,
-  Card,
-  CardContent,
   Chip,
   ClickAwayListener,
-  Divider,
-  Grid,
-  InputAdornment,
   List,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  OutlinedInput,
   Paper,
   Popper,
-  Stack,
-  Switch,
   Typography,
 } from "@mui/material";
-
-// third-party
-import PerfectScrollbar from "react-perfect-scrollbar";
 
 // project imports
 import MainCard from "components/cards/MainCard";
 import Transitions from "components/extended/Transitions";
 
-import useAuth from "hooks/useAuth";
-import User1 from "assets/images/users/user-round.svg";
-
 // assets
-import { IconLogout, IconSearch, IconSettings, IconUser } from "@tabler/icons";
+import { IconLogout, IconSettings } from "@tabler/icons";
 import useConfig from "hooks/useConfig";
 
 // ==============================|| PROFILE MENU ||============================== //
 
 const ProfileSection = () => {
-  const { eatout_logo, eatout_username } = JSON.parse(
-    `${localStorage.getItem("businessInfo")}`
-  );
+  const { eatout_logo } = JSON.parse(`${localStorage.getItem("businessInfo")}`);
+
   const theme = useTheme();
   const { borderRadius } = useConfig();
   const navigate = useNavigate();
 
-  const [sdm, setSdm] = useState(true);
-  const [value, setValue] = useState("");
-  const [notification, setNotification] = useState(false);
-  const [selectedIndex, setSelectedIndex] = useState(-1);
-  const { logout, user } = useAuth();
   const [open, setOpen] = useState(false);
   /**
    * anchorRef is used on different components and specifying one type leads to other components throwing an error
@@ -186,7 +166,6 @@ const ProfileSection = () => {
                       >
                         <ListItemButton
                           sx={{ borderRadius: `${borderRadius}px` }}
-                          selected={selectedIndex === 4}
                           onClick={handleLogout}
                         >
                           <ListItemIcon>
