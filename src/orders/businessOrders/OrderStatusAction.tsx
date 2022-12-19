@@ -1,8 +1,15 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 
 import { makeStyles } from "@mui/styles";
-import { Typography, Stack, Divider, Modal, Box } from "@mui/material";
-
+import {
+  Typography,
+  Stack,
+  Divider,
+  Modal,
+  Box,
+  IconButton,
+} from "@mui/material";
+import { HighlightOffTwoTone } from "@mui/icons-material";
 import {
   Timeline,
   TimelineConnector,
@@ -290,7 +297,8 @@ const OrderStatusAction = ({
           closeNotify={closeNotify}
         />
       )}
-      <MainCard
+
+      <MainCard // order status timeline card
         dividerSX={{ m: "0px 0px 0px 0px !important" }}
         headerSX={{ p: "unset !important", mb: "24px" }}
         contentSX={{
@@ -439,6 +447,8 @@ const OrderStatusAction = ({
         onClose={toggleEmailNotificationModal}
       >
         <MainCard
+          dividerSX={{ m: "0px 0px 33px 0px !important" }}
+          headerSX={{ p: "unset !important", mb: "18px" }}
           contentSX={{
             "& .MuiCardContent-root": {
               p: "unset !important",
@@ -452,61 +462,47 @@ const OrderStatusAction = ({
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: "35vw",
+            width: "50vw",
             p: "40px",
             border: "none",
           }}
+          title={
+            <Stack
+              direction="row"
+              sx={{ justifyContent: "space-between", alignItems: "center" }}
+            >
+              <Typography variant="h3">Notify the customer</Typography>
+
+              <IconButton
+                sx={{ p: "unset", ml: "5px" }}
+                onClick={toggleEmailNotificationModal}
+              >
+                <HighlightOffTwoTone
+                  sx={{ color: "#D84315" }}
+                  fontSize="large"
+                />
+              </IconButton>
+            </Stack>
+          }
         >
           <Stack>
-            <Stack>
-              <Typography
-                sx={{
-                  fontFamily: "Roboto",
-                  fontStyle: "normal",
-                  fontWeight: 700,
-                  fontSize: "20px",
-                  color: "#212121",
-                  mb: "24px",
-                }}
-              >
-                Are You Sure You want to Notify the Status to the Customer?
-              </Typography>
-            </Stack>
-
-            <Stack mb="48px">
+            <Stack mb="32px">
               <TdTextField
-                label="Notification message"
-                placeholder="Your message here"
+                label="Your comment"
+                placeholder="Your comment here..."
                 value={comment}
                 onChange={handleComment}
               />
             </Stack>
 
-            <Stack direction="row" sx={{ justifyContent: "end" }} spacing={1.5}>
+            <Stack direction="row" sx={{ justifyContent: "end" }}>
               <CustomButton
                 color={"secondary"}
                 variant={"contained"}
-                sx={{
-                  background: "#F5F5F5 ",
-                  color: "#212121",
-                  p: "12px 57px",
-
-                  "&:hover": {
-                    backgroundColor: "#F5F5F5",
-                  },
-                }}
-                onClick={toggleEmailNotificationModal}
-              >
-                No
-              </CustomButton>
-
-              <CustomButton
-                color={"secondary"}
-                variant={"contained"}
-                sx={{ p: "12px 35px" }}
+                sx={{ p: "13px 47px" }}
                 onClick={sendEmailNotification}
               >
-                Yes, Notify
+                Notify
               </CustomButton>
             </Stack>
           </Stack>

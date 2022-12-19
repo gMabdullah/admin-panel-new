@@ -2244,18 +2244,15 @@ const OrderDetail = ({
                                   sx={{ display: "flex", alignItems: "end" }}
                                 >
                                   Delivery Charges
-                                  {selectedOrderContext.status ===
-                                    "Pending" && (
-                                    <IconButton
-                                      sx={{ p: "unset", ml: "5px" }}
-                                      onClick={openDeliveryModal}
-                                    >
-                                      <EditTwoTone
-                                        sx={{ fontSize: "1.3rem" }}
-                                      />
-                                    </IconButton>
-                                  )}
                                 </Typography>
+                                {selectedOrderContext.status === "Pending" && (
+                                  <IconButton
+                                    sx={{ p: "unset", ml: "5px" }}
+                                    onClick={openDeliveryModal}
+                                  >
+                                    <EditTwoTone sx={{ fontSize: "1.3rem" }} />
+                                  </IconButton>
+                                )}
                               </Stack>
 
                               {orderFromAPI[0] !== undefined &&
