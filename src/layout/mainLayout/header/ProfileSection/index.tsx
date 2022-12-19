@@ -27,9 +27,6 @@ const ProfileSection = () => {
 
   const theme = useTheme();
   const [open, setOpen] = useState(false);
-  /**
-   * anchorRef is used on different components and specifying one type leads to other components throwing an error
-   * */
   const anchorRef = useRef<any>(null);
 
   const handleToggle = () => {
