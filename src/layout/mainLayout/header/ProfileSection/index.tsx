@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 // material-ui
 import { useTheme } from "@mui/material/styles";
@@ -9,20 +8,17 @@ import {
   Chip,
   ClickAwayListener,
   List,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
   Paper,
   Popper,
-  Typography,
 } from "@mui/material";
 
 // project imports
 import MainCard from "components/cards/MainCard";
 import Transitions from "components/extended/Transitions";
+import Logout from "./Logout";
 
 // assets
-import { IconLogout, IconSettings } from "@tabler/icons";
+import { IconSettings } from "@tabler/icons";
 
 // ==============================|| PROFILE MENU ||============================== //
 
@@ -30,19 +26,11 @@ const ProfileSection = () => {
   const { eatout_logo } = JSON.parse(`${localStorage.getItem("businessInfo")}`);
 
   const theme = useTheme();
-  const navigate = useNavigate();
-
   const [open, setOpen] = useState(false);
   /**
    * anchorRef is used on different components and specifying one type leads to other components throwing an error
    * */
   const anchorRef = useRef<any>(null);
-
-  const handleLogout = async () => {
-    navigate("/");
-    localStorage.removeItem("businessInfo");
-    localStorage.removeItem("tdLogin");
-  };
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
@@ -162,19 +150,7 @@ const ProfileSection = () => {
                           },
                         }}
                       >
-                        <ListItemButton
-                          sx={{ borderRadius: "8px" }}
-                          onClick={handleLogout}
-                        >
-                          <ListItemIcon>
-                            <IconLogout stroke={1.5} size="20px" />
-                          </ListItemIcon>
-                          <ListItemText
-                            primary={
-                              <Typography variant="body2">Logout</Typography>
-                            }
-                          />
-                        </ListItemButton>
+                        <Logout />
                       </List>
                     </Box>
                   </MainCard>
