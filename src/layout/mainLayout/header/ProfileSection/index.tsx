@@ -28,6 +28,7 @@ const ProfileSection = () => {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
   const anchorRef = useRef<any>(null);
+  const prevOpen = useRef(open);
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
@@ -42,8 +43,6 @@ const ProfileSection = () => {
 
     setOpen(false);
   };
-
-  const prevOpen = useRef(open);
 
   useEffect(() => {
     if (prevOpen.current === true && open === false) {
