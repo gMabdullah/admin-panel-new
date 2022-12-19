@@ -310,15 +310,7 @@ const OrderStatusAction = ({
             direction="row"
             sx={{ justifyContent: "space-between", alignItems: "center" }}
           >
-            <Stack spacing={1} direction={"row"} sx={{ alignItems: "center" }}>
-              {" "}
-              <Typography variant="h4">Order Status</Typography>
-              <Box>
-                {(loadingTimeline || getNotifyLoader) && (
-                  <Progress type="circle" />
-                )}
-              </Box>
-            </Stack>
+            <Typography variant="h4">Order Status</Typography>
 
             {selectedOrderContext.pre_auth === "1" && (
               <Stack>
