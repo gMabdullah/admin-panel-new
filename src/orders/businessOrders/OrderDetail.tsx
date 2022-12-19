@@ -1499,11 +1499,12 @@ const OrderDetail = ({
 
   const closeDetailModal = () => {
     if (!cancelUpdateButtonToggle) {
+      // if order is not in updating state
       setOrderDetailModal((state) => !state);
       setSelectionModel([]);
     } else {
       setNotifyMessage("Cancel/Update order to proceed");
-      setNotifyType("warning");
+      setNotifyType("error");
       setNotify(true);
     }
   };
@@ -1605,6 +1606,7 @@ const OrderDetail = ({
 
       <Modal // Order Detail Modal
         open={orderDetailModal}
+        onClose={closeDetailModal}
         className={classes.modalStyle1}
         BackdropProps={{
           classes: {
