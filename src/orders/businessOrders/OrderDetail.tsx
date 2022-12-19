@@ -2537,8 +2537,12 @@ const OrderDetail = ({
                                 direction={"row"}
                                 sx={{
                                   justifyContent: "end",
-                                  ml: "71px",
                                 }}
+                                width={
+                                  selectedOrderContext.status === "Pending"
+                                    ? "129px"
+                                    : "105px"
+                                }
                               >
                                 <Typography variant="h4">Total</Typography>
                               </Stack>
