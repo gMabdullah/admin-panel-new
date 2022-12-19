@@ -68,7 +68,7 @@ export const OrderListingNoRowsOverlay = () => {
           </g>
         </g>
       </svg>
-      <Box sx={{ mt: 1 }}>No Orders</Box>
+      <Box sx={{ mt: 1 }}>No Order</Box>
     </StyledGridOverlay>
   );
 };

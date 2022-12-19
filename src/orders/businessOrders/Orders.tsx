@@ -679,11 +679,6 @@ const Orders = () => {
   };
 
   const linearLoader = () => {
-    if (orders.length === 0) {
-      // loader for the first time when we have no orders
-      return <OrderListingSkeleton />;
-    }
-
     // loader on updating the order
     return <Progress type="linear" />;
   };
@@ -914,47 +909,50 @@ const Orders = () => {
               },
             }}
           >
-            {/* Listing orders  */}
-            <DataGrid
-              rows={orders}
-              columns={columns}
-              rowCount={totalOrders}
-              getRowId={(r) => r.order_id}
-              rowsPerPageOptions={[50, 100]}
-              page={page}
-              onPageChange={handlePageChange}
-              pageSize={pageSize}
-              onPageSizeChange={handlePageSizeChange}
-              checkboxSelection
-              autoHeight
-              disableColumnMenu
-              hideFooterSelectedRowCount
-              onRowClick={(params: GridRowParams) => {
-                setSelectedOrder({
-                  order_id: params.row.order_id,
-                  user_email: params.row.user_email,
-                });
-                prevOrderDetailModalState.current = orderDetailModal;
-                setApiCallFlag("OrderUpdate");
-                setOrderDetailModal(true);
-              }}
-              onSelectionModelChange={(newSelectionModel) => {
-                setSelectionModel(newSelectionModel);
-              }}
-              selectionModel={selectionModel}
-              components={{
-                NoRowsOverlay: customNoRowsOverlay,
-                LoadingOverlay: linearLoader,
-              }}
-              loading={getOrderLoader}
-              getRowHeight={({ model }: GridRowHeightParams) => {
-                if (model.pre_auth === "1" && model.status === "Pending") {
-                  return 90;
-                } else {
-                  return null;
-                }
-              }}
-            />
+            {!allOrders ? (
+              <OrderListingSkeleton />
+            ) : (
+              <DataGrid // listing orders
+                rows={orders}
+                columns={columns}
+                rowCount={totalOrders}
+                getRowId={(r) => r.order_id}
+                rowsPerPageOptions={[50, 100]}
+                page={page}
+                onPageChange={handlePageChange}
+                pageSize={pageSize}
+                onPageSizeChange={handlePageSizeChange}
+                checkboxSelection
+                autoHeight
+                disableColumnMenu
+                hideFooterSelectedRowCount
+                onRowClick={(params: GridRowParams) => {
+                  setSelectedOrder({
+                    order_id: params.row.order_id,
+                    user_email: params.row.user_email,
+                  });
+                  prevOrderDetailModalState.current = orderDetailModal;
+                  setApiCallFlag("OrderUpdate");
+                  setOrderDetailModal(true);
+                }}
+                onSelectionModelChange={(newSelectionModel) => {
+                  setSelectionModel(newSelectionModel);
+                }}
+                selectionModel={selectionModel}
+                components={{
+                  NoRowsOverlay: customNoRowsOverlay,
+                  LoadingOverlay: linearLoader,
+                }}
+                loading={getOrderLoader}
+                getRowHeight={({ model }: GridRowHeightParams) => {
+                  if (model.pre_auth === "1" && model.status === "Pending") {
+                    return 90;
+                  } else {
+                    return null;
+                  }
+                }}
+              />
+            )}
           </Box>
 
           {/* Order Detail modal */}
