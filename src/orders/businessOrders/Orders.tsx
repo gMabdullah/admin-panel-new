@@ -909,7 +909,7 @@ const Orders = () => {
               },
             }}
           >
-            {orders.length === 0 ? (
+            {!allOrders ? (
               <OrderListingSkeleton />
             ) : (
               <DataGrid // listing orders
