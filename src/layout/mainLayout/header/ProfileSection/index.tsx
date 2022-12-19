@@ -23,7 +23,6 @@ import Transitions from "components/extended/Transitions";
 
 // assets
 import { IconLogout, IconSettings } from "@tabler/icons";
-import useConfig from "hooks/useConfig";
 
 // ==============================|| PROFILE MENU ||============================== //
 
@@ -31,7 +30,6 @@ const ProfileSection = () => {
   const { eatout_logo } = JSON.parse(`${localStorage.getItem("businessInfo")}`);
 
   const theme = useTheme();
-  const { borderRadius } = useConfig();
   const navigate = useNavigate();
 
   const [open, setOpen] = useState(false);
@@ -165,7 +163,7 @@ const ProfileSection = () => {
                         }}
                       >
                         <ListItemButton
-                          sx={{ borderRadius: `${borderRadius}px` }}
+                          sx={{ borderRadius: "8px" }}
                           onClick={handleLogout}
                         >
                           <ListItemIcon>
