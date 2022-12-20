@@ -100,6 +100,8 @@ const Login = () => {
 
     if (status === "1") {
       localStorage.setItem("businessInfo", JSON.stringify(result[0]));
+      localStorage.setItem("tdLogin", "1");
+
       navigate("/orders");
     } else {
       setNotifyMessage(message);
