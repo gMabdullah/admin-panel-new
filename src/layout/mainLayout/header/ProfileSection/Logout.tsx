@@ -11,7 +11,7 @@ import {
 // assets
 import { IconLogout } from "@tabler/icons";
 
-// ==============================|| PROFILE MENU ||============================== //
+// ==============================|| Logout ||============================== //
 
 const Logout = () => {
   const navigate = useNavigate();
