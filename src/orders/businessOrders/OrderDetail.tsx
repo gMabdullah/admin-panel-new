@@ -1202,6 +1202,7 @@ const OrderDetail = ({
             <Stack //option sets stack
               direction={"row"}
               spacing={1}
+              sx={{ flexWrap: "wrap" }}
             >
               {optionSets.map((e: any, index: number) => {
                 return e.haveInnerOptions ? (
@@ -1282,7 +1283,11 @@ const OrderDetail = ({
           )}
 
           {row.comment !== undefined && row.comment && (
-            <Stack direction={"row"} spacing={0.4} sx={{ mt: "5px" }}>
+            <Stack
+              direction={"row"}
+              spacing={0.4}
+              sx={{ mt: "5px", flexWrap: "wrap" }}
+            >
               <Typography
                 sx={{
                   fontFamily: "Roboto",
@@ -1312,7 +1317,7 @@ const OrderDetail = ({
             <Stack
               direction={"row"}
               spacing={0.5}
-              sx={{ alignItems: "center", mt: "5px" }}
+              sx={{ alignItems: "center", mt: "5px", flexWrap: "wrap" }}
             >
               {row.item_level_discount_value &&
                 Number(row.item_level_discount_value) > 0 && (
