@@ -49,5 +49,9 @@ pipelines:
               USER: $SSH_USER
               SERVER: $SERVER
               REMOTE_PATH: $REMOTE_PATH
+<<<<<<< HEAD
               LOCAL_PATH: 'build/*'
+=======
+              LOCAL_PATH: '*'
+>>>>>>> f9bba03cc5499b0e44e0408f9af18650fcc51537
               EXTRA_ARGS: ['-o', 'StrictHostKeyChecking=no']
