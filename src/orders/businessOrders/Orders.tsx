@@ -37,6 +37,7 @@ import moment from 'moment'
 import useAxios, { configure } from 'axios-hooks'
 import { axios } from 'config'
 import PackingSlip from 'components/PackingSlip'
+import { AnyAsyncThunk } from '@reduxjs/toolkit/dist/matchers'
 
 configure({ axios })
 
@@ -776,18 +777,19 @@ const Orders = () => {
     const packingSlipData = selectionModel.map((selectedId) => {
       const filterData = orders.filter((orderData) => {
         if (orderData.order_id == selectedId) {
-          return orderData
+          return true
         }
       })
+      debugger
       return filterData[0]
     })
-    debugger
+
     // Attach CAtegory LAbel
     const categoryResult = allOrders.menu_type_categories
     let label: any = []
     let totalQuantity: number = 0
     packingSlipData.map((order: any) => {
-      debugger
+      const labels: any[] = []
       totalQuantity = 0
       order.order_detail.filter((orderItem: any) => {
         totalQuantity = totalQuantity + parseInt(orderItem.quantity)
@@ -802,11 +804,14 @@ const Orders = () => {
                   category.category_id === orderItem.item_cat_id,
               ),
             ]
+            if (label.length > 0) labels.push(...label)
           }
         }
         order.totalQuantity = totalQuantity + ''
         orderItem.label =
-          typeof label[0] !== 'undefined' && label ? label[0].category_name : ''
+          typeof labels[0] !== 'undefined' && labels
+            ? labels[0].category_name
+            : ''
       })
     })
     setPackingSlipData(packingSlipData)
@@ -866,14 +871,15 @@ const Orders = () => {
                     p: '12px 32px',
                     height: '44px',
                     width: '151px',
-                    color: 'black',
-                    background: '#FFFFFF',
+                    // color: 'black',
+                    // color: '#FFFFFF',
                     border: '1px solid #CCD1DB',
 
-                    '&:hover': {
-                      backgroundColor: '#FFFFFF',
-                    },
+                    // '&:hover': {
+                    //   backgroundColor: '#FFFFFF',
+                    // },
                   }}
+                  color={'primary'}
                   onClick={packingSlipComponent}
                 >
                   Packing Slip

@@ -25,6 +25,7 @@ Font.register({
 })
 interface props {
   packingSlipData: any
+  pdfType?: string
 }
 const styles = StyleSheet.create({
   page: {
@@ -116,12 +117,12 @@ const styles = StyleSheet.create({
   statusCommentCss: {
     // width: '40%',
     // justifyContent: 'flex-start',
-    padding: '4px',
+    // padding: '4px',
     fontSize: 10,
     marginTop: 1,
-    marginBottom: 6,
+    marginLeft: 10,
+    // marginBottom: 6,
     color: '#000000',
-
     fontFamily: 'Roboto',
   },
   sku: {
@@ -205,7 +206,7 @@ const styles = StyleSheet.create({
     marginLeft: 30,
     width: 250,
     paddingTop: '20px',
-    paddingBottom: '30px',
+    paddingBottom: 30,
     paddingLeft: '16px',
     borderTop: 1,
     borderBottom: 1,
@@ -308,14 +309,18 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     marginBottom: 3,
   },
-  currencyrow: {
-    width: '50vw',
+  currencyrowTotalQuantity: {
+    //width: '50vw',
+    // marginTop: 4,
+    ///   marginBottom: 4,
+    fontSize: 10,
+    marginLeft: 40,
   },
   currencyrow2: {
     width: '40%',
   },
   texth2th: {
-    marginLeft: 70,
+    marginLeft: 220,
     fontSize: 10,
   },
   texth2t: {
@@ -366,7 +371,7 @@ const styles = StyleSheet.create({
   },
 })
 
-const PackingSlip = ({ packingSlipData }: props) => {
+const PackingSlip = (props: props) => {
   const { eatout_name, eatout_id } = JSON.parse(
     localStorage.getItem('businessInfo')!,
   )
@@ -374,7 +379,7 @@ const PackingSlip = ({ packingSlipData }: props) => {
   return (
     <>
       <Document>
-        {packingSlipData.map((selectedOrder: any, index: any) => {
+        {props.packingSlipData.map((selectedOrder: any, index: any) => {
           const {
             status,
             order_id,
@@ -443,14 +448,16 @@ const PackingSlip = ({ packingSlipData }: props) => {
                       <Text style={styles.detailBoxTextCss}>Order Type:</Text>
                       <Text style={styles.detailBoldTextCss}>{orderType}</Text>
                     </View>
-                    <View style={styles.row}>
-                      <Text style={styles.detailBoxTextCss}>
-                        Delivery Time:
-                      </Text>
-                      <Text style={styles.detailBoldTextCss}>
-                        {delivery_date}
-                      </Text>
-                    </View>
+                    {delivery_date !== '0000-00-00 00:00:00' && (
+                      <View style={styles.row}>
+                        <Text style={styles.detailBoxTextCss}>
+                          Delivery Time:
+                        </Text>
+                        <Text style={styles.detailBoldTextCss}>
+                          {delivery_date}
+                        </Text>
+                      </View>
+                    )}
                   </View>
                 </View>
                 <View style={styles.cardSectionCSS}>
@@ -472,10 +479,12 @@ const PackingSlip = ({ packingSlipData }: props) => {
                       <Text style={styles.detailBoxTextCss}>Address:</Text>
                       <Text style={styles.detailBoldTextCss}>{address}</Text>
                     </View>
-                    <View style={styles.row}>
-                      <Text style={styles.detailBoxTextCss}>Note:</Text>
-                      <Text style={styles.detailBoldTextCss}>{note}</Text>
-                    </View>
+                    {note !== '' && (
+                      <View style={styles.row}>
+                        <Text style={styles.detailBoxTextCss}>Note:</Text>
+                        <Text style={styles.detailBoldTextCss}>{note}</Text>
+                      </View>
+                    )}
                   </View>
                 </View>
               </View>
@@ -545,9 +554,11 @@ const PackingSlip = ({ packingSlipData }: props) => {
                       <View style={styles.numbertablecol}>
                         <Text style={styles.numbertextt}>{i + 1}</Text>
                       </View>
-                      <View style={styles.tablecol}>
-                        <Text style={styles.textt}>{e.label}</Text>
-                      </View>
+                      {props.pdfType == '' && (
+                        <View style={styles.tablecol}>
+                          <Text style={styles.textt}>{e.label}</Text>
+                        </View>
+                      )}
                       <View style={styles.itemtablecol}>
                         <Text>{`${e.item_name}`}</Text>
                         {/* showing  "SKU" only for DWP  */}
@@ -599,12 +610,16 @@ const PackingSlip = ({ packingSlipData }: props) => {
               <View style={styles.spacer}></View>
               <View style={styles.rowend} wrap={false}>
                 <View style={styles.currencyrow2}></View>
+
                 <View style={styles.currencyrow}>
                   <Text style={styles.texth2th}>Total Quantity</Text>
                 </View>
-                <View style={styles.currencyrow}>
-                  <Text>{`${totalQuantity}`}</Text>
-                </View>
+
+                {props.pdfType == '' && (
+                  <View style={styles.currencyrowTotalQuantity}>
+                    <Text>{`${totalQuantity}`}</Text>
+                  </View>
+                )}
               </View>
               <View style={styles.headerDivider}></View>
               <View style={styles.footer} wrap={false}>
