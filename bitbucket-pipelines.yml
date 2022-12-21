@@ -1,57 +1,53 @@
 image: node:14.17.6
 
 pipelines:
-#  default:
+  #  default:
   branches:
-   develop:
-#    - parallel:
-    - step:
-        size: 2x
-        name: Build and Test
-        caches:
-          - node
-        script:
-          - yarn install
-          - CI=false yarn run build
-        artifacts:
-          - build/**
-    - step:
-        name: Deploy to Staging
-        deployment: Staging
-        # trigger: manual  # Uncomment to make this a manual deployment.
-        script:
-          - pipe: atlassian/scp-deploy:0.3.3
-            variables:
-              USER: $SSH_USER
-              SERVER: $SERVER
-              REMOTE_PATH: $REMOTE_PATH
-              LOCAL_PATH: 'build/*'
-              EXTRA_ARGS: ['-o', 'StrictHostKeyChecking=no']
-   master:
-#    - parallel:
-    - step:
-        size: 2x
-        name: Build and Test
-        caches:
-          - node
-        script:
-          - yarn install
-          - CI=false yarn run build
-        artifacts:
-          - build/**
-    - step:
-        name: Deploy to Production
-        deployment: Production
-        # trigger: manual  # Uncomment to make this a manual deployment.
-        script:
-          - pipe: atlassian/scp-deploy:0.3.3
-            variables:
-              USER: $SSH_USER
-              SERVER: $SERVER
-              REMOTE_PATH: $REMOTE_PATH
-<<<<<<< HEAD
-              LOCAL_PATH: 'build/*'
-=======
-              LOCAL_PATH: '*'
->>>>>>> f9bba03cc5499b0e44e0408f9af18650fcc51537
-              EXTRA_ARGS: ['-o', 'StrictHostKeyChecking=no']
+    develop:
+      #    - parallel:
+      - step:
+          size: 2x
+          name: Build and Test
+          caches:
+            - node
+          script:
+            - yarn install
+            - CI=false yarn run build
+          artifacts:
+            - build/**
+      - step:
+          name: Deploy to Staging
+          deployment: Staging
+          # trigger: manual  # Uncomment to make this a manual deployment.
+          script:
+            - pipe: atlassian/scp-deploy:0.3.3
+              variables:
+                USER: $SSH_USER
+                SERVER: $SERVER
+                REMOTE_PATH: $REMOTE_PATH
+                LOCAL_PATH: "build/*"
+                EXTRA_ARGS: ["-o", "StrictHostKeyChecking=no"]
+    master:
+      #    - parallel:
+      - step:
+          size: 2x
+          name: Build and Test
+          caches:
+            - node
+          script:
+            - yarn install
+            - CI=false yarn run build
+          artifacts:
+            - build/**
+      - step:
+          name: Deploy to Production
+          deployment: Production
+          # trigger: manual  # Uncomment to make this a manual deployment.
+          script:
+            - pipe: atlassian/scp-deploy:0.3.3
+              variables:
+                USER: $SSH_USER
+                SERVER: $SERVER
+                REMOTE_PATH: $REMOTE_PATH
+                LOCAL_PATH: "build/*"
+                EXTRA_ARGS: ["-o", "StrictHostKeyChecking=no"]
