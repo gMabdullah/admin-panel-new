@@ -16,6 +16,7 @@ import {
 import MainCard from "components/cards/MainCard";
 import Transitions from "components/extended/Transitions";
 import Logout from "./Logout";
+import Business from "./Business";
 
 // assets
 import { IconSettings } from "@tabler/icons";
@@ -23,7 +24,8 @@ import { IconSettings } from "@tabler/icons";
 // ==============================|| PROFILE MENU ||============================== //
 
 const ProfileSection = () => {
-  const { eatout_logo } = JSON.parse(`${localStorage.getItem("businessInfo")}`);
+  const { eatout_logo } = JSON.parse(localStorage.getItem("businessInfo")!);
+  const allBusinesses = JSON.parse(localStorage.getItem("allBusinessesInfo")!);
 
   const theme = useTheme();
   const [open, setOpen] = useState(false);
@@ -136,8 +138,8 @@ const ProfileSection = () => {
                         component="nav"
                         sx={{
                           width: "100%",
-                          maxWidth: 200,
-                          minWidth: 150,
+                          maxWidth: 240,
+                          minWidth: 190,
                           p: "unset",
                           backgroundColor: theme.palette.background.paper,
                           borderRadius: "10px",
@@ -146,6 +148,9 @@ const ProfileSection = () => {
                           },
                         }}
                       >
+                        {allBusinesses && allBusinesses.length > 1 && (
+                          <Business />
+                        )}
                         <Logout />
                       </List>
                     </Box>

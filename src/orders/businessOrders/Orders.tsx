@@ -85,14 +85,13 @@ export const tableData = [
 
 export let last48Hours = true;
 
-const { eatout_id, user_id } = JSON.parse(
-  localStorage.getItem("businessInfo")!
-);
-
 const Orders = () => {
   let timeOut: NodeJS.Timeout;
   const classes = useStyles();
   const dispatch = useDispatch();
+  const { eatout_id, user_id } = JSON.parse(
+    localStorage.getItem("businessInfo")!
+  );
 
   const { startDate, endDate, decimalPlaces } = useSelector(
     (state) => state.main
@@ -789,7 +788,7 @@ const Orders = () => {
 
                     "& .MuiOutlinedInput-input": {
                       background: "#F5F5F5",
-                      padding: "10px 3px !important",
+                      padding: "10px 16px 10px 0px !important",
                     },
                     "& .MuiOutlinedInput-notchedOutline": {
                       border: "unset",
