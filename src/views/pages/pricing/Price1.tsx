@@ -5,7 +5,7 @@ import { useTheme } from '@mui/material/styles';
 import { Box, Button, Divider, Grid, List, ListItem, ListItemIcon, ListItemText, Typography } from '@mui/material';
 
 // project imports
-import MainCard from 'ui-component/cards/MainCard';
+import MainCard from 'components/cards/MainCard';
 import { gridSpacing } from 'store/constant';
 
 // assets
