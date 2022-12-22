@@ -1,381 +1,19 @@
 import React from 'react'
-import {
-  Document,
-  Page,
-  Text,
-  Image,
-  Font,
-  View,
-  StyleSheet,
-  PDFViewer,
-} from '@react-pdf/renderer'
-
-import Regular from '../fonts/roboto/Roboto-Regular.ttf'
-import Italic from '../fonts/roboto/Roboto-Italic.ttf'
-import Bold from '../fonts/roboto/Roboto-Bold.ttf'
-import Black from '../fonts/roboto/Roboto-Black.ttf'
-Font.register({
-  family: 'Roboto',
-  fonts: [
-    { src: Regular },
-    { src: Italic, fontStyle: 'italic' },
-    { src: Bold, fontWeight: 'bold' },
-    { src: Black, fontWeight: 'heavy' },
-  ],
-})
+import { Document, Page, Text, View } from '@react-pdf/renderer'
+import { styles } from './PackingSlipStyles'
+import { useSelector } from 'store'
 interface props {
   packingSlipData: any
   pdfType?: string
 }
-const styles = StyleSheet.create({
-  page: {
-    backgroundColor: 'white',
-  },
-  spaceBetweenRow: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-
-  Detailrow: {
-    overflow: 'hidden',
-    width: '100%',
-    flexDirection: 'row',
-    maxWidth: '100%',
-  },
-  row: {
-    overflow: 'hidden',
-    width: '100%',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
-  rowSection: {
-    width: '100%',
-    flexDirection: 'row',
-  },
-  column: {
-    display: 'flex',
-    flexDirection: 'column',
-    marginTop: '24px',
-  },
-  packingSlip: {
-    paddingTop: 25,
-    paddingLeft: 30,
-    fontSize: 24,
-    marginTop: 10,
-    color: '#D9134D',
-    fontFamily: 'Roboto',
-  },
-  image: {
-    width: '60px',
-    height: '60px',
-    marginLeft: 'auto',
-    marginRight: 30,
-    objectFit: 'contain',
-  },
-  texth1: {
-    marginLeft: 'auto',
-    marginRight: 30,
-    fontSize: 12,
-    marginTop: 10,
-    paddingTop: 25,
-  },
-  divider: {
-    marginLeft: 30,
-    marginRight: 30,
-    marginBottom: 3,
-    width: '90%',
-    height: 1,
-  },
-  headerDivider: {
-    marginLeft: 30,
-    marginRight: 30,
-    marginBottom: 3,
-    // marginTop: 1,
-    width: '90%',
-    backgroundColor: '#c4c2c2',
-    height: 2,
-  },
-  skuB: {
-    marginLeft: 30,
-    padding: '4px',
-    fontSize: 10,
-    marginTop: 1,
-    marginBottom: 5,
-    color: '#757575',
-    fontFamily: 'Roboto',
-  },
-  statusCss: {
-    padding: '4px',
-    fontSize: 10,
-    marginTop: 1,
-    marginBottom: 6,
-    color: '#000000',
-
-    fontFamily: 'Roboto',
-  },
-  statusCommentCss: {
-    // width: '40%',
-    // justifyContent: 'flex-start',
-    // padding: '4px',
-    fontSize: 10,
-    marginTop: 1,
-    marginLeft: 10,
-    // marginBottom: 6,
-    color: '#000000',
-    fontFamily: 'Roboto',
-  },
-  sku: {
-    fontFamily: 'Roboto',
-    // width: '40%',
-    justifyContent: 'flex-start',
-    marginLeft: '34px',
-    fontSize: 10,
-    marginTop: 2,
-    // marginBottom: 1,
-    color: '#757575',
-  },
-  pcode: {
-    lineHeight: 1.1,
-    width: '40%',
-    marginLeft: 10,
-    justifyContent: 'flex-end',
-    marginRight: 10,
-    fontSize: 8,
-    marginTop: 1,
-    marginBottom: 1,
-    color: '#121111',
-  },
-  tablerowhead: {
-    flexDirection: 'row',
-    marginLeft: 30,
-    paddingLeft: 2,
-    paddingRight: 2,
-    marginTop: 8,
-    backgroundColor: '#F5F5F5',
-    borderTop: 1,
-    borderBottom: 1,
-    borderLeft: 1,
-    borderRight: 1,
-    borderColor: '#f2f0f1',
-    borderStyle: 'solid',
-    borderRadius: 0,
-  },
-  headBox: {
-    marginLeft: 30,
-    padding: 10,
-    marginTop: 8,
-    paddingTop: 14,
-    paddingBottom: 14,
-    paddingLeft: 16,
-    overflow: 'hidden',
-    width: 250,
-    backgroundColor: '#F5F5F5',
-
-    borderTop: 1,
-    borderBottom: 1,
-    borderLeft: 1,
-    borderRight: 1,
-    borderColor: '#f2f0f1',
-    borderStyle: 'solid',
-    borderRadius: 0,
-  },
-  cardSectionCSS: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  detailBox: {
-    marginLeft: 30,
-    width: 250,
-
-    paddingTop: 20,
-    paddingBottom: 30,
-    paddingLeft: 16,
-
-    borderTop: 1,
-    borderBottom: 1,
-    borderLeft: 1,
-    borderRight: 1,
-    borderColor: '#f2f0f1',
-    borderStyle: 'solid',
-    borderRadius: 0,
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  detailBoxCustomerDetail: {
-    marginLeft: 30,
-    width: 250,
-    paddingTop: '20px',
-    paddingBottom: 30,
-    paddingLeft: '16px',
-    borderTop: 1,
-    borderBottom: 1,
-    borderLeft: 1,
-    borderRight: 1,
-    borderColor: '#f2f0f1',
-    borderStyle: 'solid',
-    borderRadius: 0,
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  boxTextCss: {
-    fontFamily: 'Roboto',
-    width: '40%',
-    fontSize: 10,
-    justifyContent: 'flex-start',
-    marginTop: 2,
-    color: '#212121',
-  },
-  detailBoxTextCss: {
-    fontFamily: 'Roboto',
-    // width: '40%',
-    marginTop: 2,
-    justifyContent: 'flex-start',
-    fontSize: 9,
-    color: '#757575',
-  },
-  detailBoldTextCss: {
-    lineHeight: '15px',
-    fontFamily: 'Roboto',
-    //width: '40%',
-    justifyContent: 'flex-start',
-    fontSize: 9,
-    marginTop: 2,
-    color: '#212121',
-    marginLeft: '0px',
-  },
-  numbertablecol: {
-    width: '10%',
-    justifyContent: 'flex-start',
-  },
-  tablecol: {
-    width: '20%',
-    justifyContent: 'flex-start',
-    marginLeft: 2,
-  },
-  brandtablecol: {
-    width: '10%',
-    justifyContent: 'flex-start',
-    marginLeft: 2,
-  },
-  itemtablecol: {
-    width: '45%',
-    fontSize: 10,
-    justifyContent: 'flex-start',
-    marginRight: 10,
-  },
-  textth2: {
-    marginTop: 4,
-    marginBottom: 4,
-    fontSize: 10,
-    // fontWeight: "bold",
-  },
-  tablePadding: {
-    display: 'flex',
-    flexDirection: 'row',
-    padding: 4,
-  },
-  tablerow: {
-    display: 'flex',
-    flexDirection: 'row',
-    marginLeft: 30,
-    // width: "90%",
-    paddingTop: 4,
-    marginTop: 5,
-  },
-  numbertextt: {
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    fontSize: 10,
-    lineHeight: 1,
-  },
-  textt: {
-    lineHeight: 1,
-    marginLeft: 2,
-    fontSize: 10,
-  },
-  bolder: {
-    lineHeight: 1,
-    marginLeft: 2,
-    fontSize: 12,
-  },
-  spacer: {
-    marginBottom: 6,
-    flexDirection: 'row',
-  },
-  rowend: {
-    width: '100%',
-    flexDirection: 'row',
-    textAlign: 'left',
-    marginBottom: 3,
-  },
-  currencyrowTotalQuantity: {
-    //width: '50vw',
-    // marginTop: 4,
-    ///   marginBottom: 4,
-    fontSize: 10,
-    marginLeft: 40,
-  },
-  currencyrow2: {
-    width: '40%',
-  },
-  texth2th: {
-    marginLeft: 220,
-    fontSize: 10,
-  },
-  texth2t: {
-    marginLeft: 100,
-    fontSize: 10,
-    color: 'red',
-  },
-  texttcom: {
-    marginLeft: '2px',
-    fontSize: 8,
-    color: 'black',
-    lineHeight: 0.8,
-  },
-  texttaddone: {
-    lineHeight: 1,
-    fontSize: 7,
-    color: 'black',
-  },
-  boldOptionSet: {
-    lineHeight: 1,
-    fontSize: 10,
-  },
-  footer: {
-    width: '90%',
-    flexDirection: 'row',
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    marginTop: 1,
-  },
-  hst: {
-    justifyContent: 'flex-start',
-    marginRight: 'auto',
-    fontSize: 9,
-    color: '#121111',
-  },
-  phone: {
-    justifyContent: 'flex-start',
-    marginLeft: 'auto',
-    fontSize: 9,
-    color: '#121111',
-  },
-  email: {
-    justifyContent: 'flex-start',
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    fontSize: 9,
-    color: '#121111',
-  },
-})
-
 const PackingSlip = (props: props) => {
   const { eatout_name, eatout_id } = JSON.parse(
     localStorage.getItem('businessInfo')!,
   )
-
+  // const { decimalPlaces, label } = useSelector((state) => state.main)
+  const fixedDecimalPlaces = (value: string) => {
+    return parseFloat(value).toFixed(0) // Add Descaimal Places From Local storage
+  }
   return (
     <>
       <Document>
@@ -394,11 +32,20 @@ const PackingSlip = (props: props) => {
             order_detail,
             totalQuantity,
             tax_type,
+            delivery_charges,
+            tax_value,
+            tip,
+            service_charges,
+            grand_total,
             statuscomment,
             order_type: orderType,
             order_type_flag: orderTypeFlag,
             delivery_date,
             payment_type,
+            total, //Order Total
+            custom_code_type,
+            custom_code_discount_value,
+            discount_value,
             cnic,
           } = selectedOrder
           console.log('statuscomment', statuscomment)
@@ -507,106 +154,110 @@ const PackingSlip = (props: props) => {
                   </View>
                 </View>
               </View>
-              {order_detail.map((e: any, i: any) => {
-                let row = e
-                let options: any = {}
-                const optionSets: any = []
-                let count = 0
-                let innerOptionsName = ''
-                if (
-                  row.options &&
-                  row.options !== '[]' &&
-                  row.options !== '{}' &&
-                  Object.keys(row.options).length !== 0
-                ) {
-                  options = JSON.parse(row.options)
-                  if (typeof options === 'string') {
-                    options = JSON.parse(options)
-                  }
+              <View style={styles.tableBox}>
+                {order_detail.map((e: any, i: any) => {
+                  let row = e
+                  let options: any = {}
+                  const optionSets: any = []
+                  let count = 0
+                  let innerOptionsName = ''
+                  if (
+                    row.options &&
+                    row.options !== '[]' &&
+                    row.options !== '{}' &&
+                    Object.keys(row.options).length !== 0
+                  ) {
+                    options = JSON.parse(row.options)
+                    if (typeof options === 'string') {
+                      options = JSON.parse(options)
+                    }
 
-                  for (const key in options) {
-                    options[key].map((opt: any) => {
-                      innerOptionsName = ''
-                      let haveInnerOpt = opt.inner_options !== '' ? true : false
-                      optionSets.push({
-                        name: opt.name,
-                        quantity: opt.quantity,
-                        price: opt.price,
-                        weight: opt.weight,
-                        haveInnerOptions: haveInnerOpt,
-                      })
-                      let inner_options = opt.inner_options
-                      if (inner_options !== '') {
-                        for (const innerKey in inner_options) {
-                          inner_options[innerKey].map((innerOpt: any) => {
-                            innerOptionsName = `${innerOptionsName}${innerOpt.name},`
-                          })
+                    for (const key in options) {
+                      options[key].map((opt: any) => {
+                        innerOptionsName = ''
+                        let haveInnerOpt =
+                          opt.inner_options !== '' ? true : false
+                        optionSets.push({
+                          name: opt.name,
+                          quantity: opt.quantity,
+                          price: opt.price,
+                          weight: opt.weight,
+                          haveInnerOptions: haveInnerOpt,
+                        })
+                        let inner_options = opt.inner_options
+                        if (inner_options !== '') {
+                          for (const innerKey in inner_options) {
+                            inner_options[innerKey].map((innerOpt: any) => {
+                              innerOptionsName = `${innerOptionsName}${innerOpt.name},`
+                            })
+                          }
                         }
-                      }
-                      optionSets[count].inner_options = innerOptionsName
-                      count++
-                    })
+                        optionSets[count].inner_options = innerOptionsName
+                        count++
+                      })
+                    }
                   }
-                }
-                return (
-                  <React.Fragment key={i}>
-                    <View style={styles.tablerow} wrap={false}>
-                      <View style={styles.numbertablecol}>
-                        <Text style={styles.numbertextt}>{i + 1}</Text>
-                      </View>
-                      {props.pdfType == '' && (
-                        <View style={styles.tablecol}>
-                          <Text style={styles.textt}>{e.label}</Text>
+                  return (
+                    <React.Fragment key={i}>
+                      <View style={styles.tablerow} wrap={false}>
+                        <View style={styles.numbertablecol}>
+                          <Text style={styles.numbertextt}>{i + 1}</Text>
                         </View>
-                      )}
-                      <View style={styles.itemtablecol}>
-                        <Text>{`${e.item_name}`}</Text>
-                        {/* showing  "SKU" only for DWP  */}
-                        {(eatout_id == 12180 || eatout_id == 12230) && (
-                          <Text style={styles.texttcom}>
-                            {`${e.product_code}`}
-                          </Text>
+                        {props.pdfType == '' && (
+                          <View style={styles.tablecol}>
+                            <Text style={styles.textt}>{e.label}</Text>
+                          </View>
                         )}
-                        {optionSets.map((f: any, j: any) =>
-                          f.haveInnerOptions ? (
-                            <Text key={j}>
-                              -
-                              {`${f.name}${
-                                parseFloat(f.price).toFixed(2).toString() ===
-                                '0.00'
-                                  ? ''
-                                  : `, Qty: ${f.quantity}, Price: ${f.price}`
-                              } ${
-                                f.inner_options === ''
-                                  ? ''
-                                  : `(${f.inner_options})`
-                              }`}
+                        <View style={styles.itemtablecol}>
+                          <Text>{`${e.item_name}`}</Text>
+                          {/* showing  "SKU" only for DWP  */}
+                          {(eatout_id == 12180 || eatout_id == 12230) && (
+                            <Text style={styles.texttcom}>
+                              {`${e.product_code}`}
                             </Text>
-                          ) : (
-                            <Text key={j}>
-                              -
-                              {`${f.name}${
-                                parseFloat(f.price).toFixed(2).toString() ===
-                                '0.00'
-                                  ? ''
-                                  : `, Qty: ${f.quantity}, Price: ${f.price}`
-                              }`}
-                            </Text>
-                          ),
-                        )}
-                        <Text>{`${e.comment}`}</Text>
+                          )}
+                          {optionSets.map((f: any, j: any) =>
+                            f.haveInnerOptions ? (
+                              <Text key={j}>
+                                -
+                                {`${f.name}${
+                                  parseFloat(f.price).toFixed(2).toString() ===
+                                  '0.00'
+                                    ? ''
+                                    : `, Qty: ${f.quantity}, Price: ${f.price}`
+                                } ${
+                                  f.inner_options === ''
+                                    ? ''
+                                    : `(${f.inner_options})`
+                                }`}
+                              </Text>
+                            ) : (
+                              <Text key={j}>
+                                -
+                                {`${f.name}${
+                                  parseFloat(f.price).toFixed(2).toString() ===
+                                  '0.00'
+                                    ? ''
+                                    : `, Qty: ${f.quantity}, Price: ${f.price}`
+                                }`}
+                              </Text>
+                            ),
+                          )}
+                          <Text>{`${e.comment}`}</Text>
+                        </View>
+                        <View style={styles.brandtablecol}>
+                          <Text style={styles.textt}>{e.brand_name}</Text>
+                        </View>
+                        <View style={styles.numbertablecol}>
+                          <Text style={styles.numbertextt}>{e.quantity}</Text>
+                        </View>
                       </View>
-                      <View style={styles.brandtablecol}>
-                        <Text style={styles.textt}>{e.brand_name}</Text>
-                      </View>
-                      <View style={styles.numbertablecol}>
-                        <Text style={styles.numbertextt}>{e.quantity}</Text>
-                      </View>
-                    </View>
-                    <View style={styles.divider}></View>
-                  </React.Fragment>
-                )
-              })}
+                      <View style={styles.divider}></View>
+                    </React.Fragment>
+                  )
+                })}
+              </View>
+
               <View style={styles.spacer}></View>
               <View style={styles.rowend} wrap={false}>
                 <View style={styles.currencyrow2}></View>
@@ -615,12 +266,137 @@ const PackingSlip = (props: props) => {
                   <Text style={styles.texth2th}>Total Quantity</Text>
                 </View>
 
-                {props.pdfType == '' && (
-                  <View style={styles.currencyrowTotalQuantity}>
-                    <Text>{`${totalQuantity}`}</Text>
+                {/* {props.pdfType === 'packingSlip' && ( */}
+                <View style={styles.currencyrowTotalQuantity}>
+                  <Text>{`${totalQuantity}`}</Text>
+                </View>
+                {/* )} */}
+              </View>
+              {/* {props.pdfType === 'pdf' && ( */}
+              <View>
+                <View style={styles.rowend}>
+                  <View style={styles.currencyrow2}></View>
+                  <View style={styles.currencyrow}>
+                    <Text style={styles.texth2th}>
+                      {/* showing  "Total Amount (Inclusive of Taxes)" only for DWP  */}
+                      {eatout_id === 12180 || eatout_id === 12230
+                        ? 'Total Amount (Inclusive of Taxes)'
+                        : 'Total'}
+                    </Text>
+                  </View>
+                  <View style={styles.currencyrow}>
+                    <Text style={styles.texth2t}>
+                      {fixedDecimalPlaces(total)}
+                    </Text>
+                  </View>
+                </View>
+                {custom_code_type === '0' && (
+                  <View style={styles.rowend}>
+                    <View style={styles.currencyrow2}></View>
+                    <View style={styles.currencyrow}>
+                      <Text style={styles.texth2th}>Coupon Code</Text>
+                    </View>
+                    <View style={styles.currencyrow}>
+                      <Text style={styles.texth2t}>
+                        {fixedDecimalPlaces(custom_code_discount_value)}
+                      </Text>
+                    </View>
                   </View>
                 )}
+                {/* {haveWeight && totalWeight !== 0 && (
+                    <View style={styles.rowend}>
+                      <View style={styles.currencyrow2}></View>
+                      <View style={styles.currencyrow}>
+                        <Text style={styles.texth2th}>Total Weight</Text>
+                      </View>
+                      <View style={styles.currencyrow}>
+                        <Text style={styles.texth2t}>{`${parseFloat(
+                          totalWeight,
+                        ).toFixed(decimalPlaces)} ${weightUnit}`}</Text>
+                      </View>
+                    </View>
+                  )} */}
+                {discount_value !== 0 && (
+                  <View style={styles.rowend}>
+                    <View style={styles.currencyrow2}></View>
+                    <View style={styles.currencyrow}>
+                      <Text style={styles.texth2th}>Discount</Text>
+                    </View>
+                    <View style={styles.currencyrow}>
+                      <Text style={styles.texth2tDiscount}>
+                        {fixedDecimalPlaces(discount_value)}
+                      </Text>
+                    </View>
+                  </View>
+                )}
+                {delivery_charges !== 0 && (
+                  <View style={styles.rowend}>
+                    <View style={styles.currencyrow2}></View>
+                    <View style={styles.currencyrow}>
+                      <Text style={styles.texth2th}>Delivery Charges</Text>
+                    </View>
+                    <View style={styles.currencyrow}>
+                      <Text style={styles.texth2tDeliveryCharges}>
+                        {fixedDecimalPlaces(delivery_charges)}
+                      </Text>
+                    </View>
+                  </View>
+                )}
+                {tax_value !== 0 && (
+                  <View style={styles.rowend}>
+                    <View style={styles.currencyrow2}></View>
+                    <View style={styles.currencyrow}>
+                      <Text style={styles.texth2th}>Tax</Text>
+                    </View>
+                    <View style={styles.currencyrow}>
+                      <Text style={styles.textTax}>
+                        {fixedDecimalPlaces(tax_value)}
+                      </Text>
+                    </View>
+                  </View>
+                )}
+                {tip !== 0 && (
+                  <View style={styles.rowend}>
+                    <View style={styles.currencyrow2}></View>
+                    <View style={styles.currencyrow}>
+                      <Text style={styles.texth2th}>{'tax'}</Text>
+                    </View>
+                    <View style={styles.currencyrow}>
+                      <Text style={styles.textTax}>
+                        {fixedDecimalPlaces(tip)}
+                      </Text>
+                    </View>
+                  </View>
+                )}
+
+                {service_charges !== 0 && (
+                  <View style={styles.rowend}>
+                    <View style={styles.currencyrow2}></View>
+                    <View style={styles.currencyrow}>
+                      <Text style={styles.texth2th}>Service Charges</Text>
+                    </View>
+                    <View style={styles.currencyrow}>
+                      <Text style={styles.texServiceCharges}>
+                        {fixedDecimalPlaces(service_charges)}
+                      </Text>
+                    </View>
+                  </View>
+                )}
+
+                <View style={styles.divider}></View>
+                <View style={styles.rowend}>
+                  <View style={styles.currencyrow2}></View>
+                  <View style={styles.currencyrow}>
+                    <Text style={styles.texth2g}>Grand Total</Text>
+                  </View>
+                  <View style={styles.currencyrow}>
+                    <Text style={styles.texth2g2}>
+                      {fixedDecimalPlaces(grand_total)}
+                    </Text>
+                  </View>
+                </View>
               </View>
+              {/* )} */}
               <View style={styles.headerDivider}></View>
               <View style={styles.footer} wrap={false}>
                 <Text style={styles.hst}>{`${tax_type}`}</Text>
