@@ -165,7 +165,7 @@ const OrderDetail = ({
   >([])
 
   const [openAddEditItemModal, setAddEditItemModal] = useState<boolean>(false)
-
+  const [packingSlip, setPackingSlip] = React.useState(false)
   const [editItemFlag, setEditItemFlag] = useState<boolean>(false)
   const [customerDetailModal, setCustomerDetailModal] = useState(false)
   const [notify, setNotify] = useState<boolean>(false)
@@ -1530,16 +1530,9 @@ const OrderDetail = ({
         tempLink.click()
       })
   }
-  const printPreview = () => {
-    ;<Modal open={true} sx={{ width: '99vw', Height: '99vh' }}>
-      <MainCard title={<Typography variant="h2">Print Preview</Typography>}>
-        <PDFViewer style={{ width: '95vw', height: '95vh' }}>
-          <PackingSlip packingSlipData={orderFromAPI} pdfType={'pdf'} />
-        </PDFViewer>
-      </MainCard>
-    </Modal>
-  }
+
   const openAddEditModal = () => setAddEditItemModal((state) => !state)
+  const printPreviewModal = () => setPackingSlip((state) => !state)
 
   const toggleDeliveryChargesModal = () => {
     // close delivery charges modal
@@ -1747,7 +1740,7 @@ const OrderDetail = ({
                       alignItems: 'center',
                       ml: '24px',
                     }}
-                    onClick={printPreview}
+                    onClick={printPreviewModal}
                   >
                     <PrintTwoTone
                       className={
@@ -2862,6 +2855,48 @@ const OrderDetail = ({
           editItemFlag={editItemFlag}
         />
       )}
+      <Modal
+        open={packingSlip}
+        onClose={printPreviewModal}
+        sx={{ width: '99vw', Height: '99vh' }}
+      >
+        <MainCard
+          title={
+            <Stack
+              direction="row"
+              sx={{ justifyContent: 'space-between', alignItems: 'center' }}
+            >
+              <Box
+                sx={{
+                  width: '100%',
+                  maxWidth: '190px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <Typography variant={'h2'}>Print Preview</Typography>
+              </Box>
+
+              <IconButton sx={{ p: 'unset' }} onClick={printPreviewModal}>
+                <HighlightOffTwoTone
+                  sx={{ color: '#D84315' }}
+                  fontSize="large"
+                />
+              </IconButton>
+            </Stack>
+          }
+        >
+          <PDFViewer style={{ width: '95vw', height: '95vh' }}>
+            <PackingSlip
+              packingSlipData={orderFromAPI}
+              pdfType={'pdf'}
+              totalWeight={totalWeight}
+              weightUnit={weightUnit}
+            />
+          </PDFViewer>
+        </MainCard>
+      </Modal>
     </>
   )
 }

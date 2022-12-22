@@ -51,6 +51,17 @@ export const styles = StyleSheet.create({
     color: '#D9134D',
     fontFamily: 'Roboto',
   },
+  pdfEatOutNameView: {
+    display: 'flex',
+    //  justifyContent: 'center',
+    alignSelf: 'center',
+  },
+  pdfEatOutName: {
+    marginRight: 30,
+    fontSize: 12,
+    marginTop: 10,
+    paddingTop: 25,
+  },
   image: {
     width: '60px',
     height: '60px',
@@ -79,7 +90,7 @@ export const styles = StyleSheet.create({
     marginLeft: 30,
     marginRight: 30,
     marginBottom: 3,
-    marginTop: 1,
+    //marginTop: 1,
     width: '90%',
     backgroundColor: '#c4c2c2',
     height: 1,
@@ -112,6 +123,19 @@ export const styles = StyleSheet.create({
     // marginBottom: 6,
     color: '#000000',
     fontFamily: 'Roboto',
+  },
+  tablecolPdf: {
+    lineHeight: 1.1,
+    width: '11%',
+    justifyContent: 'flex-start',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    fontSize: 8,
+    //fontFamily: "Times",
+    marginTop: 5,
+    marginBottom: 5,
+    //zIndex: 1000000,
+    // wordWrap: "break-word"
   },
   sku: {
     fontFamily: 'Roboto',
@@ -148,6 +172,10 @@ export const styles = StyleSheet.create({
     borderColor: '#f2f0f1',
     // borderStyle: 'solid',
     borderRadius: 0,
+  },
+  tablerowheadPdf: {
+    flexDirection: 'row',
+    marginBottom: 10,
   },
   tableBox: {
     borderBottom: 1,
@@ -259,6 +287,7 @@ export const styles = StyleSheet.create({
     fontSize: 10,
     justifyContent: 'flex-start',
     marginRight: 10,
+    //  wordWrap: 'break-word',
   },
   textth2: {
     marginTop: 4,
@@ -354,7 +383,7 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginTop: 4,
     marginBottom: 6,
-    marginLeft: 88,
+    marginLeft: 120,
   },
   texttaddone: {
     lineHeight: 1,
