@@ -9,8 +9,16 @@ import {
   GridSelectionModel,
   GridRowHeightParams,
 } from '@mui/x-data-grid'
-
-import { Box, Chip, Typography, Grid, Stack, Modal } from '@mui/material'
+import { HighlightOffTwoTone } from '@mui/icons-material'
+import {
+  Box,
+  Chip,
+  Typography,
+  Grid,
+  Stack,
+  Modal,
+  IconButton,
+} from '@mui/material'
 import { SelectChangeEvent } from '@mui/material/Select'
 import { PDFViewer } from '@react-pdf/renderer'
 
@@ -127,7 +135,9 @@ const Orders = () => {
   const [city, setCity] = React.useState<string[]>([
     dropdownCityFilter[0].label,
   ])
-  const [packingSlipData, setPackingSlipData] = useState<any>([]) // Todo :  Add Types ot it
+  const [packingSlipData, setPackingSlipData] = useState<
+    OrderListingResponse['result']
+  >([]) // Todo :  Add Types ot it
 
   const [totalOrders, setTotalOrders] = React.useState<number>()
   const [page, setPage] = React.useState(0)
@@ -466,6 +476,7 @@ const Orders = () => {
       })
     }, 1000)
   }
+  const printPreviewModal = () => setPackingSlip((state) => !state)
 
   const handleBranchChange = (event: SelectChangeEvent<typeof branchName>) => {
     const {
@@ -780,39 +791,8 @@ const Orders = () => {
           return true
         }
       })
-      debugger
-      return filterData[0]
-    })
 
-    // Attach CAtegory LAbel
-    const categoryResult = allOrders.menu_type_categories
-    let label: any = []
-    let totalQuantity: number = 0
-    packingSlipData.map((order: any) => {
-      const labels: any[] = []
-      totalQuantity = 0
-      order.order_detail.filter((orderItem: any) => {
-        totalQuantity = totalQuantity + parseInt(orderItem.quantity)
-        if (orderItem.category_id !== '0' || orderItem.item_cat_id != 0) {
-          // iterate through all menu item categories and
-          // append founded category_name to orderItem.label
-          for (const menutype in categoryResult) {
-            debugger
-            label = [
-              ...categoryResult[menutype].filter(
-                (category: { category_id: string; category_name: string }) =>
-                  category.category_id === orderItem.item_cat_id,
-              ),
-            ]
-            if (label.length > 0) labels.push(...label)
-          }
-        }
-        order.totalQuantity = totalQuantity + ''
-        orderItem.label =
-          typeof labels[0] !== 'undefined' && labels
-            ? labels[0].category_name
-            : ''
-      })
+      return filterData[0]
     })
     setPackingSlipData(packingSlipData)
     setPackingSlip(true)
@@ -1020,7 +1000,31 @@ const Orders = () => {
           )}
           <Modal open={packingSlip} sx={{ width: '99vw', Height: '99vh' }}>
             <MainCard
-              title={<Typography variant="h2">Print Preview</Typography>}
+              title={
+                <Stack
+                  direction="row"
+                  sx={{ justifyContent: 'space-between', alignItems: 'center' }}
+                >
+                  <Box
+                    sx={{
+                      width: '100%',
+                      maxWidth: '190px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    <Typography variant={'h2'}>Print Preview</Typography>
+                  </Box>
+
+                  <IconButton sx={{ p: 'unset' }} onClick={printPreviewModal}>
+                    <HighlightOffTwoTone
+                      sx={{ color: '#D84315' }}
+                      fontSize="large"
+                    />
+                  </IconButton>
+                </Stack>
+              }
             >
               <PDFViewer style={{ width: '95vw', height: '95vh' }}>
                 <PackingSlip packingSlipData={packingSlipData} />

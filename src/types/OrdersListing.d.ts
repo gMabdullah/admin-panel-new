@@ -96,6 +96,7 @@ interface OrderListingResponseResult {
   tip: string;
   total: string;
   total_time: string;
+  total_qty: number;
   user_area: string;
   user_city: string;
   user_country: string;
@@ -115,6 +116,7 @@ interface OrderListingResponseOrderDetail {
   coupon_discount_value: string | number;
   discount: string;
   item_cat_id: string;
+  item_cat_name: string;
   item_id: string;
   item_level_discount_value: string | number;
   item_level_grand_total: string | number;

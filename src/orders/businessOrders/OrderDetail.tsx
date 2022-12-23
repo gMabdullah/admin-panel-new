@@ -163,7 +163,6 @@ const OrderDetail = ({
   const [orderFromAPI, setOrderFromAPI] = useState<
     OrderListingResponseResult[]
   >([])
-
   const [openAddEditItemModal, setAddEditItemModal] = useState<boolean>(false)
   const [packingSlip, setPackingSlip] = React.useState(false)
   const [editItemFlag, setEditItemFlag] = useState<boolean>(false)
@@ -551,6 +550,7 @@ const OrderDetail = ({
       objectToAppendInOrderDetail.item_id = item.menu_item_id
       objectToAppendInOrderDetail.product_code = item.product_code
       objectToAppendInOrderDetail.item_cat_id = item.menu_cat_id
+
       objectToAppendInOrderDetail.quantity = item.quantity
       objectToAppendInOrderDetail.price = item.price
       objectToAppendInOrderDetail.status = item.status
