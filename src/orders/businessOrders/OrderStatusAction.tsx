@@ -298,7 +298,8 @@ const OrderStatusAction = ({
         />
       )}
 
-      <MainCard // order status timeline card
+      {/* order status timeline card */}
+      <MainCard
         dividerSX={{ m: "0px 0px 0px 0px !important" }}
         headerSX={{ p: "unset !important", mb: "24px" }}
         contentSX={{
@@ -442,7 +443,8 @@ const OrderStatusAction = ({
         )}
       </MainCard>
 
-      <Modal // email notification modal
+      {/* email notification modal */}
+      <Modal
         open={emailNotificationModal}
         onClose={toggleEmailNotificationModal}
       >
