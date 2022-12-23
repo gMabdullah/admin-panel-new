@@ -170,7 +170,7 @@ const MainRoutes = {
       element: <BusinessOrders />,
     },
     {
-      path: "/orders/cart-abandonment",
+      path: "/orders/abandoned-carts",
       element: <OrdersCartAbandonment />,
     },
     {
