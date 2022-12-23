@@ -109,6 +109,7 @@ const Login = () => {
         navigate("/orders");
       }
     } else {
+      // for wrong credentials & when user don't have access to any business
       setNotifyMessage(message);
       setNotify(true);
     }
