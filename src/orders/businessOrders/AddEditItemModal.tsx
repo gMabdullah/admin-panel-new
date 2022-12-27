@@ -1,35 +1,18 @@
-import React, { useState, useContext, useEffect } from "react";
-
+import useAxios from 'axios-hooks';
+import MainCard from 'components/cards/MainCard';
+import CustomButton from 'components/CustomButton';
+import Notify from 'components/Notify';
+import Progress from 'components/Progress';
+import TdTextField from 'components/TdTextField';
+import { OptionSetContext } from 'orders/context/OptionSetContext';
+import React, { useContext, useEffect, useState } from 'react';
 import {
-  Grid,
-  IconButton,
-  Modal,
-  Typography,
-  CardActionArea,
-  CardMedia,
-  Card,
-  Chip,
-} from "@mui/material";
+    ArrowBackOutlined, HighlightOffTwoTone as CloseIcon, Visibility as PreviewIcon
+} from '@mui/icons-material';
 import {
-  HighlightOffTwoTone as CloseIcon,
-  Visibility as PreviewIcon,
-  ArrowBackOutlined,
-} from "@mui/icons-material";
-
-import MainCard from "components/cards/MainCard";
-import TdTextField from "components/TdTextField";
-import CustomButton from "components/CustomButton";
-import Progress from "components/Progress";
-import Notify from "components/Notify";
-
-import { OptionSetContext } from "orders/context/OptionSetContext";
-
-import SelectOptionSet from "./SelectOptionSet";
-
-import useAxios, { configure } from "axios-hooks";
-import { axios } from "config";
-
-configure({ axios });
+    Card, CardActionArea, CardMedia, Chip, Grid, IconButton, Modal, Typography
+} from '@mui/material';
+import SelectOptionSet from './SelectOptionSet';
 
 interface AddEditItemProps {
   setAddEditItemModal: React.Dispatch<React.SetStateAction<boolean>>;

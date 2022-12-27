@@ -1,74 +1,41 @@
-import React, { useContext, useEffect, useState } from "react";
+import useAxios from 'axios-hooks';
+import MainCard from 'components/cards/MainCard';
+import CustomButton from 'components/CustomButton';
+import CustomRadioButton from 'components/CustomRadioButton';
+import GoogleMapFrame from 'components/GoogleMapFrame';
+import Notify from 'components/Notify';
+import Progress from 'components/Progress';
+import {
+    CalculationSectionSkeleton, OrderDeliveryDetailsSkeleton, OrderIdSectionSkeleton, TableSkeleton,
+    UserDetailsSkeleton, TableBoxHeaderSkeleton,
+    OrderTimelineSkeleton,
+    MapSectionSkeleton,
+} from 'components/skeleton/OrderDetailSkeleton';
+import TdTextField from 'components/TdTextField';
+import {
+    AMANAT_BUSINESS_ID, AMANAT_STAGING_BUSINESS_ID, DWP_BUSINESS_ID, DWP_STAGING_BUSINESS_ID,
+    OrderDetailColumns
+} from 'constants/BusinessIds';
+import moment from 'moment';
+import { OptionSetContext } from 'orders/context/OptionSetContext';
+import { toCapitalizeFirstLetter } from 'orders/HelperFunctions';
+import React, { lazy, useContext, useEffect, useState } from 'react';
+import { useSelector } from 'store';
 
 import {
-  GridColumns,
-  DataGrid,
-  GridActionsCellItem,
-  GridRowParams,
-  GridSelectionModel,
-  GridRenderCellParams,
-} from "@mui/x-data-grid";
-import { makeStyles } from "@mui/styles";
+    AccountCircleTwoTone, AddTwoTone, DeleteTwoTone, EditTwoTone, HighlightOffTwoTone,
+    PictureAsPdfTwoTone, PinDropTwoTone, PrintTwoTone, SmartphoneTwoTone
+} from '@mui/icons-material';
 import {
-  Typography,
-  Stack,
-  Box,
-  Grid,
-  Divider,
-  Modal,
-  IconButton,
-  CardContent,
-  Skeleton,
-} from "@mui/material";
+    Box, CardContent, Divider, Grid, IconButton, Modal, Skeleton, Stack, Typography
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import {
-  AddTwoTone,
-  PictureAsPdfTwoTone,
-  PrintTwoTone,
-  AccountCircleTwoTone,
-  SmartphoneTwoTone,
-  PinDropTwoTone,
-  DeleteTwoTone,
-  EditTwoTone,
-  HighlightOffTwoTone,
-} from "@mui/icons-material";
+    DataGrid, GridActionsCellItem, GridColumns, GridRenderCellParams, GridRowParams,
+    GridSelectionModel
+} from '@mui/x-data-grid';
 
-import {
-  OrderIdSectionSkeleton,
-  UserDetailsSkeleton,
-  OrderDeliveryDetailsSkeleton,
-  TableSkeleton,
-  TableBoxHeaderSkeleton,
-  CalculationSectionSkeleton,
-  OrderTimelineSkeleton,
-  MapSectionSkeleton,
-} from "components/skeleton/OrderDetailSkeleton";
-import Notify from "components/Notify";
-import MainCard from "components/cards/MainCard";
-import CustomButton from "components/CustomButton";
-import GoogleMapFrame from "components/GoogleMapFrame";
-import ExcelExport from "components/ExcelExport";
-import TdTextField from "components/TdTextField";
-import Progress from "components/Progress";
-import CustomRadioButton from "components/CustomRadioButton";
-
-import {
-  AMANAT_BUSINESS_ID,
-  DWP_BUSINESS_ID,
-  DWP_STAGING_BUSINESS_ID,
-  AMANAT_STAGING_BUSINESS_ID,
-} from "constants/BusinessIds";
-import { OptionSetContext } from "orders/context/OptionSetContext";
-import { toCapitalizeFirstLetter } from "orders/HelperFunctions";
-
-import OrderStatusAction from "./OrderStatusAction";
-import AddEditItemModal from "./AddEditItemModal";
-import { useSelector } from "store";
-import moment from "moment";
-
-import useAxios, { configure } from "axios-hooks";
-import { axios } from "config";
-
-configure({ axios });
+import OrderStatusAction from './OrderStatusAction';
 
 const useStyles = makeStyles(() => ({
   backDrop: {
@@ -110,22 +77,6 @@ const useStyles = makeStyles(() => ({
     paddingLeft: "unset !important",
   },
 }));
-
-const tableData = [
-  { header: "Item #", key: "item_no" },
-  { header: "Category", key: "category" },
-  { header: "Item ID", key: "item_id" },
-  { header: "Item Name", key: "item_name" },
-  { header: "Brand", key: "brand" },
-  { header: "Quantity", key: "quantity" },
-  { header: "Weight", key: "weight" },
-  { header: "Price", key: "price" },
-  { header: "Amount", key: "amount" },
-  { header: "Total", key: "total" },
-  { header: "Options", key: "options" },
-  { header: "Note", key: "note" },
-  { header: "Instructions", key: "instructions" },
-];
 
 interface orderDetailsProps {
   selectedOrder: SelectedOrderDetailTypes;
@@ -1592,6 +1543,18 @@ const OrderDetail = ({
     setTotalWeight(tWeight);
   };
 
+  // load add item when it's needed
+  const AddEditItemModal = lazy(() => (
+    import("./AddEditItemModal")
+      .then(AddEditItemModal => AddEditItemModal)
+  ));
+
+  // load export excel when  it's needed
+  const ExcelExport = lazy(() => (
+    import("components/ExcelExport")
+      .then(ExcelExport => ExcelExport)
+  ));
+  // returns start
   return (
     <>
       {notify && (
@@ -1600,6 +1563,17 @@ const OrderDetail = ({
           type={notifyType}
           notify={notify}
           closeNotify={closeNotify}
+        />
+      )}
+
+      {/* Add edit item modal */}
+      {openAddEditItemModal && (
+        <AddEditItemModal
+          openAddEditItemModal={openAddEditItemModal}
+          setAddEditItemModal={setAddEditItemModal}
+          getNewItemCallback={getNewItemCallback}
+          getEditItemCallback={getEditItemCallback}
+          editItemFlag={editItemFlag}
         />
       )}
 
@@ -1680,7 +1654,7 @@ const OrderDetail = ({
                   }}
                 >
                   <ExcelExport
-                    tableData={tableData}
+                    tableData={OrderDetailColumns}
                     orderDetailData={(() => {
                       if (!orderFromAPI[0]) return [];
                       return orderFromAPI[0].order_detail;
@@ -2855,16 +2829,6 @@ const OrderDetail = ({
           </CardContent>
         </MainCard>
       </Modal>
-
-      {openAddEditItemModal && (
-        <AddEditItemModal
-          openAddEditItemModal={openAddEditItemModal}
-          setAddEditItemModal={setAddEditItemModal}
-          getNewItemCallback={getNewItemCallback}
-          getEditItemCallback={getEditItemCallback}
-          editItemFlag={editItemFlag}
-        />
-      )}
     </>
   );
 };

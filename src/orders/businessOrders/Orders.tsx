@@ -1,41 +1,25 @@
-import React, { useEffect, useRef, useState } from "react";
+import useAxios from 'axios-hooks';
+import MainCard from 'components/cards/MainCard';
+import CustomButton from 'components/CustomButton';
+import MultiSelectDropDown, { DropDownListType } from 'components/MultiSelectDropDown';
+import Progress from 'components/Progress';
+import { OrderListingNoRowsOverlay } from 'components/skeleton/OrderListingNoRowsOverlay';
+import { OrderListingSkeleton } from 'components/skeleton/OrderListingSkeleton';
+import TdTextField from 'components/TdTextField';
+import { IQBAL_BUSINESS_ID, orderListingColumns, ordersType } from 'constants/BusinessIds';
+import moment from 'moment';
+import { OptionSetProvider } from 'orders/context/OptionSetContext';
+import React, { lazy, useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'store';
+import { setDate, setGlobalSettings } from 'store/slices/Main';
 
-import { makeStyles } from "@mui/styles";
+import { Box, Chip, Grid, Stack, Typography } from '@mui/material';
+import { SelectChangeEvent } from '@mui/material/Select';
+import { makeStyles } from '@mui/styles';
 import {
-  GridColumns,
-  DataGrid,
-  GridRenderCellParams,
-  GridRowParams,
-  GridSelectionModel,
-  GridRowHeightParams,
-} from "@mui/x-data-grid";
-
-import { Box, Chip, Typography, Grid, Stack } from "@mui/material";
-import { SelectChangeEvent } from "@mui/material/Select";
-
-import MainCard from "components/cards/MainCard";
-import CustomButton from "components/CustomButton";
-import ExcelExport from "components/ExcelExport";
-import TdTextField from "components/TdTextField";
-import Progress from "components/Progress";
-import MultiSelectDropDown, {
-  DropDownListType,
-} from "components/MultiSelectDropDown";
-import { OrderListingSkeleton } from "components/skeleton/OrderListingSkeleton";
-import { OrderListingNoRowsOverlay } from "components/skeleton/OrderListingNoRowsOverlay";
-
-import { OptionSetProvider } from "orders/context/OptionSetContext";
-import { IQBAL_BUSINESS_ID } from "constants/BusinessIds";
-import { setDate, setGlobalSettings } from "store/slices/Main";
-
-import OrderDetail from "./OrderDetail";
-import { useDispatch, useSelector } from "store";
-import moment from "moment";
-
-import useAxios, { configure } from "axios-hooks";
-import { axios } from "config";
-
-configure({ axios });
+    DataGrid, GridColumns, GridRenderCellParams, GridRowHeightParams, GridRowParams,
+    GridSelectionModel
+} from '@mui/x-data-grid';
 
 const useStyles = makeStyles(() => ({
   colStyle1: {
@@ -55,33 +39,6 @@ const useStyles = makeStyles(() => ({
 export const applyDates = (refetch: any) => {
   return refetch;
 };
-
-const ordersType = [
-  { value: "", label: "All Order Type" },
-  { value: "1", label: "Pick Up" },
-  { value: "0", label: "Delivery" },
-  { value: "1", label: "Canada Post" },
-];
-
-export const tableData = [
-  { header: "Order ID", key: "order_id" },
-  { header: "Date", key: "date" },
-  { header: "Name", key: "name" },
-  { header: "Note", key: "note" },
-  { header: "Tip", key: "tip" },
-  { header: "Payment Method", key: "payment_type" },
-  { header: "Grand Total", key: "grand_total" },
-  { header: "Status", key: "status" },
-  { header: "Source", key: "source" },
-  { header: "Area", key: "user_area" },
-  { header: "Address", key: "address" },
-  { header: "City", key: "user_city" },
-  { header: "Tel #", key: "landline_number" },
-  { header: "Mobile No", key: "mobile_number" },
-  { header: "CNIC", key: "cnic" },
-  { header: "Email", key: "user_email" },
-  { header: "Status Comment", key: "statuscomment" },
-];
 
 export let last48Hours = true;
 
@@ -436,7 +393,7 @@ const Orders = () => {
       })
     );
   }, [startDate, endDate]);
-
+  
   //======================================= Handlers Functions =======================================//
 
   const handleSearchChange = async (e: { target: { value: string } }) => {
@@ -762,9 +719,31 @@ const Orders = () => {
     setPageSize(pageSizeNo);
   };
 
+  // load Order Details when  it's needed
+  const OrderDetail = lazy(() => (
+    import("./OrderDetail")
+      .then(OrderDetail => (
+        OrderDetail
+      ))
+  ));
+
+  // load excel export when  it's needed
+  const ExcelExport = lazy(() => (
+    import("components/ExcelExport")
+      .then(ExcelExport => ExcelExport)
+  ));
   return (
-    <>
-      <OptionSetProvider>
+    <OptionSetProvider>
+        <>
+         {/* Order Detail modal */}
+         {orderDetailModal && 
+          <OrderDetail
+            selectedOrder={selectedOrder}
+            orderDetailModal={orderDetailModal}
+            setOrderDetailModal={setOrderDetailModal}
+            setSelectionModel={setSelectionModel}
+          />
+        }
         <MainCard
           title={
             <Grid container spacing={2}>
@@ -827,7 +806,7 @@ const Orders = () => {
                   Packing Slip
                 </CustomButton>
                 <ExcelExport
-                  tableData={tableData}
+                  tableData={orderListingColumns}
                   orderListData={orders}
                   exportType={"OrdersList"}
                 />
@@ -954,19 +933,10 @@ const Orders = () => {
               />
             )}
           </Box>
-
-          {/* Order Detail modal */}
-          {orderDetailModal && (
-            <OrderDetail
-              selectedOrder={selectedOrder}
-              orderDetailModal={orderDetailModal}
-              setOrderDetailModal={setOrderDetailModal}
-              setSelectionModel={setSelectionModel}
-            />
-          )}
+          
         </MainCard>
+      </>
       </OptionSetProvider>
-    </>
   );
 };
 
