@@ -20,8 +20,8 @@ const DashboardCustomers = Loadable(
 const BusinessOrders = Loadable(
   lazy(() => import("orders/businessOrders/Orders"))
 );
-const OrdersCartAbandonment = Loadable(
-  lazy(() => import("orders/cartAbandonment/CartAbandonment"))
+const CartAbandonmentOrders = Loadable(
+  lazy(() => import("orders/cartAbandonment/Orders"))
 );
 
 // performance routing
@@ -171,7 +171,7 @@ const MainRoutes = {
     },
     {
       path: "/orders/abandoned-carts",
-      element: <OrdersCartAbandonment />,
+      element: <CartAbandonmentOrders />,
     },
     {
       path: "/performance",

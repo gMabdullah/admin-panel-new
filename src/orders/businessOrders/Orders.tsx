@@ -22,7 +22,7 @@ import MultiSelectDropDown, {
   DropDownListType,
 } from "components/MultiSelectDropDown";
 import { OrderListingSkeleton } from "components/skeleton/OrderListingSkeleton";
-import { OrderListingNoRowsOverlay } from "components/skeleton/OrderListingNoRowsOverlay";
+import { TableNoRowsOverlay } from "components/skeleton/TableNoRowsOverlay";
 
 import { OptionSetProvider } from "orders/context/OptionSetContext";
 import { IQBAL_BUSINESS_ID } from "constants/BusinessIds";
@@ -684,7 +684,7 @@ const Orders = () => {
   };
 
   const customNoRowsOverlay = () => {
-    return <OrderListingNoRowsOverlay />;
+    return <TableNoRowsOverlay />;
   };
 
   const columns: GridColumns = [
