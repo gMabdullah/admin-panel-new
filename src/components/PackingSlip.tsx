@@ -88,23 +88,25 @@ const PackingSlip = (props: propsTypes) => {
                     <View style={styles.detailBox}>
                       <View style={styles.row}>
                         <Text style={styles.detailBoxTextCss}>Date:</Text>
-                        <Text style={styles.detailBoldTextCss}>{date}</Text>
+                        <Text style={styles.detailBoldTextDate}>{date}</Text>
                       </View>
                       <View style={styles.row}>
                         <Text style={styles.detailBoxTextCss}>Order#:</Text>
-                        <Text style={styles.detailBoldTextCss}>{order_id}</Text>
+                        <Text style={styles.detailBoldTextCssOrderId}>
+                          {order_id}
+                        </Text>
                       </View>
                       <View style={styles.row}>
                         <Text style={styles.detailBoxTextCss}>
                           Payment Type:
                         </Text>
-                        <Text style={styles.detailBoldTextCss}>
+                        <Text style={styles.detailBoxTextCssPaymentType}>
                           {payment_type}
                         </Text>
                       </View>
                       <View style={styles.row}>
                         <Text style={styles.detailBoxTextCss}>Order Type:</Text>
-                        <Text style={styles.detailBoldTextCss}>
+                        <Text style={styles.detailBoxTextCssPaymentTypeOderId}>
                           {orderType}
                         </Text>
                       </View>
@@ -127,22 +129,28 @@ const PackingSlip = (props: propsTypes) => {
                     <View style={styles.detailBoxCustomerDetail}>
                       <View style={styles.row}>
                         <Text style={styles.detailBoxTextCss}>Name:</Text>
-                        <Text style={styles.detailBoldTextCss}>{name}</Text>
+                        <Text style={styles.detailBoxTextCssPaymentTypeName}>
+                          {name}
+                        </Text>
                       </View>
                       <View style={styles.row}>
                         <Text style={styles.detailBoxTextCss}>Mobile:</Text>
-                        <Text style={styles.detailBoldTextCss}>
+                        <Text style={styles.detailBoxTextCssPaymentTypeMobile}>
                           {mobile_number}
                         </Text>
                       </View>
                       <View style={styles.row}>
                         <Text style={styles.detailBoxTextCss}>Address:</Text>
-                        <Text style={styles.detailBoldTextCss}>{address}</Text>
+                        <Text style={styles.detailBoxTextCssPaymentTypeAddress}>
+                          {address}
+                        </Text>
                       </View>
                       {note !== '' && (
                         <View style={styles.row}>
                           <Text style={styles.detailBoxTextCss}>Note:</Text>
-                          <Text style={styles.detailBoldTextCss}>{note}</Text>
+                          <Text style={styles.detailBoxTextCssNote}>
+                            {note}
+                          </Text>
                         </View>
                       )}
                     </View>
@@ -352,7 +360,10 @@ const PackingSlip = (props: propsTypes) => {
                               </View>
                             </View>
                           ) : (
-                            <View style={styles.tablerow} wrap={false}>
+                            <View
+                              style={styles.tablerowPackingSlip}
+                              wrap={false}
+                            >
                               <View style={styles.numbertablecol}>
                                 <Text style={styles.numbertextt}>{i + 1}</Text>
                               </View>
