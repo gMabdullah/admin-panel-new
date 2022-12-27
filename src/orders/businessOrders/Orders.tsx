@@ -3,7 +3,7 @@ import MainCard from 'components/cards/MainCard';
 import CustomButton from 'components/CustomButton';
 import MultiSelectDropDown, { DropDownListType } from 'components/MultiSelectDropDown';
 import Progress from 'components/Progress';
-import { OrderListingNoRowsOverlay } from 'components/skeleton/OrderListingNoRowsOverlay';
+// import { OrderListingNoRowsOverlay } from 'components/skeleton/OrderListingNoRowsOverlay';
 import { OrderListingSkeleton } from 'components/skeleton/OrderListingSkeleton';
 import TdTextField from 'components/TdTextField';
 import { IQBAL_BUSINESS_ID, orderListingColumns, ordersType } from 'constants/BusinessIds';
@@ -20,6 +20,7 @@ import {
     DataGrid, GridColumns, GridRenderCellParams, GridRowHeightParams, GridRowParams,
     GridSelectionModel
 } from '@mui/x-data-grid';
+import { TableNoRowsOverlay } from "components/skeleton/TableNoRowsOverlay";
 
 const useStyles = makeStyles(() => ({
   colStyle1: {
@@ -641,7 +642,7 @@ const Orders = () => {
   };
 
   const customNoRowsOverlay = () => {
-    return <OrderListingNoRowsOverlay />;
+    return <TableNoRowsOverlay />;
   };
 
   const columns: GridColumns = [
