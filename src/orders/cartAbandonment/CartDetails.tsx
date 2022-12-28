@@ -38,6 +38,7 @@ const CartDetails = ({cart , setOrderDetailModal} : cartDetailsProp) => {
   const [order, setOrder] = useState(cart.order)
   const [orderDetails, setOrderDetails] = useState(cart.order_details);
   const classes = useStyles()
+  const noDetailsFound = "No details Found";
   // useEffect(() => {
   //   if (details.length > 0) {
   //     setDeliveryChargesModal(true);
@@ -214,7 +215,7 @@ const CartDetails = ({cart , setOrderDetailModal} : cartDetailsProp) => {
           <Grid container>
             <Grid item xs={12} sx={{ display: "flex" }}>
               <Grid item xs={8.3}>
-                {(order.name || order.name || order.area || order.area) &&
+                {/* {(order.name || order.name || order.area || order.area) && */}
                 <Box
                   sx={{
                     display: "flex",
@@ -230,6 +231,7 @@ const CartDetails = ({cart , setOrderDetailModal} : cartDetailsProp) => {
                     {order.length === 0 ? (
                       <UserDetailsSkeleton />
                     ) : (
+                      (order.name || order.mobile_phone != 0 || order.city || order.area) ?
                       <Stack
                         spacing={3}
                         direction="row"
@@ -306,12 +308,23 @@ const CartDetails = ({cart , setOrderDetailModal} : cartDetailsProp) => {
                             </Stack>
                           )}
                       </Stack>
+                      : 
+                      <Stack
+                        direction="row"
+                        sx={{
+                          alignItems: "center",
+                        }}
+                        spacing={1}
+                      >
+                        <Typography variant={"subtitle1"}>
+                          {noDetailsFound}
+                        </Typography>
+                      </Stack>
                     )}
                   </Grid>
-
                 </Box>
-                  }
-                {(order.address || order.order_type || order.note) &&
+                  {/* // } */}
+                {/* {(order.address || order.order_type || order.note) && */}
                 <Box
                   sx={{
                     border: "1px solid #EEEEEE",
@@ -325,6 +338,7 @@ const CartDetails = ({cart , setOrderDetailModal} : cartDetailsProp) => {
                     {order.length === 0 ? (
                       <OrderDeliveryDetailsSkeleton />
                     ) : (
+                      // (order.address || order.order_type || order.note) ?
                       <>
                         <Stack // delivery details heading stack
                           direction="row"
@@ -339,7 +353,8 @@ const CartDetails = ({cart , setOrderDetailModal} : cartDetailsProp) => {
                             </Typography>
                           </Stack>
                         </Stack>
-
+                        { (order.address || order.order_type || order.note) ?
+                        <>
                         {order.address && 
                         <Stack // address stack
                           direction="row"
@@ -377,11 +392,21 @@ const CartDetails = ({cart , setOrderDetailModal} : cartDetailsProp) => {
                             </Typography>
                           </Stack>
                         }
+                        </>
+                        : 
+                        <Stack //Note Stack
+                            direction="row"
+                            sx={{ mt: "16px" }}
+                          >
+                        {noDetailsFound}
+                        </Stack>
+                        }
+
                       </>
                     )}
                   </Stack>
                 </Box>
-                }
+                {/* // } */}
                 <MainCard
                   dividerSX={{ m: "0px 0px 0px 0px !important" }}
                   headerSX={{ p: "unset !important", mb: "20px" }}
@@ -774,10 +799,12 @@ const CartDetails = ({cart , setOrderDetailModal} : cartDetailsProp) => {
                     }}
                     title={<Typography variant="h4">Geo Location</Typography>}
                   >
+                    {order.user_latitude && order.user_longitude
+                    ? 
                     <GoogleMapFrame
                       longitude={
                         order
-                          ? order.user_latitude
+                          ? order.user_longitude
                           : ""
                       }
                       latitude={
@@ -790,6 +817,7 @@ const CartDetails = ({cart , setOrderDetailModal} : cartDetailsProp) => {
                       height={"279px"}
                       style={{ border: "none", borderRadius: "8px" }}
                     />
+                    : noDetailsFound}
                   </MainCard>
                 )}
               </Grid>

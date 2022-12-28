@@ -142,11 +142,14 @@ const StatusActionButton = ({
         });
       }
       const getResultsFirst = async () => {
+        // if no result found
+        if(!result || !result.data) return
+
         const {
           data: { status, message },
         } = result;
 
-        if (status === 400 || status === 0 || status === "0") {
+        if (status === 400 || status == 0) {
           setNotifyMessage(
             "Order cannot be updated because the grand total of the order is greater than the pre-authorized charge."
           );
@@ -154,7 +157,7 @@ const StatusActionButton = ({
           setNotify(true);
         } else if (
           status &&
-          (status === 200 || status === 1 || status === "1")
+          (status === 200 || status == 1)
         ) {
           setNotifyMessage(message);
           setNotifyType("success");
