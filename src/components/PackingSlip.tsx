@@ -465,11 +465,9 @@ const PackingSlip = (props: propsTypes) => {
                     <Text style={styles.texth2th}>Total Quantity</Text>
                   </View>
 
-                  {/* {props.pdfType === 'packingSlip' && ( */}
                   <View style={styles.currencyrowTotalQuantity}>
                     <Text>{`${total_qty}`}</Text>
                   </View>
-                  {/* )} */}
                 </View>
                 {props.pdfType === 'pdf' && (
                   <View>
