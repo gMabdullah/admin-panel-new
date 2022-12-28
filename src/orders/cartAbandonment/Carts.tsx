@@ -26,7 +26,6 @@ import moment from "moment";
 import useAxios from "axios-hooks";
 import { GATEWAY_API_URL } from "config";
 
-
 const Carts = () => {
   const dispatch = useDispatch();
   const { eatout_id, user_id } = JSON.parse(
@@ -37,17 +36,22 @@ const Carts = () => {
     (state) => state.main
   );
 
-  const [rows, setRows] = useState<any[] | []>([]);
-  const [cart, setCart] = useState<any[] | []>([]);
+  const [cartOrders, setCartOrders] = useState<AbandonedCartOrders[] | []>([]);
+  const [selectedCartOrder, setSelectedCartOrder] = useState<
+    AbandonedCartOrders[] | []
+  >([]);
   const [orderDetailModal, setOrderDetailModal] = useState(false);
 
   //======================================= API Calls =======================================//
-  const  cartAbandonmentUrl = `${GATEWAY_API_URL}/businesses/${eatout_id}/cart-abandonment?date_from=${startDate}&date_to=${endDate}`;
-  
-  const [{ data: abandonedOrders }, abandonedCartsAPICall] = useAxios(
+  const cartAbandonmentUrl = `${GATEWAY_API_URL}/businesses/${eatout_id}/cart-abandonment?date_from=${startDate}&date_to=${endDate}`;
+
+  const [
+    { data: abandonedOrders, loading: abandonedOrdersLoader },
+    abandonedCartsAPICall,
+  ] = useAxios(
     {
       url: cartAbandonmentUrl,
-      method: "GET"
+      method: "GET",
     },
     { manual: true }
   );
@@ -65,7 +69,7 @@ const Carts = () => {
 
   useEffect(() => {
     if (abandonedOrders && !Array.isArray(abandonedOrders.result)) {
-      makeCartListingForTable();
+      makeOrdersArrayForTable();
     }
   }, [abandonedOrders]);
 
@@ -74,7 +78,7 @@ const Carts = () => {
       if (startDate && endDate) {
         abandonedCartsAPICall({
           url: cartAbandonmentUrl,
-          method: "GET"
+          method: "GET",
         });
       }
     })();
@@ -82,25 +86,64 @@ const Carts = () => {
 
   //======================================= Handlers Functions =======================================//
 
-  const makeCartListingForTable = () => {
-    const ordersArr = abandonedOrders.result.filter_orders_by_date && abandonedOrders.result.filter_orders_by_date.map((cart: any) => {
-      cart.order["orderDetails"] = cart.order_details;
-      return cart.order;
-    });
-    setRows(ordersArr);
+  const makeOrdersArrayForTable = () => {
+    // if (abandonedOrders.result.filter_orders_by_date) {
+    const duplicateCartOrders = [
+      ...abandonedOrders.result.filter_orders_by_date,
+    ];
+
+    console.log(
+      "api response = 0",
+      abandonedOrders.result.filter_orders_by_date
+    );
+
+    const updatedCartOrders = duplicateCartOrders.map(
+      (cart: CartAbandonmentResponse) => {
+        cart.order["orderDetails"] = cart.order_details;
+        return cart.order;
+      }
+    );
+
+    console.log("updatedCartOrders = ", updatedCartOrders);
+    console.log(
+      "api response = ",
+      abandonedOrders.result.filter_orders_by_date
+    );
+
+    setCartOrders(updatedCartOrders);
+    // }
   };
 
   const fetchOrderDetail = (orderId: number) => {
-    abandonedOrders && abandonedOrders.result.filter_orders_by_date.forEach((cart: any) => {
-      if (cart && cart.order && cart.order.orderid === orderId.toString()) {
-        setCart(cart);
-        setOrderDetailModal(true);
-      }
-    });
+    const selectedOrder = cartOrders.filter(
+      (cart: AbandonedCartOrders) => cart.orderid === orderId.toString()
+      // (cart: AbandonedCartOrders) => {
+      //   if (cart && cart.order && cart.order.orderid === orderId.toString()) {
+      //     console.log("cart = ", cart);
+      //     setSelectedCartOrder(cart);
+      //     setOrderDetailModal(true);
+      //   }
+      // }
+    );
+    // abandonedOrders &&
+    //   abandonedOrders.result.filter_orders_by_date.forEach(
+    //     (cart: CartAbandonmentResponse) => {
+    //       if (cart && cart.order && cart.order.orderid === orderId.toString()) {
+    //         console.log("cart = ", cart);
+    //         setSelectedCartOrder(cart);
+    //         setOrderDetailModal(true);
+    //       }
+    //     }
+    //   );
+
+    setSelectedCartOrder(selectedOrder);
+    setOrderDetailModal(true);
+
+    // console.log("selectedOrder = ", selectedOrder);
   };
 
   const linearLoader = () => {
-    // loader on updating the order
+    // loader on changing the date
     return <Progress type="linear" />;
   };
 
@@ -172,12 +215,9 @@ const Carts = () => {
       // renderCell: AddCurrency,
     },
   ];
-  const CartDetails = lazy(() => (
-    import("./CartDetails")
-      .then(CartDetails => (
-        CartDetails
-      ))
-  ));
+  const CartDetails = lazy(() =>
+    import("./CartDetails").then((CartDetails) => CartDetails)
+  );
   return (
     <>
       <MainCard
@@ -239,8 +279,9 @@ const Carts = () => {
           {!abandonedOrders ? (
             <OrderListingSkeleton />
           ) : (
-            <DataGrid // listing orders
-              rows={rows}
+            // listing cart orders
+            <DataGrid
+              rows={cartOrders}
               columns={columns}
               // rowCount={totalOrders}
               getRowId={(r) => r.orderid}
@@ -264,7 +305,7 @@ const Carts = () => {
                 NoRowsOverlay: customNoRowsOverlay,
                 LoadingOverlay: linearLoader,
               }}
-              // loading={getOrderLoader}
+              loading={abandonedOrdersLoader}
               // getRowHeight={({ model }: GridRowHeightParams) => {
               //   if (model.pre_auth === "1" && model.status === "Pending") {
               //     return 90;
@@ -276,10 +317,11 @@ const Carts = () => {
           )}
         </Box>
       </MainCard>
+
       {/* order details of cart orders */}
       {orderDetailModal && (
         <CartDetails
-          cart={cart}
+          selectedCartOrder={selectedCartOrder}
           setOrderDetailModal={setOrderDetailModal}
         />
       )}

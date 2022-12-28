@@ -96,7 +96,7 @@ const Login = () => {
     } = await loginAPICall({ data: loginAPIPayload() });
 
     if (status === "1" && result) {
-      localStorage.setItem("businessInfo", JSON.stringify(result[0]));
+      localStorage.setItem("businessInfo", JSON.stringify(result[7]));
       navigate("/orders");
     } else {
       setNotifyMessage(message);
