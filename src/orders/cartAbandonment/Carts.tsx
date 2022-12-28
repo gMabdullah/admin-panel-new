@@ -9,7 +9,6 @@ import {
   GridSelectionModel,
   GridRowHeightParams,
 } from "@mui/x-data-grid";
-
 import { Box, Chip, Typography, Grid, Stack } from "@mui/material";
 
 import { OrderListingSkeleton } from "components/skeleton/OrderListingSkeleton";
@@ -25,13 +24,57 @@ import moment from "moment";
 import useAxios from "axios-hooks";
 import { GATEWAY_API_URL } from "config";
 
+const useStyles = makeStyles(() => ({
+  phoneNoColumnHeaderStyle: {
+    fontFamily: "Roboto",
+    fontStyle: "normal",
+    fontWeight: "500",
+    fontSize: "14px",
+    paddingLeft: "unset !important",
+    paddingRight: "50px !important",
+    color: "#212121",
+  },
+  phoneNoColumnCellsStyle: {
+    fontWeight: "400",
+    color: "#212121",
+    paddingLeft: "unset !important",
+    paddingRight: "50px !important",
+  },
+  orderIdColumnHeaderStyle: {
+    fontFamily: "Roboto",
+    fontStyle: "normal",
+    fontWeight: "500",
+    fontSize: "14px",
+    paddingLeft: "unset !important",
+    color: "#212121",
+  },
+  orderIdColumnCellsStyle: {
+    fontWeight: "400",
+    color: "#212121",
+    paddingLeft: "unset !important",
+  },
+  colStyle1: {
+    fontFamily: "Roboto",
+    fontStyle: "normal",
+    fontWeight: "500",
+    fontSize: "14px",
+    // lineHeight: "16px",
+    color: "#212121",
+  },
+  colStyle2: {
+    fontWeight: "400",
+    color: "#212121",
+  },
+}));
+
 const Carts = () => {
   const dispatch = useDispatch();
+  const classes = useStyles();
   const { eatout_id, user_id } = JSON.parse(
     localStorage.getItem("businessInfo")!
   );
 
-  const { startDate, endDate, decimalPlaces } = useSelector(
+  const { startDate, endDate, decimalPlaces, currency } = useSelector(
     (state) => state.main
   );
 
@@ -153,69 +196,134 @@ const Carts = () => {
   const customNoRowsOverlay = () => {
     return <TableNoRowsOverlay />;
   };
+  //====================================================================================
+  const formatDate = (params: GridRenderCellParams) => {
+    return (
+      <Typography variant="body1" sx={{ color: "#212121" }}>
+        {moment(params.value).format("MMM Do, YYYY hh:mm a")}
+      </Typography>
+    );
+  };
+
+  // const emailValidation = (params: GridRenderCellParams) => {
+  //   return params.value && params.value === "0" ? "-" : params.value;
+  // };
+
+  const emailAndPhoneValidation = (params: GridRenderCellParams) => {
+    if (params.value === "" || params.value === "0") {
+      return (
+        <Typography variant="body1" sx={{ color: "#212121" }}>
+          -
+        </Typography>
+      );
+    } else {
+      return (
+        <Typography variant="body1" sx={{ color: "#212121" }}>
+          {params.value}
+        </Typography>
+      );
+    }
+
+    // return params.value && params.value === "0" ? "-" : params.value;
+  };
+
+  const formatString = (params: GridRenderCellParams) => {
+    return (
+      <Typography variant="body1" sx={{ color: "#212121" }}>
+        {params.value
+          ? params.value.charAt(0).toUpperCase() + params.value.slice(1)
+          : "-"}
+      </Typography>
+    );
+  };
+
+  const addCurrency = (params: GridRenderCellParams) => {
+    return (
+      <Stack direction="row" spacing={0.25} sx={{ alignItems: "center" }}>
+        <Typography
+          sx={{
+            fontFamily: "Roboto",
+            fontStyle: "normal",
+            fontWeight: "400",
+            fontSize: "10px",
+            lineHeight: "12px",
+            color: "#757575",
+          }}
+        >
+          {currency}
+        </Typography>
+        <Typography variant="subtitle1" sx={{ color: "#212121" }}>
+          {parseFloat(params.value).toFixed(decimalPlaces)}
+        </Typography>
+      </Stack>
+    );
+  };
 
   const columns: GridColumns = [
     {
       field: "orderid",
       headerName: "Order#",
       flex: 0.5,
-      // headerClassName: classes.colStyle1,
-      // cellClassName: classes.colStyle1,
-      headerAlign: "right",
-      align: "right",
+      headerClassName: classes.orderIdColumnHeaderStyle,
+      cellClassName: classes.orderIdColumnCellsStyle,
       sortable: false,
     },
     {
       field: "delivery",
       headerName: "Date & Time",
-      // headerClassName: classes.colStyle1,
-      // cellClassName: classes.colStyle1,
+      headerClassName: classes.colStyle1,
+      // cellClassName: classes.colStyle2,
       flex: 1,
       sortable: false,
+      renderCell: formatDate,
     },
     {
       field: "email",
       headerName: "Email",
-      // headerClassName: classes.colStyle1,
+      headerClassName: classes.colStyle1,
       // cellClassName: classes.colStyle2,
-      flex: 0.7,
+      flex: 1.2,
       sortable: false,
+      renderCell: emailAndPhoneValidation,
     },
     {
       field: "mobile_phone",
       headerName: "Phone #",
-      // headerClassName: classes.colStyle1,
-      // cellClassName: classes.colStyle2,
-      flex: 1.5,
+      headerClassName: classes.phoneNoColumnHeaderStyle,
+      cellClassName: classes.phoneNoColumnCellsStyle,
+      headerAlign: "right",
+      align: "right",
+      flex: 0.9,
       sortable: false,
+      renderCell: emailAndPhoneValidation,
     },
     {
       field: "order_type",
       headerName: "Order type",
-      // headerClassName: classes.colStyle1,
+      headerClassName: classes.colStyle1,
       flex: 0.7,
       sortable: false,
-      // renderCell: StyledStatus,
+      renderCell: formatString,
     },
     {
       field: "source",
       headerName: "Source",
-      // headerClassName: classes.colStyle1,
+      headerClassName: classes.colStyle1,
       flex: 0.5,
-      headerAlign: "right",
-      align: "right",
+      // headerAlign: "right",
+      // align: "right",
       sortable: false,
-      // renderCell: AddCurrency,
+      renderCell: formatString,
     },
     {
       field: "total",
       headerName: "Total",
-      // headerClassName: classes.colStyle1,
-      flex: 0.5,
+      headerClassName: classes.colStyle1,
+      flex: 0.6,
       headerAlign: "right",
       align: "right",
       sortable: false,
-      // renderCell: AddCurrency,
+      renderCell: addCurrency,
     },
   ];
 
