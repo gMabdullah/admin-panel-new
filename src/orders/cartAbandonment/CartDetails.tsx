@@ -199,17 +199,16 @@ const CartDetails = ({
                   <> */}
                 <Typography variant="h1">
                   Abandoned Cart Details
-                  {selectedCartOrder && ` ${selectedCartOrder.orderid}`}
+                  {` ${selectedCartOrder.orderid}`}
                 </Typography>
 
                 <Typography
                   variant={"subtitle1"}
                   sx={{ fontWeight: "400", ml: "16px" }}
                 >
-                  {selectedCartOrder &&
-                    moment(selectedCartOrder.delivery).format(
-                      "MMM Do, YYYY hh:mm a"
-                    )}
+                  {moment(selectedCartOrder.delivery).format(
+                    "MMM Do, YYYY hh:mm a"
+                  )}
                 </Typography>
                 {/* </>
                  )} */}
@@ -572,17 +571,16 @@ const CartDetails = ({
                           <Typography variant="subtitle1">Sub Total</Typography>
                         </Stack>
 
-                        {selectedCartOrder &&
-                          Number(selectedCartOrder.discount) > 0 && (
-                            <Stack // Discount
-                              direction={"row"}
-                              sx={{ mt: "14px", justifyContent: "end" }}
-                            >
-                              <Typography variant="subtitle1">
-                                Discount
-                              </Typography>
-                            </Stack>
-                          )}
+                        {Number(selectedCartOrder.discount) > 0 && (
+                          <Stack // Discount
+                            direction={"row"}
+                            sx={{ mt: "14px", justifyContent: "end" }}
+                          >
+                            <Typography variant="subtitle1">
+                              Discount
+                            </Typography>
+                          </Stack>
+                        )}
 
                         <Stack // Delivery Charges
                           direction={"row"}
@@ -596,37 +594,34 @@ const CartDetails = ({
                           </Typography>
                         </Stack>
 
-                        {selectedCartOrder &&
-                          Number(selectedCartOrder.tax) > 0 && (
-                            <Stack // Tax
-                              direction={"row"}
-                              sx={{ mt: "14px", justifyContent: "end" }}
-                            >
-                              <Typography variant="subtitle1">Tax</Typography>
-                            </Stack>
-                          )}
+                        {Number(selectedCartOrder.tax) > 0 && (
+                          <Stack // Tax
+                            direction={"row"}
+                            sx={{ mt: "14px", justifyContent: "end" }}
+                          >
+                            <Typography variant="subtitle1">Tax</Typography>
+                          </Stack>
+                        )}
 
-                        {selectedCartOrder &&
-                          Number(selectedCartOrder.tip) > 0 && (
-                            <Stack // Tip
-                              direction={"row"}
-                              sx={{ mt: "14px", justifyContent: "end" }}
-                            >
-                              <Typography variant="subtitle1">Tip</Typography>
-                            </Stack>
-                          )}
+                        {Number(selectedCartOrder.tip) > 0 && (
+                          <Stack // Tip
+                            direction={"row"}
+                            sx={{ mt: "14px", justifyContent: "end" }}
+                          >
+                            <Typography variant="subtitle1">Tip</Typography>
+                          </Stack>
+                        )}
 
-                        {selectedCartOrder &&
-                          Number(selectedCartOrder.service_charges) > 0 && (
-                            <Stack // Service Charges
-                              direction={"row"}
-                              sx={{ mt: "14px", justifyContent: "end" }}
-                            >
-                              <Typography variant="subtitle1">
-                                Service Charges
-                              </Typography>
-                            </Stack>
-                          )}
+                        {Number(selectedCartOrder.service_charges) > 0 && (
+                          <Stack // Service Charges
+                            direction={"row"}
+                            sx={{ mt: "14px", justifyContent: "end" }}
+                          >
+                            <Typography variant="subtitle1">
+                              Service Charges
+                            </Typography>
+                          </Stack>
+                        )}
                       </Stack>
 
                       <Stack direction={"column"}>
@@ -639,32 +634,30 @@ const CartDetails = ({
                           }}
                         >
                           <Typography variant="h4">
-                            {selectedCartOrder &&
-                              selectedCartOrder.total &&
+                            {selectedCartOrder.total &&
                               parseFloat(selectedCartOrder.total).toFixed(
                                 decimalPlaces
                               )}
                           </Typography>
                         </Stack>
 
-                        {selectedCartOrder &&
-                          Number(selectedCartOrder.discount) > 0 && (
-                            <Stack // discount
-                              direction={"row"}
-                              spacing={0.25}
-                              sx={{
-                                mt: "14px",
-                                justifyContent: "end",
-                                alignItems: "end",
-                              }}
-                            >
-                              <Typography variant="h4">
-                                {parseFloat(selectedCartOrder.discount).toFixed(
-                                  decimalPlaces
-                                )}
-                              </Typography>
-                            </Stack>
-                          )}
+                        {Number(selectedCartOrder.discount) > 0 && (
+                          <Stack // discount
+                            direction={"row"}
+                            spacing={0.25}
+                            sx={{
+                              mt: "14px",
+                              justifyContent: "end",
+                              alignItems: "end",
+                            }}
+                          >
+                            <Typography variant="h4">
+                              {parseFloat(selectedCartOrder.discount).toFixed(
+                                decimalPlaces
+                              )}
+                            </Typography>
+                          </Stack>
+                        )}
 
                         {selectedCartOrder && (
                           <Stack // delivery charges
@@ -684,61 +677,58 @@ const CartDetails = ({
                           </Stack>
                         )}
 
-                        {selectedCartOrder &&
-                          Number(selectedCartOrder.tax) > 0 && (
-                            <Stack // tax
-                              direction={"row"}
-                              spacing={0.25}
-                              sx={{
-                                mt: "14px",
-                                justifyContent: "end",
-                                alignItems: "end",
-                              }}
-                            >
-                              <Typography variant="h4">
-                                {parseFloat(selectedCartOrder.tax).toFixed(
-                                  decimalPlaces
-                                )}
-                              </Typography>
-                            </Stack>
-                          )}
+                        {Number(selectedCartOrder.tax) > 0 && (
+                          <Stack // tax
+                            direction={"row"}
+                            spacing={0.25}
+                            sx={{
+                              mt: "14px",
+                              justifyContent: "end",
+                              alignItems: "end",
+                            }}
+                          >
+                            <Typography variant="h4">
+                              {parseFloat(selectedCartOrder.tax).toFixed(
+                                decimalPlaces
+                              )}
+                            </Typography>
+                          </Stack>
+                        )}
 
-                        {selectedCartOrder &&
-                          Number(selectedCartOrder.tip) > 0 && (
-                            <Stack // tip
-                              direction={"row"}
-                              spacing={0.25}
-                              sx={{
-                                mt: "14px",
-                                justifyContent: "end",
-                                alignItems: "end",
-                              }}
-                            >
-                              <Typography variant="h4">
-                                {parseFloat(selectedCartOrder.tip).toFixed(
-                                  decimalPlaces
-                                )}
-                              </Typography>
-                            </Stack>
-                          )}
+                        {Number(selectedCartOrder.tip) > 0 && (
+                          <Stack // tip
+                            direction={"row"}
+                            spacing={0.25}
+                            sx={{
+                              mt: "14px",
+                              justifyContent: "end",
+                              alignItems: "end",
+                            }}
+                          >
+                            <Typography variant="h4">
+                              {parseFloat(selectedCartOrder.tip).toFixed(
+                                decimalPlaces
+                              )}
+                            </Typography>
+                          </Stack>
+                        )}
 
-                        {selectedCartOrder &&
-                          Number(selectedCartOrder.service_charges) > 0 && (
-                            <Stack // service charges
-                              direction={"row"}
-                              spacing={0.25}
-                              sx={{
-                                justifyContent: "end",
-                                alignItems: "end",
-                              }}
-                            >
-                              <Typography variant="h4">
-                                {parseFloat(
-                                  selectedCartOrder.service_charges
-                                ).toFixed(decimalPlaces)}
-                              </Typography>
-                            </Stack>
-                          )}
+                        {Number(selectedCartOrder.service_charges) > 0 && (
+                          <Stack // service charges
+                            direction={"row"}
+                            spacing={0.25}
+                            sx={{
+                              justifyContent: "end",
+                              alignItems: "end",
+                            }}
+                          >
+                            <Typography variant="h4">
+                              {parseFloat(
+                                selectedCartOrder.service_charges
+                              ).toFixed(decimalPlaces)}
+                            </Typography>
+                          </Stack>
+                        )}
                       </Stack>
                     </Stack>
 
@@ -771,10 +761,9 @@ const CartDetails = ({
                           }}
                         >
                           <Typography variant="h4">
-                            {selectedCartOrder &&
-                              parseFloat(selectedCartOrder.gtotal).toFixed(
-                                decimalPlaces
-                              )}
+                            {parseFloat(selectedCartOrder.gtotal).toFixed(
+                              decimalPlaces
+                            )}
                           </Typography>
                         </Stack>
                       </Stack>
