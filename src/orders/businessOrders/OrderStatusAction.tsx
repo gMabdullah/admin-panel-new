@@ -148,8 +148,7 @@ const OrderStatusAction = ({
         setNotifyType("success");
         setNotify(true);
         setComment("");
-      }
-      if (notifyResponse.status === "0") {
+      }else if (notifyResponse.status === "0") {
         setEmailNotificationModal(false);
         setNotifyMessage("Notify Failed");
         setNotifyType("error");

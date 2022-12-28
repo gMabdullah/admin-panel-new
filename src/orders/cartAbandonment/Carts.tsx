@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { lazy, useEffect, useRef, useState } from "react";
 
 import { makeStyles } from "@mui/styles";
 import {
@@ -17,18 +17,17 @@ import { TableNoRowsOverlay } from "components/skeleton/TableNoRowsOverlay";
 import MainCard from "components/cards/MainCard";
 import CustomButton from "components/CustomButton";
 import Progress from "components/Progress";
-import OrderDetails from "./OrderDetails";
+// import CartDetails from "./CartDetails";
 
 import { setDate, setGlobalSettings } from "store/slices/Main";
 import { useDispatch, useSelector } from "store";
 import moment from "moment";
 
-import useAxios, { configure } from "axios-hooks";
-import { axios } from "config";
+import useAxios from "axios-hooks";
+import { GATEWAY_API_URL } from "config";
 
-configure({ axios });
 
-const Orders = () => {
+const Carts = () => {
   const dispatch = useDispatch();
   const { eatout_id, user_id } = JSON.parse(
     localStorage.getItem("businessInfo")!
@@ -39,14 +38,16 @@ const Orders = () => {
   );
 
   const [rows, setRows] = useState<any[] | []>([]);
-  const [orderDetail, setOrderDetail] = useState<any[] | []>([]);
+  const [cart, setCart] = useState<any[] | []>([]);
   const [orderDetailModal, setOrderDetailModal] = useState(false);
 
   //======================================= API Calls =======================================//
-
+  const  cartAbandonmentUrl = `${GATEWAY_API_URL}/businesses/${eatout_id}/cart-abandonment?date_from=${startDate}&date_to=${endDate}`;
+  
   const [{ data: abandonedOrders }, abandonedCartsAPICall] = useAxios(
     {
-      url: `https://apidev.tossdown.com/businesses/${eatout_id}/cart-abandonment?date_from=${startDate}&date_to=${endDate}`,
+      url: cartAbandonmentUrl,
+      method: "GET"
     },
     { manual: true }
   );
@@ -64,71 +65,35 @@ const Orders = () => {
 
   useEffect(() => {
     if (abandonedOrders && !Array.isArray(abandonedOrders.result)) {
-      // alert("alerttttt");
-      abc();
+      makeCartListingForTable();
     }
   }, [abandonedOrders]);
 
   useEffect(() => {
-    // last48Hours = false;
-
     (async () => {
       if (startDate && endDate) {
-        // API call on searching items (add item)
-
-        // alert("api call");
-
         abandonedCartsAPICall({
-          url: `https://apidev.tossdown.com/businesses/${eatout_id}/cart-abandonment?date_from=${startDate}&date_to=${endDate}`,
+          url: cartAbandonmentUrl,
+          method: "GET"
         });
-
-        // const {
-        //   data: { result },
-        // } = await abandonedCartsAPICall({
-        //   url: `https://apidev.tossdown.com/businesses/${eatout_id}/cart-abandonment?date_from=${startDate}&date_to=${endDate}`,
-        // });
-
-        // console.log("carts data = ", result);
-        // console.log("abandonedOrders = ", abandonedOrders.result);
       }
     })();
   }, [startDate, endDate]);
 
   //======================================= Handlers Functions =======================================//
 
-  const abc = () => {
-    console.log("aaaaaaa", abandonedOrders);
-
-    let ordersArr: any[] = [];
-    // const orderDetailArr = [];
-
-    // console.log("length = ", abandonedOrders.result.length);
-
-    // if (
-    //   abandonedOrders &&
-    //   abandonedOrders.result.filter_orders_by_date.length > 0
-    // ) {
-    abandonedOrders.result.filter_orders_by_date.forEach((cart: any) => {
+  const makeCartListingForTable = () => {
+    const ordersArr = abandonedOrders.result.filter_orders_by_date && abandonedOrders.result.filter_orders_by_date.map((cart: any) => {
       cart.order["orderDetails"] = cart.order_details;
-
-      console.log("cart order = ", cart.order);
-      // alert("saadfaf");
-
-      ordersArr.push(cart.order);
-
-      // orderDetailArr.push(cart.order)
+      return cart.order;
     });
-    // }
-
     setRows(ordersArr);
-
-    console.log("edited orders = ", ordersArr);
   };
 
   const fetchOrderDetail = (orderId: number) => {
-    abandonedOrders.result.filter_orders_by_date.forEach((cart: any) => {
-      if (cart.orderid === orderId.toString()) {
-        setOrderDetail(cart.orderDetails);
+    abandonedOrders && abandonedOrders.result.filter_orders_by_date.forEach((cart: any) => {
+      if (cart && cart.order && cart.order.orderid === orderId.toString()) {
+        setCart(cart);
         setOrderDetailModal(true);
       }
     });
@@ -207,7 +172,12 @@ const Orders = () => {
       // renderCell: AddCurrency,
     },
   ];
-
+  const CartDetails = lazy(() => (
+    import("./CartDetails")
+      .then(CartDetails => (
+        CartDetails
+      ))
+  ));
   return (
     <>
       <MainCard
@@ -224,7 +194,7 @@ const Orders = () => {
             >
               <Typography variant="h3">Abandoned Carts</Typography>
 
-              <CustomButton
+              {/* <CustomButton
                 variant={"contained"}
                 color={"secondary"}
                 sx={{
@@ -236,7 +206,7 @@ const Orders = () => {
                 // onClick={fileExport}
               >
                 Export Carts
-              </CustomButton>
+              </CustomButton> */}
             </Grid>
           </Grid>
         } // MainCard opening tag closed here
@@ -308,8 +278,8 @@ const Orders = () => {
       </MainCard>
       {/* order details of cart orders */}
       {orderDetailModal && (
-        <OrderDetails
-          orderDetail={orderDetail}
+        <CartDetails
+          cart={cart}
           setOrderDetailModal={setOrderDetailModal}
         />
       )}
@@ -317,4 +287,4 @@ const Orders = () => {
   );
 };
 
-export default Orders;
+export default Carts;

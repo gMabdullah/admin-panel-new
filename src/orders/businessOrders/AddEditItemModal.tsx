@@ -258,7 +258,7 @@ const AddEditItemModal = ({
         url: `products?business_id=${eatout_id}&types=0&menu_type_id=0&offset=0&num=6&categories=0&brands=0&menu_item=0&query=${e.target.value}&attributes=1&source=biz&admin_id=${user_id}`,
       });
 
-      setSearchPreview(data);
+      data && setSearchPreview(data);
       setSearchLoader(false);
     }, 1000);
   };

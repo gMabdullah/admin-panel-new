@@ -21,7 +21,7 @@ const BusinessOrders = Loadable(
   lazy(() => import("orders/businessOrders/Orders"))
 );
 const CartAbandonmentOrders = Loadable(
-  lazy(() => import("orders/cartAbandonment/Orders"))
+  lazy(() => import("orders/cartAbandonment/Carts"))
 );
 
 // performance routing

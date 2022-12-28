@@ -37,7 +37,7 @@ import {
 
 import OrderStatusAction from './OrderStatusAction';
 
-const useStyles = makeStyles(() => ({
+export const useStyles = makeStyles(() => ({
   backDrop: {
     backdropFilter: "blur(0px)",
     backgroundColor: "transparent",
@@ -90,7 +90,9 @@ let errorMessage = { address: "", mobileNo: "", deliveryCharges: "" };
 const { eatout_id, user_id } = JSON.parse(
   localStorage.getItem("businessInfo")!
 );
-
+export const linearLoader = () => {
+  return <Progress type="linear" />;
+};
 const OrderDetail = ({
   setOrderDetailModal,
   orderDetailModal,
@@ -189,16 +191,16 @@ const OrderDetail = ({
       } = await getSingleOrderAPICall({
         data: getSingleOrderAPIPayload(),
       });
+      if(result){
+        setSelectedOrderContext(result[0]);
+        setOrderFromAPI(result);
 
-      setSelectedOrderContext(result[0]);
-      setOrderFromAPI(result);
+        // give delivery charges to delivery charges state
+        setDeliveryChargesField(result[0].delivery_charges);
 
-      // give delivery charges to delivery charges state
-      setDeliveryChargesField(result[0].delivery_charges);
-
-      // update weights
-      weightUpdate(result[0]);
-
+        // update weights
+        weightUpdate(result[0]);
+      }
       setOrderDetailLoader(false);
     })();
   }, []);
@@ -465,9 +467,9 @@ const OrderDetail = ({
 
   const closeNotify = () => setNotify(false);
 
-  const linearLoader = () => {
-    return <Progress type="linear" />;
-  };
+  // const linearLoader = () => {
+  //   return <Progress type="linear" />;
+  // };
 
   const getEditItemCallback = (editedItem: OrderListingResponseOrderDetail) => {
     let selectedOrder = orderFromAPI;
@@ -701,7 +703,7 @@ const OrderDetail = ({
     } = await bizDeliveryCalculationAPICall({
       data: bizDeliveryCalculationAPIPayload(bizDeliveryPayload),
     });
-
+    if(final_order_array){
     let selectedOrder = orderFromAPI;
     const itemsFromBizDelivery = final_order_array.items;
 
@@ -772,15 +774,8 @@ const OrderDetail = ({
           : JSON.stringify(itemsFromBizDelivery[index].options);
     });
 
-    // let totalQuantity = 0;
-    // selectedOrder[0].order_detail.forEach((item) => {
-    //   totalQuantity = totalQuantity + parseInt(item.quantity);
-    // });
-
-    // selectedOrder.totalQuantity = totalQuantity;
-
     setOrderFromAPI(selectedOrder);
-
+    }
     setCancelUpdateButtonToggle(true);
 
     if (actionType === "addItem") {
@@ -1047,7 +1042,7 @@ const OrderDetail = ({
             url: `/product_details?business_id=${eatout_id}&item_id=${item_id}&admin_id=${user_id}&source=biz`,
           });
 
-          if (items[0].status === "1" || items !== null) {
+          if (items !== [] || items[0].status === "1" || items !== null) {
             // setEditAbleItem([row]);
 
             if (items[0].options.length > 0) {

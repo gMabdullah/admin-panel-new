@@ -157,6 +157,7 @@ const Orders = () => {
 
   const [{ data: globalSetting }] = useAxios({
     url: `/eatout_global_settings?restaurant_id=${eatout_id}&source=biz&admin_id=${user_id}`,
+    method: "GET"
   });
 
   const [{ data: allBranches }] = useAxios({
@@ -310,7 +311,7 @@ const Orders = () => {
   useEffect(() => {
     // Global Setting
     let pre_auth = { pre_auth: false, status: 404 };
-    if (globalSetting) {
+    if (globalSetting && globalSetting.result) {
       const { payment_settings } = globalSetting.result;
 
       dispatch(setGlobalSettings(globalSetting));
@@ -318,7 +319,7 @@ const Orders = () => {
       pre_auth["status"] = payment_settings.stripe_settings.status;
     }
     // load status dropdown
-    if (allStatuses) {
+    if (allStatuses && allStatuses.result) {
       const remainingStatuses = allStatuses.result.map((status: string) => ({
         label: status,
         value: status,
@@ -340,7 +341,7 @@ const Orders = () => {
       setStatusDropdown(remainingStatuses);
     }
     // load cities dropdown
-    if (allCities) {
+    if (allCities && allCities.result) {
       const remaingCities = allCities.result.map((status: string) => ({
         label: status,
         value: status,
@@ -393,6 +394,9 @@ const Orders = () => {
         }),
       })
     );
+    // return () => {
+    //         cleanup
+    //     }
   }, [startDate, endDate]);
   
   //======================================= Handlers Functions =======================================//
