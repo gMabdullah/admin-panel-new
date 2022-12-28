@@ -49,7 +49,7 @@ import { useSelector } from "store";
 import moment from "moment";
 
 interface cartDetailsProp {
-  selectedCartOrder: AbandonedCartOrders[];
+  selectedCartOrder: AbandonedCartOrder;
   // cart: any;
   setOrderDetailModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -199,7 +199,7 @@ const CartDetails = ({
                   <> */}
                 <Typography variant="h1">
                   Abandoned Cart Details
-                  {selectedCartOrder && ` ${selectedCartOrder[0].orderid}`}
+                  {selectedCartOrder && ` ${selectedCartOrder.orderid}`}
                 </Typography>
 
                 <Typography
@@ -207,7 +207,7 @@ const CartDetails = ({
                   sx={{ fontWeight: "400", ml: "16px" }}
                 >
                   {selectedCartOrder &&
-                    moment(selectedCartOrder[0].delivery).format(
+                    moment(selectedCartOrder.delivery).format(
                       "MMM Do, YYYY hh:mm a"
                     )}
                 </Typography>
@@ -266,10 +266,10 @@ const CartDetails = ({
                     // order.length === 0 ? (
                     //   <UserDetailsSkeleton />
                     // ) :
-                    selectedCartOrder[0].name ||
-                    selectedCartOrder[0].mobile_phone !== "0" ||
-                    selectedCartOrder[0].city ||
-                    selectedCartOrder[0].area ? (
+                    selectedCartOrder.name ||
+                    selectedCartOrder.mobile_phone !== "0" ||
+                    selectedCartOrder.city ||
+                    selectedCartOrder.area ? (
                       <Stack
                         spacing={3}
                         direction="row"
@@ -281,7 +281,7 @@ const CartDetails = ({
                           />
                         }
                       >
-                        {selectedCartOrder[0].name && (
+                        {selectedCartOrder.name && (
                           <Stack
                             direction="row"
                             sx={{
@@ -295,11 +295,11 @@ const CartDetails = ({
                               }
                             />
                             <Typography variant={"subtitle1"}>
-                              {selectedCartOrder[0].name}
+                              {selectedCartOrder.name}
                             </Typography>
                           </Stack>
                         )}
-                        {selectedCartOrder[0].mobile_phone && (
+                        {selectedCartOrder.mobile_phone && (
                           <Stack
                             direction="row"
                             sx={{
@@ -321,30 +321,29 @@ const CartDetails = ({
                                 textOverflow: "ellipsis",
                               }}
                             >
-                              {selectedCartOrder[0].mobile_phone}
+                              {selectedCartOrder.mobile_phone}
                             </Typography>
                           </Stack>
                         )}
 
-                        {selectedCartOrder[0].area &&
-                          selectedCartOrder[0].city && (
-                            <Stack
-                              direction="row"
-                              sx={{
-                                alignItems: "center",
-                              }}
-                              spacing={1}
-                            >
-                              <PinDropTwoTone
-                                className={
-                                  classes.pdf_print_user_phone_location_IconColor
-                                }
-                              />
-                              <Typography variant={"subtitle1"}>
-                                {`${selectedCartOrder[0].area}, ${selectedCartOrder[0].city}`}
-                              </Typography>
-                            </Stack>
-                          )}
+                        {selectedCartOrder.area && selectedCartOrder.city && (
+                          <Stack
+                            direction="row"
+                            sx={{
+                              alignItems: "center",
+                            }}
+                            spacing={1}
+                          >
+                            <PinDropTwoTone
+                              className={
+                                classes.pdf_print_user_phone_location_IconColor
+                              }
+                            />
+                            <Typography variant={"subtitle1"}>
+                              {`${selectedCartOrder.area}, ${selectedCartOrder.city}`}
+                            </Typography>
+                          </Stack>
+                        )}
                       </Stack>
                     ) : (
                       <Stack
@@ -390,23 +389,23 @@ const CartDetails = ({
                     <Typography variant="h4">Delivery Details</Typography>
                   </Stack>
                   {/* </Stack> */}
-                  {selectedCartOrder[0].address ||
-                  selectedCartOrder[0].order_type ||
-                  selectedCartOrder[0].note ? (
+                  {selectedCartOrder.address ||
+                  selectedCartOrder.order_type ||
+                  selectedCartOrder.note ? (
                     <>
-                      {selectedCartOrder[0].address && (
+                      {selectedCartOrder.address && (
                         <Stack // address stack
                           direction="row"
                           sx={{ mt: "15px" }}
                         >
                           <Typography variant="subtitle1">Address:</Typography>
                           <Typography variant="h5" sx={{ ml: "64px" }}>
-                            {selectedCartOrder[0].address}
+                            {selectedCartOrder.address}
                           </Typography>
                         </Stack>
                       )}
 
-                      {selectedCartOrder[0].order_type && (
+                      {selectedCartOrder.order_type && (
                         <Stack // order type stack
                           direction="row"
                           sx={{ mt: "16px" }}
@@ -416,20 +415,20 @@ const CartDetails = ({
                           </Typography>
                           <Typography variant="h5" sx={{ ml: "52px" }}>
                             {toCapitalizeFirstLetter(
-                              selectedCartOrder[0].order_type
+                              selectedCartOrder.order_type
                             )}
                           </Typography>
                         </Stack>
                       )}
 
-                      {selectedCartOrder[0].note && (
+                      {selectedCartOrder.note && (
                         <Stack //Note Stack
                           direction="row"
                           sx={{ mt: "16px" }}
                         >
                           <Typography variant="subtitle1">Note:</Typography>
                           <Typography variant="h5" sx={{ ml: "86px" }}>
-                            {selectedCartOrder[0].note}
+                            {selectedCartOrder.note}
                           </Typography>
                         </Stack>
                       )}
@@ -527,7 +526,7 @@ const CartDetails = ({
                   }}
                 >
                   <DataGrid
-                    rows={selectedCartOrder[0].orderDetails}
+                    rows={selectedCartOrder.orderDetails}
                     // rows={(() => {
                     //   if (!order) return [];
                     //   return orderDetails;
@@ -574,7 +573,7 @@ const CartDetails = ({
                         </Stack>
 
                         {selectedCartOrder &&
-                          Number(selectedCartOrder[0].discount) > 0 && (
+                          Number(selectedCartOrder.discount) > 0 && (
                             <Stack // Discount
                               direction={"row"}
                               sx={{ mt: "14px", justifyContent: "end" }}
@@ -598,7 +597,7 @@ const CartDetails = ({
                         </Stack>
 
                         {selectedCartOrder &&
-                          Number(selectedCartOrder[0].tax) > 0 && (
+                          Number(selectedCartOrder.tax) > 0 && (
                             <Stack // Tax
                               direction={"row"}
                               sx={{ mt: "14px", justifyContent: "end" }}
@@ -608,7 +607,7 @@ const CartDetails = ({
                           )}
 
                         {selectedCartOrder &&
-                          Number(selectedCartOrder[0].tip) > 0 && (
+                          Number(selectedCartOrder.tip) > 0 && (
                             <Stack // Tip
                               direction={"row"}
                               sx={{ mt: "14px", justifyContent: "end" }}
@@ -618,7 +617,7 @@ const CartDetails = ({
                           )}
 
                         {selectedCartOrder &&
-                          Number(selectedCartOrder[0].service_charges) > 0 && (
+                          Number(selectedCartOrder.service_charges) > 0 && (
                             <Stack // Service Charges
                               direction={"row"}
                               sx={{ mt: "14px", justifyContent: "end" }}
@@ -641,15 +640,15 @@ const CartDetails = ({
                         >
                           <Typography variant="h4">
                             {selectedCartOrder &&
-                              selectedCartOrder[0].total &&
-                              parseFloat(selectedCartOrder[0].total).toFixed(
+                              selectedCartOrder.total &&
+                              parseFloat(selectedCartOrder.total).toFixed(
                                 decimalPlaces
                               )}
                           </Typography>
                         </Stack>
 
                         {selectedCartOrder &&
-                          Number(selectedCartOrder[0].discount) > 0 && (
+                          Number(selectedCartOrder.discount) > 0 && (
                             <Stack // discount
                               direction={"row"}
                               spacing={0.25}
@@ -660,9 +659,9 @@ const CartDetails = ({
                               }}
                             >
                               <Typography variant="h4">
-                                {parseFloat(
-                                  selectedCartOrder[0].discount
-                                ).toFixed(decimalPlaces)}
+                                {parseFloat(selectedCartOrder.discount).toFixed(
+                                  decimalPlaces
+                                )}
                               </Typography>
                             </Stack>
                           )}
@@ -679,14 +678,14 @@ const CartDetails = ({
                           >
                             <Typography variant="h4">
                               {parseFloat(
-                                selectedCartOrder[0].delivery_charges
+                                selectedCartOrder.delivery_charges
                               ).toFixed(decimalPlaces)}
                             </Typography>
                           </Stack>
                         )}
 
                         {selectedCartOrder &&
-                          Number(selectedCartOrder[0].tax) > 0 && (
+                          Number(selectedCartOrder.tax) > 0 && (
                             <Stack // tax
                               direction={"row"}
                               spacing={0.25}
@@ -697,7 +696,7 @@ const CartDetails = ({
                               }}
                             >
                               <Typography variant="h4">
-                                {parseFloat(selectedCartOrder[0].tax).toFixed(
+                                {parseFloat(selectedCartOrder.tax).toFixed(
                                   decimalPlaces
                                 )}
                               </Typography>
@@ -705,7 +704,7 @@ const CartDetails = ({
                           )}
 
                         {selectedCartOrder &&
-                          Number(selectedCartOrder[0].tip) > 0 && (
+                          Number(selectedCartOrder.tip) > 0 && (
                             <Stack // tip
                               direction={"row"}
                               spacing={0.25}
@@ -716,7 +715,7 @@ const CartDetails = ({
                               }}
                             >
                               <Typography variant="h4">
-                                {parseFloat(selectedCartOrder[0].tip).toFixed(
+                                {parseFloat(selectedCartOrder.tip).toFixed(
                                   decimalPlaces
                                 )}
                               </Typography>
@@ -724,7 +723,7 @@ const CartDetails = ({
                           )}
 
                         {selectedCartOrder &&
-                          Number(selectedCartOrder[0].service_charges) > 0 && (
+                          Number(selectedCartOrder.service_charges) > 0 && (
                             <Stack // service charges
                               direction={"row"}
                               spacing={0.25}
@@ -735,7 +734,7 @@ const CartDetails = ({
                             >
                               <Typography variant="h4">
                                 {parseFloat(
-                                  selectedCartOrder[0].service_charges
+                                  selectedCartOrder.service_charges
                                 ).toFixed(decimalPlaces)}
                               </Typography>
                             </Stack>
@@ -773,7 +772,7 @@ const CartDetails = ({
                         >
                           <Typography variant="h4">
                             {selectedCartOrder &&
-                              parseFloat(selectedCartOrder[0].gtotal).toFixed(
+                              parseFloat(selectedCartOrder.gtotal).toFixed(
                                 decimalPlaces
                               )}
                           </Typography>
@@ -815,11 +814,11 @@ const CartDetails = ({
                 }}
                 title={<Typography variant="h4">Geo Location</Typography>}
               >
-                {selectedCartOrder[0].user_latitude &&
-                selectedCartOrder[0].user_longitude ? (
+                {selectedCartOrder.user_latitude &&
+                selectedCartOrder.user_longitude ? (
                   <GoogleMapFrame
-                    longitude={selectedCartOrder[0].user_longitude}
-                    latitude={selectedCartOrder[0].user_latitude}
+                    longitude={selectedCartOrder.user_longitude}
+                    latitude={selectedCartOrder.user_latitude}
                     title={""}
                     width={"100%"}
                     height={"279px"}

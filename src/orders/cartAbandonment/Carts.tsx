@@ -17,12 +17,11 @@ import { TableNoRowsOverlay } from "components/skeleton/TableNoRowsOverlay";
 import MainCard from "components/cards/MainCard";
 import CustomButton from "components/CustomButton";
 import Progress from "components/Progress";
-// import CartDetails from "./CartDetails";
+import CartDetails from "./CartDetails";
 
 import { setDate, setGlobalSettings } from "store/slices/Main";
 import { useDispatch, useSelector } from "store";
 import moment from "moment";
-
 import useAxios from "axios-hooks";
 import { GATEWAY_API_URL } from "config";
 
@@ -36,9 +35,9 @@ const Carts = () => {
     (state) => state.main
   );
 
-  const [cartOrders, setCartOrders] = useState<AbandonedCartOrders[] | []>([]);
+  const [cartOrders, setCartOrders] = useState<AbandonedCartOrder[] | []>([]);
   const [selectedCartOrder, setSelectedCartOrder] = useState<
-    AbandonedCartOrders[] | []
+    AbandonedCartOrder[] | []
   >([]);
   const [orderDetailModal, setOrderDetailModal] = useState(false);
 
@@ -87,15 +86,19 @@ const Carts = () => {
   //======================================= Handlers Functions =======================================//
 
   const makeOrdersArrayForTable = () => {
+    // alert("func");
+    // debugger;
     // if (abandonedOrders.result.filter_orders_by_date) {
     const duplicateCartOrders = [
       ...abandonedOrders.result.filter_orders_by_date,
     ];
 
-    console.log(
-      "api response = 0",
-      abandonedOrders.result.filter_orders_by_date
-    );
+    // console.log(
+    //   "api response 0 = ",
+    //   abandonedOrders.result.filter_orders_by_date
+    // );
+
+    // console.log("duplicateCartOrders = ", duplicateCartOrders);
 
     const updatedCartOrders = duplicateCartOrders.map(
       (cart: CartAbandonmentResponse) => {
@@ -104,11 +107,11 @@ const Carts = () => {
       }
     );
 
-    console.log("updatedCartOrders = ", updatedCartOrders);
-    console.log(
-      "api response = ",
-      abandonedOrders.result.filter_orders_by_date
-    );
+    // console.log("updatedCartOrders = ", updatedCartOrders);
+    // console.log(
+    //   "api response = ",
+    //   abandonedOrders.result.filter_orders_by_date
+    // );
 
     setCartOrders(updatedCartOrders);
     // }
@@ -116,7 +119,7 @@ const Carts = () => {
 
   const fetchOrderDetail = (orderId: number) => {
     const selectedOrder = cartOrders.filter(
-      (cart: AbandonedCartOrders) => cart.orderid === orderId.toString()
+      (cart: AbandonedCartOrder) => cart.orderid === orderId.toString()
       // (cart: AbandonedCartOrders) => {
       //   if (cart && cart.order && cart.order.orderid === orderId.toString()) {
       //     console.log("cart = ", cart);
@@ -215,9 +218,11 @@ const Carts = () => {
       // renderCell: AddCurrency,
     },
   ];
-  const CartDetails = lazy(() =>
-    import("./CartDetails").then((CartDetails) => CartDetails)
-  );
+
+  // const CartDetails = lazy(() =>
+  //   import("./CartDetails").then((CartDetails) => CartDetails)
+  // );
+
   return (
     <>
       <MainCard
@@ -321,7 +326,7 @@ const Carts = () => {
       {/* order details of cart orders */}
       {orderDetailModal && (
         <CartDetails
-          selectedCartOrder={selectedCartOrder}
+          selectedCartOrder={selectedCartOrder[0]}
           setOrderDetailModal={setOrderDetailModal}
         />
       )}

@@ -1,9 +1,9 @@
 interface CartAbandonmentResponse {
-  order: AbandonedCartOrders;
-  order_details: AbandonedCartOrderDetails[];
+  order: AbandonedCartOrder;
+  order_details: AbandonedCartOrderDetail[];
 }
 
-interface AbandonedCartOrders {
+interface AbandonedCartOrder {
   orderid: string;
   td_order_id: string;
   temp_order_id: string;
@@ -41,12 +41,12 @@ interface AbandonedCartOrders {
   order_type_flag: string;
   tip: string;
   service_charges: string;
-  orderDetails: AbandonedCartOrderDetails[];
+  orderDetails: AbandonedCartOrderDetail[];
 
   // making this key optional because we are not getting this from API but adding this in order object for making input required for tables
 }
 
-interface AbandonedCartOrderDetails {
+interface AbandonedCartOrderDetail {
   odetailid: string;
   orderid: string;
   id: string | null;
