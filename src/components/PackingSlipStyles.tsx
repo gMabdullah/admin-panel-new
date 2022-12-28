@@ -25,13 +25,11 @@ export const styles = StyleSheet.create({
   categoryCol: {
     width: '9%',
     justifyContent: 'flex-start',
-    //  marginLeft: 'auto',
     marginRight: '10px',
     fontSize: 8,
     fontFamily: 'Roboto',
     marginTop: 5,
     marginBottom: 5,
-    //zIndex: 1000000,
   },
   Detailrow: {
     overflow: 'hidden',
@@ -64,7 +62,6 @@ export const styles = StyleSheet.create({
   },
   pdfEatOutNameView: {
     display: 'flex',
-    //  justifyContent: 'center',
     alignSelf: 'center',
   },
   pdfEatOutName: {
@@ -95,13 +92,11 @@ export const styles = StyleSheet.create({
     height: 1,
     backgroundColor: '#c4c2c2',
     marginTop: 2,
-    // color: 'red',
   },
   headerDivider: {
     marginLeft: 30,
     marginRight: 30,
     marginBottom: 3,
-    //marginTop: 1,
     width: '90%',
     backgroundColor: '#c4c2c2',
     height: 1,
@@ -125,13 +120,9 @@ export const styles = StyleSheet.create({
     fontFamily: 'Roboto',
   },
   statusCommentCss: {
-    // width: '40%',
-    // justifyContent: 'flex-start',
-    // padding: '4px',
     fontSize: 10,
     marginTop: 1,
     marginLeft: 10,
-    // marginBottom: 6,
     color: '#000000',
     fontFamily: 'Roboto',
   },
@@ -142,20 +133,15 @@ export const styles = StyleSheet.create({
     marginLeft: 'auto',
     marginRight: 'auto',
     fontSize: 8,
-    //fontFamily: "Times",
     marginTop: 5,
     marginBottom: 5,
-    //zIndex: 1000000,
-    // wordWrap: "break-word"
   },
   sku: {
     fontFamily: 'Roboto',
-    // width: '40%',
     justifyContent: 'flex-start',
     marginLeft: '34px',
     fontSize: 10,
     marginTop: 2,
-    // marginBottom: 1,
     color: '#757575',
   },
   pcode: {
@@ -172,6 +158,7 @@ export const styles = StyleSheet.create({
   tablerowhead: {
     flexDirection: 'row',
     marginLeft: 30,
+    marginRight: 30,
     paddingLeft: 2,
     paddingRight: 2,
     backgroundColor: '#F5F5F5',
@@ -261,7 +248,6 @@ export const styles = StyleSheet.create({
   },
   detailBoxTextCss: {
     fontFamily: 'Roboto',
-    // width: '40%',
     marginTop: 2,
     justifyContent: 'flex-start',
     fontSize: 9,
@@ -319,7 +305,7 @@ export const styles = StyleSheet.create({
     fontSize: 9,
     marginTop: 2,
     color: '#212121',
-    marginLeft: 43,
+    marginLeft: 40,
   },
   detailBoxTextCssPaymentTypeMobile: {
     lineHeight: '15px',
@@ -328,7 +314,7 @@ export const styles = StyleSheet.create({
     fontSize: 9,
     marginTop: 2,
     color: '#212121',
-    marginLeft: 40,
+    marginLeft: 37,
   },
   detailBoxTextCssPaymentTypeAddress: {
     lineHeight: '15px',
@@ -337,8 +323,9 @@ export const styles = StyleSheet.create({
     fontSize: 9,
     marginTop: 2,
     color: '#212121',
-    marginLeft: 33,
+    marginLeft: 17,
     width: '100%',
+    paddingRight: 10,
   },
   detailBoxTextCssNote: {
     lineHeight: '15px',
@@ -347,7 +334,7 @@ export const styles = StyleSheet.create({
     fontSize: 9,
     marginTop: 2,
     color: '#212121',
-    marginLeft: 47,
+    marginLeft: 44,
   },
   detailBoldTextCssNote: {
     lineHeight: '15px',
@@ -377,7 +364,12 @@ export const styles = StyleSheet.create({
     marginLeft: 5,
   },
   tablecol: {
-    width: '20%',
+    width: '19%',
+    justifyContent: 'flex-start',
+    marginLeft: 2,
+  },
+  tablecolItem: {
+    width: '17%',
     justifyContent: 'flex-start',
     marginLeft: 2,
   },
@@ -395,21 +387,29 @@ export const styles = StyleSheet.create({
 
   tableColPdfBrand: {
     lineHeight: 1.1,
-    width: '11%',
+    width: '12%',
     justifyContent: 'flex-start',
     marginLeft: 'auto',
-    marginRight: 'auto',
+
+    fontSize: 8,
+    fontFamily: 'Roboto',
+    marginTop: 5,
+    marginBottom: 5,
+    marginRight: 5,
+  },
+  tableColPdfPrice: {
+    lineHeight: 1.1,
+    width: '13%',
+    marginLeft: 10,
     fontSize: 8,
     fontFamily: 'Roboto',
     marginTop: 5,
     marginBottom: 5,
   },
-  tableColPdfPrice: {
+  tablecolPdfAmount: {
     lineHeight: 1.1,
-    width: '11%',
-    justifyContent: 'flex-start',
-    marginLeft: 'auto',
-    marginRight: 'auto',
+    width: '13%',
+    marginLeft: 10,
     fontSize: 8,
     fontFamily: 'Roboto',
     marginTop: 5,
@@ -417,7 +417,7 @@ export const styles = StyleSheet.create({
   },
   tableColPdfItemHead: {
     lineHeight: 1.1,
-    width: '6%',
+    width: '11%',
     justifyContent: 'flex-start',
     marginLeft: 'auto',
     marginRight: 'auto',
@@ -426,9 +426,31 @@ export const styles = StyleSheet.create({
     marginTop: 5,
     marginBottom: 5,
   },
+  tableColPdfAmountHead: {
+    lineHeight: 1.1,
+    width: '11%',
+    justifyContent: 'flex-start',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    fontSize: 8,
+    fontFamily: 'Roboto',
+    marginTop: 5,
+    marginBottom: 5,
+  },
+
+  tableColPdfItemRow: {
+    lineHeight: 1.1,
+    width: '4%',
+    marginLeft: 60,
+    paddingLeft: 2,
+    fontSize: 8,
+    fontFamily: 'Roboto',
+    marginTop: 5,
+    marginBottom: 5,
+  },
   tableColPdfCategoryHead: {
     lineHeight: 1.1,
-    width: '9%',
+    width: '12%',
     justifyContent: 'flex-start',
     marginLeft: 'auto',
     marginRight: 'auto',
@@ -440,7 +462,7 @@ export const styles = StyleSheet.create({
 
   tableColPdfItem: {
     lineHeight: 1.1,
-    width: '13%',
+    width: '18%',
     justifyContent: 'flex-start',
     marginLeft: 'auto',
     marginRight: 'auto',
@@ -450,6 +472,28 @@ export const styles = StyleSheet.create({
     marginBottom: 5,
   },
   itemColPdf: {
+    lineHeight: 1.1,
+    width: '13%',
+    justifyContent: 'flex-start',
+    marginLeft: 'auto',
+    marginRight: '10px',
+    fontSize: 8,
+    fontFamily: 'Roboto',
+    marginTop: 5,
+    marginBottom: 5,
+  },
+  tableColPdfBrandHead: {
+    lineHeight: 1.1,
+    width: '11%',
+    justifyContent: 'flex-start',
+    marginLeft: 'auto',
+    marginRight: '10px',
+    fontSize: 8,
+    fontFamily: 'Roboto',
+    marginTop: 5,
+    marginBottom: 5,
+  },
+  tableColPdfBrandHeadPdf: {
     lineHeight: 1.1,
     width: '13%',
     justifyContent: 'flex-start',
@@ -479,22 +523,20 @@ export const styles = StyleSheet.create({
     color: 'black',
   },
   brandtablecol: {
-    width: '15%',
+    width: '20%',
     justifyContent: 'flex-start',
     marginLeft: 2,
   },
   itemtablecol: {
-    width: '38%',
+    width: '40%',
     fontSize: 10,
     justifyContent: 'flex-start',
     marginRight: 10,
-    //  wordWrap: 'break-word',
   },
   textth2: {
     marginTop: 4,
     marginBottom: 4,
     fontSize: 10,
-    // fontWeight: "bold",
   },
   tablePadding: {
     display: 'flex',
@@ -537,6 +579,24 @@ export const styles = StyleSheet.create({
     marginBottom: 1,
     lineHeight: 1.1,
   },
+  texttPdfCategory: {
+    marginLeft: 5,
+    marginRight: 'auto',
+    fontSize: 10,
+    fontFamily: 'Roboto',
+    marginTop: 1,
+    marginBottom: 1,
+    lineHeight: 1.1,
+    width: '12%',
+  },
+  texttPdfItem: {
+    marginRight: 'auto',
+    fontSize: 10,
+    fontFamily: 'Roboto',
+    marginTop: 1,
+    marginBottom: 1,
+    lineHeight: 1.1,
+  },
   bolder: {
     lineHeight: 1,
     marginLeft: 2,
@@ -549,44 +609,44 @@ export const styles = StyleSheet.create({
   rowend: {
     width: '100%',
     flexDirection: 'row',
-    //textAlign: 'right',
+
     marginBottom: 3,
   },
   currencyrowTotalQuantity: {
-    //width: '50vw',
-    // marginTop: 4,
-    ///   marginBottom: 4,
     fontSize: 10,
-    marginLeft: 37,
+    marginLeft: 110,
     fontWeight: 'bold',
   },
   currencyrow2: {
-    width: '35%',
+    width: '25%',
   },
   texth2th: {
     marginLeft: 230,
     fontSize: 10,
   },
   texth2tDeliveryCharges: {
-    marginLeft: 40,
+    marginLeft: 97,
     fontSize: 10,
   },
   textTax: {
-    marginLeft: 220,
+    marginLeft: 158,
     fontSize: 10,
   },
   texServiceCharges: {
-    marginLeft: 40,
+    marginLeft: 98,
     fontSize: 10,
   },
   texth2tDiscount: {
-    marginLeft: 200,
+    marginLeft: 133,
+    fontSize: 10,
+  },
+  texth2tCouponCode: {
+    marginLeft: 111,
     fontSize: 10,
   },
   texth2t: {
-    marginLeft: 80,
+    marginLeft: 151,
     fontSize: 10,
-    //  color: 'red',
   },
   texttcom: {
     marginLeft: '2px',

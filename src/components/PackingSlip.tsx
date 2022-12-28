@@ -1,6 +1,12 @@
 import React from 'react'
 import { Document, Page, Text, View } from '@react-pdf/renderer'
 import { styles } from './PackingSlipStyles'
+import {
+  AMANAT_BUSINESS_ID,
+  DWP_BUSINESS_ID,
+  DWP_STAGING_BUSINESS_ID,
+  AMANAT_STAGING_BUSINESS_ID,
+} from 'constants/BusinessIds'
 interface propsTypes {
   packingSlipData: OrderListingResponse['result']
   pdfType?: string
@@ -49,7 +55,12 @@ const PackingSlip = (props: propsTypes) => {
               discount_value,
               cnic,
             } = selectedOrder
-
+            console.log(
+              'discount_value',
+              discount_value,
+              'tax_value',
+              tax_value,
+            )
             return (
               <Page size="A4" style={styles.page} key={index} wrap>
                 {props.pdfType === 'pdf' ? (
@@ -160,7 +171,7 @@ const PackingSlip = (props: propsTypes) => {
                   <View style={styles.tablerowhead}>
                     <View style={styles.tablePadding}>
                       <View style={styles.tableColPdfItemHead}>
-                        <Text style={styles.textth2Pdf}>Item No</Text>
+                        <Text style={styles.textth2}>Item No</Text>
                       </View>
                       <View style={styles.tableColPdfCategoryHead}>
                         <Text style={styles.textth2}>Category</Text>
@@ -168,12 +179,13 @@ const PackingSlip = (props: propsTypes) => {
                       <View style={styles.tableColPdfItem}>
                         <Text style={styles.textth2}>Item</Text>
                       </View>
-                      <View style={styles.tablecolPdf}>
+                      <View style={styles.tableColPdfBrandHead}>
                         <Text style={styles.textth2}>Brand</Text>
                       </View>
                       <View style={styles.tablecolPdf}>
                         <Text style={styles.textth2}>
-                          {eatout_id === 12180 || eatout_id === 12230
+                          {eatout_id === DWP_STAGING_BUSINESS_ID ||
+                          eatout_id === DWP_BUSINESS_ID
                             ? 'MRP'
                             : 'Price'}
                         </Text>
@@ -186,7 +198,7 @@ const PackingSlip = (props: propsTypes) => {
                           <Text style={styles.textth2}>Weight</Text>
                         </View>
                       )}
-                      <View style={styles.tablecolPdf}>
+                      <View style={styles.tableColPdfAmountHead}>
                         <Text style={styles.textth2}>Amount</Text>
                       </View>
                       <View style={styles.tablecolPdf}>
@@ -267,8 +279,8 @@ const PackingSlip = (props: propsTypes) => {
                         <React.Fragment key={i}>
                           {props.pdfType === 'pdf' ? (
                             <View style={styles.tablerow}>
-                              <View style={styles.tableColPdfItemHead}>
-                                <Text style={styles.texttPdf}>{i + 1}</Text>
+                              <View style={styles.tableColPdfItemRow}>
+                                <Text style={styles.texttPdfItem}>{i + 1}</Text>
                               </View>
                               <View style={styles.categoryCol}>
                                 <Text style={styles.texttPdf}>
@@ -280,17 +292,20 @@ const PackingSlip = (props: propsTypes) => {
                                   {`${orderDetail.item_name}`}
                                 </Text>
                                 {/* showing  "SKU" only for DWP  */}
-                                {(eatout_id == 12180 ||
-                                  eatout_id == 12230 ||
-                                  eatout_id == 12257 ||
-                                  eatout_id == 12208) && (
+                                {(eatout_id == DWP_STAGING_BUSINESS_ID ||
+                                  eatout_id == DWP_BUSINESS_ID ||
+                                  eatout_id == AMANAT_BUSINESS_ID ||
+                                  eatout_id == AMANAT_STAGING_BUSINESS_ID) && (
                                   <Text style={styles.texttcomPdf}>
                                     SKU:{orderDetail.product_code}
                                   </Text>
                                 )}
-                                {optionSets.map((f: any, j: any) =>
+                                {optionSets.map((f: any, optionIndex: number) =>
                                   f.haveInnerOptions ? (
-                                    <Text style={styles.textDonePdf} key={j}>
+                                    <Text
+                                      style={styles.textDonePdf}
+                                      key={optionIndex}
+                                    >
                                       -
                                       {`${f.name}${
                                         parseFloat(f.price)
@@ -368,7 +383,7 @@ const PackingSlip = (props: propsTypes) => {
                                 <Text style={styles.numbertextt}>{i + 1}</Text>
                               </View>
 
-                              <View style={styles.tablecol}>
+                              <View style={styles.tablecolItem}>
                                 <Text style={styles.textt}>
                                   {orderDetail.item_cat_name}
                                 </Text>
@@ -377,14 +392,18 @@ const PackingSlip = (props: propsTypes) => {
                               <View style={styles.itemtablecol}>
                                 <Text>{`${orderDetail.item_name}`}</Text>
                                 {/* showing  "SKU" only for DWP  */}
-                                {(eatout_id == 12180 || eatout_id == 12230) && (
+                                {(eatout_id == DWP_STAGING_BUSINESS_ID ||
+                                  eatout_id == DWP_BUSINESS_ID) && (
                                   <Text style={styles.texttcom}>
                                     {`${orderDetail.product_code}`}
                                   </Text>
                                 )}
-                                {optionSets.map((f: any, j: any) =>
+                                {optionSets.map((f: any, optionIndex: any) =>
                                   f.haveInnerOptions ? (
-                                    <Text key={j}>
+                                    <Text
+                                      style={styles.textDonePdf}
+                                      key={optionIndex}
+                                    >
                                       -
                                       {`${f.name}${
                                         parseFloat(f.price)
@@ -399,7 +418,10 @@ const PackingSlip = (props: propsTypes) => {
                                       }`}
                                     </Text>
                                   ) : (
-                                    <Text key={j}>
+                                    <Text
+                                      style={styles.textDonePdf}
+                                      key={optionIndex}
+                                    >
                                       -
                                       {`${f.name}${
                                         parseFloat(f.price)
@@ -456,7 +478,8 @@ const PackingSlip = (props: propsTypes) => {
                       <View style={styles.currencyrow}>
                         <Text style={styles.texth2th}>
                           {/* showing  "Total Amount (Inclusive of Taxes)" only for DWP  */}
-                          {eatout_id === 12180 || eatout_id === 12230
+                          {eatout_id === DWP_STAGING_BUSINESS_ID ||
+                          eatout_id === DWP_BUSINESS_ID
                             ? 'Total Amount (Inclusive of Taxes)'
                             : 'Total'}
                         </Text>
@@ -474,7 +497,7 @@ const PackingSlip = (props: propsTypes) => {
                           <Text style={styles.texth2th}>Coupon Code</Text>
                         </View>
                         <View style={styles.currencyrow}>
-                          <Text style={styles.texth2t}>
+                          <Text style={styles.texth2tCouponCode}>
                             {fixedDecimalPlaces(custom_code_discount_value)}
                           </Text>
                         </View>
@@ -515,19 +538,6 @@ const PackingSlip = (props: propsTypes) => {
                         <View style={styles.currencyrow}>
                           <Text style={styles.textTax}>
                             {fixedDecimalPlaces(tax_value)}
-                          </Text>
-                        </View>
-                      </View>
-                    )}
-                    {tip !== '0' && (
-                      <View style={styles.rowend}>
-                        <View style={styles.currencyrow2}></View>
-                        <View style={styles.currencyrow}>
-                          <Text style={styles.texth2th}>{'tax'}</Text>
-                        </View>
-                        <View style={styles.currencyrow}>
-                          <Text style={styles.textTax}>
-                            {fixedDecimalPlaces(tip)}
                           </Text>
                         </View>
                       </View>
