@@ -1,4 +1,4 @@
-import React, { lazy, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { makeStyles } from "@mui/styles";
 import {
@@ -6,19 +6,16 @@ import {
   DataGrid,
   GridRenderCellParams,
   GridRowParams,
-  GridSelectionModel,
-  GridRowHeightParams,
 } from "@mui/x-data-grid";
-import { Box, Chip, Typography, Grid, Stack } from "@mui/material";
+import { Box, Typography, Grid, Stack } from "@mui/material";
 
 import { OrderListingSkeleton } from "components/skeleton/OrderListingSkeleton";
 import { TableNoRowsOverlay } from "components/skeleton/TableNoRowsOverlay";
 import MainCard from "components/cards/MainCard";
-import CustomButton from "components/CustomButton";
 import Progress from "components/Progress";
 import CartDetails from "./CartDetails";
 
-import { setDate, setGlobalSettings } from "store/slices/Main";
+import { setDate } from "store/slices/Main";
 import { useDispatch, useSelector } from "store";
 import moment from "moment";
 import useAxios from "axios-hooks";
@@ -58,7 +55,6 @@ const useStyles = makeStyles(() => ({
     fontStyle: "normal",
     fontWeight: "500",
     fontSize: "14px",
-    // lineHeight: "16px",
     color: "#212121",
   },
   colStyle2: {
@@ -70,10 +66,7 @@ const useStyles = makeStyles(() => ({
 const Carts = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
-  const { eatout_id, user_id } = JSON.parse(
-    localStorage.getItem("businessInfo")!
-  );
-
+  const { eatout_id } = JSON.parse(localStorage.getItem("businessInfo")!);
   const { startDate, endDate, decimalPlaces, currency } = useSelector(
     (state) => state.main
   );
@@ -85,6 +78,7 @@ const Carts = () => {
   const [orderDetailModal, setOrderDetailModal] = useState(false);
 
   //======================================= API Calls =======================================//
+
   const cartAbandonmentUrl = `${GATEWAY_API_URL}/businesses/${eatout_id}/cart-abandonment?date_from=${startDate}&date_to=${endDate}`;
 
   const [
@@ -129,19 +123,9 @@ const Carts = () => {
   //======================================= Handlers Functions =======================================//
 
   const makeOrdersArrayForTable = () => {
-    // alert("func");
-    // debugger;
-    // if (abandonedOrders.result.filter_orders_by_date) {
     const duplicateCartOrders = [
       ...abandonedOrders.result.filter_orders_by_date,
     ];
-
-    // console.log(
-    //   "api response 0 = ",
-    //   abandonedOrders.result.filter_orders_by_date
-    // );
-
-    // console.log("duplicateCartOrders = ", duplicateCartOrders);
 
     const updatedCartOrders = duplicateCartOrders.map(
       (cart: CartAbandonmentResponse) => {
@@ -150,53 +134,27 @@ const Carts = () => {
       }
     );
 
-    // console.log("updatedCartOrders = ", updatedCartOrders);
-    // console.log(
-    //   "api response = ",
-    //   abandonedOrders.result.filter_orders_by_date
-    // );
-
     setCartOrders(updatedCartOrders);
-    // }
   };
 
   const fetchOrderDetail = (orderId: number) => {
     const selectedOrder = cartOrders.filter(
       (cart: AbandonedCartOrder) => cart.orderid === orderId.toString()
-      // (cart: AbandonedCartOrders) => {
-      //   if (cart && cart.order && cart.order.orderid === orderId.toString()) {
-      //     console.log("cart = ", cart);
-      //     setSelectedCartOrder(cart);
-      //     setOrderDetailModal(true);
-      //   }
-      // }
     );
-    // abandonedOrders &&
-    //   abandonedOrders.result.filter_orders_by_date.forEach(
-    //     (cart: CartAbandonmentResponse) => {
-    //       if (cart && cart.order && cart.order.orderid === orderId.toString()) {
-    //         console.log("cart = ", cart);
-    //         setSelectedCartOrder(cart);
-    //         setOrderDetailModal(true);
-    //       }
-    //     }
-    //   );
 
     setSelectedCartOrder(selectedOrder);
     setOrderDetailModal(true);
-
-    // console.log("selectedOrder = ", selectedOrder);
   };
 
   const linearLoader = () => {
-    // loader on changing the date
+    // table loader on changing the date
     return <Progress type="linear" />;
   };
 
   const customNoRowsOverlay = () => {
     return <TableNoRowsOverlay />;
   };
-  //====================================================================================
+
   const formatDate = (params: GridRenderCellParams) => {
     return (
       <Typography variant="body1" sx={{ color: "#212121" }}>
@@ -204,10 +162,6 @@ const Carts = () => {
       </Typography>
     );
   };
-
-  // const emailValidation = (params: GridRenderCellParams) => {
-  //   return params.value && params.value === "0" ? "-" : params.value;
-  // };
 
   const emailAndPhoneValidation = (params: GridRenderCellParams) => {
     if (params.value === "" || params.value === "0") {
@@ -223,8 +177,6 @@ const Carts = () => {
         </Typography>
       );
     }
-
-    // return params.value && params.value === "0" ? "-" : params.value;
   };
 
   const formatString = (params: GridRenderCellParams) => {
@@ -272,7 +224,6 @@ const Carts = () => {
       field: "delivery",
       headerName: "Date & Time",
       headerClassName: classes.colStyle1,
-      // cellClassName: classes.colStyle2,
       flex: 1,
       sortable: false,
       renderCell: formatDate,
@@ -281,7 +232,6 @@ const Carts = () => {
       field: "email",
       headerName: "Email",
       headerClassName: classes.colStyle1,
-      // cellClassName: classes.colStyle2,
       flex: 1.2,
       sortable: false,
       renderCell: emailAndPhoneValidation,
@@ -310,8 +260,6 @@ const Carts = () => {
       headerName: "Source",
       headerClassName: classes.colStyle1,
       flex: 0.5,
-      // headerAlign: "right",
-      // align: "right",
       sortable: false,
       renderCell: formatString,
     },
@@ -327,10 +275,6 @@ const Carts = () => {
     },
   ];
 
-  // const CartDetails = lazy(() =>
-  //   import("./CartDetails").then((CartDetails) => CartDetails)
-  // );
-
   return (
     <>
       <MainCard
@@ -342,24 +286,9 @@ const Carts = () => {
               sx={{
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "space-between",
               }}
             >
               <Typography variant="h3">Abandoned Carts</Typography>
-
-              {/* <CustomButton
-                variant={"contained"}
-                color={"secondary"}
-                sx={{
-                  p: "12px 32px",
-                  ml: "13px",
-                  height: "44px",
-                  width: "151px",
-                }}
-                // onClick={fileExport}
-              >
-                Export Carts
-              </CustomButton> */}
             </Grid>
           </Grid>
         } // MainCard opening tag closed here
@@ -392,40 +321,23 @@ const Carts = () => {
           {!abandonedOrders ? (
             <OrderListingSkeleton />
           ) : (
-            // listing cart orders
+            // cart orders listing
             <DataGrid
               rows={cartOrders}
               columns={columns}
-              // rowCount={totalOrders}
               getRowId={(r) => r.orderid}
               rowsPerPageOptions={[50, 100]}
-              // page={page}
-              // onPageChange={handlePageChange}
-              // pageSize={pageSize}
-              // onPageSizeChange={handlePageSizeChange}
-              // checkboxSelection
               autoHeight
               disableColumnMenu
               hideFooterSelectedRowCount
               onRowClick={(params: GridRowParams) => {
                 fetchOrderDetail(params.row.orderid);
               }}
-              // onSelectionModelChange={(newSelectionModel) => {
-              // setSelectionModel(newSelectionModel);
-              // }}
-              // selectionModel={selectionModel}
               components={{
                 NoRowsOverlay: customNoRowsOverlay,
                 LoadingOverlay: linearLoader,
               }}
               loading={abandonedOrdersLoader}
-              // getRowHeight={({ model }: GridRowHeightParams) => {
-              //   if (model.pre_auth === "1" && model.status === "Pending") {
-              //     return 90;
-              //   } else {
-              //     return null;
-              //   }
-              // }}
             />
           )}
         </Box>
