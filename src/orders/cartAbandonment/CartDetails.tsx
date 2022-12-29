@@ -27,6 +27,7 @@ import {
   GridSelectionModel,
   GridRowHeightParams,
 } from "@mui/x-data-grid";
+import { makeStyles } from "@mui/styles";
 
 import CustomButton from "components/CustomButton";
 import MainCard from "components/cards/MainCard";
@@ -43,7 +44,7 @@ import {
 import GoogleMapFrame from "components/GoogleMapFrame";
 import OrderStatusAction from "orders/businessOrders/OrderStatusAction";
 import { toCapitalizeFirstLetter } from "orders/HelperFunctions";
-import { linearLoader, useStyles } from "orders/businessOrders/OrderDetail";
+// import { linearLoader } from "orders/businessOrders/OrderDetail";
 
 import { useSelector } from "store";
 import moment from "moment";
@@ -53,6 +54,60 @@ interface cartDetailsProp {
   // cart: any;
   setOrderDetailModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
+
+const useStyles = makeStyles(() => ({
+  backDrop: {
+    backdropFilter: "blur(0px)",
+    backgroundColor: "transparent",
+  },
+  modalStyle1: {
+    overflow: "scroll",
+  },
+  excelExportFile: {
+    width: "104px",
+    height: " 20px",
+    fontFamily: "Roboto",
+    fontStyle: "normal",
+    fontWeight: 500,
+    fontSize: "14px",
+    lineHeight: "20px",
+  },
+  downloadPdf: {
+    width: "92px",
+    height: "20px",
+    fontFamily: "Roboto",
+    fontStyle: "normal",
+    fontWeight: 500,
+    fontSize: "14px",
+    lineHeight: "20px",
+  },
+  pdf_print_user_phone_location_IconColor: {
+    color: "#616161",
+  },
+  printHeading: {
+    fontFamily: "Roboto",
+    fontStyle: "normal",
+    fontWeight: 500,
+    fontSize: "14px",
+    lineHeight: "20px",
+  },
+  tableTotalColumn: {
+    paddingRight: "30px !important",
+    fontWeight: 500,
+    // fontSize: "14px",
+    color: "#212121",
+  },
+  tableItemQuantityDiscountColumn: {
+    fontWeight: 400,
+    // fontSize: "14px",
+    color: "#212121",
+  },
+  tableItemNamePriceColumn: {
+    fontWeight: 500,
+    // fontSize: "14px",
+    color: "#212121",
+  },
+}));
 
 const CartDetails = ({
   selectedCartOrder,
@@ -69,7 +124,7 @@ const CartDetails = ({
   // );
 
   const classes = useStyles();
-  const noDetailsFound = "No details Found";
+  // const noDetailsFound = "No details Found";
   // useEffect(() => {
   //   if (details.length > 0) {
   //     setDeliveryChargesModal(true);
@@ -81,46 +136,63 @@ const CartDetails = ({
     setOrderDetailModal((state) => !state);
   };
 
+  const taxValidation = (params: GridRenderCellParams) => {
+    if (params.value === "" || params.value === "0") {
+      return (
+        <Typography variant="body1" sx={{ color: "#212121" }}>
+          -
+        </Typography>
+      );
+    } else {
+      return (
+        <Typography variant="body1" sx={{ color: "#212121" }}>
+          {params.value}
+        </Typography>
+      );
+    }
+  };
+
   const columns: GridColumns = [
     {
       field: "menu_item_id",
       headerName: "Item#",
-      flex: 0.5,
+      flex: 0.6,
       // headerClassName: classes.colStyle1,
-      // cellClassName: classes.colStyle1,
-      headerAlign: "right",
-      align: "right",
+      cellClassName: classes.tableItemQuantityDiscountColumn,
+      // headerAlign: "right",
+      // align: "right",
       sortable: false,
     },
     {
       field: "dname",
       headerName: "Item Name",
-      // headerClassName: classes.colStyle1,
-      // cellClassName: classes.colStyle1,
-      flex: 1,
+      headerClassName: classes.tableItemNamePriceColumn,
+      cellClassName: classes.tableItemQuantityDiscountColumn,
+      flex: 1.5,
       sortable: false,
     },
     {
       field: "dqty",
       headerName: "Quantity",
       // headerClassName: classes.colStyle1,
-      // cellClassName: classes.colStyle2,
-      flex: 0.7,
+      cellClassName: classes.tableItemQuantityDiscountColumn,
+      flex: 0.5,
       sortable: false,
     },
     {
       field: "dprice",
       headerName: "Price",
       // headerClassName: classes.colStyle1,
-      // cellClassName: classes.colStyle2,
-      flex: 1.5,
+      cellClassName: classes.tableItemNamePriceColumn,
+      flex: 0.7,
       sortable: false,
     },
     {
       field: "discount",
       headerName: "Discount",
       // headerClassName: classes.colStyle1,
-      flex: 0.7,
+      cellClassName: classes.tableItemQuantityDiscountColumn,
+      flex: 0.6,
       sortable: false,
       // renderCell: StyledStatus,
     },
@@ -128,19 +200,22 @@ const CartDetails = ({
       field: "tax",
       headerName: "Tax",
       // headerClassName: classes.colStyle1,
-      flex: 0.5,
+      flex: 0.4,
       headerAlign: "right",
       align: "right",
       sortable: false,
-      // renderCell: AddCurrency,
+      renderCell: taxValidation,
     },
     {
       field: "dtotal",
       headerName: "Total",
-      // headerClassName: classes.colStyle1,
-      flex: 0.5,
+      headerClassName: classes.tableTotalColumn,
+      cellClassName: classes.tableTotalColumn,
+      flex: 0.6,
       headerAlign: "right",
       align: "right",
+      // minWidth: 60,
+      // width: 60,
       sortable: false,
       // renderCell: AddCurrency,
     },
@@ -266,7 +341,8 @@ const CartDetails = ({
                     //   <UserDetailsSkeleton />
                     // ) :
                     selectedCartOrder.name ||
-                    selectedCartOrder.mobile_phone !== "0" ||
+                    (selectedCartOrder.mobile_phone &&
+                      selectedCartOrder.mobile_phone !== "0") ||
                     selectedCartOrder.city ||
                     selectedCartOrder.area ? (
                       <Stack
@@ -500,8 +576,8 @@ const CartDetails = ({
                       color: "#212121",
                     },
                     "& .MuiDataGrid-columnHeader": {
-                      pr: "unset",
-                      pl: "15px",
+                      pl: "unset",
+                      pr: "15px",
                     },
                     "& .MuiDataGrid-columnHeaders": {
                       borderBottom: "1px solid #EEEEEE",
@@ -526,7 +602,9 @@ const CartDetails = ({
                       lineHeight: "16px !important",
                       display: "flex !important",
                       alignItems: "start",
-                      p: "25px 0px 25px 15px",
+                      // p: "25px 0px 25px 15px",
+                      p: "25px 15px 25px 0px",
+                      // p: "25px 15px 25px 0px !important",
                       borderBottom: "1px solid #EEEEEE",
                     },
                     "& .MuiDataGrid-virtualScrollerContent": {
@@ -543,15 +621,15 @@ const CartDetails = ({
                     //   if (!order) return [];
                     //   return orderDetails;
                     // })()}
-                    getRowId={(row: any) => row.odetailid}
+                    getRowId={(row) => row.odetailid}
                     columns={columns}
                     autoHeight
                     disableColumnMenu
                     hideFooterSelectedRowCount
                     hideFooter
-                    components={{
-                      LoadingOverlay: linearLoader,
-                    }}
+                    // components={{
+                    //   LoadingOverlay: linearLoader,
+                    // }}
                     // loading={orderDetailLoader}
                   />
                 </Box>
