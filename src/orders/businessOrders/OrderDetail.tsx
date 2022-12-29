@@ -1669,24 +1669,22 @@ const OrderDetail = ({
                     {orderFromAPI.length === 0 ? (
                       <OrderIdSectionSkeleton />
                     ) : (
-                      <Typography variant="h1">
-                        Order
-                        {orderFromAPI[0] !== undefined &&
-                          ` ${orderFromAPI[0].order_id}`}
-                      </Typography>
-                    )}
-                    {orderFromAPI.length === 0 ? (
-                      <OrderIdSectionSkeleton />
-                    ) : (
-                      <Typography
-                        variant={"subtitle1"}
-                        sx={{ fontWeight: "400", ml: "16px" }}
-                      >
-                        {orderFromAPI[0] !== undefined &&
-                          moment(orderFromAPI[0].date).format(
-                            "MMM Do, YYYY hh:mm a"
-                          )}
-                      </Typography>
+                      <>
+                        <Typography variant="h1">
+                          Order
+                          {orderFromAPI[0] !== undefined &&
+                            ` ${orderFromAPI[0].order_id}`}
+                        </Typography>
+                        <Typography
+                          variant={"subtitle1"}
+                          sx={{ fontWeight: "400", ml: "16px" }}
+                        >
+                          {orderFromAPI[0] !== undefined &&
+                            moment(orderFromAPI[0].date).format(
+                              "MMM Do, YYYY hh:mm a"
+                            )}
+                        </Typography>
+                      </>
                     )}
                   </Grid>
 
