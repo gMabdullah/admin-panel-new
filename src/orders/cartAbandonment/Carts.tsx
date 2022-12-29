@@ -9,16 +9,23 @@ import {
 } from "@mui/x-data-grid";
 import { Box, Typography, Grid, Stack } from "@mui/material";
 
+import moment from "moment";
+import useAxios from "axios-hooks";
+
 import { OrderListingSkeleton } from "components/skeleton/OrderListingSkeleton";
 import { TableNoRowsOverlay } from "components/skeleton/TableNoRowsOverlay";
 import MainCard from "components/cards/MainCard";
 import Progress from "components/Progress";
-import CartDetails from "./CartDetails";
 
+import { toCapitalizeFirstLetter } from "orders/HelperFunctions";
+import CartDetails from "./CartDetails";
+import {
+  currencyStyle,
+  cartListingHeaderStyle,
+  cartListingTableStyle,
+} from "./Styles";
 import { setDate } from "store/slices/Main";
 import { useDispatch, useSelector } from "store";
-import moment from "moment";
-import useAxios from "axios-hooks";
 import { GATEWAY_API_URL } from "config";
 
 const useStyles = makeStyles(() => ({
@@ -37,7 +44,7 @@ const useStyles = makeStyles(() => ({
     paddingLeft: "unset !important",
     paddingRight: "50px !important",
   },
-  orderIdColumnHeaderStyle: {
+  orderIdColumnStyle: {
     fontFamily: "Roboto",
     fontStyle: "normal",
     fontWeight: "500",
@@ -45,20 +52,11 @@ const useStyles = makeStyles(() => ({
     paddingLeft: "unset !important",
     color: "#212121",
   },
-  orderIdColumnCellsStyle: {
-    fontWeight: "400",
-    color: "#212121",
-    paddingLeft: "unset !important",
-  },
-  colStyle1: {
+  headerStyles: {
     fontFamily: "Roboto",
     fontStyle: "normal",
     fontWeight: "500",
     fontSize: "14px",
-    color: "#212121",
-  },
-  colStyle2: {
-    fontWeight: "400",
     color: "#212121",
   },
 }));
@@ -157,7 +155,7 @@ const Carts = () => {
 
   const formatDate = (params: GridRenderCellParams) => {
     return (
-      <Typography variant="body1" sx={{ color: "#212121" }}>
+      <Typography variant="subtitle1" sx={{ color: "#212121" }}>
         {moment(params.value).format("MMM Do, YYYY hh:mm a")}
       </Typography>
     );
@@ -182,9 +180,7 @@ const Carts = () => {
   const formatString = (params: GridRenderCellParams) => {
     return (
       <Typography variant="body1" sx={{ color: "#212121" }}>
-        {params.value
-          ? params.value.charAt(0).toUpperCase() + params.value.slice(1)
-          : "-"}
+        {params.value ? toCapitalizeFirstLetter(params.value) : "-"}
       </Typography>
     );
   };
@@ -192,18 +188,7 @@ const Carts = () => {
   const addCurrency = (params: GridRenderCellParams) => {
     return (
       <Stack direction="row" spacing={0.25} sx={{ alignItems: "center" }}>
-        <Typography
-          sx={{
-            fontFamily: "Roboto",
-            fontStyle: "normal",
-            fontWeight: "400",
-            fontSize: "10px",
-            lineHeight: "12px",
-            color: "#757575",
-          }}
-        >
-          {currency}
-        </Typography>
+        <Typography sx={currencyStyle}>{currency}</Typography>
         <Typography variant="subtitle1" sx={{ color: "#212121" }}>
           {parseFloat(params.value).toFixed(decimalPlaces)}
         </Typography>
@@ -216,14 +201,14 @@ const Carts = () => {
       field: "orderid",
       headerName: "Order#",
       flex: 0.5,
-      headerClassName: classes.orderIdColumnHeaderStyle,
-      cellClassName: classes.orderIdColumnCellsStyle,
+      headerClassName: classes.orderIdColumnStyle,
+      cellClassName: classes.orderIdColumnStyle,
       sortable: false,
     },
     {
       field: "delivery",
       headerName: "Date & Time",
-      headerClassName: classes.colStyle1,
+      headerClassName: classes.headerStyles,
       flex: 1,
       sortable: false,
       renderCell: formatDate,
@@ -231,7 +216,7 @@ const Carts = () => {
     {
       field: "email",
       headerName: "Email",
-      headerClassName: classes.colStyle1,
+      headerClassName: classes.headerStyles,
       flex: 1.2,
       sortable: false,
       renderCell: emailAndPhoneValidation,
@@ -250,7 +235,7 @@ const Carts = () => {
     {
       field: "order_type",
       headerName: "Order type",
-      headerClassName: classes.colStyle1,
+      headerClassName: classes.headerStyles,
       flex: 0.7,
       sortable: false,
       renderCell: formatString,
@@ -258,7 +243,7 @@ const Carts = () => {
     {
       field: "source",
       headerName: "Source",
-      headerClassName: classes.colStyle1,
+      headerClassName: classes.headerStyles,
       flex: 0.5,
       sortable: false,
       renderCell: formatString,
@@ -266,7 +251,7 @@ const Carts = () => {
     {
       field: "total",
       headerName: "Total",
-      headerClassName: classes.colStyle1,
+      headerClassName: classes.headerStyles,
       flex: 0.6,
       headerAlign: "right",
       align: "right",
@@ -280,44 +265,13 @@ const Carts = () => {
       <MainCard
         title={
           <Grid container>
-            <Grid
-              item
-              xs={12}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
+            <Grid item xs={12} sx={cartListingHeaderStyle}>
               <Typography variant="h3">Abandoned Carts</Typography>
             </Grid>
           </Grid>
         } // MainCard opening tag closed here
       >
-        <Box
-          sx={{
-            width: "100%",
-            "& .MuiDataGrid-root": {
-              border: "none",
-
-              "& .MuiDataGrid-footerContainer": {
-                borderTop: "1px solid #EEEEEE",
-              },
-              "& .MuiDataGrid-columnHeaders": {
-                borderBottom: "1px solid #EEEEEE",
-              },
-              "& .MuiDataGrid-cell": {
-                borderBottom: "1px solid #EEEEEE",
-              },
-              "& .MuiDataGrid-columnSeparator": {
-                display: "none",
-              },
-              "& .MuiDataGrid-cell:focus-within, & .MuiDataGrid-cell:focus, & .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within":
-                {
-                  outline: "none",
-                },
-            },
-          }}
-        >
+        <Box sx={cartListingTableStyle}>
           {!abandonedOrders ? (
             <OrderListingSkeleton />
           ) : (

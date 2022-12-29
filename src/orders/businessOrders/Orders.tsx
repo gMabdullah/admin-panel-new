@@ -559,7 +559,7 @@ const Orders = () => {
     setApplyFilters(true);
   };
 
-  const AddCurrency = (params: GridRenderCellParams) => {
+  const addCurrency = (params: GridRenderCellParams) => {
     return (
       <Stack direction="row" spacing={0.25} sx={{ alignItems: "center" }}>
         <Typography
@@ -582,7 +582,7 @@ const Orders = () => {
   };
 
   // table data
-  const StyledStatus = (params: GridRenderCellParams) => {
+  const styledStatus = (params: GridRenderCellParams) => {
     let color = {
       borderRadius: "100px",
       fontFamily: "Roboto",
@@ -722,7 +722,7 @@ const Orders = () => {
       headerClassName: classes.colStyle1,
       flex: 0.7,
       sortable: false,
-      renderCell: StyledStatus,
+      renderCell: styledStatus,
     },
     {
       field: "grand_total",
@@ -732,7 +732,7 @@ const Orders = () => {
       headerAlign: "right",
       align: "right",
       sortable: false,
-      renderCell: AddCurrency,
+      renderCell: addCurrency,
     },
   ];
 

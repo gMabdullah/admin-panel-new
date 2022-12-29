@@ -1038,18 +1038,18 @@ const OrderDetail = ({
     );
   };
 
-  const weight = (params: GridRenderCellParams) => {
+  const weightFormatting = (params: GridRenderCellParams) => {
     // for skeleton loader for a row to be added
     const lastItem = orderFromAPI[0].order_detail.slice(-1);
 
     return rowSkeletonLoader && params.row.item_id === lastItem[0].item_id ? (
       <Skeleton animation="wave" height={15} width="90%" />
     ) : params.row.weight_value && Number(params.row.weight_value) > 0 ? (
-      <Typography variant="subtitle1" sx={{ color: "#212121" }}>{`${parseFloat(
+      <Typography variant="body1" sx={{ color: "#212121" }}>{`${parseFloat(
         params.row.weight_value
       ).toFixed(decimalPlaces)} ${params.row.weight_unit}`}</Typography>
     ) : (
-      <Typography variant="subtitle1" sx={{ color: "#212121" }}>
+      <Typography variant="body1" sx={{ color: "#212121" }}>
         -
       </Typography>
     );
@@ -1399,7 +1399,7 @@ const OrderDetail = ({
     }
 
     return (
-      <Typography variant="subtitle1" sx={{ color: "#212121" }}>
+      <Typography variant="body1" sx={{ color: "#212121" }}>
         {params.value}
       </Typography>
     );
@@ -1429,7 +1429,7 @@ const OrderDetail = ({
       align: "right",
       flex: 0.6,
       sortable: false,
-      renderCell: weight,
+      renderCell: weightFormatting,
     },
     {
       field: "quantity",
