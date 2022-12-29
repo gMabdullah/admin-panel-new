@@ -1,41 +1,136 @@
-import useAxios from 'axios-hooks';
-import MainCard from 'components/cards/MainCard';
-import CustomButton from 'components/CustomButton';
-import CustomRadioButton from 'components/CustomRadioButton';
-import GoogleMapFrame from 'components/GoogleMapFrame';
-import Notify from 'components/Notify';
-import Progress from 'components/Progress';
-import {
-    CalculationSectionSkeleton, OrderDeliveryDetailsSkeleton, OrderIdSectionSkeleton, TableSkeleton,
-    UserDetailsSkeleton, TableBoxHeaderSkeleton,
-    OrderTimelineSkeleton,
-    MapSectionSkeleton,
-} from 'components/skeleton/OrderDetailSkeleton';
-import TdTextField from 'components/TdTextField';
-import {
-    AMANAT_BUSINESS_ID, AMANAT_STAGING_BUSINESS_ID, DWP_BUSINESS_ID, DWP_STAGING_BUSINESS_ID,
-    OrderDetailColumns
-} from 'constants/BusinessIds';
-import moment from 'moment';
-import { OptionSetContext } from 'orders/context/OptionSetContext';
-import { toCapitalizeFirstLetter } from 'orders/HelperFunctions';
-import React, { lazy, useContext, useEffect, useState } from 'react';
-import { useSelector } from 'store';
+import React, { useContext, useEffect, useState } from "react";
 
 import {
-    AccountCircleTwoTone, AddTwoTone, DeleteTwoTone, EditTwoTone, HighlightOffTwoTone,
-    PictureAsPdfTwoTone, PinDropTwoTone, PrintTwoTone, SmartphoneTwoTone
-} from '@mui/icons-material';
+  GridColumns,
+  DataGrid,
+  GridActionsCellItem,
+  GridRowParams,
+  GridSelectionModel,
+  GridRenderCellParams,
+} from "@mui/x-data-grid";
+import { makeStyles } from "@mui/styles";
 import {
-    Box, CardContent, Divider, Grid, IconButton, Modal, Skeleton, Stack, Typography
-} from '@mui/material';
-import { makeStyles } from '@mui/styles';
+  Typography,
+  Stack,
+  Box,
+  Grid,
+  Divider,
+  Modal,
+  IconButton,
+  CardContent,
+  Skeleton,
+} from "@mui/material";
 import {
-    DataGrid, GridActionsCellItem, GridColumns, GridRenderCellParams, GridRowParams,
-    GridSelectionModel
-} from '@mui/x-data-grid';
+  AddTwoTone,
+  PictureAsPdfTwoTone,
+  PrintTwoTone,
+  AccountCircleTwoTone,
+  SmartphoneTwoTone,
+  PinDropTwoTone,
+  DeleteTwoTone,
+  EditTwoTone,
+  HighlightOffTwoTone,
+} from "@mui/icons-material";
 
-import OrderStatusAction from './OrderStatusAction';
+import {
+  OrderIdSectionSkeleton,
+  UserDetailsSkeleton,
+  OrderDeliveryDetailsSkeleton,
+  TableSkeleton,
+  TableBoxHeaderSkeleton,
+  CalculationSectionSkeleton,
+  OrderTimelineSkeleton,
+  MapSectionSkeleton,
+} from "components/skeleton/OrderDetailSkeleton";
+import Notify from "components/Notify";
+import MainCard from "components/cards/MainCard";
+import CustomButton from "components/CustomButton";
+import GoogleMapFrame from "components/GoogleMapFrame";
+import ExcelExport from "components/ExcelExport";
+import TdTextField from "components/TdTextField";
+import Progress from "components/Progress";
+import CustomRadioButton from "components/CustomRadioButton";
+
+import {
+  AMANAT_BUSINESS_ID,
+  DWP_BUSINESS_ID,
+  DWP_STAGING_BUSINESS_ID,
+  AMANAT_STAGING_BUSINESS_ID,
+  OrderDetailColumns,
+} from "constants/BusinessIds";
+import { OptionSetContext } from "orders/context/OptionSetContext";
+import { toCapitalizeFirstLetter } from "orders/HelperFunctions";
+
+import OrderStatusAction from "./OrderStatusAction";
+import AddEditItemModal from "./AddEditItemModal";
+import { useSelector } from "store";
+import moment from "moment";
+import useAxios from "axios-hooks";
+
+//=======================================================
+
+// import useAxios from "axios-hooks";
+// import MainCard from "components/cards/MainCard";
+// import CustomButton from "components/CustomButton";
+// import CustomRadioButton from "components/CustomRadioButton";
+// import GoogleMapFrame from "components/GoogleMapFrame";
+// import Notify from "components/Notify";
+// import Progress from "components/Progress";
+// import {
+//   CalculationSectionSkeleton,
+//   OrderDeliveryDetailsSkeleton,
+//   OrderIdSectionSkeleton,
+//   TableSkeleton,
+//   UserDetailsSkeleton,
+//   TableBoxHeaderSkeleton,
+//   OrderTimelineSkeleton,
+//   MapSectionSkeleton,
+// } from "components/skeleton/OrderDetailSkeleton";
+// import TdTextField from "components/TdTextField";
+// import {
+//   AMANAT_BUSINESS_ID,
+//   AMANAT_STAGING_BUSINESS_ID,
+//   DWP_BUSINESS_ID,
+//   DWP_STAGING_BUSINESS_ID,
+//   OrderDetailColumns,
+// } from "constants/BusinessIds";
+// import moment from "moment";
+// import { OptionSetContext } from "orders/context/OptionSetContext";
+// import { toCapitalizeFirstLetter } from "orders/HelperFunctions";
+
+// import {
+//   AccountCircleTwoTone,
+//   AddTwoTone,
+//   DeleteTwoTone,
+//   EditTwoTone,
+//   HighlightOffTwoTone,
+//   PictureAsPdfTwoTone,
+//   PinDropTwoTone,
+//   PrintTwoTone,
+//   SmartphoneTwoTone,
+// } from "@mui/icons-material";
+// import {
+//   Box,
+//   CardContent,
+//   Divider,
+//   Grid,
+//   IconButton,
+//   Modal,
+//   Skeleton,
+//   Stack,
+//   Typography,
+// } from "@mui/material";
+// import { makeStyles } from "@mui/styles";
+// import {
+//   DataGrid,
+//   GridActionsCellItem,
+//   GridColumns,
+//   GridRenderCellParams,
+//   GridRowParams,
+//   GridSelectionModel,
+// } from "@mui/x-data-grid";
+
+// import OrderStatusAction from "./OrderStatusAction";
 
 export const useStyles = makeStyles(() => ({
   backDrop: {
@@ -90,9 +185,11 @@ let errorMessage = { address: "", mobileNo: "", deliveryCharges: "" };
 const { eatout_id, user_id } = JSON.parse(
   localStorage.getItem("businessInfo")!
 );
+
 export const linearLoader = () => {
   return <Progress type="linear" />;
 };
+
 const OrderDetail = ({
   setOrderDetailModal,
   orderDetailModal,
@@ -191,7 +288,7 @@ const OrderDetail = ({
       } = await getSingleOrderAPICall({
         data: getSingleOrderAPIPayload(),
       });
-      if(result){
+      if (result) {
         setSelectedOrderContext(result[0]);
         setOrderFromAPI(result);
 
@@ -703,78 +800,78 @@ const OrderDetail = ({
     } = await bizDeliveryCalculationAPICall({
       data: bizDeliveryCalculationAPIPayload(bizDeliveryPayload),
     });
-    if(final_order_array){
-    let selectedOrder = orderFromAPI;
-    const itemsFromBizDelivery = final_order_array.items;
+    if (final_order_array) {
+      let selectedOrder = orderFromAPI;
+      const itemsFromBizDelivery = final_order_array.items;
 
-    selectedOrder[0].total = final_order_array.sub_total;
-    selectedOrder[0].grand_total = final_order_array.grand_total;
-    selectedOrder[0].tax = final_order_array.tax;
-    selectedOrder[0].discount_value = final_order_array.discount;
-    selectedOrder[0].custom_code_discount_value =
-      final_order_array.custom_code_discount_value;
-    selectedOrder[0].service_charges = final_order_array.service_charges;
-    selectedOrder[0].tip = final_order_array.tip;
-    selectedOrder[0].delivery_charges = final_order_array.delivery_charges;
+      selectedOrder[0].total = final_order_array.sub_total;
+      selectedOrder[0].grand_total = final_order_array.grand_total;
+      selectedOrder[0].tax = final_order_array.tax;
+      selectedOrder[0].discount_value = final_order_array.discount;
+      selectedOrder[0].custom_code_discount_value =
+        final_order_array.custom_code_discount_value;
+      selectedOrder[0].service_charges = final_order_array.service_charges;
+      selectedOrder[0].tip = final_order_array.tip;
+      selectedOrder[0].delivery_charges = final_order_array.delivery_charges;
 
-    selectedOrder[0].order_detail.forEach((item, index) => {
-      item.item_name = itemsFromBizDelivery[index].dish_name;
-      item.label = item.label === undefined ? "" : item.label;
+      selectedOrder[0].order_detail.forEach((item, index) => {
+        item.item_name = itemsFromBizDelivery[index].dish_name;
+        item.label = item.label === undefined ? "" : item.label;
 
-      item.brand_id = itemsFromBizDelivery[index].brand_id;
-      item.brand_name =
-        item.brand_name === undefined
-          ? item.item_brand === undefined
+        item.brand_id = itemsFromBizDelivery[index].brand_id;
+        item.brand_name =
+          item.brand_name === undefined
+            ? item.item_brand === undefined
+              ? ""
+              : item.item_brand[0].brand_name
+            : item.brand_name;
+
+        item.category_id = itemsFromBizDelivery[index].category_id;
+        item.comment =
+          itemsFromBizDelivery[index].comment === undefined
             ? ""
-            : item.item_brand[0].brand_name
-          : item.brand_name;
+            : itemsFromBizDelivery[index].comment;
+        item.product_code = itemsFromBizDelivery[index].product_code;
 
-      item.category_id = itemsFromBizDelivery[index].category_id;
-      item.comment =
-        itemsFromBizDelivery[index].comment === undefined
-          ? ""
-          : itemsFromBizDelivery[index].comment;
-      item.product_code = itemsFromBizDelivery[index].product_code;
+        item.tax = itemsFromBizDelivery[index].tax;
+        item.discount = itemsFromBizDelivery[index].discount;
 
-      item.tax = itemsFromBizDelivery[index].tax;
-      item.discount = itemsFromBizDelivery[index].discount;
+        item.coupon_discount_value =
+          itemsFromBizDelivery[index].coupon_discount_value;
 
-      item.coupon_discount_value =
-        itemsFromBizDelivery[index].coupon_discount_value;
+        item.price = itemsFromBizDelivery[index].dish_price;
 
-      item.price = itemsFromBizDelivery[index].dish_price;
+        item.quantity = itemsFromBizDelivery[index].dish_qty;
 
-      item.quantity = itemsFromBizDelivery[index].dish_qty;
+        item.total = parseFloat(itemsFromBizDelivery[index].dtotal);
 
-      item.total = parseFloat(itemsFromBizDelivery[index].dtotal);
+        item.item_level_discount_value =
+          itemsFromBizDelivery[index].item_level_discount_value;
 
-      item.item_level_discount_value =
-        itemsFromBizDelivery[index].item_level_discount_value;
+        item.item_level_tax_value =
+          itemsFromBizDelivery[index].item_level_tax_value;
+        item.coupon_discount = itemsFromBizDelivery[index].coupon_discount;
 
-      item.item_level_tax_value =
-        itemsFromBizDelivery[index].item_level_tax_value;
-      item.coupon_discount = itemsFromBizDelivery[index].coupon_discount;
+        item.item_level_grand_total = parseFloat(
+          itemsFromBizDelivery[index].item_level_grand_total
+        );
+        item.item_id = itemsFromBizDelivery[index].menu_item_id;
+        item.weight_unit =
+          itemsFromBizDelivery[index].weight_unit === null
+            ? ""
+            : itemsFromBizDelivery[index].weight_unit;
+        item.weight_value =
+          itemsFromBizDelivery[index].weight_value === ""
+            ? "0.5"
+            : itemsFromBizDelivery[index].weight_value;
 
-      item.item_level_grand_total = parseFloat(
-        itemsFromBizDelivery[index].item_level_grand_total
-      );
-      item.item_id = itemsFromBizDelivery[index].menu_item_id;
-      item.weight_unit =
-        itemsFromBizDelivery[index].weight_unit === null
-          ? ""
-          : itemsFromBizDelivery[index].weight_unit;
-      item.weight_value =
-        itemsFromBizDelivery[index].weight_value === ""
-          ? "0.5"
-          : itemsFromBizDelivery[index].weight_value;
+        item.options =
+          itemsFromBizDelivery[index].options === ""
+            ? "{}"
+            : JSON.stringify(itemsFromBizDelivery[index].options);
+      });
 
-      item.options =
-        itemsFromBizDelivery[index].options === ""
-          ? "{}"
-          : JSON.stringify(itemsFromBizDelivery[index].options);
-    });
-
-    setOrderFromAPI(selectedOrder);
+      setOrderFromAPI(selectedOrder);
     }
     setCancelUpdateButtonToggle(true);
 
@@ -1042,7 +1139,11 @@ const OrderDetail = ({
             url: `/product_details?business_id=${eatout_id}&item_id=${item_id}&admin_id=${user_id}&source=biz`,
           });
 
-          if (items !== [] || items[0].status === "1" || items !== null) {
+          if (
+            (Array.isArray(items) && items.length > 0) ||
+            items[0].status === "1" ||
+            items !== null
+          ) {
             // setEditAbleItem([row]);
 
             if (items[0].options.length > 0) {
@@ -1538,18 +1639,18 @@ const OrderDetail = ({
     setTotalWeight(tWeight);
   };
 
-  // load add item when it's needed
-  const AddEditItemModal = lazy(() => (
-    import("./AddEditItemModal")
-      .then(AddEditItemModal => AddEditItemModal)
-  ));
+  // // load add item when it's needed
+  // const AddEditItemModal = lazy(() => (
+  //   import("./AddEditItemModal")
+  //     .then(AddEditItemModal => AddEditItemModal)
+  // ));
 
-  // load export excel when  it's needed
-  const ExcelExport = lazy(() => (
-    import("components/ExcelExport")
-      .then(ExcelExport => ExcelExport)
-  ));
-  // returns start
+  // // load export excel when  it's needed
+  // const ExcelExport = lazy(() => (
+  //   import("components/ExcelExport")
+  //     .then(ExcelExport => ExcelExport)
+  // ));
+
   return (
     <>
       {notify && (

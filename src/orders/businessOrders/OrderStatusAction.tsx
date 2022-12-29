@@ -1,20 +1,55 @@
-import useAxios from 'axios-hooks';
-import MainCard from 'components/cards/MainCard';
-import CustomButton from 'components/CustomButton';
-import Notify from 'components/Notify';
-import Progress from 'components/Progress';
-import TdTextField from 'components/TdTextField';
-import { OptionSetContext } from 'orders/context/OptionSetContext';
-import { convertMinutesInToHours } from 'orders/HelperFunctions';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useState, useEffect, useContext, useRef } from "react";
 
+import { makeStyles } from "@mui/styles";
 import {
-    Timeline, TimelineConnector, TimelineContent, TimelineDot, TimelineItem, TimelineSeparator
-} from '@mui/lab';
-import { Box, Divider, Modal, Stack, Typography } from '@mui/material';
-import { makeStyles } from '@mui/styles';
+  Typography,
+  Stack,
+  Divider,
+  Modal,
+  Box,
+  IconButton,
+} from "@mui/material";
+import { HighlightOffTwoTone } from "@mui/icons-material";
+import {
+  Timeline,
+  TimelineConnector,
+  TimelineContent,
+  TimelineDot,
+  TimelineSeparator,
+  TimelineItem,
+} from "@mui/lab";
 
-import StatusActionButton from './StatusActionButton';
+import Progress from "components/Progress";
+import CustomButton from "components/CustomButton";
+import MainCard from "components/cards/MainCard";
+import TdTextField from "components/TdTextField";
+import Notify from "components/Notify";
+
+import { convertMinutesInToHours } from "orders/HelperFunctions";
+import { OptionSetContext } from "orders/context/OptionSetContext";
+import StatusActionButton from "./StatusActionButton";
+import useAxios from "axios-hooks";
+// import { axios } from "config";
+
+//======================================================================================================
+
+// import useAxios from 'axios-hooks';
+// import MainCard from 'components/cards/MainCard';
+// import CustomButton from 'components/CustomButton';
+// import Notify from 'components/Notify';
+// import Progress from 'components/Progress';
+// import TdTextField from 'components/TdTextField';
+// import { OptionSetContext } from 'orders/context/OptionSetContext';
+// import { convertMinutesInToHours } from 'orders/HelperFunctions';
+// import React, { useContext, useEffect, useRef, useState } from 'react';
+
+// import {
+//     Timeline, TimelineConnector, TimelineContent, TimelineDot, TimelineItem, TimelineSeparator
+// } from '@mui/lab';
+// import { Box, Divider, Modal, Stack, Typography } from '@mui/material';
+// import { makeStyles } from '@mui/styles';
+
+// import StatusActionButton from './StatusActionButton';
 
 const useStyles = makeStyles(() => ({
   TimeLineRoot: {
@@ -148,7 +183,7 @@ const OrderStatusAction = ({
         setNotifyType("success");
         setNotify(true);
         setComment("");
-      }else if (notifyResponse.status === "0") {
+      } else if (notifyResponse.status === "0") {
         setEmailNotificationModal(false);
         setNotifyMessage("Notify Failed");
         setNotifyType("error");

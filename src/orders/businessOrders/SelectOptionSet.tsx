@@ -1,9 +1,12 @@
-import { SyntheticEvent, useContext, useState } from 'react';
-import SwipeableViews from 'react-swipeable-views';
-import { Tab, Tabs, Typography } from '@mui/material';
-import { OptionSetContext } from '../context/OptionSetContext';
-import { getHeaderString, getMinMaxAndRequired } from '../HelperFunctions';
-import OptionSetLayer1 from './optionSet1/OptionSetLayer1';
+import { useContext, useState, SyntheticEvent } from "react";
+
+import { Typography, Tab, Tabs } from "@mui/material";
+
+import { getHeaderString, getMinMaxAndRequired } from "../HelperFunctions";
+import OptionSetLayer1 from "./optionSet1/OptionSetLayer1";
+import { OptionSetContext } from "../context/OptionSetContext";
+
+import SwipeableViews from "react-swipeable-views";
 
 const SelectOptionSet = () => {
   const { options, setOptions, indexOptionSet, setIndexOptionSet } =

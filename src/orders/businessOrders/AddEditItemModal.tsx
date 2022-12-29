@@ -1,18 +1,51 @@
-import useAxios from 'axios-hooks';
-import MainCard from 'components/cards/MainCard';
-import CustomButton from 'components/CustomButton';
-import Notify from 'components/Notify';
-import Progress from 'components/Progress';
-import TdTextField from 'components/TdTextField';
-import { OptionSetContext } from 'orders/context/OptionSetContext';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useState, useContext, useEffect } from "react";
+
 import {
-    ArrowBackOutlined, HighlightOffTwoTone as CloseIcon, Visibility as PreviewIcon
-} from '@mui/icons-material';
+  Grid,
+  IconButton,
+  Modal,
+  Typography,
+  CardActionArea,
+  CardMedia,
+  Card,
+  Chip,
+} from "@mui/material";
 import {
-    Card, CardActionArea, CardMedia, Chip, Grid, IconButton, Modal, Typography
-} from '@mui/material';
-import SelectOptionSet from './SelectOptionSet';
+  HighlightOffTwoTone as CloseIcon,
+  Visibility as PreviewIcon,
+  ArrowBackOutlined,
+} from "@mui/icons-material";
+
+import MainCard from "components/cards/MainCard";
+import TdTextField from "components/TdTextField";
+import CustomButton from "components/CustomButton";
+import Progress from "components/Progress";
+import Notify from "components/Notify";
+
+import { OptionSetContext } from "orders/context/OptionSetContext";
+import SelectOptionSet from "./SelectOptionSet";
+import useAxios from "axios-hooks";
+// import { axios } from "config";
+
+// configure({ axios });
+
+//============================================================
+
+// import useAxios from 'axios-hooks';
+// import MainCard from 'components/cards/MainCard';
+// import CustomButton from 'components/CustomButton';
+// import Notify from 'components/Notify';
+// import Progress from 'components/Progress';
+// import TdTextField from 'components/TdTextField';
+// import { OptionSetContext } from 'orders/context/OptionSetContext';
+// import React, { useContext, useEffect, useState } from 'react';
+// import {
+//     ArrowBackOutlined, HighlightOffTwoTone as CloseIcon, Visibility as PreviewIcon
+// } from '@mui/icons-material';
+// import {
+//     Card, CardActionArea, CardMedia, Chip, Grid, IconButton, Modal, Typography
+// } from '@mui/material';
+// import SelectOptionSet from './SelectOptionSet';
 
 interface AddEditItemProps {
   setAddEditItemModal: React.Dispatch<React.SetStateAction<boolean>>;

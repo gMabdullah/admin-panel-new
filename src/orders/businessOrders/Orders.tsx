@@ -1,26 +1,65 @@
-import useAxios from 'axios-hooks';
-import MainCard from 'components/cards/MainCard';
-import CustomButton from 'components/CustomButton';
-import MultiSelectDropDown, { DropDownListType } from 'components/MultiSelectDropDown';
-import Progress from 'components/Progress';
-// import { OrderListingNoRowsOverlay } from 'components/skeleton/OrderListingNoRowsOverlay';
-import { OrderListingSkeleton } from 'components/skeleton/OrderListingSkeleton';
-import TdTextField from 'components/TdTextField';
-import { IQBAL_BUSINESS_ID, orderListingColumns, ordersType } from 'constants/BusinessIds';
-import moment from 'moment';
-import { OptionSetProvider } from 'orders/context/OptionSetContext';
-import React, { lazy, useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'store';
-import { setDate, setGlobalSettings } from 'store/slices/Main';
+import React, { useEffect, useRef, useState } from "react";
 
-import { Box, Chip, Grid, Stack, Typography } from '@mui/material';
-import { SelectChangeEvent } from '@mui/material/Select';
-import { makeStyles } from '@mui/styles';
+import { makeStyles } from "@mui/styles";
 import {
-    DataGrid, GridColumns, GridRenderCellParams, GridRowHeightParams, GridRowParams,
-    GridSelectionModel
-} from '@mui/x-data-grid';
+  GridColumns,
+  DataGrid,
+  GridRenderCellParams,
+  GridRowParams,
+  GridSelectionModel,
+  GridRowHeightParams,
+} from "@mui/x-data-grid";
+import { Box, Chip, Typography, Grid, Stack } from "@mui/material";
+import { SelectChangeEvent } from "@mui/material/Select";
+
+import MainCard from "components/cards/MainCard";
+import CustomButton from "components/CustomButton";
+import ExcelExport from "components/ExcelExport";
+import TdTextField from "components/TdTextField";
+import Progress from "components/Progress";
+import MultiSelectDropDown, {
+  DropDownListType,
+} from "components/MultiSelectDropDown";
+import { OrderListingSkeleton } from "components/skeleton/OrderListingSkeleton";
 import { TableNoRowsOverlay } from "components/skeleton/TableNoRowsOverlay";
+
+import { OptionSetProvider } from "orders/context/OptionSetContext";
+import {
+  IQBAL_BUSINESS_ID,
+  orderListingColumns,
+  ordersType,
+} from "constants/BusinessIds";
+import { setDate, setGlobalSettings } from "store/slices/Main";
+import OrderDetail from "./OrderDetail";
+import { useDispatch, useSelector } from "store";
+import moment from "moment";
+import useAxios from "axios-hooks";
+
+//========================================================================================================================================
+
+// import useAxios from 'axios-hooks';
+// import MainCard from 'components/cards/MainCard';
+// import CustomButton from 'components/CustomButton';
+// import MultiSelectDropDown, { DropDownListType } from 'components/MultiSelectDropDown';
+// import Progress from 'components/Progress';
+// import { OrderListingNoRowsOverlay } from 'components/skeleton/OrderListingNoRowsOverlay';
+// import { OrderListingSkeleton } from 'components/skeleton/OrderListingSkeleton';
+// import TdTextField from 'components/TdTextField';
+// import { IQBAL_BUSINESS_ID, orderListingColumns, ordersType } from 'constants/BusinessIds';
+// import moment from 'moment';
+// import { OptionSetProvider } from 'orders/context/OptionSetContext';
+// import React, { lazy, useEffect, useRef, useState } from 'react';
+// import { useDispatch, useSelector } from 'store';
+// import { setDate, setGlobalSettings } from 'store/slices/Main';
+
+// import { Box, Chip, Grid, Stack, Typography } from '@mui/material';
+// import { SelectChangeEvent } from '@mui/material/Select';
+// import { makeStyles } from '@mui/styles';
+// import {
+//     DataGrid, GridColumns, GridRenderCellParams, GridRowHeightParams, GridRowParams,
+//     GridSelectionModel
+// } from '@mui/x-data-grid';
+// import { TableNoRowsOverlay } from "components/skeleton/TableNoRowsOverlay";
 
 const useStyles = makeStyles(() => ({
   colStyle1: {
@@ -157,7 +196,7 @@ const Orders = () => {
 
   const [{ data: globalSetting }] = useAxios({
     url: `/eatout_global_settings?restaurant_id=${eatout_id}&source=biz&admin_id=${user_id}`,
-    method: "GET"
+    method: "GET",
   });
 
   const [{ data: allBranches }] = useAxios({
@@ -398,7 +437,7 @@ const Orders = () => {
     //         cleanup
     //     }
   }, [startDate, endDate]);
-  
+
   //======================================= Handlers Functions =======================================//
 
   const handleSearchChange = async (e: { target: { value: string } }) => {
@@ -724,31 +763,32 @@ const Orders = () => {
     setPageSize(pageSizeNo);
   };
 
-  // load Order Details when  it's needed
-  const OrderDetail = lazy(() => (
-    import("./OrderDetail")
-      .then(OrderDetail => (
-        OrderDetail
-      ))
-  ));
+  // // load Order Details when  it's needed
+  // const OrderDetail = lazy(() => (
+  //   import("./OrderDetail")
+  //     .then(OrderDetail => (
+  //       OrderDetail
+  //     ))
+  // ));
 
-  // load excel export when  it's needed
-  const ExcelExport = lazy(() => (
-    import("components/ExcelExport")
-      .then(ExcelExport => ExcelExport)
-  ));
+  // // load excel export when  it's needed
+  // const ExcelExport = lazy(() => (
+  //   import("components/ExcelExport")
+  //     .then(ExcelExport => ExcelExport)
+  // ));
+
   return (
     <OptionSetProvider>
-        <>
-         {/* Order Detail modal */}
-         {orderDetailModal && 
+      <>
+        {/* Order Detail modal */}
+        {orderDetailModal && (
           <OrderDetail
             selectedOrder={selectedOrder}
             orderDetailModal={orderDetailModal}
             setOrderDetailModal={setOrderDetailModal}
             setSelectionModel={setSelectionModel}
           />
-        }
+        )}
         <MainCard
           title={
             <Grid container spacing={2}>
@@ -938,10 +978,9 @@ const Orders = () => {
               />
             )}
           </Box>
-          
         </MainCard>
       </>
-      </OptionSetProvider>
+    </OptionSetProvider>
   );
 };
 
