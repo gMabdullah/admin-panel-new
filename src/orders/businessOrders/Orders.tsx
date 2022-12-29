@@ -862,16 +862,11 @@ const Orders = () => {
                     p: "12px 32px",
                     height: "44px",
                     width: "151px",
-                    // color: 'black',
-                    // color: '#FFFFFF',
                     border: "1px solid #CCD1DB",
-
-                    // '&:hover': {
-                    //   backgroundColor: '#FFFFFF',
-                    // },
                   }}
                   color={"primary"}
                   onClick={packingSlipComponent}
+                  disabled={selectionModel.length > 0 ? false : true}
                 >
                   Packing Slip
                 </CustomButton>

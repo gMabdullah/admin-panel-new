@@ -288,7 +288,7 @@ const OrderDetail = ({
       } = await getSingleOrderAPICall({
         data: getSingleOrderAPIPayload(),
       });
-      if (result) {
+      if (result.length > 0) {
         setSelectedOrderContext(result[0]);
         setOrderFromAPI(result);
 
