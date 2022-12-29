@@ -7,14 +7,16 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 type DropDownType<T extends React.ElementType> = {
   options: {
     label: string;
-    id: number;
+    value: string | number;
   }[];
   defaultValue?: {
     label: string;
-    id: number;
+    value: string | number;
   };
   label?: string;
   name?: string;
+  value: string;
+  handleChange: (event: SelectChangeEvent) => void;
 } & React.ComponentPropsWithoutRef<T>;
 
 const useStyles = makeStyles((theme) => ({
@@ -68,13 +70,16 @@ const DropDown = <T extends React.ElementType = "select">({
   options,
   defaultValue,
   label,
+  value,
+  name,
+  handleChange,
   ...rest
 }: DropDownType<T>): JSX.Element => {
   const classes = useStyles();
   const [defualtData, setDefaultData] = React.useState("");
-  const handleChange = (event: SelectChangeEvent) => {
-    setDefaultData(event.target.value as string);
-  };
+  // const handleChange = (event: SelectChangeEvent) => {
+  //   setDefaultData(event.target.value as string);
+  // };
   return (
     <>
       <FormControl
@@ -88,14 +93,16 @@ const DropDown = <T extends React.ElementType = "select">({
             icon: classes.icon,
           }}
           MenuProps={{ classes: { paper: classes.selectPaper } }}
+          name={name}
           defaultValue={defualtData}
+          value={value ? value : ""}
           onChange={handleChange}
         >
-          {options.map((data, i) => {
+          {options.map((option, index) => {
             return (
-              <MenuItem key={i} value={data.id}>
-                {data.label}
-              </MenuItem>
+              <MenuItem key={index} value={option.value}>
+                {option.label}
+            </MenuItem>
             );
           })}
         </Select>

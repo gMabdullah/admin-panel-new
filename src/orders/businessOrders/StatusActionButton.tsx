@@ -1,20 +1,24 @@
-import { Modal, Stack } from "@mui/material";
-import Typography from "@mui/material/Typography";
-import { OptionSetContext } from "orders/context/OptionSetContext";
-import React, { useContext, useState } from "react";
-import MainCard from "components/cards/MainCard";
-import Notify from "components/Notify";
-import TdTextField from "components/TdTextField";
-import CustomButton from "components/CustomButton";
-import { OrderTimelineProp } from "./OrderStatusAction";
-import { useSelector } from "store";
-import { IQBAL_BUSINESS_ID } from "constants/BusinessIds";
+import useAxios from 'axios-hooks';
+import MainCard from 'components/cards/MainCard';
+import CustomButton from 'components/CustomButton';
+import Notify from 'components/Notify';
+import TdTextField from 'components/TdTextField';
+import { PRE_AUTH_CONFIRM_PAYMENT, TOSSDOWN_SITE } from 'config';
+import { IQBAL_BUSINESS_ID } from 'constants/BusinessIds';
+import { OptionSetContext } from 'orders/context/OptionSetContext';
+import React, { useContext, useState } from 'react';
+import { useSelector } from 'store';
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import { Modal, Stack } from '@mui/material';
+import Typography from '@mui/material/Typography';
 
-import useAxios, { configure } from "axios-hooks";
-import { axios, PRE_AUTH_CONFIRM_PAYMENT, TOSSDOWN_SITE } from "config";
+import { OrderTimelineProp } from './OrderStatusAction';
+import DropDown from 'components/DropDown';
 
-configure({ axios });
-
+interface errorProps {
+  commentError: string;
+  shippingError: string;
+}
 // Local Storage
 const { eatout_id, user_id } = JSON.parse(
   localStorage.getItem("businessInfo")!
@@ -31,7 +35,9 @@ const StatusActionButton = ({
 
   const [toggleStatusModal, setToggleStatusModal] = useState<boolean>(false);
   const [comment, setComment] = useState("");
-  const [commentError, setCommentError] = useState("");
+  const [error, setError] = useState<errorProps>(
+    {commentError: "", shippingError: ""}
+  );
   const [notify, setNotify] = useState<boolean>(false);
   const [notifyMessage, setNotifyMessage] = useState("");
   const [notifyType, setNotifyType] = useState<
@@ -41,8 +47,9 @@ const StatusActionButton = ({
   // Global States
   const { selectedOrderContext, setSelectedOrderContext } =
     useContext(OptionSetContext);
-  const { paymentSettings } = useSelector((state) => state.main);
-
+  const { paymentSettings, delivery_services: deliveryServices } = useSelector((state) => state.main);
+  const [selectDeliveryService, setSelectDeliveryService] = useState<string>("")
+  const [shipping, setShipping] = useState({label: "", value: ""})
   //======================================= API Calls & Handlers =======================================//
 
   const preAuthPaymentAPIPayload = (item: OrderDetailTypes) => {
@@ -69,7 +76,7 @@ const StatusActionButton = ({
     },
     { manual: true }
   );
-
+  
   // order status update API call payload
   const orderStatusUpdateAPIPayload = () => {
     const { order_id } = selectedOrderContext;
@@ -94,6 +101,23 @@ const StatusActionButton = ({
     },
     { manual: true }
   );
+
+  // Delivery Service API
+  const [{}, deliveryServiceAPI] = useAxios({
+    url: "/thirdparty_delivery_service",
+    method: "POST",
+  },
+  { manual: true }
+  )
+
+  const deliveryService = async () => {debugger;
+    const result = await deliveryServiceAPI()
+    console.log('result', result);
+    debugger;
+    if(result.status == 200 || 201){
+      // await updateOrderStatus()
+    }
+  }
 
   const updateOrderStatus = async () => {
     const { pre_auth, grand_total } = selectedOrderContext;
@@ -147,7 +171,7 @@ const StatusActionButton = ({
           data: { status, message },
         } = result;
 
-        if (status === 400 || status === 0 || status === "0") {
+        if (status === 400 || status == 0) {
           setNotifyMessage(
             "Order cannot be updated because the grand total of the order is greater than the pre-authorized charge."
           );
@@ -155,7 +179,7 @@ const StatusActionButton = ({
           setNotify(true);
         } else if (
           status &&
-          (status === 200 || status === 1 || status === "1")
+          (status === 200 || status == 1)
         ) {
           setNotifyMessage(message);
           setNotifyType("success");
@@ -171,26 +195,59 @@ const StatusActionButton = ({
     target: { value: React.SetStateAction<string> };
   }) => {
     setComment(e.target.value);
-    setCommentError("");
+    setError({commentError: "", shippingError: ""});
   };
 
   const toggleOrderStatusModal = () => {
     setToggleStatusModal((prevModalState) => !prevModalState);
-    setCommentError("");
+    setError({commentError: "", shippingError: ""});
   };
 
   const changeOrderStatus = () => {
     if (currentStatus === "Cancel" && !comment) {
-      setCommentError("Required*");
+      setError({commentError: "Required*", shippingError: ""});
       return;
     }
+    // else if(selectDeliveryService.value && selectShipping()){
+    //   // setError({commentError: "", shippingError: ""});
+    //   // handle tcs shipping case
+    //   deliveryService()
+    //   // toggleOrderStatusModal()
+    // }else if(selectDeliveryService.value !== "tcs_logistics" &&
+    // selectDeliveryService.value !== "self_deliver"
+    // ){
+    //   deliveryService()
+    //   // toggleOrderStatusModal()
+    // }else{
+    //   updateOrderStatus();
+    // }
 
-    updateOrderStatus();
     toggleOrderStatusModal();
   };
 
   const closeNotify = () => setNotify(false);
+  const selectShipping = () => {
+    if(!shipping.value){
+      setError({commentError: "", shippingError: "Please Select Shipping Type"});
+      return false;
+    }
+    return true
+  }
+  // const handleChange = (event: SelectChangeEvent) => {
+  //   setDefaultData(event.target.value as string);
+  // };
+  const handleDeliverService = (event: SelectChangeEvent<typeof selectDeliveryService>) => {
+    const {
+      target: { value },
+    } = event;
+    
+    setSelectDeliveryService(value)
+    setError({commentError: "", shippingError: ""});
 
+  }
+  console.log(
+    "selectDeliveryService", selectDeliveryService
+  )
   return (
     <>
       {notify && (
@@ -289,12 +346,42 @@ const StatusActionButton = ({
                     placeholder="Your Comment Here"
                     value={comment}
                     onChange={handleComment}
-                    error={commentError === "" ? false : true}
-                    helperText={commentError}
+                    error={error.commentError === "" ? false : true}
+                    helperText={error.commentError}
                   />
                 </Stack>
               </Stack>
             ) : (
+              <>
+              {/* {(currentStatus == deliveryServices.order_status && 
+                deliveryServices.status === "1") && ( */}
+                <DropDown
+                  name="selectDeliveryService"
+                  label="Select Delivery Service"
+                  handleChange={handleDeliverService}
+                  value={selectDeliveryService}
+                  options={[
+                    { label: "Self Deliver", value: "self_deliver" },
+                    { label: deliveryServices.service_name,
+                    value: deliveryServices.service_action }
+                  ]}
+                />
+                
+                {/* )
+              } */}
+              {/* {(selectedtDeliveryService.value == "tcs_logistics") && */}
+                <DropDown
+                  name="shipping"
+                  label="Select Shipping"
+                  handleChange={handleDeliverService}
+                  value={shipping.value}
+                  options={[
+                    { label: "Self Deliver", value: "self_deliver" },
+                    { label: deliveryServices.service_name,
+                    value: deliveryServices.service_action }
+                  ]}
+              />
+              {/* } */}
               <Stack mt="24px" mb="48px">
                 <TdTextField
                   label="Reason/comment"
@@ -303,6 +390,7 @@ const StatusActionButton = ({
                   onChange={handleComment}
                 />
               </Stack>
+              </>
             )}
 
             <Stack direction="row" sx={{ justifyContent: "end" }} spacing={1.5}>
