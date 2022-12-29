@@ -1,5 +1,5 @@
 import React from "react";
-
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { makeStyles } from "@mui/styles";
 import { MenuItem, FormControl } from "@mui/material";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
@@ -9,22 +9,39 @@ type DropDownType<T extends React.ElementType> = {
     label: string;
     value: string | number;
   }[];
-  defaultValue?: {
-    label: string;
-    value: string | number;
-  };
+  defaultValue?: string;
   label?: string;
   name?: string;
   value: string;
+  error?: boolean;
+  helperText?: React.ReactNode;
   handleChange: (event: SelectChangeEvent) => void;
 } & React.ComponentPropsWithoutRef<T>;
 
+const theme = createTheme({
+  typography: {
+    allVariants: {
+      fontSize: "14px",
+      color: "#212121",
+
+      fontFamily: `Roboto`,
+      fontWeight: 400,
+      lineHeight: "1.334em",
+    },
+  },
+});
+
 const useStyles = makeStyles((theme) => ({
   quantityRoot: {
+    fontSize: "14px",
+    // color: "#212121",
+
+    fontFamily: `Roboto`,
+    fontWeight: 400,
+    lineHeight: "1.334em",
     color: "#F5F5F !important",
     backgroundColor: "#F5F5F5 !important",
     width: "160px",
-    height: "40px",
     borderRadius: "58px",
     marginRight: "8px",
     marginBottom: "24px",
@@ -35,6 +52,14 @@ const useStyles = makeStyles((theme) => ({
     },
     "& .MuiOutlinedInput-root": {
       borderRadius: "58px !important",
+    },
+    "& .MuiList-root": {
+      paddind: "14px !important",
+    },
+    height: "fit-content",
+    "& .MuiOutlinedInput-input": {
+      background: "none",
+      p: "11px 67.9px 11px 14.88px",
     },
     "& .MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input ": {
       borderRadius: "58px !important",
@@ -65,21 +90,41 @@ const useStyles = makeStyles((theme) => ({
     color: "#FFFFFF",
   },
 }));
+const MenuProps = {
+  PaperProps: {
+    sx: {
+      width: "211px",
+      maxHeight: "262px !important",
+      marginTop: "8px",
+      boxShadow: "0px 1px 4px rgba(0, 0, 0, 0.1)",
 
+      marginLeft: "22px",
+      background: "#FFFFFF",
+      borderRadius: "unset",
+
+      "& .MuiOutlinedInput-input": {
+        background: "none",
+        p: "11px 67.9px 11px 14.88px",
+      },
+      "& .Mui-checked": {
+        color: "#2196F3",
+      },
+    },
+  },
+};
 const DropDown = <T extends React.ElementType = "select">({
   options,
   defaultValue,
   label,
   value,
   name,
+  error,
+  helperText,
   handleChange,
   ...rest
 }: DropDownType<T>): JSX.Element => {
   const classes = useStyles();
-  const [defualtData, setDefaultData] = React.useState("");
-  // const handleChange = (event: SelectChangeEvent) => {
-  //   setDefaultData(event.target.value as string);
-  // };
+
   return (
     <>
       <FormControl
@@ -89,22 +134,30 @@ const DropDown = <T extends React.ElementType = "select">({
         }}
       >
         <Select
+          error={error}
+          // helperText={helperText}
           classes={{
             icon: classes.icon,
           }}
-          MenuProps={{ classes: { paper: classes.selectPaper } }}
           name={name}
-          defaultValue={defualtData}
+          defaultValue={defaultValue}
           value={value ? value : ""}
           onChange={handleChange}
+          MenuProps={MenuProps}
         >
+          {/* <ThemeProvider theme={theme}> */}
           {options.map((option, index) => {
             return (
-              <MenuItem key={index} value={option.value}>
+              <MenuItem
+                key={index}
+                value={option.value}
+                hidden={index == 0 ? true : false}
+              >
                 {option.label}
-            </MenuItem>
+              </MenuItem>
             );
           })}
+          {/* </ThemeProvider> */}
         </Select>
       </FormControl>
     </>
