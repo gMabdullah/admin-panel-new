@@ -16,6 +16,8 @@ import {
 import MainCard from "components/cards/MainCard";
 import Transitions from "components/extended/Transitions";
 import Logout from "./Logout";
+
+import { chipStyle, logoStyle, popupStyle } from "./Styles";
 import Business from "./Business";
 
 // assets
@@ -57,38 +59,11 @@ const ProfileSection = () => {
   return (
     <>
       <Chip
-        sx={{
-          height: "48px",
-          p: "8px 15px 8px 8px",
-          alignItems: "center",
-          borderRadius: "27px",
-          transition: "all .2s ease-in-out",
-          background: "#E5E7EB",
-          border: "none",
-
-          "& .MuiChip-label": {
-            lineHeight: 0,
-            pr: "unset",
-            pl: "18px",
-          },
-
-          "& .MuiChip-icon": {
-            m: "unset",
-          },
-        }}
+        sx={chipStyle}
         icon={
           <Avatar
             src={eatout_logo}
-            sx={{
-              background: "white !important",
-              height: "32px",
-              width: "32px",
-              cursor: "pointer",
-
-              "& .MuiAvatar-img": {
-                objectFit: "contain !important",
-              },
-            }}
+            sx={logoStyle}
             ref={anchorRef}
             aria-controls={open ? "menu-list-grow" : undefined}
             aria-haspopup="true"
@@ -134,20 +109,7 @@ const ProfileSection = () => {
                     shadow={theme.shadows[16]}
                   >
                     <Box>
-                      <List
-                        component="nav"
-                        sx={{
-                          width: "100%",
-                          maxWidth: 240,
-                          minWidth: 190,
-                          p: "unset",
-                          backgroundColor: theme.palette.background.paper,
-                          borderRadius: "10px",
-                          [theme.breakpoints.down("md")]: {
-                            minWidth: "50%",
-                          },
-                        }}
-                      >
+                      <List component="nav" sx={popupStyle}>
                         {allBusinesses && allBusinesses.length > 1 && (
                           <Business />
                         )}

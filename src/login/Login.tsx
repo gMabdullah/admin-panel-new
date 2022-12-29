@@ -99,7 +99,7 @@ const Login = () => {
     } = await loginAPICall({ data: loginAPIPayload() });
 
     if (status === "1") {
-      localStorage.setItem("tdLogin", "1");
+      localStorage.setItem("tdLogin", "logged in");
 
       if (result.length > 1) {
         localStorage.setItem("allBusinessesInfo", JSON.stringify(result));
