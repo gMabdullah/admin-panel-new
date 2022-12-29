@@ -827,7 +827,20 @@ const CartDetails = ({
                     style={{ border: "none", borderRadius: "8px" }}
                   />
                 ) : (
-                  noDetailsFound
+                  <Stack
+                    direction="row"
+                    height={"279px"}
+                    sx={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                      // m: "px 0px",
+                    }}
+                    // spacing={1}
+                  >
+                    <Typography variant={"subtitle1"}>
+                      No Location Available
+                    </Typography>
+                  </Stack>
                 )}
               </MainCard>
               {/* )} */}
