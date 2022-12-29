@@ -266,7 +266,6 @@ const CartDetails = ({
               <Box
                 sx={{
                   display: "flex",
-                  justifyContent: "center",
                   alignItems: "center",
                   border: "1px solid #EEEEEE",
                   borderRadius: "8px",
@@ -349,9 +348,10 @@ const CartDetails = ({
                     )}
                   </Stack>
                 ) : (
-                  <Stack
-                    direction="row"
+                  <Grid
+                    xs={12}
                     sx={{
+                      display: "flex",
                       justifyContent: "center",
                       alignItems: "center",
                       m: "15px 0px",
@@ -360,7 +360,7 @@ const CartDetails = ({
                     <Typography variant={"subtitle1"}>
                       No Customer Details
                     </Typography>
-                  </Stack>
+                  </Grid>
                 )}
               </Box>
 
