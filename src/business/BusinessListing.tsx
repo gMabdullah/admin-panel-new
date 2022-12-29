@@ -27,8 +27,9 @@ import {
   cardMediaStyle,
 } from "./Styles";
 
+import { debounce } from "lodash";
+
 const BusinessListing = () => {
-  let timeOut: NodeJS.Timeout;
   const navigate = useNavigate();
   const [businesses, setBusinesses] = useState(
     JSON.parse(localStorage.getItem("allBusinessesInfo")!)
@@ -44,24 +45,19 @@ const BusinessListing = () => {
     navigate("/orders");
   };
 
-  const handleSearchChange = (e: { target: { value: string } }) => {
-    // to stop setting Timeout on typing of every single character
-    clearTimeout(timeOut);
-
-    timeOut = setTimeout(() => {
-      if (e.target.value) {
-        setBusinesses(
-          businesses.filter((business: any) =>
-            business.eatout_name
-              .toLowerCase()
-              .includes(e.target.value.toLowerCase())
-          )
-        );
-      } else {
-        setBusinesses(JSON.parse(localStorage.getItem("allBusinessesInfo")!));
-      }
-    }, 1000);
-  };
+  const handleSearchChange = debounce((e: { target: { value: string } }) => {
+    if (e.target.value) {
+      setBusinesses(
+        businesses.filter((business: any) =>
+          business.eatout_name
+            .toLowerCase()
+            .includes(e.target.value.toLowerCase())
+        )
+      );
+    } else {
+      setBusinesses(JSON.parse(localStorage.getItem("allBusinessesInfo")!));
+    }
+  }, 1000);
 
   return localStorage.getItem("tdLogin") ? (
     <MainCard
