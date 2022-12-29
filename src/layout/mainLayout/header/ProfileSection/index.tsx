@@ -16,9 +16,9 @@ import {
 import MainCard from "components/cards/MainCard";
 import Transitions from "components/extended/Transitions";
 import Logout from "./Logout";
-import Business from "./Business";
 
 import { chipStyle, logoStyle, popupStyle } from "./Styles";
+import Business from "./Business";
 
 // assets
 import { IconSettings } from "@tabler/icons";
