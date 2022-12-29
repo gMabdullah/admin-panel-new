@@ -523,13 +523,10 @@ const AddEditItemModal = ({
                             >
                               <Grid item xs>
                                 <Typography
+                                  variant="body1"
                                   sx={{
                                     ml: "12px",
                                     mb: "6px",
-                                    fontFamily: "Roboto",
-                                    fontStyle: "normal",
-                                    fontWeight: 400,
-                                    fontSize: "14px",
                                     color: "#757575",
                                   }}
                                 >

@@ -121,3 +121,10 @@ export const getMinMaxAndRequired = (optionHead: any) => {
 
   return objToReturn;
 };
+
+// clear local storage on logout
+export const clearStorage = () => {
+  localStorage.removeItem("allBusinessesInfo");
+  localStorage.removeItem("businessInfo");
+  localStorage.removeItem("tdLogin");
+};
