@@ -198,7 +198,7 @@ const CartDetails = ({
                 ) : (
                   <> */}
                 <Typography variant="h1">
-                  Abandoned Cart Details
+                  Cart
                   {` ${selectedCartOrder.orderid}`}
                 </Typography>
 
@@ -348,12 +348,14 @@ const CartDetails = ({
                       <Stack
                         direction="row"
                         sx={{
+                          justifyContent: "center",
                           alignItems: "center",
+                          m: "15px 0px",
                         }}
-                        spacing={1}
+                        // spacing={1}
                       >
                         <Typography variant={"subtitle1"}>
-                          {noDetailsFound}
+                          No Customer Details
                         </Typography>
                       </Stack>
                     )
