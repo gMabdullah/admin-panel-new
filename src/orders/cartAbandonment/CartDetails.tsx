@@ -323,123 +323,109 @@ const CartDetails = ({
         <Grid container>
           <Grid item xs={12} sx={{ display: "flex" }}>
             <Grid item xs={8.3}>
-              {/* {(order.name || order.name || order.area || order.area) && */}
+              {/* customer section boz */}
               <Box
                 sx={{
                   display: "flex",
-                  justifyContent: "space-between",
+                  justifyContent: "center",
                   alignItems: "center",
                   border: "1px solid #EEEEEE",
                   borderRadius: "8px",
-                  p: "10px 13px 10px 18px",
+                  p: "10px 12px 10px 16px",
                   mb: "12px",
                 }}
               >
-                <Grid item xs={10}>
-                  {
-                    // order.length === 0 ? (
-                    //   <UserDetailsSkeleton />
-                    // ) :
-                    selectedCartOrder.name ||
-                    (selectedCartOrder.mobile_phone &&
-                      selectedCartOrder.mobile_phone !== "0") ||
-                    selectedCartOrder.city ||
-                    selectedCartOrder.area ? (
-                      <Stack
-                        spacing={3}
-                        direction="row"
-                        divider={
-                          <Divider
-                            orientation="vertical"
-                            sx={{ border: "1px solid #EEEEEE" }}
-                            flexItem
-                          />
-                        }
-                      >
-                        {selectedCartOrder.name && (
-                          <Stack
-                            direction="row"
-                            sx={{
-                              alignItems: "center",
-                            }}
-                            spacing={1}
-                          >
-                            <AccountCircleTwoTone
-                              className={
-                                classes.pdf_print_user_phone_location_IconColor
-                              }
-                            />
-                            <Typography variant={"subtitle1"}>
-                              {selectedCartOrder.name}
-                            </Typography>
-                          </Stack>
-                        )}
-                        {selectedCartOrder.mobile_phone && (
-                          <Stack
-                            direction="row"
-                            sx={{
-                              alignItems: "center",
-                            }}
-                            spacing={1}
-                          >
-                            <SmartphoneTwoTone
-                              className={
-                                classes.pdf_print_user_phone_location_IconColor
-                              }
-                              fontSize="small"
-                            />
-                            <Typography
-                              variant={"subtitle1"}
-                              sx={{
-                                maxWidth: "107px",
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                              }}
-                            >
-                              {selectedCartOrder.mobile_phone}
-                            </Typography>
-                          </Stack>
-                        )}
-
-                        {selectedCartOrder.area && selectedCartOrder.city && (
-                          <Stack
-                            direction="row"
-                            sx={{
-                              alignItems: "center",
-                            }}
-                            spacing={1}
-                          >
-                            <PinDropTwoTone
-                              className={
-                                classes.pdf_print_user_phone_location_IconColor
-                              }
-                            />
-                            <Typography variant={"subtitle1"}>
-                              {`${selectedCartOrder.area}, ${selectedCartOrder.city}`}
-                            </Typography>
-                          </Stack>
-                        )}
-                      </Stack>
-                    ) : (
+                {selectedCartOrder.name ||
+                (selectedCartOrder.mobile_phone &&
+                  selectedCartOrder.mobile_phone !== "0") ||
+                selectedCartOrder.city ||
+                selectedCartOrder.area ? (
+                  <Stack
+                    spacing={3}
+                    direction="row"
+                    divider={
+                      <Divider
+                        orientation="vertical"
+                        sx={{ border: "1px solid #EEEEEE" }}
+                        flexItem
+                      />
+                    }
+                  >
+                    {selectedCartOrder.name && (
                       <Stack
                         direction="row"
                         sx={{
-                          justifyContent: "center",
                           alignItems: "center",
-                          m: "15px 0px",
                         }}
-                        // spacing={1}
+                        spacing={1}
                       >
+                        <AccountCircleTwoTone
+                          className={
+                            classes.pdf_print_user_phone_location_IconColor
+                          }
+                        />
                         <Typography variant={"subtitle1"}>
-                          No Customer Details
+                          {selectedCartOrder.name}
                         </Typography>
                       </Stack>
-                    )
-                  }
-                </Grid>
+                    )}
+
+                    {selectedCartOrder.mobile_phone && (
+                      <Stack
+                        direction="row"
+                        sx={{
+                          alignItems: "center",
+                        }}
+                        spacing={1}
+                      >
+                        <SmartphoneTwoTone
+                          className={
+                            classes.pdf_print_user_phone_location_IconColor
+                          }
+                          fontSize="small"
+                        />
+                        <Typography variant={"subtitle1"}>
+                          {selectedCartOrder.mobile_phone}
+                        </Typography>
+                      </Stack>
+                    )}
+
+                    {selectedCartOrder.area && selectedCartOrder.city && (
+                      <Stack
+                        direction="row"
+                        sx={{
+                          alignItems: "center",
+                        }}
+                        spacing={1}
+                      >
+                        <PinDropTwoTone
+                          className={
+                            classes.pdf_print_user_phone_location_IconColor
+                          }
+                        />
+                        <Typography variant={"subtitle1"}>
+                          {`${selectedCartOrder.area}, ${selectedCartOrder.city}`}
+                        </Typography>
+                      </Stack>
+                    )}
+                  </Stack>
+                ) : (
+                  <Stack
+                    direction="row"
+                    sx={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                      m: "15px 0px",
+                    }}
+                  >
+                    <Typography variant={"subtitle1"}>
+                      No Customer Details
+                    </Typography>
+                  </Stack>
+                )}
               </Box>
-              {/* // } */}
-              {/* {(order.address || order.order_type || order.note) && */}
+
+              {/* delivery details section box */}
               <Box
                 sx={{
                   border: "1px solid #EEEEEE",
@@ -450,18 +436,6 @@ const CartDetails = ({
                 }}
               >
                 <Stack direction="column">
-                  {/* {order.length === 0 ? (
-                    <OrderDeliveryDetailsSkeleton />
-                  ) : (
-                    // (order.address || order.order_type || order.note) ?
-                    <> */}
-                  {/* <Stack // delivery details heading stack
-                        direction="row"
-                        sx={{
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                        }}
-                      > */}
                   {selectedCartOrder.address ||
                   selectedCartOrder.order_type ||
                   selectedCartOrder.note ? (
@@ -469,13 +443,10 @@ const CartDetails = ({
                       <Stack direction="row">
                         <Typography variant="h4">Delivery Details</Typography>
                       </Stack>
-                      {/* </Stack> */}
 
+                      {/* address stack */}
                       {selectedCartOrder.address && (
-                        <Stack // address stack
-                          direction="row"
-                          sx={{ mt: "15px" }}
-                        >
+                        <Stack direction="row" sx={{ mt: "15px" }}>
                           <Typography variant="subtitle1">Address:</Typography>
                           <Typography variant="h5" sx={{ ml: "64px" }}>
                             {selectedCartOrder.address}
@@ -483,11 +454,9 @@ const CartDetails = ({
                         </Stack>
                       )}
 
+                      {/* order type stack */}
                       {selectedCartOrder.order_type && (
-                        <Stack // order type stack
-                          direction="row"
-                          sx={{ mt: "16px" }}
-                        >
+                        <Stack direction="row" sx={{ mt: "16px" }}>
                           <Typography variant="subtitle1">
                             Order type:
                           </Typography>
@@ -499,11 +468,9 @@ const CartDetails = ({
                         </Stack>
                       )}
 
+                      {/* Note Stack */}
                       {selectedCartOrder.note && (
-                        <Stack //Note Stack
-                          direction="row"
-                          sx={{ mt: "16px" }}
-                        >
+                        <Stack direction="row" sx={{ mt: "16px" }}>
                           <Typography variant="subtitle1">Note:</Typography>
                           <Typography variant="h5" sx={{ ml: "86px" }}>
                             {selectedCartOrder.note}
@@ -519,18 +486,16 @@ const CartDetails = ({
                         alignItems: "center",
                         m: "15px 0px",
                       }}
-                      // spacing={1}
                     >
                       <Typography variant={"subtitle1"}>
                         No Delivery Details
                       </Typography>
                     </Stack>
                   )}
-                  {/* </>
-                  )} */}
                 </Stack>
               </Box>
-              {/* // } */}
+
+              {/* table & calculation section card */}
               <MainCard
                 dividerSX={{ m: "0px 0px 0px 0px !important" }}
                 headerSX={{ p: "unset !important", mb: "20px" }}
@@ -546,25 +511,8 @@ const CartDetails = ({
                   p: "20px 16px 16px",
                   borderColor: "#EEEEEE",
                 }}
-                title={
-                  <Stack
-                    direction={"row"}
-                    sx={{
-                      // justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
-                    {/* {order.length === 0 ? (
-                      <TableBoxHeaderSkeleton />
-                    ) : ( */}
-                    <Typography variant={"h4"}>Cart Items</Typography>
-                    {/* )} */}
-                  </Stack>
-                }
+                title={<Typography variant={"h4"}>Cart Items</Typography>}
               >
-                {/* {order.length === 0 ? (
-                  <TableSkeleton />
-                ) : ( */}
                 <Box
                   sx={{
                     width: "100%",
@@ -602,9 +550,7 @@ const CartDetails = ({
                       lineHeight: "16px !important",
                       display: "flex !important",
                       alignItems: "start",
-                      // p: "25px 0px 25px 15px",
                       p: "25px 15px 25px 0px",
-                      // p: "25px 15px 25px 0px !important",
                       borderBottom: "1px solid #EEEEEE",
                     },
                     "& .MuiDataGrid-virtualScrollerContent": {
@@ -617,23 +563,14 @@ const CartDetails = ({
                 >
                   <DataGrid
                     rows={selectedCartOrder.orderDetails}
-                    // rows={(() => {
-                    //   if (!order) return [];
-                    //   return orderDetails;
-                    // })()}
                     getRowId={(row) => row.odetailid}
                     columns={columns}
                     autoHeight
                     disableColumnMenu
                     hideFooterSelectedRowCount
                     hideFooter
-                    // components={{
-                    //   LoadingOverlay: linearLoader,
-                    // }}
-                    // loading={orderDetailLoader}
                   />
                 </Box>
-                {/* )} */}
 
                 <Box
                   sx={{
@@ -867,17 +804,8 @@ const CartDetails = ({
             </Grid>
 
             <Grid item xs={3.7} sx={{ ml: "19px" }}>
-              {/* {order.length === 0 ? (
-                <Box
-                  sx={{
-                    p: "24px 16px",
-                    border: "1px solid #EEEEEE",
-                  }}
-                >
-                  <MapSectionSkeleton />
-                </Box>
-              ) : ( */}
-              <MainCard // google map card
+              {/* google map card */}
+              <MainCard
                 dividerSX={{ m: "0px 0px 18px 0px !important" }}
                 headerSX={{ p: "unset !important", mb: "24px" }}
                 contentSX={{
@@ -911,9 +839,7 @@ const CartDetails = ({
                     sx={{
                       justifyContent: "center",
                       alignItems: "center",
-                      // m: "px 0px",
                     }}
-                    // spacing={1}
                   >
                     <Typography variant={"subtitle1"}>
                       No Location Available
@@ -921,7 +847,6 @@ const CartDetails = ({
                   </Stack>
                 )}
               </MainCard>
-              {/* )} */}
             </Grid>
           </Grid>
         </Grid>
