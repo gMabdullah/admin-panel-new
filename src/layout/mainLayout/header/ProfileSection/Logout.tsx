@@ -1,25 +1,23 @@
 import { useNavigate } from "react-router-dom";
 
-// material-ui
 import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
   Typography,
 } from "@mui/material";
-
-// assets
 import { IconLogout } from "@tabler/icons";
+
+import { clearStorage } from "orders/HelperFunctions";
 
 // ==============================|| Logout ||============================== //
 
 const Logout = () => {
   const navigate = useNavigate();
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
     navigate("/");
-    localStorage.removeItem("businessInfo");
-    localStorage.removeItem("tdLogin");
+    clearStorage();
   };
 
   return (

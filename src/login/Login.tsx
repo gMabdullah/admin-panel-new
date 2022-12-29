@@ -98,12 +98,18 @@ const Login = () => {
       data: { status, result, message },
     } = await loginAPICall({ data: loginAPIPayload() });
 
-    if (status === "1") {
-      localStorage.setItem("businessInfo", JSON.stringify(result[0]));
+    if (status === "1" && result) {
       localStorage.setItem("tdLogin", "logged in");
 
-      navigate("/orders");
+      if (result.length > 1) {
+        localStorage.setItem("allBusinessesInfo", JSON.stringify(result));
+        navigate("/business");
+      } else {
+        localStorage.setItem("businessInfo", JSON.stringify(result[0]));
+        navigate("/orders");
+      }
     } else {
+      // for wrong credentials & when user don't have access to any business
       setNotifyMessage(message);
       setNotify(true);
     }
@@ -182,6 +188,7 @@ const Login = () => {
                     onChange={emailChangeHandler}
                     error={fieldError.emailField === "" ? false : true}
                     helperText={fieldError.emailField}
+                    autoFocus
                   />
                 </Grid>
                 <Grid item xs={12} sx={{ mb: "29px" }}>

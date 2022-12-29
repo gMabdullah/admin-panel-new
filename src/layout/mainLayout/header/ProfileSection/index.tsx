@@ -18,6 +18,7 @@ import Transitions from "components/extended/Transitions";
 import Logout from "./Logout";
 
 import { chipStyle, logoStyle, popupStyle } from "./Styles";
+import Business from "./Business";
 
 // assets
 import { IconSettings } from "@tabler/icons";
@@ -25,7 +26,8 @@ import { IconSettings } from "@tabler/icons";
 // ==============================|| PROFILE MENU ||============================== //
 
 const ProfileSection = () => {
-  const { eatout_logo } = JSON.parse(`${localStorage.getItem("businessInfo")}`);
+  const { eatout_logo } = JSON.parse(localStorage.getItem("businessInfo")!);
+  const allBusinesses = JSON.parse(localStorage.getItem("allBusinessesInfo")!);
 
   const theme = useTheme();
   const [open, setOpen] = useState(false);
@@ -108,6 +110,9 @@ const ProfileSection = () => {
                   >
                     <Box>
                       <List component="nav" sx={popupStyle}>
+                        {allBusinesses && allBusinesses.length > 1 && (
+                          <Business />
+                        )}
                         <Logout />
                       </List>
                     </Box>
