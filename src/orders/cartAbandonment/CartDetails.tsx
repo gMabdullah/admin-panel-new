@@ -582,25 +582,20 @@ const CartDetails = ({
                     mt: "2px",
                   }}
                 >
-                  <Grid item xs={5.5}>
-                    {/* {order.length === 0 ? (
-                      <CalculationSectionSkeleton />
-                    ) : ( */}
-                    {/* <> */}
+                  <Grid item xs={4.8}>
                     <Stack
                       direction={"row"}
                       sx={{ justifyContent: "space-between" }}
                     >
                       <Stack direction={"column"}>
-                        <Stack // Sub Total
-                          direction={"row"}
-                          sx={{ justifyContent: "end" }}
-                        >
+                        {/* Sub Total */}
+                        <Stack direction={"row"} sx={{ justifyContent: "end" }}>
                           <Typography variant="subtitle1">Sub Total</Typography>
                         </Stack>
 
+                        {/* Discount */}
                         {Number(selectedCartOrder.discount) > 0 && (
-                          <Stack // Discount
+                          <Stack
                             direction={"row"}
                             sx={{ mt: "14px", justifyContent: "end" }}
                           >
@@ -610,7 +605,8 @@ const CartDetails = ({
                           </Stack>
                         )}
 
-                        <Stack // Delivery Charges
+                        {/* Delivery Charges */}
+                        <Stack
                           direction={"row"}
                           sx={{ mt: "14px", justifyContent: "end" }}
                         >
@@ -622,8 +618,9 @@ const CartDetails = ({
                           </Typography>
                         </Stack>
 
+                        {/* Tax */}
                         {Number(selectedCartOrder.tax) > 0 && (
-                          <Stack // Tax
+                          <Stack
                             direction={"row"}
                             sx={{ mt: "14px", justifyContent: "end" }}
                           >
@@ -631,8 +628,9 @@ const CartDetails = ({
                           </Stack>
                         )}
 
+                        {/* Tip */}
                         {Number(selectedCartOrder.tip) > 0 && (
-                          <Stack // Tip
+                          <Stack
                             direction={"row"}
                             sx={{ mt: "14px", justifyContent: "end" }}
                           >
@@ -640,8 +638,9 @@ const CartDetails = ({
                           </Stack>
                         )}
 
+                        {/* Service Charges */}
                         {Number(selectedCartOrder.service_charges) > 0 && (
-                          <Stack // Service Charges
+                          <Stack
                             direction={"row"}
                             sx={{ mt: "14px", justifyContent: "end" }}
                           >
@@ -652,8 +651,9 @@ const CartDetails = ({
                         )}
                       </Stack>
 
+                      {/* Sub Total */}
                       <Stack direction={"column"}>
-                        <Stack // Sub Total
+                        <Stack
                           direction="row"
                           spacing={0.25}
                           sx={{
@@ -669,8 +669,9 @@ const CartDetails = ({
                           </Typography>
                         </Stack>
 
+                        {/* discount */}
                         {Number(selectedCartOrder.discount) > 0 && (
-                          <Stack // discount
+                          <Stack
                             direction={"row"}
                             spacing={0.25}
                             sx={{
@@ -687,8 +688,9 @@ const CartDetails = ({
                           </Stack>
                         )}
 
+                        {/* delivery charges */}
                         {selectedCartOrder && (
-                          <Stack // delivery charges
+                          <Stack
                             direction={"row"}
                             spacing={0.25}
                             sx={{
@@ -705,8 +707,9 @@ const CartDetails = ({
                           </Stack>
                         )}
 
+                        {/* tax */}
                         {Number(selectedCartOrder.tax) > 0 && (
-                          <Stack // tax
+                          <Stack
                             direction={"row"}
                             spacing={0.25}
                             sx={{
@@ -723,8 +726,9 @@ const CartDetails = ({
                           </Stack>
                         )}
 
+                        {/* tip */}
                         {Number(selectedCartOrder.tip) > 0 && (
-                          <Stack // tip
+                          <Stack
                             direction={"row"}
                             spacing={0.25}
                             sx={{
@@ -741,8 +745,9 @@ const CartDetails = ({
                           </Stack>
                         )}
 
+                        {/* service charges */}
                         {Number(selectedCartOrder.service_charges) > 0 && (
-                          <Stack // service charges
+                          <Stack
                             direction={"row"}
                             spacing={0.25}
                             sx={{
@@ -767,9 +772,10 @@ const CartDetails = ({
                       }}
                     />
 
+                    {/* total */}
                     <Stack direction={"row"} justifyContent={"space-between"}>
                       <Stack direction={"column"}>
-                        <Stack // total
+                        <Stack
                           direction={"row"}
                           sx={{
                             justifyContent: "end",
@@ -780,7 +786,7 @@ const CartDetails = ({
                         </Stack>
                       </Stack>
                       <Stack direction={"column"}>
-                        <Stack // total
+                        <Stack
                           direction="row"
                           spacing={0.25}
                           sx={{
@@ -796,8 +802,6 @@ const CartDetails = ({
                         </Stack>
                       </Stack>
                     </Stack>
-                    {/* </> */}
-                    {/* )} */}
                   </Grid>
                 </Box>
               </MainCard>
