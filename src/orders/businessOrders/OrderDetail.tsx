@@ -67,7 +67,8 @@ import { useSelector } from "store";
 import moment from "moment";
 import useAxios from "axios-hooks";
 
-//=======================================================
+import PackingSlip from "components/PackingSlip";
+import { pdf, PDFViewer } from "@react-pdf/renderer";
 
 // import useAxios from "axios-hooks";
 // import MainCard from "components/cards/MainCard";
@@ -216,9 +217,8 @@ const OrderDetail = ({
   const [orderFromAPI, setOrderFromAPI] = useState<
     OrderListingResponseResult[]
   >([]);
-
   const [openAddEditItemModal, setAddEditItemModal] = useState<boolean>(false);
-
+  const [packingSlip, setPackingSlip] = React.useState(false);
   const [editItemFlag, setEditItemFlag] = useState<boolean>(false);
   const [customerDetailModal, setCustomerDetailModal] = useState(false);
   const [notify, setNotify] = useState<boolean>(false);
@@ -600,6 +600,7 @@ const OrderDetail = ({
       objectToAppendInOrderDetail.item_id = item.menu_item_id;
       objectToAppendInOrderDetail.product_code = item.product_code;
       objectToAppendInOrderDetail.item_cat_id = item.menu_cat_id;
+
       objectToAppendInOrderDetail.quantity = item.quantity;
       objectToAppendInOrderDetail.price = item.price;
       objectToAppendInOrderDetail.status = item.status;
@@ -1560,8 +1561,28 @@ const OrderDetail = ({
       setNotify(true);
     }
   };
+  const downloadPdfComponent = () => {
+    const { eatout_name } = JSON.parse(localStorage.getItem("businessInfo")!);
+    const order_id = { orderFromAPI };
+    let blob = pdf(
+      <PackingSlip packingSlipData={orderFromAPI} pdfType={"pdf"} />
+    )
+      .toBlob()
+      .then((e: Blob) => {
+        let pdfUrl = URL.createObjectURL(e);
+
+        let tempLink = document.createElement("a");
+        tempLink.href = pdfUrl;
+        tempLink.setAttribute(
+          "download",
+          `${eatout_name}-order-${order_id}.pdf`
+        );
+        tempLink.click();
+      });
+  };
 
   const openAddEditModal = () => setAddEditItemModal((state) => !state);
+  const printPreviewModal = () => setPackingSlip((state) => !state);
 
   const toggleDeliveryChargesModal = () => {
     // close delivery charges modal
@@ -1706,34 +1727,37 @@ const OrderDetail = ({
             border: "none",
           }}
           title={
-            <Grid container>
-              <Grid
-                item
-                xs={12}
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
+            <>
+              <Grid container>
                 <Grid
                   item
-                  xs={6}
+                  xs={12}
                   sx={{
                     display: "flex",
                     alignItems: "center",
+                    justifyContent: "space-between",
                   }}
                 >
-                  {orderFromAPI.length === 0 ? (
-                    <OrderIdSectionSkeleton />
-                  ) : (
-                    <>
+                  <Grid
+                    item
+                    xs={6}
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    {orderFromAPI.length === 0 ? (
+                      <OrderIdSectionSkeleton />
+                    ) : (
                       <Typography variant="h1">
                         Order
                         {orderFromAPI[0] !== undefined &&
                           ` ${orderFromAPI[0].order_id}`}
                       </Typography>
-
+                    )}
+                    {orderFromAPI.length === 0 ? (
+                      <OrderIdSectionSkeleton />
+                    ) : (
                       <Typography
                         variant={"subtitle1"}
                         sx={{ fontWeight: "400", ml: "16px" }}
@@ -1743,87 +1767,89 @@ const OrderDetail = ({
                             "MMM Do, YYYY hh:mm a"
                           )}
                       </Typography>
-                    </>
-                  )}
-                </Grid>
+                    )}
+                  </Grid>
 
-                <Grid
-                  item
-                  xs={6}
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "end",
-                  }}
-                >
-                  <ExcelExport
-                    tableData={OrderDetailColumns}
-                    orderDetailData={(() => {
-                      if (!orderFromAPI[0]) return [];
-                      return orderFromAPI[0].order_detail;
-                    })()}
-                    OrderDetailStatic={(() => {
-                      if (!orderFromAPI[0]) return [];
-                      return orderFromAPI[0];
-                    })()}
-                    exportType={"OrderDetail"}
-                  />
-                  <Stack
-                    direction="row"
-                    spacing={1}
+                  <Grid
+                    item
+                    xs={6}
                     sx={{
-                      cursor: "pointer",
+                      display: "flex",
                       alignItems: "center",
-                      ml: "24px",
+                      justifyContent: "end",
                     }}
                   >
-                    <PictureAsPdfTwoTone
-                      className={
-                        classes.pdf_print_user_phone_location_IconColor
-                      }
+                    <ExcelExport
+                      tableData={OrderDetailColumns}
+                      orderDetailData={(() => {
+                        if (!orderFromAPI[0]) return [];
+                        return orderFromAPI[0].order_detail;
+                      })()}
+                      OrderDetailStatic={(() => {
+                        if (!orderFromAPI[0]) return [];
+                        return orderFromAPI[0];
+                      })()}
+                      exportType={"OrderDetail"}
                     />
-                    <Typography variant="h5" className={classes.downloadPdf}>
-                      Download PDF
-                    </Typography>
-                  </Stack>
-                  <Stack
-                    direction="row"
-                    spacing={1}
-                    sx={{
-                      cursor: "pointer",
-                      alignItems: "center",
-                      ml: "24px",
-                    }}
-                    onClick={() => {
-                      window.print();
-                    }}
-                  >
-                    <PrintTwoTone
-                      className={
-                        classes.pdf_print_user_phone_location_IconColor
-                      }
-                    />
-                    <Typography className={classes.printHeading}>
-                      Print
-                    </Typography>
-                  </Stack>
-                  <Stack
-                    sx={{
-                      cursor: "pointer",
-                      alignItems: "center",
-                      ml: "48px",
-                    }}
-                  >
-                    <IconButton sx={{ p: "unset" }} onClick={closeDetailModal}>
-                      <HighlightOffTwoTone
-                        sx={{ color: "#D84315" }}
-                        fontSize="large"
+                    <Stack
+                      direction="row"
+                      spacing={1}
+                      sx={{
+                        cursor: "pointer",
+                        alignItems: "center",
+                        ml: "24px",
+                      }}
+                      onClick={downloadPdfComponent}
+                    >
+                      <PictureAsPdfTwoTone
+                        className={
+                          classes.pdf_print_user_phone_location_IconColor
+                        }
                       />
-                    </IconButton>
-                  </Stack>
+                      <Typography variant="h5" className={classes.downloadPdf}>
+                        Download PDF
+                      </Typography>
+                    </Stack>
+                    <Stack
+                      direction="row"
+                      spacing={1}
+                      sx={{
+                        cursor: "pointer",
+                        alignItems: "center",
+                        ml: "24px",
+                      }}
+                      onClick={printPreviewModal}
+                    >
+                      <PrintTwoTone
+                        className={
+                          classes.pdf_print_user_phone_location_IconColor
+                        }
+                      />
+                      <Typography className={classes.printHeading}>
+                        Print
+                      </Typography>
+                    </Stack>
+                    <Stack
+                      sx={{
+                        cursor: "pointer",
+                        alignItems: "center",
+                        ml: "48px",
+                      }}
+                    >
+                      <IconButton
+                        sx={{ p: "unset" }}
+                        onClick={closeDetailModal}
+                      >
+                        <HighlightOffTwoTone
+                          sx={{ color: "#D84315" }}
+                          fontSize="large"
+                        />
+                      </IconButton>
+                    </Stack>
+                  </Grid>
                 </Grid>
               </Grid>
-            </Grid>
+            </>
           }
         >
           <Grid container>
@@ -2931,6 +2957,49 @@ const OrderDetail = ({
               </CustomButton>
             </Stack>
           </CardContent>
+        </MainCard>
+      </Modal>
+
+      <Modal
+        open={packingSlip}
+        onClose={printPreviewModal}
+        sx={{ width: "99vw", Height: "99vh" }}
+      >
+        <MainCard
+          title={
+            <Stack
+              direction="row"
+              sx={{ justifyContent: "space-between", alignItems: "center" }}
+            >
+              <Box
+                sx={{
+                  width: "100%",
+                  maxWidth: "190px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Typography variant={"h2"}>Print Preview</Typography>
+              </Box>
+
+              <IconButton sx={{ p: "unset" }} onClick={printPreviewModal}>
+                <HighlightOffTwoTone
+                  sx={{ color: "#D84315" }}
+                  fontSize="large"
+                />
+              </IconButton>
+            </Stack>
+          }
+        >
+          <PDFViewer style={{ width: "95vw", height: "95vh" }}>
+            <PackingSlip
+              packingSlipData={orderFromAPI}
+              pdfType={"pdf"}
+              totalWeight={totalWeight}
+              weightUnit={weightUnit}
+            />
+          </PDFViewer>
         </MainCard>
       </Modal>
     </>

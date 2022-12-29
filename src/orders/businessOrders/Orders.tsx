@@ -9,19 +9,29 @@ import {
   GridSelectionModel,
   GridRowHeightParams,
 } from "@mui/x-data-grid";
-import { Box, Chip, Typography, Grid, Stack } from "@mui/material";
+import {
+  Box,
+  Chip,
+  Typography,
+  Grid,
+  Stack,
+  Modal,
+  IconButton,
+} from "@mui/material";
+import { HighlightOffTwoTone } from "@mui/icons-material";
 import { SelectChangeEvent } from "@mui/material/Select";
 
-import MainCard from "components/cards/MainCard";
-import CustomButton from "components/CustomButton";
-import ExcelExport from "components/ExcelExport";
-import TdTextField from "components/TdTextField";
 import Progress from "components/Progress";
 import MultiSelectDropDown, {
   DropDownListType,
 } from "components/MultiSelectDropDown";
+import PackingSlip from "components/PackingSlip";
 import { OrderListingSkeleton } from "components/skeleton/OrderListingSkeleton";
 import { TableNoRowsOverlay } from "components/skeleton/TableNoRowsOverlay";
+import MainCard from "components/cards/MainCard";
+import TdTextField from "components/TdTextField";
+import CustomButton from "components/CustomButton";
+import ExcelExport from "../../components/ExcelExport";
 
 import { OptionSetProvider } from "orders/context/OptionSetContext";
 import {
@@ -32,6 +42,7 @@ import {
 import { setDate, setGlobalSettings } from "store/slices/Main";
 import OrderDetail from "./OrderDetail";
 import { useDispatch, useSelector } from "store";
+import { PDFViewer } from "@react-pdf/renderer";
 import moment from "moment";
 import useAxios from "axios-hooks";
 
@@ -105,6 +116,7 @@ const Orders = () => {
 
   const [branch, setBranch] = useState<DropDownListType[]>([]);
   const [orderDetailModal, setOrderDetailModal] = useState<boolean>(false);
+  const [packingSlip, setPackingSlip] = React.useState(false);
   const [selectionModel, setSelectionModel] = useState<GridSelectionModel>([]);
   const [branchName, setBranchName] = useState<string[]>(["All Branches"]);
   const [orderType, setOrderType] = React.useState<string[]>([
@@ -120,6 +132,10 @@ const Orders = () => {
   const [city, setCity] = React.useState<string[]>([
     dropdownCityFilter[0].label,
   ]);
+  const [packingSlipData, setPackingSlipData] = useState<
+    OrderListingResponse["result"]
+  >([]); // Todo :  Add Types ot it
+
   const [totalOrders, setTotalOrders] = React.useState<number>();
   const [page, setPage] = React.useState(0);
   const [pageSize, setPageSize] = React.useState(50);
@@ -459,6 +475,7 @@ const Orders = () => {
       });
     }, 1000);
   };
+  const printPreviewModal = () => setPackingSlip((state) => !state);
 
   const handleBranchChange = (event: SelectChangeEvent<typeof branchName>) => {
     const {
@@ -679,6 +696,11 @@ const Orders = () => {
   };
 
   const linearLoader = () => {
+    if (orders.length === 0) {
+      // loader for the first time when we have no orders
+      return <OrderListingSkeleton />;
+    }
+
     // loader on updating the order
     return <Progress type="linear" />;
   };
@@ -761,21 +783,23 @@ const Orders = () => {
     setSelectionModel([]);
     setPageSize(pageSizeNo);
   };
+  //=========================Packing Slip ================//
 
-  // // load Order Details when  it's needed
-  // const OrderDetail = lazy(() => (
-  //   import("./OrderDetail")
-  //     .then(OrderDetail => (
-  //       OrderDetail
-  //     ))
-  // ));
+  const packingSlipComponent = () => {
+    // Extract Selected Orders
+    const packingSlipData = selectionModel.map((selectedId) => {
+      const filterData = orders.filter((orderData) => {
+        if (orderData.order_id == selectedId) {
+          return true;
+        }
+      });
 
-  // // load excel export when  it's needed
-  // const ExcelExport = lazy(() => (
-  //   import("components/ExcelExport")
-  //     .then(ExcelExport => ExcelExport)
-  // ));
-
+      return filterData[0];
+    });
+    setPackingSlipData(packingSlipData);
+    setPackingSlip(true);
+  };
+  //==========================================================================//
   return (
     <OptionSetProvider>
       <>
@@ -838,14 +862,16 @@ const Orders = () => {
                     p: "12px 32px",
                     height: "44px",
                     width: "151px",
-                    color: "black",
-                    background: "#FFFFFF",
+                    // color: 'black',
+                    // color: '#FFFFFF',
                     border: "1px solid #CCD1DB",
 
-                    "&:hover": {
-                      backgroundColor: "#FFFFFF",
-                    },
+                    // '&:hover': {
+                    //   backgroundColor: '#FFFFFF',
+                    // },
                   }}
+                  color={"primary"}
+                  onClick={packingSlipComponent}
                 >
                   Packing Slip
                 </CustomButton>
@@ -977,6 +1003,40 @@ const Orders = () => {
               />
             )}
           </Box>
+
+          <Modal open={packingSlip} sx={{ width: "99vw", Height: "99vh" }}>
+            <MainCard
+              title={
+                <Stack
+                  direction="row"
+                  sx={{ justifyContent: "space-between", alignItems: "center" }}
+                >
+                  <Box
+                    sx={{
+                      width: "100%",
+                      maxWidth: "190px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Typography variant={"h2"}>Print Preview</Typography>
+                  </Box>
+
+                  <IconButton sx={{ p: "unset" }} onClick={printPreviewModal}>
+                    <HighlightOffTwoTone
+                      sx={{ color: "#D84315" }}
+                      fontSize="large"
+                    />
+                  </IconButton>
+                </Stack>
+              }
+            >
+              <PDFViewer style={{ width: "95vw", height: "95vh" }}>
+                <PackingSlip packingSlipData={packingSlipData} />
+              </PDFViewer>
+            </MainCard>
+          </Modal>
         </MainCard>
       </>
     </OptionSetProvider>
