@@ -337,7 +337,7 @@ const OrderDetail = ({
   // biz-Delivery-Calculation API call
   const [{}, bizDeliveryCalculationAPICall] = useAxios(
     {
-      url: `${process.env.REACT_APP_TOSSDOWN_SITE}/biz_delivery_calculations`,
+      url: `${process.env.REACT_APP_TOSSDOWN_SITE}/delivery_calculations`,
       method: "post",
     },
     { manual: true }
@@ -1249,6 +1249,7 @@ const OrderDetail = ({
             <Stack //option sets stack
               direction={"row"}
               spacing={1}
+              sx={{ flexWrap: "wrap" }}
             >
               {optionSets.map((e: any, index: number) => {
                 return e.haveInnerOptions ? (
@@ -1329,7 +1330,11 @@ const OrderDetail = ({
           )}
 
           {row.comment !== undefined && row.comment && (
-            <Stack direction={"row"} spacing={0.4} sx={{ mt: "5px" }}>
+            <Stack
+              direction={"row"}
+              spacing={0.4}
+              sx={{ mt: "5px", flexWrap: "wrap" }}
+            >
               <Typography
                 sx={{
                   fontFamily: "Roboto",
@@ -1359,7 +1364,7 @@ const OrderDetail = ({
             <Stack
               direction={"row"}
               spacing={0.5}
-              sx={{ alignItems: "center", mt: "5px" }}
+              sx={{ alignItems: "center", mt: "5px", flexWrap: "wrap" }}
             >
               {row.item_level_discount_value &&
                 Number(row.item_level_discount_value) > 0 && (
@@ -1546,11 +1551,12 @@ const OrderDetail = ({
 
   const closeDetailModal = () => {
     if (!cancelUpdateButtonToggle) {
+      // if order is not in updating state
       setOrderDetailModal((state) => !state);
       setSelectionModel([]);
     } else {
       setNotifyMessage("Cancel/Update order to proceed");
-      setNotifyType("warning");
+      setNotifyType("error");
       setNotify(true);
     }
   };
@@ -1675,6 +1681,7 @@ const OrderDetail = ({
 
       <Modal // Order Detail Modal
         open={orderDetailModal}
+        onClose={closeDetailModal}
         className={classes.modalStyle1}
         BackdropProps={{
           classes: {
@@ -2314,18 +2321,15 @@ const OrderDetail = ({
                                   sx={{ display: "flex", alignItems: "end" }}
                                 >
                                   Delivery Charges
-                                  {selectedOrderContext.status ===
-                                    "Pending" && (
-                                    <IconButton
-                                      sx={{ p: "unset", ml: "5px" }}
-                                      onClick={openDeliveryModal}
-                                    >
-                                      <EditTwoTone
-                                        sx={{ fontSize: "1.3rem" }}
-                                      />
-                                    </IconButton>
-                                  )}
                                 </Typography>
+                                {selectedOrderContext.status === "Pending" && (
+                                  <IconButton
+                                    sx={{ p: "unset", ml: "5px" }}
+                                    onClick={openDeliveryModal}
+                                  >
+                                    <EditTwoTone sx={{ fontSize: "1.3rem" }} />
+                                  </IconButton>
+                                )}
                               </Stack>
 
                               {orderFromAPI[0] !== undefined &&
@@ -2610,8 +2614,12 @@ const OrderDetail = ({
                                 direction={"row"}
                                 sx={{
                                   justifyContent: "end",
-                                  ml: "71px",
                                 }}
+                                width={
+                                  selectedOrderContext.status === "Pending"
+                                    ? "129px"
+                                    : "105px"
+                                }
                               >
                                 <Typography variant="h4">Total</Typography>
                               </Stack>

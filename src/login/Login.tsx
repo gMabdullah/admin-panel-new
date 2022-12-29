@@ -95,8 +95,10 @@ const Login = () => {
       data: { status, result, message },
     } = await loginAPICall({ data: loginAPIPayload() });
 
-    if (status === "1" && result) {
-      localStorage.setItem("businessInfo", JSON.stringify(result[7]));
+    if (status === "1") {
+      localStorage.setItem("businessInfo", JSON.stringify(result[0]));
+      localStorage.setItem("tdLogin", "logged in");
+
       navigate("/orders");
     } else {
       setNotifyMessage(message);
