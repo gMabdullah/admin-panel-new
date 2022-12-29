@@ -386,14 +386,15 @@ const CartDetails = ({
                           justifyContent: "space-between",
                         }}
                       > */}
-                  <Stack direction="row">
-                    <Typography variant="h4">Delivery Details</Typography>
-                  </Stack>
-                  {/* </Stack> */}
                   {selectedCartOrder.address ||
                   selectedCartOrder.order_type ||
                   selectedCartOrder.note ? (
                     <>
+                      <Stack direction="row">
+                        <Typography variant="h4">Delivery Details</Typography>
+                      </Stack>
+                      {/* </Stack> */}
+
                       {selectedCartOrder.address && (
                         <Stack // address stack
                           direction="row"
@@ -435,8 +436,18 @@ const CartDetails = ({
                       )}
                     </>
                   ) : (
-                    <Stack direction="row" sx={{ mt: "16px" }}>
-                      {noDetailsFound}
+                    <Stack
+                      direction="row"
+                      sx={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                        m: "15px 0px",
+                      }}
+                      // spacing={1}
+                    >
+                      <Typography variant={"subtitle1"}>
+                        No Delivery Details
+                      </Typography>
                     </Stack>
                   )}
                   {/* </>
