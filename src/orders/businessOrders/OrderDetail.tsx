@@ -287,7 +287,7 @@ const OrderDetail = ({
   // biz-Delivery-Calculation API call
   const [{}, bizDeliveryCalculationAPICall] = useAxios(
     {
-      url: `${process.env.REACT_APP_TOSSDOWN_SITE}/biz_delivery_calculations`,
+      url: `${process.env.REACT_APP_TOSSDOWN_SITE}/delivery_calculations`,
       method: "post",
     },
     { manual: true }

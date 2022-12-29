@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, Navigate } from "react-router-dom";
 
 // material-ui
 import { styled, useTheme, Theme } from "@mui/material/styles";
@@ -16,7 +16,6 @@ import {
 import Breadcrumbs from "components/extended/Breadcrumbs";
 import Header from "./header";
 import Sidebar from "./sidebar";
-import Customization from "../customization";
 import navigation from "menuItems";
 import useConfig from "hooks/useConfig";
 import { drawerWidth } from "store/constant";
@@ -101,9 +100,10 @@ const MainLayout = () => {
     []
   );
 
-  return (
+  return localStorage.getItem("tdLogin") ? (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
+
       {/* header */}
       <AppBar
         enableColorOnDark
@@ -118,7 +118,6 @@ const MainLayout = () => {
         {header}
       </AppBar>
 
-      {/* drawer */}
       <Sidebar />
 
       {/* main content */}
@@ -149,8 +148,9 @@ const MainLayout = () => {
           </>
         )}
       </Main>
-      {/* <Customization /> */}
     </Box>
+  ) : (
+    <Navigate to="/" />
   );
 };
 
