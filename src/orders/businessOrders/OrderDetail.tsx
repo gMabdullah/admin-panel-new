@@ -18,6 +18,7 @@ import {
   Modal,
   IconButton,
   CardContent,
+  Paper,
   Skeleton,
 } from "@mui/material";
 import {
@@ -35,6 +36,7 @@ import {
 import { pdf, PDFViewer } from "@react-pdf/renderer";
 import moment from "moment";
 import useAxios from "axios-hooks";
+import PerfectScrollbar from "react-perfect-scrollbar";
 
 import {
   OrderIdSectionSkeleton,
@@ -73,9 +75,6 @@ export const useStyles = makeStyles(() => ({
   backDrop: {
     backdropFilter: "blur(0px)",
     backgroundColor: "transparent",
-  },
-  modalStyle1: {
-    overflow: "scroll",
   },
   excelExportFile: {
     width: "104px",
@@ -1623,230 +1622,211 @@ const OrderDetail = ({
       <Modal
         open={orderDetailModal}
         onClose={closeDetailModal}
-        className={classes.modalStyle1}
         BackdropProps={{
           classes: {
             root: classes.backDrop,
           },
         }}
       >
-        <MainCard
-          dividerSX={{ m: "unset", display: "none" }}
-          headerSX={{ p: "unset !important", mb: "32px" }}
-          contentSX={{
-            "& .MuiCardContent-root": {
-              p: "unset !important",
-            },
-            m: "unset",
-            p: "unset !important",
-          }}
-          sx={{
-            m: "unset",
-            borderRadius: "unset",
-            p: "48px 55px",
-            border: "none",
-          }}
-          title={
-            <>
-              <Grid container>
-                <Grid
-                  item
-                  xs={12}
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Grid
-                    item
-                    xs={6}
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                    }}
-                  >
-                    {orderFromAPI.length === 0 ? (
-                      <OrderIdSectionSkeleton />
-                    ) : (
-                      <>
-                        <Typography variant="h1">
-                          Order
-                          {orderFromAPI[0] !== undefined &&
-                            ` ${orderFromAPI[0].order_id}`}
-                        </Typography>
-                        <Typography
-                          variant={"subtitle1"}
-                          sx={{ fontWeight: "400", ml: "16px" }}
-                        >
-                          {orderFromAPI[0] !== undefined &&
-                            moment(orderFromAPI[0].date).format(
-                              "MMM Do, YYYY hh:mm a"
-                            )}
-                        </Typography>
-                      </>
-                    )}
-                  </Grid>
-
-                  <Grid
-                    item
-                    xs={6}
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "end",
-                    }}
-                  >
-                    <ExcelExport
-                      tableData={OrderDetailColumns}
-                      orderDetailData={(() => {
-                        if (!orderFromAPI[0]) return [];
-                        return orderFromAPI[0].order_detail;
-                      })()}
-                      OrderDetailStatic={(() => {
-                        if (!orderFromAPI[0]) return [];
-                        return orderFromAPI[0];
-                      })()}
-                      exportType={"OrderDetail"}
-                    />
-                    <Stack
-                      direction="row"
-                      spacing={1}
+        <Paper>
+          <PerfectScrollbar
+            style={{
+              height: "100vh",
+              overflowX: "hidden",
+            }}
+          >
+            <MainCard
+              dividerSX={{ m: "unset", display: "none" }}
+              headerSX={{ p: "unset !important", mb: "32px" }}
+              contentSX={{
+                "& .MuiCardContent-root": {
+                  p: "unset !important",
+                },
+                m: "unset",
+                p: "unset !important",
+              }}
+              sx={{
+                m: "unset",
+                borderRadius: "unset",
+                p: "48px 55px",
+                border: "none",
+              }}
+              title={
+                <>
+                  <Grid container>
+                    <Grid
+                      item
+                      xs={12}
                       sx={{
-                        cursor: "pointer",
+                        display: "flex",
                         alignItems: "center",
-                        ml: "24px",
-                      }}
-                      onClick={downloadPdfComponent}
-                    >
-                      <PictureAsPdfTwoTone
-                        className={
-                          classes.pdf_print_user_phone_location_IconColor
-                        }
-                      />
-                      <Typography variant="h5" className={classes.downloadPdf}>
-                        Download PDF
-                      </Typography>
-                    </Stack>
-                    <Stack
-                      direction="row"
-                      spacing={1}
-                      sx={{
-                        cursor: "pointer",
-                        alignItems: "center",
-                        ml: "24px",
-                      }}
-                      onClick={printPreviewModal}
-                    >
-                      <PrintTwoTone
-                        className={
-                          classes.pdf_print_user_phone_location_IconColor
-                        }
-                      />
-                      <Typography className={classes.printHeading}>
-                        Print
-                      </Typography>
-                    </Stack>
-                    <Stack
-                      sx={{
-                        cursor: "pointer",
-                        alignItems: "center",
-                        ml: "48px",
+                        justifyContent: "space-between",
                       }}
                     >
-                      <IconButton
-                        sx={{ p: "unset" }}
-                        onClick={closeDetailModal}
+                      <Grid
+                        item
+                        xs={6}
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                        }}
                       >
-                        <HighlightOffTwoTone
-                          sx={{ color: "#D84315" }}
-                          fontSize="large"
-                        />
-                      </IconButton>
-                    </Stack>
-                  </Grid>
-                </Grid>
-              </Grid>
-            </>
-          }
-        >
-          <Grid container>
-            <Grid item xs={12} sx={{ display: "flex" }}>
-              <Grid item xs={8.3}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    border: "1px solid #EEEEEE",
-                    borderRadius: "8px",
-                    p: "10px 13px 10px 18px",
-                    mb: "12px",
-                  }}
-                >
-                  <Grid item xs={10}>
-                    {orderFromAPI.length === 0 ? (
-                      <UserDetailsSkeleton />
-                    ) : (
-                      <Stack
-                        spacing={3}
-                        direction="row"
-                        divider={
-                          <Divider
-                            orientation="vertical"
-                            sx={{ border: "1px solid #EEEEEE" }}
-                            flexItem
-                          />
-                        }
-                      >
-                        {orderFromAPI[0] !== undefined && orderFromAPI[0].name && (
-                          <Stack
-                            direction="row"
-                            sx={{
-                              alignItems: "center",
-                            }}
-                            spacing={1}
-                          >
-                            <AccountCircleTwoTone
-                              className={
-                                classes.pdf_print_user_phone_location_IconColor
-                              }
-                            />
-                            <Typography variant={"subtitle1"}>
-                              {orderFromAPI[0].name}
+                        {orderFromAPI.length === 0 ? (
+                          <OrderIdSectionSkeleton />
+                        ) : (
+                          <>
+                            <Typography variant="h1">
+                              Order
+                              {orderFromAPI[0] !== undefined &&
+                                ` ${orderFromAPI[0].order_id}`}
                             </Typography>
-                          </Stack>
+                            <Typography
+                              variant={"subtitle1"}
+                              sx={{ fontWeight: "400", ml: "16px" }}
+                            >
+                              {orderFromAPI[0] !== undefined &&
+                                moment(orderFromAPI[0].date).format(
+                                  "MMM Do, YYYY hh:mm a"
+                                )}
+                            </Typography>
+                          </>
                         )}
+                      </Grid>
 
+                      <Grid
+                        item
+                        xs={6}
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "end",
+                        }}
+                      >
+                        <ExcelExport
+                          tableData={OrderDetailColumns}
+                          orderDetailData={(() => {
+                            if (!orderFromAPI[0]) return [];
+                            return orderFromAPI[0].order_detail;
+                          })()}
+                          OrderDetailStatic={(() => {
+                            if (!orderFromAPI[0]) return [];
+                            return orderFromAPI[0];
+                          })()}
+                          exportType={"OrderDetail"}
+                        />
                         <Stack
                           direction="row"
-                          sx={{
-                            alignItems: "center",
-                          }}
                           spacing={1}
+                          sx={{
+                            cursor: "pointer",
+                            alignItems: "center",
+                            ml: "24px",
+                          }}
+                          onClick={downloadPdfComponent}
                         >
-                          <SmartphoneTwoTone
+                          <PictureAsPdfTwoTone
                             className={
                               classes.pdf_print_user_phone_location_IconColor
                             }
-                            fontSize="small"
                           />
                           <Typography
-                            variant={"subtitle1"}
-                            sx={{
-                              maxWidth: "107px",
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
-                            }}
+                            variant="h5"
+                            className={classes.downloadPdf}
                           >
-                            {orderFromAPI[0] !== undefined &&
-                              orderFromAPI[0].mobile_number}
+                            Download PDF
                           </Typography>
                         </Stack>
+                        <Stack
+                          direction="row"
+                          spacing={1}
+                          sx={{
+                            cursor: "pointer",
+                            alignItems: "center",
+                            ml: "24px",
+                          }}
+                          onClick={printPreviewModal}
+                        >
+                          <PrintTwoTone
+                            className={
+                              classes.pdf_print_user_phone_location_IconColor
+                            }
+                          />
+                          <Typography className={classes.printHeading}>
+                            Print
+                          </Typography>
+                        </Stack>
+                        <Stack
+                          sx={{
+                            cursor: "pointer",
+                            alignItems: "center",
+                            ml: "48px",
+                          }}
+                        >
+                          <IconButton
+                            sx={{ p: "unset" }}
+                            onClick={closeDetailModal}
+                          >
+                            <HighlightOffTwoTone
+                              sx={{ color: "#D84315" }}
+                              fontSize="large"
+                            />
+                          </IconButton>
+                        </Stack>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                </>
+              }
+            >
+              <Grid container>
+                <Grid item xs={12} sx={{ display: "flex" }}>
+                  <Grid item xs={8.3}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        border: "1px solid #EEEEEE",
+                        borderRadius: "8px",
+                        p: "10px 13px 10px 18px",
+                        mb: "12px",
+                      }}
+                    >
+                      <Grid item xs={10}>
+                        {orderFromAPI.length === 0 ? (
+                          <UserDetailsSkeleton />
+                        ) : (
+                          <Stack
+                            spacing={3}
+                            direction="row"
+                            divider={
+                              <Divider
+                                orientation="vertical"
+                                sx={{ border: "1px solid #EEEEEE" }}
+                                flexItem
+                              />
+                            }
+                          >
+                            {orderFromAPI[0] !== undefined &&
+                              orderFromAPI[0].name && (
+                                <Stack
+                                  direction="row"
+                                  sx={{
+                                    alignItems: "center",
+                                  }}
+                                  spacing={1}
+                                >
+                                  <AccountCircleTwoTone
+                                    className={
+                                      classes.pdf_print_user_phone_location_IconColor
+                                    }
+                                  />
+                                  <Typography variant={"subtitle1"}>
+                                    {orderFromAPI[0].name}
+                                  </Typography>
+                                </Stack>
+                              )}
 
-                        {orderFromAPI[0] !== undefined &&
-                          orderFromAPI[0].user_area &&
-                          orderFromAPI[0].user_city && (
                             <Stack
                               direction="row"
                               sx={{
@@ -1854,73 +1834,53 @@ const OrderDetail = ({
                               }}
                               spacing={1}
                             >
-                              <PinDropTwoTone
+                              <SmartphoneTwoTone
                                 className={
                                   classes.pdf_print_user_phone_location_IconColor
                                 }
+                                fontSize="small"
                               />
-                              <Typography variant={"subtitle1"}>
-                                {`${orderFromAPI[0].user_area}, ${orderFromAPI[0].user_city}`}
+                              <Typography
+                                variant={"subtitle1"}
+                                sx={{
+                                  maxWidth: "107px",
+                                  overflow: "hidden",
+                                  textOverflow: "ellipsis",
+                                }}
+                              >
+                                {orderFromAPI[0] !== undefined &&
+                                  orderFromAPI[0].mobile_number}
                               </Typography>
                             </Stack>
-                          )}
-                      </Stack>
-                    )}
-                  </Grid>
 
-                  <Grid item xs={2}>
-                    <Stack direction="row" sx={{ justifyContent: "end" }}>
-                      {/* to hide button for  skeleton loader */}
-                      {orderFromAPI.length > 0 && (
-                        <CustomButton
-                          variant="contained"
-                          startIcon={<EditTwoTone />}
-                          sx={{
-                            background: "#F5F5F5 ",
-                            color: "#212121",
-                            p: "9px 20px",
-
-                            "&:hover": {
-                              backgroundColor: "#F5F5F5",
-                            },
-                          }}
-                          onClick={toggleCustomerDetailModal}
-                        >
-                          Edit
-                        </CustomButton>
-                      )}
-                    </Stack>
-                  </Grid>
-                </Box>
-
-                <Box
-                  sx={{
-                    border: "1px solid #EEEEEE",
-                    borderRadius: "8px",
-                    p: "17px 12px 24px 16px",
-                    mb: "16px",
-                    boxSizing: "border-box",
-                  }}
-                >
-                  <Stack direction="column">
-                    {orderFromAPI.length === 0 ? (
-                      <OrderDeliveryDetailsSkeleton />
-                    ) : (
-                      <>
-                        {/* delivery details heading stack */}
-                        <Stack
-                          direction="row"
-                          sx={{
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                          }}
-                        >
-                          <Stack direction="row">
-                            <Typography variant="h4">
-                              Delivery Details
-                            </Typography>
+                            {orderFromAPI[0] !== undefined &&
+                              orderFromAPI[0].user_area &&
+                              orderFromAPI[0].user_city && (
+                                <Stack
+                                  direction="row"
+                                  sx={{
+                                    alignItems: "center",
+                                  }}
+                                  spacing={1}
+                                >
+                                  <PinDropTwoTone
+                                    className={
+                                      classes.pdf_print_user_phone_location_IconColor
+                                    }
+                                  />
+                                  <Typography variant={"subtitle1"}>
+                                    {`${orderFromAPI[0].user_area}, ${orderFromAPI[0].user_city}`}
+                                  </Typography>
+                                </Stack>
+                              )}
                           </Stack>
-                          <Stack>
+                        )}
+                      </Grid>
+
+                      <Grid item xs={2}>
+                        <Stack direction="row" sx={{ justifyContent: "end" }}>
+                          {/* to hide button for  skeleton loader */}
+                          {orderFromAPI.length > 0 && (
                             <CustomButton
                               variant="contained"
                               startIcon={<EditTwoTone />}
@@ -1937,744 +1897,836 @@ const OrderDetail = ({
                             >
                               Edit
                             </CustomButton>
-                          </Stack>
-                        </Stack>
-
-                        <Stack // address stack
-                          direction="row"
-                          sx={{ mt: "15px" }}
-                        >
-                          <Typography variant="subtitle1">Address:</Typography>
-                          <Typography variant="h5" sx={{ ml: "64px" }}>
-                            {orderFromAPI[0] !== undefined &&
-                              orderFromAPI[0].address}
-                          </Typography>
-                        </Stack>
-
-                        <Stack // order type stack
-                          direction="row"
-                          sx={{ mt: "16px" }}
-                        >
-                          <Typography variant="subtitle1">
-                            Order type:
-                          </Typography>
-                          <Typography variant="h5" sx={{ ml: "52px" }}>
-                            {orderFromAPI[0] !== undefined &&
-                              toCapitalizeFirstLetter(
-                                orderFromAPI[0].order_type
-                              )}
-                          </Typography>
-                        </Stack>
-
-                        {orderFromAPI[0] !== undefined &&
-                          orderFromAPI[0].order_type_flag === "0" && //for delivery (0) & for pickup (1)
-                          orderFromAPI[0].delivery_date !==
-                            "0000-00-00 00:00:00" &&
-                          orderFromAPI[0].delivery_date !== "" && (
-                            <Stack // delivery time stack
-                              direction="row"
-                              sx={{ mt: "16px" }}
-                            >
-                              <Typography variant="subtitle1">
-                                Delivery Time:
-                              </Typography>
-                              <Typography variant="h5" sx={{ ml: "32px" }}>
-                                {moment(orderFromAPI[0].delivery_date).format(
-                                  "MMM Do, YYYY h:mm A"
-                                )}
-                              </Typography>
-                            </Stack>
                           )}
+                        </Stack>
+                      </Grid>
+                    </Box>
 
-                        {orderFromAPI[0] !== undefined &&
-                          orderFromAPI[0].order_type_flag === "1" && //for delivery (0) & for pickup (1)
-                          orderFromAPI[0].pickup_time !==
-                            "0000-00-00 00:00:00" &&
-                          orderFromAPI[0].pickup_time !== "" && (
-                            <Stack // pickup time stack
-                              direction="row"
-                              sx={{ mt: "16px" }}
-                            >
-                              <Typography variant="subtitle1">
-                                Pickup Time:
-                              </Typography>
-                              <Typography variant="h5" sx={{ ml: "38px" }}>
-                                {moment(orderFromAPI[0].pickup_time).format(
-                                  "MMM Do, YYYY h:mm A"
-                                )}
-                              </Typography>
-                            </Stack>
-                          )}
-
-                        {orderFromAPI[0] !== undefined && orderFromAPI[0].note && (
-                          <Stack //Note Stack
-                            direction="row"
-                            sx={{ mt: "16px" }}
-                          >
-                            <Typography variant="subtitle1">Note:</Typography>
-                            <Typography variant="h5" sx={{ ml: "86px" }}>
-                              {orderFromAPI[0].note}
-                            </Typography>
-                          </Stack>
-                        )}
-                      </>
-                    )}
-                  </Stack>
-                </Box>
-
-                <MainCard
-                  dividerSX={{ m: "0px 0px 0px 0px !important" }}
-                  headerSX={{ p: "unset !important", mb: "20px" }}
-                  contentSX={{
-                    "& .MuiCardContent-root": {
-                      p: "unset !important",
-                    },
-                    m: "unset",
-                    p: "unset !important",
-                  }}
-                  sx={{
-                    m: "unset",
-                    p: "20px 16px 16px",
-                    borderColor: "#EEEEEE",
-                  }}
-                  title={
-                    <Stack
-                      direction={"row"}
-                      sx={{
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                      }}
-                    >
-                      {orderFromAPI.length === 0 ? (
-                        <TableBoxHeaderSkeleton />
-                      ) : (
-                        <>
-                          <Typography variant={"h4"}>Order Items</Typography>
-                          <Stack direction={"row"} spacing={1.5}>
-                            {cancelUpdateButtonToggle && (
-                              <>
-                                <CustomButton
-                                  variant="contained"
-                                  color="secondary"
-                                  onClick={cancelOrderUpdate}
-                                  sx={{
-                                    p: "10px 23px",
-                                    fontFamily: "Roboto",
-                                    fontStyle: "normal",
-                                    fontWeight: 500,
-                                    fontSize: "13px",
-                                    backgroundColor: "#D84315",
-
-                                    "&:hover": {
-                                      backgroundColor: "#D84315",
-                                    },
-                                  }}
-                                >
-                                  Cancel Update
-                                </CustomButton>
-                                <CustomButton
-                                  variant="contained"
-                                  color="secondary"
-                                  onClick={updateOrder}
-                                  sx={{
-                                    p: "10px 26px",
-                                    fontFamily: "Roboto",
-                                    fontStyle: "normal",
-                                    fontWeight: 500,
-                                    fontSize: "13px",
-                                    backgroundColor: "#24335E",
-
-                                    "&:hover": {
-                                      backgroundColor: "#24335E",
-                                    },
-                                  }}
-                                >
-                                  Update Order
-                                </CustomButton>
-                              </>
-                            )}
-                            <CustomButton
-                              variant="contained"
-                              color="secondary"
-                              startIcon={<AddTwoTone />}
-                              onClick={addItemClick}
-                              sx={{
-                                p: "10px 24px",
-                                fontFamily: "Roboto",
-                                fontStyle: "normal",
-                                fontWeight: 500,
-                                fontSize: "13px",
-                              }}
-                            >
-                              Add Item
-                            </CustomButton>
-                          </Stack>
-                        </>
-                      )}
-                    </Stack>
-                  }
-                >
-                  {orderFromAPI.length === 0 ? (
-                    <TableSkeleton />
-                  ) : (
                     <Box
                       sx={{
-                        width: "100%",
-
-                        "& .MuiDataGrid-root": {
-                          border: "none",
-                        },
-                        "& .MuiDataGrid-columnHeaderTitle": {
-                          color: "#212121",
-                        },
-                        "& .MuiDataGrid-columnHeader": {
-                          pr: "unset",
-                          pl: "15px",
-                        },
-                        "& .MuiDataGrid-columnHeaders": {
-                          borderBottom: "1px solid #EEEEEE",
-                        },
-                        "& .MuiIconButton-root": {
-                          p: "unset",
-                        },
-                        "& .MuiDataGrid-columnSeparator": {
-                          display: "none",
-                        },
-                        "& .MuiDataGrid-cell:focus-within, & .MuiDataGrid-cell:focus, & .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within":
-                          {
-                            outline: "none",
-                          },
-                        "& .MuiDataGrid-row": {
-                          maxHeight: "fit-content !important",
-                        },
-                        "& .MuiDataGrid-cell": {
-                          maxHeight: "fit-content !important",
-                          overflow: "auto",
-                          whiteSpace: "initial !important",
-                          lineHeight: "16px !important",
-                          display: "flex !important",
-                          alignItems: "start",
-                          p: "25px 0px 25px 15px",
-                          borderBottom: "1px solid #EEEEEE",
-                        },
-                        "& .MuiDataGrid-virtualScrollerContent": {
-                          height: "100% !important",
-                        },
-                        "& .MuiDataGrid-virtualScrollerRenderZone": {
-                          position: "unset",
-                        },
+                        border: "1px solid #EEEEEE",
+                        borderRadius: "8px",
+                        p: "17px 12px 24px 16px",
+                        mb: "16px",
+                        boxSizing: "border-box",
                       }}
                     >
-                      <DataGrid
-                        rows={(() => {
-                          if (!orderFromAPI[0]) return [];
-                          return orderFromAPI[0].order_detail;
-                        })()}
-                        getRowId={(row: any) => row.item_id}
-                        columns={columns}
-                        autoHeight
-                        disableColumnMenu
-                        hideFooterSelectedRowCount
-                        hideFooter
-                        components={{
-                          LoadingOverlay: linearLoader,
-                        }}
-                        loading={orderDetailLoader}
-                      />
-                    </Box>
-                  )}
-
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "end",
-                      background: "#F5F5F5",
-                      borderRadius: "8px",
-                      p: "24px 31px",
-                      mt: "2px",
-                    }}
-                  >
-                    <Grid item xs={5.5}>
-                      {orderFromAPI.length === 0 ? (
-                        <CalculationSectionSkeleton />
-                      ) : (
-                        <>
-                          <Stack
-                            direction={"row"}
-                            sx={{ justifyContent: "space-between" }}
-                          >
-                            <Stack direction={"column"}>
-                              <Stack // Sub Total
-                                direction={"row"}
-                                sx={{ justifyContent: "end" }}
-                              >
-                                <Typography variant="subtitle1">
-                                  Sub Total
+                      <Stack direction="column">
+                        {orderFromAPI.length === 0 ? (
+                          <OrderDeliveryDetailsSkeleton />
+                        ) : (
+                          <>
+                            {/* delivery details heading stack */}
+                            <Stack
+                              direction="row"
+                              sx={{
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                              }}
+                            >
+                              <Stack direction="row">
+                                <Typography variant="h4">
+                                  Delivery Details
                                 </Typography>
                               </Stack>
+                              <Stack>
+                                <CustomButton
+                                  variant="contained"
+                                  startIcon={<EditTwoTone />}
+                                  sx={{
+                                    background: "#F5F5F5 ",
+                                    color: "#212121",
+                                    p: "9px 20px",
 
-                              {orderFromAPI[0] !== undefined &&
-                                (Number(orderFromAPI[0].loyalty_points) > 0 ||
-                                  Number(orderFromAPI[0].custom_code_discount) >
-                                    0) && (
-                                  <Stack // Loyalty Points && Custom code discount
-                                    direction={"row"}
-                                    sx={{ mt: "14px", justifyContent: "end" }}
-                                  >
-                                    <Typography // switch loyalty points and custom code
-                                      variant="subtitle1"
-                                    >
-                                      {parseInt(
-                                        orderFromAPI[0].loyalty_points
-                                      ) > 0
-                                        ? `Loyalty Points (${orderFromAPI[0].loyalty_points})`
-                                        : `Coupon Code (${orderFromAPI[0].custom_code_discount}%)`}
-                                    </Typography>
-                                  </Stack>
-                                )}
-
-                              {orderFromAPI[0] !== undefined &&
-                                haveWeight &&
-                                totalWeight !== 0 && (
-                                  <Stack // Total weight
-                                    direction={"row"}
-                                    sx={{ mt: "14px", justifyContent: "end" }}
-                                  >
-                                    <Typography variant="subtitle1">
-                                      Total Weight
-                                    </Typography>
-                                  </Stack>
-                                )}
-
-                              {orderFromAPI[0] !== undefined &&
-                                Number(orderFromAPI[0].discount) > 0 && (
-                                  <Stack // Discount
-                                    direction={"row"}
-                                    sx={{ mt: "14px", justifyContent: "end" }}
-                                  >
-                                    <Typography variant="subtitle1">
-                                      Discount
-                                    </Typography>
-                                  </Stack>
-                                )}
-
-                              <Stack // Delivery Charges
-                                direction={"row"}
-                                sx={{ mt: "14px", justifyContent: "end" }}
-                              >
-                                <Typography
-                                  variant="subtitle1"
-                                  sx={{ display: "flex", alignItems: "end" }}
+                                    "&:hover": {
+                                      backgroundColor: "#F5F5F5",
+                                    },
+                                  }}
+                                  onClick={toggleCustomerDetailModal}
                                 >
-                                  Delivery Charges
-                                </Typography>
-                                {selectedOrderContext.status === "Pending" && (
-                                  <IconButton
-                                    sx={{ p: "unset", ml: "5px" }}
-                                    onClick={openDeliveryModal}
-                                  >
-                                    <EditTwoTone sx={{ fontSize: "1.3rem" }} />
-                                  </IconButton>
-                                )}
+                                  Edit
+                                </CustomButton>
                               </Stack>
-
-                              {orderFromAPI[0] !== undefined &&
-                                Number(orderFromAPI[0].tax) > 0 && (
-                                  <Stack // Tax
-                                    direction={"row"}
-                                    sx={{ mt: "14px", justifyContent: "end" }}
-                                  >
-                                    <Typography variant="subtitle1">
-                                      Tax
-                                    </Typography>
-                                  </Stack>
-                                )}
-
-                              {orderFromAPI[0] !== undefined &&
-                                Number(orderFromAPI[0].tip) > 0 && (
-                                  <Stack // Tip
-                                    direction={"row"}
-                                    sx={{ mt: "14px", justifyContent: "end" }}
-                                  >
-                                    <Typography variant="subtitle1">
-                                      Tip
-                                    </Typography>
-                                  </Stack>
-                                )}
-
-                              {orderFromAPI[0] !== undefined &&
-                                Number(orderFromAPI[0].service_charges) > 0 && (
-                                  <Stack // Service Charges
-                                    direction={"row"}
-                                    sx={{ mt: "14px", justifyContent: "end" }}
-                                  >
-                                    <Typography variant="subtitle1">
-                                      Service Charges
-                                    </Typography>
-                                  </Stack>
-                                )}
                             </Stack>
 
-                            <Stack direction={"column"}>
-                              <Stack // Sub Total
-                                direction="row"
-                                spacing={0.25}
-                                sx={{
-                                  justifyContent: "end",
-                                  alignItems: "end",
-                                }}
-                              >
-                                <Typography
+                            <Stack // address stack
+                              direction="row"
+                              sx={{ mt: "15px" }}
+                            >
+                              <Typography variant="subtitle1">
+                                Address:
+                              </Typography>
+                              <Typography variant="h5" sx={{ ml: "64px" }}>
+                                {orderFromAPI[0] !== undefined &&
+                                  orderFromAPI[0].address}
+                              </Typography>
+                            </Stack>
+
+                            <Stack // order type stack
+                              direction="row"
+                              sx={{ mt: "16px" }}
+                            >
+                              <Typography variant="subtitle1">
+                                Order type:
+                              </Typography>
+                              <Typography variant="h5" sx={{ ml: "52px" }}>
+                                {orderFromAPI[0] !== undefined &&
+                                  toCapitalizeFirstLetter(
+                                    orderFromAPI[0].order_type
+                                  )}
+                              </Typography>
+                            </Stack>
+
+                            {orderFromAPI[0] !== undefined &&
+                              orderFromAPI[0].order_type_flag === "0" && //for delivery (0) & for pickup (1)
+                              orderFromAPI[0].delivery_date !==
+                                "0000-00-00 00:00:00" &&
+                              orderFromAPI[0].delivery_date !== "" && (
+                                <Stack // delivery time stack
+                                  direction="row"
+                                  sx={{ mt: "16px" }}
+                                >
+                                  <Typography variant="subtitle1">
+                                    Delivery Time:
+                                  </Typography>
+                                  <Typography variant="h5" sx={{ ml: "32px" }}>
+                                    {moment(
+                                      orderFromAPI[0].delivery_date
+                                    ).format("MMM Do, YYYY h:mm A")}
+                                  </Typography>
+                                </Stack>
+                              )}
+
+                            {orderFromAPI[0] !== undefined &&
+                              orderFromAPI[0].order_type_flag === "1" && //for delivery (0) & for pickup (1)
+                              orderFromAPI[0].pickup_time !==
+                                "0000-00-00 00:00:00" &&
+                              orderFromAPI[0].pickup_time !== "" && (
+                                <Stack // pickup time stack
+                                  direction="row"
+                                  sx={{ mt: "16px" }}
+                                >
+                                  <Typography variant="subtitle1">
+                                    Pickup Time:
+                                  </Typography>
+                                  <Typography variant="h5" sx={{ ml: "38px" }}>
+                                    {moment(orderFromAPI[0].pickup_time).format(
+                                      "MMM Do, YYYY h:mm A"
+                                    )}
+                                  </Typography>
+                                </Stack>
+                              )}
+
+                            {orderFromAPI[0] !== undefined &&
+                              orderFromAPI[0].note && (
+                                <Stack //Note Stack
+                                  direction="row"
+                                  sx={{ mt: "16px" }}
+                                >
+                                  <Typography variant="subtitle1">
+                                    Note:
+                                  </Typography>
+                                  <Typography variant="h5" sx={{ ml: "86px" }}>
+                                    {orderFromAPI[0].note}
+                                  </Typography>
+                                </Stack>
+                              )}
+                          </>
+                        )}
+                      </Stack>
+                    </Box>
+
+                    <MainCard
+                      dividerSX={{ m: "0px 0px 0px 0px !important" }}
+                      headerSX={{ p: "unset !important", mb: "20px" }}
+                      contentSX={{
+                        "& .MuiCardContent-root": {
+                          p: "unset !important",
+                        },
+                        m: "unset",
+                        p: "unset !important",
+                      }}
+                      sx={{
+                        m: "unset",
+                        p: "20px 16px 16px",
+                        borderColor: "#EEEEEE",
+                      }}
+                      title={
+                        <Stack
+                          direction={"row"}
+                          sx={{
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                          }}
+                        >
+                          {orderFromAPI.length === 0 ? (
+                            <TableBoxHeaderSkeleton />
+                          ) : (
+                            <>
+                              <Typography variant={"h4"}>
+                                Order Items
+                              </Typography>
+                              <Stack direction={"row"} spacing={1.5}>
+                                {cancelUpdateButtonToggle && (
+                                  <>
+                                    <CustomButton
+                                      variant="contained"
+                                      color="secondary"
+                                      onClick={cancelOrderUpdate}
+                                      sx={{
+                                        p: "10px 23px",
+                                        fontFamily: "Roboto",
+                                        fontStyle: "normal",
+                                        fontWeight: 500,
+                                        fontSize: "13px",
+                                        backgroundColor: "#D84315",
+
+                                        "&:hover": {
+                                          backgroundColor: "#D84315",
+                                        },
+                                      }}
+                                    >
+                                      Cancel Update
+                                    </CustomButton>
+                                    <CustomButton
+                                      variant="contained"
+                                      color="secondary"
+                                      onClick={updateOrder}
+                                      sx={{
+                                        p: "10px 26px",
+                                        fontFamily: "Roboto",
+                                        fontStyle: "normal",
+                                        fontWeight: 500,
+                                        fontSize: "13px",
+                                        backgroundColor: "#24335E",
+
+                                        "&:hover": {
+                                          backgroundColor: "#24335E",
+                                        },
+                                      }}
+                                    >
+                                      Update Order
+                                    </CustomButton>
+                                  </>
+                                )}
+                                <CustomButton
+                                  variant="contained"
+                                  color="secondary"
+                                  startIcon={<AddTwoTone />}
+                                  onClick={addItemClick}
                                   sx={{
+                                    p: "10px 24px",
                                     fontFamily: "Roboto",
                                     fontStyle: "normal",
-                                    fontWeight: "400",
-                                    fontSize: "12px",
-                                    color: "#757575",
+                                    fontWeight: 500,
+                                    fontSize: "13px",
                                   }}
                                 >
-                                  {orderFromAPI[0] !== undefined &&
-                                    orderFromAPI[0].currency}
-                                </Typography>
-                                <Typography variant="h4">
-                                  {orderFromAPI[0] !== undefined &&
-                                    parseFloat(orderFromAPI[0].total).toFixed(
-                                      decimalPlaces
-                                    )}
-                                </Typography>
+                                  Add Item
+                                </CustomButton>
                               </Stack>
+                            </>
+                          )}
+                        </Stack>
+                      }
+                    >
+                      {orderFromAPI.length === 0 ? (
+                        <TableSkeleton />
+                      ) : (
+                        <Box
+                          sx={{
+                            width: "100%",
 
-                              {orderFromAPI[0] !== undefined &&
-                                (Number(orderFromAPI[0].loyalty_points) > 0 ||
-                                  Number(orderFromAPI[0].custom_code_discount) >
-                                    0) && (
-                                  <Stack // Loyalty Points && Custom code discount
+                            "& .MuiDataGrid-root": {
+                              border: "none",
+                            },
+                            "& .MuiDataGrid-columnHeaderTitle": {
+                              color: "#212121",
+                            },
+                            "& .MuiDataGrid-columnHeader": {
+                              pr: "unset",
+                              pl: "15px",
+                            },
+                            "& .MuiDataGrid-columnHeaders": {
+                              borderBottom: "1px solid #EEEEEE",
+                            },
+                            "& .MuiIconButton-root": {
+                              p: "unset",
+                            },
+                            "& .MuiDataGrid-columnSeparator": {
+                              display: "none",
+                            },
+                            "& .MuiDataGrid-cell:focus-within, & .MuiDataGrid-cell:focus, & .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within":
+                              {
+                                outline: "none",
+                              },
+                            "& .MuiDataGrid-row": {
+                              maxHeight: "fit-content !important",
+                            },
+                            "& .MuiDataGrid-cell": {
+                              maxHeight: "fit-content !important",
+                              overflow: "auto",
+                              whiteSpace: "initial !important",
+                              lineHeight: "16px !important",
+                              display: "flex !important",
+                              alignItems: "start",
+                              p: "25px 0px 25px 15px",
+                              borderBottom: "1px solid #EEEEEE",
+                            },
+                            "& .MuiDataGrid-virtualScrollerContent": {
+                              height: "100% !important",
+                            },
+                            "& .MuiDataGrid-virtualScrollerRenderZone": {
+                              position: "unset",
+                            },
+                          }}
+                        >
+                          <DataGrid
+                            rows={(() => {
+                              if (!orderFromAPI[0]) return [];
+                              return orderFromAPI[0].order_detail;
+                            })()}
+                            getRowId={(row: any) => row.item_id}
+                            columns={columns}
+                            autoHeight
+                            disableColumnMenu
+                            hideFooterSelectedRowCount
+                            hideFooter
+                            components={{
+                              LoadingOverlay: linearLoader,
+                            }}
+                            loading={orderDetailLoader}
+                          />
+                        </Box>
+                      )}
+
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "end",
+                          background: "#F5F5F5",
+                          borderRadius: "8px",
+                          p: "24px 31px",
+                          mt: "2px",
+                        }}
+                      >
+                        <Grid item xs={5.5}>
+                          {orderFromAPI.length === 0 ? (
+                            <CalculationSectionSkeleton />
+                          ) : (
+                            <>
+                              <Stack
+                                direction={"row"}
+                                sx={{ justifyContent: "space-between" }}
+                              >
+                                <Stack direction={"column"}>
+                                  <Stack // Sub Total
                                     direction={"row"}
-                                    sx={{
-                                      mt: "14px",
-                                      justifyContent: "end",
-                                      alignItems: "end",
-                                    }}
+                                    sx={{ justifyContent: "end" }}
                                   >
-                                    <Typography variant="h5">
-                                      {parseInt(
-                                        orderFromAPI[0].loyalty_points
-                                      ) > 0
-                                        ? parseInt(
-                                            orderFromAPI[0].loyalty_points
-                                          ).toFixed(decimalPlaces)
-                                        : parseInt(
-                                            orderFromAPI[0]
-                                              .custom_code_discount_value
-                                          )}
+                                    <Typography variant="subtitle1">
+                                      Sub Total
                                     </Typography>
                                   </Stack>
-                                )}
 
-                              {orderFromAPI[0] !== undefined &&
-                                haveWeight &&
-                                totalWeight !== 0 && (
-                                  <Stack // Total weight
+                                  {orderFromAPI[0] !== undefined &&
+                                    (Number(orderFromAPI[0].loyalty_points) >
+                                      0 ||
+                                      Number(
+                                        orderFromAPI[0].custom_code_discount
+                                      ) > 0) && (
+                                      <Stack // Loyalty Points && Custom code discount
+                                        direction={"row"}
+                                        sx={{
+                                          mt: "14px",
+                                          justifyContent: "end",
+                                        }}
+                                      >
+                                        <Typography // switch loyalty points and custom code
+                                          variant="subtitle1"
+                                        >
+                                          {parseInt(
+                                            orderFromAPI[0].loyalty_points
+                                          ) > 0
+                                            ? `Loyalty Points (${orderFromAPI[0].loyalty_points})`
+                                            : `Coupon Code (${orderFromAPI[0].custom_code_discount}%)`}
+                                        </Typography>
+                                      </Stack>
+                                    )}
+
+                                  {orderFromAPI[0] !== undefined &&
+                                    haveWeight &&
+                                    totalWeight !== 0 && (
+                                      <Stack // Total weight
+                                        direction={"row"}
+                                        sx={{
+                                          mt: "14px",
+                                          justifyContent: "end",
+                                        }}
+                                      >
+                                        <Typography variant="subtitle1">
+                                          Total Weight
+                                        </Typography>
+                                      </Stack>
+                                    )}
+
+                                  {orderFromAPI[0] !== undefined &&
+                                    Number(orderFromAPI[0].discount) > 0 && (
+                                      <Stack // Discount
+                                        direction={"row"}
+                                        sx={{
+                                          mt: "14px",
+                                          justifyContent: "end",
+                                        }}
+                                      >
+                                        <Typography variant="subtitle1">
+                                          Discount
+                                        </Typography>
+                                      </Stack>
+                                    )}
+
+                                  <Stack // Delivery Charges
                                     direction={"row"}
+                                    sx={{ mt: "14px", justifyContent: "end" }}
+                                  >
+                                    <Typography
+                                      variant="subtitle1"
+                                      sx={{
+                                        display: "flex",
+                                        alignItems: "end",
+                                      }}
+                                    >
+                                      Delivery Charges
+                                    </Typography>
+                                    {selectedOrderContext.status ===
+                                      "Pending" && (
+                                      <IconButton
+                                        sx={{ p: "unset", ml: "5px" }}
+                                        onClick={openDeliveryModal}
+                                      >
+                                        <EditTwoTone
+                                          sx={{ fontSize: "1.3rem" }}
+                                        />
+                                      </IconButton>
+                                    )}
+                                  </Stack>
+
+                                  {orderFromAPI[0] !== undefined &&
+                                    Number(orderFromAPI[0].tax) > 0 && (
+                                      <Stack // Tax
+                                        direction={"row"}
+                                        sx={{
+                                          mt: "14px",
+                                          justifyContent: "end",
+                                        }}
+                                      >
+                                        <Typography variant="subtitle1">
+                                          Tax
+                                        </Typography>
+                                      </Stack>
+                                    )}
+
+                                  {orderFromAPI[0] !== undefined &&
+                                    Number(orderFromAPI[0].tip) > 0 && (
+                                      <Stack // Tip
+                                        direction={"row"}
+                                        sx={{
+                                          mt: "14px",
+                                          justifyContent: "end",
+                                        }}
+                                      >
+                                        <Typography variant="subtitle1">
+                                          Tip
+                                        </Typography>
+                                      </Stack>
+                                    )}
+
+                                  {orderFromAPI[0] !== undefined &&
+                                    Number(orderFromAPI[0].service_charges) >
+                                      0 && (
+                                      <Stack // Service Charges
+                                        direction={"row"}
+                                        sx={{
+                                          mt: "14px",
+                                          justifyContent: "end",
+                                        }}
+                                      >
+                                        <Typography variant="subtitle1">
+                                          Service Charges
+                                        </Typography>
+                                      </Stack>
+                                    )}
+                                </Stack>
+
+                                <Stack direction={"column"}>
+                                  <Stack // Sub Total
+                                    direction="row"
                                     spacing={0.25}
                                     sx={{
-                                      mt: "14px",
                                       justifyContent: "end",
                                       alignItems: "end",
                                     }}
                                   >
-                                    <Typography variant="h5">
-                                      {`${totalWeight.toFixed(decimalPlaces)}
+                                    <Typography
+                                      sx={{
+                                        fontFamily: "Roboto",
+                                        fontStyle: "normal",
+                                        fontWeight: "400",
+                                        fontSize: "12px",
+                                        color: "#757575",
+                                      }}
+                                    >
+                                      {orderFromAPI[0] !== undefined &&
+                                        orderFromAPI[0].currency}
+                                    </Typography>
+                                    <Typography variant="h4">
+                                      {orderFromAPI[0] !== undefined &&
+                                        parseFloat(
+                                          orderFromAPI[0].total
+                                        ).toFixed(decimalPlaces)}
+                                    </Typography>
+                                  </Stack>
+
+                                  {orderFromAPI[0] !== undefined &&
+                                    (Number(orderFromAPI[0].loyalty_points) >
+                                      0 ||
+                                      Number(
+                                        orderFromAPI[0].custom_code_discount
+                                      ) > 0) && (
+                                      <Stack // Loyalty Points && Custom code discount
+                                        direction={"row"}
+                                        sx={{
+                                          mt: "14px",
+                                          justifyContent: "end",
+                                          alignItems: "end",
+                                        }}
+                                      >
+                                        <Typography variant="h5">
+                                          {parseInt(
+                                            orderFromAPI[0].loyalty_points
+                                          ) > 0
+                                            ? parseInt(
+                                                orderFromAPI[0].loyalty_points
+                                              ).toFixed(decimalPlaces)
+                                            : parseInt(
+                                                orderFromAPI[0]
+                                                  .custom_code_discount_value
+                                              )}
+                                        </Typography>
+                                      </Stack>
+                                    )}
+
+                                  {orderFromAPI[0] !== undefined &&
+                                    haveWeight &&
+                                    totalWeight !== 0 && (
+                                      <Stack // Total weight
+                                        direction={"row"}
+                                        spacing={0.25}
+                                        sx={{
+                                          mt: "14px",
+                                          justifyContent: "end",
+                                          alignItems: "end",
+                                        }}
+                                      >
+                                        <Typography variant="h5">
+                                          {`${totalWeight.toFixed(
+                                            decimalPlaces
+                                          )}
                             ${
                               orderFromAPI[0].pre_auth === "1"
                                 ? "Kg"
                                 : weightUnit
                             }`}
-                                    </Typography>
-                                  </Stack>
-                                )}
+                                        </Typography>
+                                      </Stack>
+                                    )}
 
-                              {orderFromAPI[0] !== undefined &&
-                                Number(orderFromAPI[0].discount) > 0 && (
-                                  <Stack // discount
-                                    direction={"row"}
-                                    spacing={0.25}
-                                    sx={{
-                                      mt: "14px",
-                                      justifyContent: "end",
-                                      alignItems: "end",
-                                    }}
-                                  >
-                                    <Typography
+                                  {orderFromAPI[0] !== undefined &&
+                                    Number(orderFromAPI[0].discount) > 0 && (
+                                      <Stack // discount
+                                        direction={"row"}
+                                        spacing={0.25}
+                                        sx={{
+                                          mt: "14px",
+                                          justifyContent: "end",
+                                          alignItems: "end",
+                                        }}
+                                      >
+                                        <Typography
+                                          sx={{
+                                            fontFamily: "Roboto",
+                                            fontStyle: "normal",
+                                            fontWeight: "400",
+                                            fontSize: "12px",
+                                            color: "#757575",
+                                          }}
+                                        >
+                                          {orderFromAPI[0].currency}
+                                        </Typography>
+                                        <Typography variant="h4">
+                                          {parseFloat(
+                                            orderFromAPI[0].discount
+                                          ).toFixed(decimalPlaces)}
+                                        </Typography>
+                                      </Stack>
+                                    )}
+
+                                  {orderFromAPI[0] !== undefined && (
+                                    <Stack // delivery charges
+                                      direction={"row"}
+                                      spacing={0.25}
                                       sx={{
-                                        fontFamily: "Roboto",
-                                        fontStyle: "normal",
-                                        fontWeight: "400",
-                                        fontSize: "12px",
-                                        color: "#757575",
+                                        mt: "14px",
+                                        justifyContent: "end",
+                                        alignItems: "end",
                                       }}
                                     >
-                                      {orderFromAPI[0].currency}
-                                    </Typography>
-                                    <Typography variant="h4">
-                                      {parseFloat(
-                                        orderFromAPI[0].discount
-                                      ).toFixed(decimalPlaces)}
-                                    </Typography>
-                                  </Stack>
-                                )}
+                                      <Typography
+                                        sx={{
+                                          fontFamily: "Roboto",
+                                          fontStyle: "normal",
+                                          fontWeight: "400",
+                                          fontSize: "12px",
+                                          color: "#757575",
+                                        }}
+                                      >
+                                        {orderFromAPI[0].currency}
+                                      </Typography>
+                                      <Typography variant="h4">
+                                        {parseFloat(
+                                          orderFromAPI[0].delivery_charges
+                                        ).toFixed(decimalPlaces)}
+                                      </Typography>
+                                    </Stack>
+                                  )}
 
-                              {orderFromAPI[0] !== undefined && (
-                                <Stack // delivery charges
-                                  direction={"row"}
-                                  spacing={0.25}
-                                  sx={{
-                                    mt: "14px",
-                                    justifyContent: "end",
-                                    alignItems: "end",
-                                  }}
-                                >
-                                  <Typography
-                                    sx={{
-                                      fontFamily: "Roboto",
-                                      fontStyle: "normal",
-                                      fontWeight: "400",
-                                      fontSize: "12px",
-                                      color: "#757575",
-                                    }}
-                                  >
-                                    {orderFromAPI[0].currency}
-                                  </Typography>
-                                  <Typography variant="h4">
-                                    {parseFloat(
-                                      orderFromAPI[0].delivery_charges
-                                    ).toFixed(decimalPlaces)}
-                                  </Typography>
+                                  {orderFromAPI[0] !== undefined &&
+                                    Number(orderFromAPI[0].tax) > 0 && (
+                                      <Stack // tax
+                                        direction={"row"}
+                                        spacing={0.25}
+                                        sx={{
+                                          mt: "14px",
+                                          justifyContent: "end",
+                                          alignItems: "end",
+                                        }}
+                                      >
+                                        <Typography
+                                          sx={{
+                                            fontFamily: "Roboto",
+                                            fontStyle: "normal",
+                                            fontWeight: "400",
+                                            fontSize: "12px",
+                                            color: "#757575",
+                                          }}
+                                        >
+                                          {orderFromAPI[0].currency}
+                                        </Typography>
+                                        <Typography variant="h4">
+                                          {parseFloat(
+                                            orderFromAPI[0].tax
+                                          ).toFixed(decimalPlaces)}
+                                        </Typography>
+                                      </Stack>
+                                    )}
+
+                                  {orderFromAPI[0] !== undefined &&
+                                    Number(orderFromAPI[0].tip) > 0 && (
+                                      <Stack // tip
+                                        direction={"row"}
+                                        spacing={0.25}
+                                        sx={{
+                                          mt: "14px",
+                                          justifyContent: "end",
+                                          alignItems: "end",
+                                        }}
+                                      >
+                                        <Typography
+                                          sx={{
+                                            fontFamily: "Roboto",
+                                            fontStyle: "normal",
+                                            fontWeight: "400",
+                                            fontSize: "12px",
+                                            color: "#757575",
+                                          }}
+                                        >
+                                          {orderFromAPI[0].currency}
+                                        </Typography>
+                                        <Typography variant="h4">
+                                          {parseFloat(
+                                            orderFromAPI[0].tip
+                                          ).toFixed(decimalPlaces)}
+                                        </Typography>
+                                      </Stack>
+                                    )}
+
+                                  {orderFromAPI[0] !== undefined &&
+                                    Number(orderFromAPI[0].service_charges) >
+                                      0 && (
+                                      <Stack // service charges
+                                        direction={"row"}
+                                        spacing={0.25}
+                                        sx={{
+                                          justifyContent: "end",
+                                          alignItems: "end",
+                                        }}
+                                      >
+                                        <Typography
+                                          sx={{
+                                            fontFamily: "Roboto",
+                                            fontStyle: "normal",
+                                            fontWeight: "400",
+                                            fontSize: "12px",
+                                            color: "#757575",
+                                          }}
+                                        >
+                                          {orderFromAPI[0].currency}
+                                        </Typography>
+                                        <Typography variant="h4">
+                                          {parseFloat(
+                                            orderFromAPI[0].service_charges
+                                          ).toFixed(decimalPlaces)}
+                                        </Typography>
+                                      </Stack>
+                                    )}
                                 </Stack>
-                              )}
+                              </Stack>
 
-                              {orderFromAPI[0] !== undefined &&
-                                Number(orderFromAPI[0].tax) > 0 && (
-                                  <Stack // tax
-                                    direction={"row"}
-                                    spacing={0.25}
-                                    sx={{
-                                      mt: "14px",
-                                      justifyContent: "end",
-                                      alignItems: "end",
-                                    }}
-                                  >
-                                    <Typography
-                                      sx={{
-                                        fontFamily: "Roboto",
-                                        fontStyle: "normal",
-                                        fontWeight: "400",
-                                        fontSize: "12px",
-                                        color: "#757575",
-                                      }}
-                                    >
-                                      {orderFromAPI[0].currency}
-                                    </Typography>
-                                    <Typography variant="h4">
-                                      {parseFloat(orderFromAPI[0].tax).toFixed(
-                                        decimalPlaces
-                                      )}
-                                    </Typography>
-                                  </Stack>
-                                )}
+                              <Divider
+                                sx={{
+                                  m: "24px 0px",
+                                  border: " 1px solid rgba(0, 0, 0, 0.06)",
+                                }}
+                              />
 
-                              {orderFromAPI[0] !== undefined &&
-                                Number(orderFromAPI[0].tip) > 0 && (
-                                  <Stack // tip
-                                    direction={"row"}
-                                    spacing={0.25}
-                                    sx={{
-                                      mt: "14px",
-                                      justifyContent: "end",
-                                      alignItems: "end",
-                                    }}
-                                  >
-                                    <Typography
-                                      sx={{
-                                        fontFamily: "Roboto",
-                                        fontStyle: "normal",
-                                        fontWeight: "400",
-                                        fontSize: "12px",
-                                        color: "#757575",
-                                      }}
-                                    >
-                                      {orderFromAPI[0].currency}
-                                    </Typography>
-                                    <Typography variant="h4">
-                                      {parseFloat(orderFromAPI[0].tip).toFixed(
-                                        decimalPlaces
-                                      )}
-                                    </Typography>
-                                  </Stack>
-                                )}
-
-                              {orderFromAPI[0] !== undefined &&
-                                Number(orderFromAPI[0].service_charges) > 0 && (
-                                  <Stack // service charges
-                                    direction={"row"}
-                                    spacing={0.25}
-                                    sx={{
-                                      justifyContent: "end",
-                                      alignItems: "end",
-                                    }}
-                                  >
-                                    <Typography
-                                      sx={{
-                                        fontFamily: "Roboto",
-                                        fontStyle: "normal",
-                                        fontWeight: "400",
-                                        fontSize: "12px",
-                                        color: "#757575",
-                                      }}
-                                    >
-                                      {orderFromAPI[0].currency}
-                                    </Typography>
-                                    <Typography variant="h4">
-                                      {parseFloat(
-                                        orderFromAPI[0].service_charges
-                                      ).toFixed(decimalPlaces)}
-                                    </Typography>
-                                  </Stack>
-                                )}
-                            </Stack>
-                          </Stack>
-
-                          <Divider
-                            sx={{
-                              m: "24px 0px",
-                              border: " 1px solid rgba(0, 0, 0, 0.06)",
-                            }}
-                          />
-
-                          <Stack
-                            direction={"row"}
-                            justifyContent={"space-between"}
-                          >
-                            <Stack direction={"column"}>
-                              <Stack // total
+                              <Stack
                                 direction={"row"}
-                                sx={{
-                                  justifyContent: "end",
-                                }}
-                                width={
-                                  selectedOrderContext.status === "Pending"
-                                    ? "129px"
-                                    : "105px"
-                                }
+                                justifyContent={"space-between"}
                               >
-                                <Typography variant="h4">Total</Typography>
+                                <Stack direction={"column"}>
+                                  <Stack // total
+                                    direction={"row"}
+                                    sx={{
+                                      justifyContent: "end",
+                                    }}
+                                    width={
+                                      selectedOrderContext.status === "Pending"
+                                        ? "129px"
+                                        : "105px"
+                                    }
+                                  >
+                                    <Typography variant="h4">Total</Typography>
+                                  </Stack>
+                                </Stack>
+                                <Stack direction={"column"}>
+                                  <Stack // total
+                                    direction="row"
+                                    spacing={0.25}
+                                    sx={{
+                                      justifyContent: "end",
+                                      alignItems: "end",
+                                    }}
+                                  >
+                                    <Typography
+                                      sx={{
+                                        fontFamily: "Roboto",
+                                        fontStyle: "normal",
+                                        fontWeight: "400",
+                                        fontSize: "12px",
+                                        color: "#757575",
+                                      }}
+                                    >
+                                      {orderFromAPI[0] !== undefined &&
+                                        orderFromAPI[0].currency}
+                                    </Typography>
+                                    <Typography variant="h4">
+                                      {orderFromAPI[0] !== undefined &&
+                                        parseFloat(
+                                          orderFromAPI[0].grand_total
+                                        ).toFixed(decimalPlaces)}
+                                    </Typography>
+                                  </Stack>
+                                </Stack>
                               </Stack>
-                            </Stack>
-                            <Stack direction={"column"}>
-                              <Stack // total
-                                direction="row"
-                                spacing={0.25}
-                                sx={{
-                                  justifyContent: "end",
-                                  alignItems: "end",
-                                }}
-                              >
-                                <Typography
-                                  sx={{
-                                    fontFamily: "Roboto",
-                                    fontStyle: "normal",
-                                    fontWeight: "400",
-                                    fontSize: "12px",
-                                    color: "#757575",
-                                  }}
-                                >
-                                  {orderFromAPI[0] !== undefined &&
-                                    orderFromAPI[0].currency}
-                                </Typography>
-                                <Typography variant="h4">
-                                  {orderFromAPI[0] !== undefined &&
-                                    parseFloat(
-                                      orderFromAPI[0].grand_total
-                                    ).toFixed(decimalPlaces)}
-                                </Typography>
-                              </Stack>
-                            </Stack>
-                          </Stack>
-                        </>
-                      )}
-                    </Grid>
-                  </Box>
-                </MainCard>
-              </Grid>
+                            </>
+                          )}
+                        </Grid>
+                      </Box>
+                    </MainCard>
+                  </Grid>
 
-              <Grid item xs={3.7} sx={{ ml: "19px" }}>
-                {orderFromAPI.length === 0 ? (
-                  <Box
-                    sx={{
-                      p: "0px 16px 24px 16px",
-                      border: "1px solid #EEEEEE",
-                      mb: "24px",
-                    }}
-                  >
-                    <OrderTimelineSkeleton />
-                  </Box>
-                ) : (
-                  <OrderStatusAction // order  status component
-                    selectedOrder={selectedOrder}
-                    order_id={selectedOrder.order_id}
-                    user_email={selectedOrder.user_email}
-                  />
-                )}
+                  <Grid item xs={3.7} sx={{ ml: "19px" }}>
+                    {orderFromAPI.length === 0 ? (
+                      <Box
+                        sx={{
+                          p: "0px 16px 24px 16px",
+                          border: "1px solid #EEEEEE",
+                          mb: "24px",
+                        }}
+                      >
+                        <OrderTimelineSkeleton />
+                      </Box>
+                    ) : (
+                      <OrderStatusAction // order  status component
+                        selectedOrder={selectedOrder}
+                        order_id={selectedOrder.order_id}
+                        user_email={selectedOrder.user_email}
+                      />
+                    )}
 
-                {orderFromAPI.length === 0 ? (
-                  <Box
-                    sx={{
-                      p: "24px 16px",
-                      border: "1px solid #EEEEEE",
-                    }}
-                  >
-                    <MapSectionSkeleton />
-                  </Box>
-                ) : (
-                  <MainCard // google map card
-                    dividerSX={{ m: "0px 0px 18px 0px !important" }}
-                    headerSX={{ p: "unset !important", mb: "24px" }}
-                    contentSX={{
-                      "& .MuiCardContent-root": {
-                        p: "unset !important",
-                      },
-                      m: "unset",
-                      p: "unset !important",
-                    }}
-                    sx={{
-                      m: "unset",
-                      p: "24px 16px",
-                      borderColor: "#EEEEEE",
-                    }}
-                    title={<Typography variant="h4">Geo Location</Typography>}
-                  >
-                    <GoogleMapFrame
-                      longitude={
-                        orderFromAPI[0] !== undefined
-                          ? orderFromAPI[0].user_latitude
-                          : ""
-                      }
-                      latitude={
-                        orderFromAPI[0] !== undefined
-                          ? orderFromAPI[0].user_latitude
-                          : ""
-                      }
-                      title={""}
-                      width={"100%"}
-                      height={"279px"}
-                      style={{ border: "none", borderRadius: "8px" }}
-                    />
-                  </MainCard>
-                )}
+                    {orderFromAPI.length === 0 ? (
+                      <Box
+                        sx={{
+                          p: "24px 16px",
+                          border: "1px solid #EEEEEE",
+                        }}
+                      >
+                        <MapSectionSkeleton />
+                      </Box>
+                    ) : (
+                      <MainCard // google map card
+                        dividerSX={{ m: "0px 0px 18px 0px !important" }}
+                        headerSX={{ p: "unset !important", mb: "24px" }}
+                        contentSX={{
+                          "& .MuiCardContent-root": {
+                            p: "unset !important",
+                          },
+                          m: "unset",
+                          p: "unset !important",
+                        }}
+                        sx={{
+                          m: "unset",
+                          p: "24px 16px",
+                          borderColor: "#EEEEEE",
+                        }}
+                        title={
+                          <Typography variant="h4">Geo Location</Typography>
+                        }
+                      >
+                        <GoogleMapFrame
+                          longitude={
+                            orderFromAPI[0] !== undefined
+                              ? orderFromAPI[0].user_latitude
+                              : ""
+                          }
+                          latitude={
+                            orderFromAPI[0] !== undefined
+                              ? orderFromAPI[0].user_latitude
+                              : ""
+                          }
+                          title={""}
+                          width={"100%"}
+                          height={"279px"}
+                          style={{ border: "none", borderRadius: "8px" }}
+                        />
+                      </MainCard>
+                    )}
+                  </Grid>
+                </Grid>
               </Grid>
-            </Grid>
-          </Grid>
-        </MainCard>
+            </MainCard>
+          </PerfectScrollbar>
+        </Paper>
       </Modal>
 
       <Modal // User Detail Modal
