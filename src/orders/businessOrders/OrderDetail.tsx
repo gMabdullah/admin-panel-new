@@ -32,6 +32,10 @@ import {
   HighlightOffTwoTone,
 } from "@mui/icons-material";
 
+import { pdf, PDFViewer } from "@react-pdf/renderer";
+import moment from "moment";
+import useAxios from "axios-hooks";
+
 import {
   OrderIdSectionSkeleton,
   UserDetailsSkeleton,
@@ -50,6 +54,7 @@ import ExcelExport from "components/ExcelExport";
 import TdTextField from "components/TdTextField";
 import Progress from "components/Progress";
 import CustomRadioButton from "components/CustomRadioButton";
+import PackingSlip from "components/PackingSlip";
 
 import {
   AMANAT_BUSINESS_ID,
@@ -60,78 +65,9 @@ import {
 } from "constants/BusinessIds";
 import { OptionSetContext } from "orders/context/OptionSetContext";
 import { toCapitalizeFirstLetter } from "orders/HelperFunctions";
-
 import OrderStatusAction from "./OrderStatusAction";
 import AddEditItemModal from "./AddEditItemModal";
 import { useSelector } from "store";
-import moment from "moment";
-import useAxios from "axios-hooks";
-
-import PackingSlip from "components/PackingSlip";
-import { pdf, PDFViewer } from "@react-pdf/renderer";
-
-// import useAxios from "axios-hooks";
-// import MainCard from "components/cards/MainCard";
-// import CustomButton from "components/CustomButton";
-// import CustomRadioButton from "components/CustomRadioButton";
-// import GoogleMapFrame from "components/GoogleMapFrame";
-// import Notify from "components/Notify";
-// import Progress from "components/Progress";
-// import {
-//   CalculationSectionSkeleton,
-//   OrderDeliveryDetailsSkeleton,
-//   OrderIdSectionSkeleton,
-//   TableSkeleton,
-//   UserDetailsSkeleton,
-//   TableBoxHeaderSkeleton,
-//   OrderTimelineSkeleton,
-//   MapSectionSkeleton,
-// } from "components/skeleton/OrderDetailSkeleton";
-// import TdTextField from "components/TdTextField";
-// import {
-//   AMANAT_BUSINESS_ID,
-//   AMANAT_STAGING_BUSINESS_ID,
-//   DWP_BUSINESS_ID,
-//   DWP_STAGING_BUSINESS_ID,
-//   OrderDetailColumns,
-// } from "constants/BusinessIds";
-// import moment from "moment";
-// import { OptionSetContext } from "orders/context/OptionSetContext";
-// import { toCapitalizeFirstLetter } from "orders/HelperFunctions";
-
-// import {
-//   AccountCircleTwoTone,
-//   AddTwoTone,
-//   DeleteTwoTone,
-//   EditTwoTone,
-//   HighlightOffTwoTone,
-//   PictureAsPdfTwoTone,
-//   PinDropTwoTone,
-//   PrintTwoTone,
-//   SmartphoneTwoTone,
-// } from "@mui/icons-material";
-// import {
-//   Box,
-//   CardContent,
-//   Divider,
-//   Grid,
-//   IconButton,
-//   Modal,
-//   Skeleton,
-//   Stack,
-//   Typography,
-// } from "@mui/material";
-// import { makeStyles } from "@mui/styles";
-// import {
-//   DataGrid,
-//   GridActionsCellItem,
-//   GridColumns,
-//   GridRenderCellParams,
-//   GridRowParams,
-//   GridSelectionModel,
-// } from "@mui/x-data-grid";
-
-// import OrderStatusAction from "./OrderStatusAction";
 
 export const useStyles = makeStyles(() => ({
   backDrop: {
@@ -186,10 +122,6 @@ let errorMessage = { address: "", mobileNo: "", deliveryCharges: "" };
 const { eatout_id, user_id } = JSON.parse(
   localStorage.getItem("businessInfo")!
 );
-
-export const linearLoader = () => {
-  return <Progress type="linear" />;
-};
 
 const OrderDetail = ({
   setOrderDetailModal,
@@ -564,9 +496,9 @@ const OrderDetail = ({
 
   const closeNotify = () => setNotify(false);
 
-  // const linearLoader = () => {
-  //   return <Progress type="linear" />;
-  // };
+  const linearLoader = () => {
+    return <Progress type="linear" />;
+  };
 
   const getEditItemCallback = (editedItem: OrderListingResponseOrderDetail) => {
     let selectedOrder = orderFromAPI;
@@ -1145,8 +1077,6 @@ const OrderDetail = ({
             items[0].status === "1" ||
             items !== null
           ) {
-            // setEditAbleItem([row]);
-
             if (items[0].options.length > 0) {
               setOptions(items[0].options);
             }
@@ -1561,6 +1491,7 @@ const OrderDetail = ({
       setNotify(true);
     }
   };
+
   const downloadPdfComponent = () => {
     const { eatout_name } = JSON.parse(localStorage.getItem("businessInfo")!);
     const order_id = { orderFromAPI };
@@ -1666,18 +1597,6 @@ const OrderDetail = ({
     setTotalWeight(tWeight);
   };
 
-  // // load add item when it's needed
-  // const AddEditItemModal = lazy(() => (
-  //   import("./AddEditItemModal")
-  //     .then(AddEditItemModal => AddEditItemModal)
-  // ));
-
-  // // load export excel when  it's needed
-  // const ExcelExport = lazy(() => (
-  //   import("components/ExcelExport")
-  //     .then(ExcelExport => ExcelExport)
-  // ));
-
   return (
     <>
       {notify && (
@@ -1700,7 +1619,8 @@ const OrderDetail = ({
         />
       )}
 
-      <Modal // Order Detail Modal
+      {/* Order Detail Modal */}
+      <Modal
         open={orderDetailModal}
         onClose={closeDetailModal}
         className={classes.modalStyle1}
@@ -1952,7 +1872,8 @@ const OrderDetail = ({
 
                   <Grid item xs={2}>
                     <Stack direction="row" sx={{ justifyContent: "end" }}>
-                      {orderFromAPI.length > 0 && ( // to hide button for  skeleton loader
+                      {/* to hide button for  skeleton loader */}
+                      {orderFromAPI.length > 0 && (
                         <CustomButton
                           variant="contained"
                           startIcon={<EditTwoTone />}
@@ -1988,7 +1909,8 @@ const OrderDetail = ({
                       <OrderDeliveryDetailsSkeleton />
                     ) : (
                       <>
-                        <Stack // delivery details heading stack
+                        {/* delivery details heading stack */}
+                        <Stack
                           direction="row"
                           sx={{
                             alignItems: "center",

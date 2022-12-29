@@ -21,6 +21,10 @@ import {
 import { HighlightOffTwoTone } from "@mui/icons-material";
 import { SelectChangeEvent } from "@mui/material/Select";
 
+import { PDFViewer } from "@react-pdf/renderer";
+import moment from "moment";
+import useAxios from "axios-hooks";
+
 import Progress from "components/Progress";
 import MultiSelectDropDown, {
   DropDownListType,
@@ -42,35 +46,6 @@ import {
 import { setDate, setGlobalSettings } from "store/slices/Main";
 import OrderDetail from "./OrderDetail";
 import { useDispatch, useSelector } from "store";
-import { PDFViewer } from "@react-pdf/renderer";
-import moment from "moment";
-import useAxios from "axios-hooks";
-
-//========================================================================================================================================
-
-// import useAxios from 'axios-hooks';
-// import MainCard from 'components/cards/MainCard';
-// import CustomButton from 'components/CustomButton';
-// import MultiSelectDropDown, { DropDownListType } from 'components/MultiSelectDropDown';
-// import Progress from 'components/Progress';
-// import { OrderListingNoRowsOverlay } from 'components/skeleton/OrderListingNoRowsOverlay';
-// import { OrderListingSkeleton } from 'components/skeleton/OrderListingSkeleton';
-// import TdTextField from 'components/TdTextField';
-// import { IQBAL_BUSINESS_ID, orderListingColumns, ordersType } from 'constants/BusinessIds';
-// import moment from 'moment';
-// import { OptionSetProvider } from 'orders/context/OptionSetContext';
-// import React, { lazy, useEffect, useRef, useState } from 'react';
-// import { useDispatch, useSelector } from 'store';
-// import { setDate, setGlobalSettings } from 'store/slices/Main';
-
-// import { Box, Chip, Grid, Stack, Typography } from '@mui/material';
-// import { SelectChangeEvent } from '@mui/material/Select';
-// import { makeStyles } from '@mui/styles';
-// import {
-//     DataGrid, GridColumns, GridRenderCellParams, GridRowHeightParams, GridRowParams,
-//     GridSelectionModel
-// } from '@mui/x-data-grid';
-// import { TableNoRowsOverlay } from "components/skeleton/TableNoRowsOverlay";
 
 const useStyles = makeStyles(() => ({
   colStyle1: {
@@ -448,9 +423,6 @@ const Orders = () => {
         }),
       })
     );
-    // return () => {
-    //         cleanup
-    //     }
   }, [startDate, endDate]);
 
   //======================================= Handlers Functions =======================================//
@@ -799,7 +771,7 @@ const Orders = () => {
     setPackingSlipData(packingSlipData);
     setPackingSlip(true);
   };
-  //==========================================================================//
+
   return (
     <OptionSetProvider>
       <>
@@ -812,6 +784,7 @@ const Orders = () => {
             setSelectionModel={setSelectionModel}
           />
         )}
+
         <MainCard
           title={
             <Grid container spacing={2}>
@@ -956,7 +929,8 @@ const Orders = () => {
             {!allOrders ? (
               <OrderListingSkeleton />
             ) : (
-              <DataGrid // listing orders
+              //  listing orders
+              <DataGrid
                 rows={orders}
                 columns={columns}
                 rowCount={totalOrders}
