@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React from "react";
 
 import {
   Typography,
@@ -8,50 +8,26 @@ import {
   Divider,
   Modal,
   IconButton,
-  CardContent,
-  Skeleton,
 } from "@mui/material";
 import {
   AccountCircleTwoTone,
   SmartphoneTwoTone,
   PinDropTwoTone,
-  EditTwoTone,
-  AddTwoTone,
   HighlightOffTwoTone,
 } from "@mui/icons-material";
-import {
-  GridColumns,
-  DataGrid,
-  GridRenderCellParams,
-  GridRowParams,
-  GridSelectionModel,
-  GridRowHeightParams,
-} from "@mui/x-data-grid";
+import { GridColumns, DataGrid, GridRenderCellParams } from "@mui/x-data-grid";
 import { makeStyles } from "@mui/styles";
 
-import CustomButton from "components/CustomButton";
 import MainCard from "components/cards/MainCard";
-import {
-  CalculationSectionSkeleton,
-  MapSectionSkeleton,
-  OrderDeliveryDetailsSkeleton,
-  OrderIdSectionSkeleton,
-  OrderTimelineSkeleton,
-  TableBoxHeaderSkeleton,
-  TableSkeleton,
-  UserDetailsSkeleton,
-} from "components/skeleton/OrderDetailSkeleton";
 import GoogleMapFrame from "components/GoogleMapFrame";
-import OrderStatusAction from "orders/businessOrders/OrderStatusAction";
+
 import { toCapitalizeFirstLetter } from "orders/HelperFunctions";
-// import { linearLoader } from "orders/businessOrders/OrderDetail";
 
 import { useSelector } from "store";
 import moment from "moment";
 
 interface cartDetailsProp {
   selectedCartOrder: AbandonedCartOrder;
-  // cart: any;
   setOrderDetailModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -94,17 +70,14 @@ const useStyles = makeStyles(() => ({
   tableTotalColumn: {
     paddingRight: "30px !important",
     fontWeight: 500,
-    // fontSize: "14px",
     color: "#212121",
   },
   tableItemQuantityDiscountColumn: {
     fontWeight: 400,
-    // fontSize: "14px",
     color: "#212121",
   },
   tableItemNamePriceColumn: {
     fontWeight: 500,
-    // fontSize: "14px",
     color: "#212121",
   },
 }));
@@ -113,24 +86,8 @@ const CartDetails = ({
   selectedCartOrder,
   setOrderDetailModal,
 }: cartDetailsProp) => {
-  // const [deliveryChargesModal, setDeliveryChargesModal] = useState(false);
-  const { decimalPlaces, minimumSpend, currency } = useSelector(
-    (state) => state.main
-  );
-
-  // const [order, setOrder] = useState(selectedCartOrder);
-  // const [orderDetails, setOrderDetails] = useState(
-  //   selectedCartOrder.orderDetails
-  // );
-
+  const { decimalPlaces } = useSelector((state) => state.main);
   const classes = useStyles();
-  // const noDetailsFound = "No details Found";
-  // useEffect(() => {
-  //   if (details.length > 0) {
-  //     setDeliveryChargesModal(true);
-  //   }
-  // }, [details]);
-  // console.log("details", selectedCartOrder, "order", order);
 
   const toggleCartDetailsModal = () => {
     setOrderDetailModal((state) => !state);
@@ -157,10 +114,7 @@ const CartDetails = ({
       field: "menu_item_id",
       headerName: "Item#",
       flex: 0.6,
-      // headerClassName: classes.colStyle1,
       cellClassName: classes.tableItemQuantityDiscountColumn,
-      // headerAlign: "right",
-      // align: "right",
       sortable: false,
     },
     {
@@ -174,7 +128,6 @@ const CartDetails = ({
     {
       field: "dqty",
       headerName: "Quantity",
-      // headerClassName: classes.colStyle1,
       cellClassName: classes.tableItemQuantityDiscountColumn,
       flex: 0.5,
       sortable: false,
@@ -182,7 +135,6 @@ const CartDetails = ({
     {
       field: "dprice",
       headerName: "Price",
-      // headerClassName: classes.colStyle1,
       cellClassName: classes.tableItemNamePriceColumn,
       flex: 0.7,
       sortable: false,
@@ -190,16 +142,13 @@ const CartDetails = ({
     {
       field: "discount",
       headerName: "Discount",
-      // headerClassName: classes.colStyle1,
       cellClassName: classes.tableItemQuantityDiscountColumn,
       flex: 0.6,
       sortable: false,
-      // renderCell: StyledStatus,
     },
     {
       field: "tax",
       headerName: "Tax",
-      // headerClassName: classes.colStyle1,
       flex: 0.4,
       headerAlign: "right",
       align: "right",
@@ -214,15 +163,11 @@ const CartDetails = ({
       flex: 0.6,
       headerAlign: "right",
       align: "right",
-      // minWidth: 60,
-      // width: 60,
       sortable: false,
-      // renderCell: AddCurrency,
     },
   ];
 
   return (
-    // abandoned cart order details modal
     <Modal
       open={true}
       // open={cart ? true : false}
@@ -262,16 +207,12 @@ const CartDetails = ({
             >
               <Grid
                 item
-                xs={12}
+                xs={11}
                 sx={{
                   display: "flex",
                   alignItems: "center",
                 }}
               >
-                {/* {selectedCartOrder.length === 0 ? (
-                  <OrderIdSectionSkeleton />
-                ) : (
-                  <> */}
                 <Typography variant="h1">
                   Cart
                   {` ${selectedCartOrder.orderid}`}
@@ -285,13 +226,11 @@ const CartDetails = ({
                     "MMM Do, YYYY hh:mm a"
                   )}
                 </Typography>
-                {/* </>
-                 )} */}
               </Grid>
 
               <Grid
                 item
-                xs={6}
+                xs={1}
                 sx={{
                   display: "flex",
                   alignItems: "center",
