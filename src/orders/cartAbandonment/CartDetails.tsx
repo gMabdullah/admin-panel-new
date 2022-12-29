@@ -18,13 +18,13 @@ import {
 import { GridColumns, DataGrid, GridRenderCellParams } from "@mui/x-data-grid";
 import { makeStyles } from "@mui/styles";
 
+import moment from "moment";
+
 import MainCard from "components/cards/MainCard";
 import GoogleMapFrame from "components/GoogleMapFrame";
 
 import { toCapitalizeFirstLetter } from "orders/HelperFunctions";
-
 import { useSelector } from "store";
-import moment from "moment";
 
 interface cartDetailsProp {
   selectedCartOrder: AbandonedCartOrder;
@@ -170,7 +170,6 @@ const CartDetails = ({
   return (
     <Modal
       open={true}
-      // open={cart ? true : false}
       className={classes.modalStyle1}
       BackdropProps={{
         classes: {
