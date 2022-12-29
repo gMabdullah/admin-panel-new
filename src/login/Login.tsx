@@ -95,7 +95,7 @@ const Login = () => {
       data: { status, result, message },
     } = await loginAPICall({ data: loginAPIPayload() });
 
-    if (status === "1") {
+    if (status === "1" && result) {
       localStorage.setItem("tdLogin", "logged in");
 
       if (result.length > 1) {
