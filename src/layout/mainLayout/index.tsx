@@ -104,7 +104,8 @@ const MainLayout = () => {
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
 
-      <AppBar // header
+      {/* header */}
+      <AppBar
         enableColorOnDark
         position="fixed"
         color="inherit"

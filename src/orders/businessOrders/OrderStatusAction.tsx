@@ -19,7 +19,8 @@ import {
   TimelineItem,
 } from "@mui/lab";
 
-import Progress from "components/Progress";
+import useAxios from "axios-hooks";
+
 import CustomButton from "components/CustomButton";
 import MainCard from "components/cards/MainCard";
 import TdTextField from "components/TdTextField";
@@ -27,13 +28,7 @@ import Notify from "components/Notify";
 
 import { convertMinutesInToHours } from "orders/HelperFunctions";
 import { OptionSetContext } from "orders/context/OptionSetContext";
-
 import StatusActionButton from "./StatusActionButton";
-
-import useAxios, { configure } from "axios-hooks";
-import { axios } from "config";
-
-configure({ axios });
 
 const useStyles = makeStyles(() => ({
   TimeLineRoot: {
@@ -106,15 +101,14 @@ export interface OrderTimelineProp {
   refetchTimelineCallback: () => void;
 }
 
-const { eatout_id, user_id } = JSON.parse(
-  localStorage.getItem("businessInfo")!
-);
-
 const OrderStatusAction = ({
   selectedOrder,
   order_id,
   user_email,
 }: SelectedOrderDetailTypes) => {
+  const { eatout_id, user_id } = JSON.parse(
+    localStorage.getItem("businessInfo")!
+  );
   // local States
   const [orderTimeline, setOrderTimeline] =
     useState<OrderTimelineResponse["result"]>();
@@ -167,8 +161,7 @@ const OrderStatusAction = ({
         setNotifyType("success");
         setNotify(true);
         setComment("");
-      }
-      if (notifyResponse.status === "0") {
+      } else if (notifyResponse.status === "0") {
         setEmailNotificationModal(false);
         setNotifyMessage("Notify Failed");
         setNotifyType("error");
@@ -298,7 +291,8 @@ const OrderStatusAction = ({
         />
       )}
 
-      <MainCard // order status timeline card
+      {/* order status timeline card */}
+      <MainCard
         dividerSX={{ m: "0px 0px 0px 0px !important" }}
         headerSX={{ p: "unset !important", mb: "24px" }}
         contentSX={{
@@ -442,7 +436,8 @@ const OrderStatusAction = ({
         )}
       </MainCard>
 
-      <Modal // email notification modal
+      {/* email notification modal */}
+      <Modal
         open={emailNotificationModal}
         onClose={toggleEmailNotificationModal}
       >

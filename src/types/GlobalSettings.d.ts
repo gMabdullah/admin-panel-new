@@ -41,6 +41,7 @@ interface DeliveryServices {
   service_action: string;
   service_name: string;
   status: string;
+  order_status: string;
 }
 
 interface ExtraSettings {

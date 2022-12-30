@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { Grid, Typography, Card, Checkbox, Paper } from "@mui/material";
 
@@ -6,12 +7,8 @@ import CustomButton from "components/CustomButton";
 import TdTextField from "components/TdTextField";
 import Notify from "components/Notify";
 import Logo from "assets/Logo";
-import { useNavigate } from "react-router-dom";
 
-import useAxios, { configure } from "axios-hooks";
-import { axios } from "config";
-
-configure({ axios });
+import useAxios from "axios-hooks";
 
 const styles = {
   paper: {
@@ -98,12 +95,18 @@ const Login = () => {
       data: { status, result, message },
     } = await loginAPICall({ data: loginAPIPayload() });
 
-    if (status === "1") {
-      localStorage.setItem("businessInfo", JSON.stringify(result[0]));
-      localStorage.setItem("tdLogin", "1");
+    if (status === "1" && result) {
+      localStorage.setItem("tdLogin", "logged in");
 
-      navigate("/orders");
+      if (result.length > 1) {
+        localStorage.setItem("allBusinessesInfo", JSON.stringify(result));
+        navigate("/business");
+      } else {
+        localStorage.setItem("businessInfo", JSON.stringify(result[0]));
+        navigate("/orders");
+      }
     } else {
+      // for wrong credentials & when user don't have access to any business
       setNotifyMessage(message);
       setNotify(true);
     }
@@ -182,6 +185,7 @@ const Login = () => {
                     onChange={emailChangeHandler}
                     error={fieldError.emailField === "" ? false : true}
                     helperText={fieldError.emailField}
+                    autoFocus
                   />
                 </Grid>
                 <Grid item xs={12} sx={{ mb: "29px" }}>
