@@ -22,10 +22,6 @@ interface errorProps {
   commentError: string;
   shippingError: string;
 }
-// Local Storage
-const { eatout_id, user_id } = JSON.parse(
-  localStorage.getItem("businessInfo")!
-);
 
 const StatusActionButton = ({
   color,
@@ -33,6 +29,10 @@ const StatusActionButton = ({
   user_email,
   refetchTimelineCallback,
 }: OrderTimelineProp) => {
+  // Local Storage
+  const { eatout_id, user_id } = JSON.parse(
+    localStorage.getItem("businessInfo")!
+  );
   // Local States
   const [currentStatus, setCurrentStatus] = useState(status);
 
