@@ -34,10 +34,6 @@ interface AddEditItemProps {
   editItemFlag: boolean;
 }
 
-const { eatout_id, user_id } = JSON.parse(
-  localStorage.getItem("businessInfo")!
-);
-
 const AddEditItemModal = ({
   openAddEditItemModal,
   setAddEditItemModal,
@@ -45,6 +41,9 @@ const AddEditItemModal = ({
   getEditItemCallback,
   editItemFlag,
 }: AddEditItemProps) => {
+  const { eatout_id, user_id } = JSON.parse(
+    localStorage.getItem("businessInfo")!
+  );
   let errorMessage = { quantityField: "" };
 
   const [imagePreview, setImagePreview] = React.useState(false);
