@@ -117,6 +117,7 @@ interface OrderListingResponseOrderDetail {
   discount: string;
   item_cat_id: string;
   item_cat_name: string;
+  item_category_name: string;
   item_id: string;
   item_level_discount_value: string | number;
   item_level_grand_total: string | number;

@@ -1,8 +1,8 @@
 import { StyleSheet, Font } from '@react-pdf/renderer'
-import Regular from '../fonts/roboto/Roboto-Regular.ttf'
-import Italic from '../fonts/roboto/Roboto-Italic.ttf'
-import Bold from '../fonts/roboto/Roboto-Bold.ttf'
-import Black from '../fonts/roboto/Roboto-Black.ttf'
+import Regular from '../assets/fonts/roboto/Roboto-Regular.ttf'
+import Italic from '../assets/fonts/roboto/Roboto-Italic.ttf'
+import Bold from '../assets/fonts/roboto/Roboto-Bold.ttf'
+import Black from '../assets/fonts/roboto/Roboto-Black.ttf'
 Font.register({
   family: 'Roboto',
   fonts: [
@@ -319,12 +319,13 @@ export const styles = StyleSheet.create({
   detailBoxTextCssPaymentTypeAddress: {
     lineHeight: '15px',
     fontFamily: 'Roboto',
-    justifyContent: 'flex-start',
+    // justifyContent: 'flex-start',
     fontSize: 9,
     marginTop: 2,
     color: '#212121',
-    marginLeft: 17,
-    width: '100%',
+    marginLeft: 30,
+    flexWrap: 'wrap',
+    // width: '100%',
     paddingRight: 10,
   },
   detailBoxTextCssNote: {
@@ -376,6 +377,17 @@ export const styles = StyleSheet.create({
   tableColPdf: {
     lineHeight: 1.1,
     width: '11%',
+    justifyContent: 'flex-start',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    fontSize: 8,
+    fontFamily: 'Roboto',
+    marginTop: 5,
+    marginBottom: 5,
+  },
+  tableColPdfWeight: {
+    lineHeight: 1.1,
+    width: '12%',
     justifyContent: 'flex-start',
     marginLeft: 'auto',
     marginRight: 'auto',
@@ -462,7 +474,7 @@ export const styles = StyleSheet.create({
 
   tableColPdfItem: {
     lineHeight: 1.1,
-    width: '18%',
+    width: '14%',
     justifyContent: 'flex-start',
     marginLeft: 'auto',
     marginRight: 'auto',
@@ -614,10 +626,18 @@ export const styles = StyleSheet.create({
   },
   currencyrowTotalQuantity: {
     fontSize: 10,
+    marginLeft: 92,
+    fontWeight: 'bold',
+  },
+  currencyrowTotalQuantityPdf: {
+    fontSize: 10,
     marginLeft: 110,
     fontWeight: 'bold',
   },
   currencyrow2: {
+    width: '30%',
+  },
+  currencyrow2Pdf: {
     width: '25%',
   },
   texth2th: {
@@ -625,7 +645,7 @@ export const styles = StyleSheet.create({
     fontSize: 10,
   },
   texth2tDeliveryCharges: {
-    marginLeft: 97,
+    marginLeft: 96,
     fontSize: 10,
   },
   textTax: {
@@ -633,7 +653,7 @@ export const styles = StyleSheet.create({
     fontSize: 10,
   },
   texServiceCharges: {
-    marginLeft: 98,
+    marginLeft: 99,
     fontSize: 10,
   },
   texth2tDiscount: {
@@ -654,14 +674,25 @@ export const styles = StyleSheet.create({
     color: 'black',
     lineHeight: 0.8,
   },
+  texth2g: {
+    lineHeight: 1.1,
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginTop: 4,
+    marginBottom: 6,
+    marginLeft: 227,
+  },
   texth2g2: {
     lineHeight: 1.1,
     fontSize: 14,
     fontWeight: 'bold',
     marginTop: 4,
     marginBottom: 6,
-    marginLeft: 120,
+    marginLeft: 98,
   },
+  // currencyrow2PdfGrandTotal: {
+  //   width: '25%',
+  // },
   texttaddone: {
     lineHeight: 1,
     fontSize: 7,
