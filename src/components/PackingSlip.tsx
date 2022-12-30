@@ -55,12 +55,7 @@ const PackingSlip = (props: propsTypes) => {
               discount_value,
               cnic,
             } = selectedOrder
-            console.log(
-              'discount_value',
-              discount_value,
-              'tax_value',
-              tax_value,
-            )
+
             return (
               <Page size="A4" style={styles.page} key={index} wrap>
                 {props.pdfType === 'pdf' ? (
@@ -284,7 +279,7 @@ const PackingSlip = (props: propsTypes) => {
                               </View>
                               <View style={styles.categoryCol}>
                                 <Text style={styles.texttPdf}>
-                                  {orderDetail.item_cat_name}
+                                  {orderDetail.item_category_name}
                                 </Text>
                               </View>
                               <View style={styles.itemColPdf}>
@@ -353,7 +348,7 @@ const PackingSlip = (props: propsTypes) => {
                                 </Text>
                               </View>
                               {props.totalWeight !== 0 && (
-                                <View style={styles.tableColPdf}>
+                                <View style={styles.tableColPdfWeight}>
                                   <Text style={styles.texttPdf}>{`${parseFloat(
                                     orderDetail.weight + '',
                                   ).toFixed(0)} ${
@@ -385,7 +380,7 @@ const PackingSlip = (props: propsTypes) => {
 
                               <View style={styles.tablecolItem}>
                                 <Text style={styles.textt}>
-                                  {orderDetail.item_cat_name}
+                                  {orderDetail.item_category_name}
                                 </Text>
                               </View>
 
@@ -459,115 +454,139 @@ const PackingSlip = (props: propsTypes) => {
 
                 <View style={styles.spacer}></View>
                 <View style={styles.rowend} wrap={false}>
-                  <View style={styles.currencyrow2}></View>
+                  <View
+                    style={
+                      props.pdfType === 'pdf'
+                        ? styles.currencyrow2Pdf
+                        : styles.currencyrow2
+                    }
+                  ></View>
 
                   <View style={styles.currencyrow}>
                     <Text style={styles.texth2th}>Total Quantity</Text>
                   </View>
 
-                  <View style={styles.currencyrowTotalQuantity}>
-                    <Text>{`${total_qty}`}</Text>
-                  </View>
+                  {total_qty && (
+                    <View
+                      style={
+                        props.pdfType === 'pdf'
+                          ? styles.currencyrowTotalQuantityPdf
+                          : styles.currencyrowTotalQuantity
+                      }
+                    >
+                      <Text>{`${total_qty}`}</Text>
+                    </View>
+                  )}
                 </View>
                 {props.pdfType === 'pdf' && (
-                  <View>
-                    <View style={styles.rowend}>
-                      <View style={styles.currencyrow2}></View>
-                      <View style={styles.currencyrow}>
-                        <Text style={styles.texth2th}>
-                          {/* showing  "Total Amount (Inclusive of Taxes)" only for DWP  */}
-                          {eatout_id === DWP_STAGING_BUSINESS_ID ||
-                          eatout_id === DWP_BUSINESS_ID
-                            ? 'Total Amount (Inclusive of Taxes)'
-                            : 'Total'}
-                        </Text>
+                  <>
+                    <View>
+                      <View style={styles.rowend}>
+                        <View
+                          style={
+                            props.pdfType === 'pdf'
+                              ? styles.currencyrow2Pdf
+                              : styles.currencyrow2
+                          }
+                        ></View>
+                        <View style={styles.currencyrow}>
+                          <Text style={styles.texth2th}>
+                            {/* showing  "Total Amount (Inclusive of Taxes)" only for DWP  */}
+                            {eatout_id === DWP_STAGING_BUSINESS_ID ||
+                            eatout_id === DWP_BUSINESS_ID
+                              ? 'Total Amount (Inclusive of Taxes)'
+                              : 'Total'}
+                          </Text>
+                        </View>
+                        <View style={styles.currencyrow}>
+                          <Text style={styles.texth2t}>
+                            {fixedDecimalPlaces(total)}
+                          </Text>
+                        </View>
                       </View>
-                      <View style={styles.currencyrow}>
-                        <Text style={styles.texth2t}>
-                          {fixedDecimalPlaces(total)}
-                        </Text>
+                      {custom_code_type === '0' && (
+                        <View style={styles.rowend}>
+                          <View style={styles.currencyrow2Pdf}></View>
+                          <View style={styles.currencyrow}>
+                            <Text style={styles.texth2th}>Coupon Code</Text>
+                          </View>
+                          <View style={styles.currencyrow}>
+                            <Text style={styles.texth2tCouponCode}>
+                              {fixedDecimalPlaces(custom_code_discount_value)}
+                            </Text>
+                          </View>
+                        </View>
+                      )}
+                      {discount_value !== '0.00' && (
+                        <View style={styles.rowend}>
+                          <View style={styles.currencyrow2Pdf}></View>
+                          <View style={styles.currencyrow}>
+                            <Text style={styles.texth2th}>Discount</Text>
+                          </View>
+                          <View style={styles.currencyrow}>
+                            <Text style={styles.texth2tDiscount}>
+                              {fixedDecimalPlaces(discount_value)}
+                            </Text>
+                          </View>
+                        </View>
+                      )}
+                      {delivery_charges !== '0.00' && (
+                        <View style={styles.rowend}>
+                          <View style={styles.currencyrow2Pdf}></View>
+                          <View style={styles.currencyrow}>
+                            <Text style={styles.texth2th}>
+                              Delivery Charges
+                            </Text>
+                          </View>
+                          <View style={styles.currencyrow}>
+                            <Text style={styles.texth2tDeliveryCharges}>
+                              {fixedDecimalPlaces(delivery_charges)}
+                            </Text>
+                          </View>
+                        </View>
+                      )}
+                      {tax_value !== '0.00' && (
+                        <View style={styles.rowend}>
+                          <View style={styles.currencyrow2Pdf}></View>
+                          <View style={styles.currencyrow}>
+                            <Text style={styles.texth2th}>Tax</Text>
+                          </View>
+                          <View style={styles.currencyrow}>
+                            <Text style={styles.textTax}>
+                              {fixedDecimalPlaces(tax_value)}
+                            </Text>
+                          </View>
+                        </View>
+                      )}
+
+                      {service_charges !== '0.00' && (
+                        <View style={styles.rowend}>
+                          <View style={styles.currencyrow2Pdf}></View>
+                          <View style={styles.currencyrow}>
+                            <Text style={styles.texth2th}>Service Charges</Text>
+                          </View>
+                          <View style={styles.currencyrow}>
+                            <Text style={styles.texServiceCharges}>
+                              {fixedDecimalPlaces(service_charges)}
+                            </Text>
+                          </View>
+                        </View>
+                      )}
+
+                      <View style={styles.divider}></View>
+                      <View style={styles.rowend}>
+                        <View style={styles.currencyrow2Pdf}></View>
+                        <View style={styles.currencyrow}>
+                          <Text style={styles.texth2g}>Grand Total</Text>
+                        </View>
+                        <View style={styles.currencyrow}>
+                          <Text style={styles.texth2g2}>
+                            {fixedDecimalPlaces(grand_total)}
+                          </Text>
+                        </View>
                       </View>
                     </View>
-                    {custom_code_type === '0' && (
-                      <View style={styles.rowend}>
-                        <View style={styles.currencyrow2}></View>
-                        <View style={styles.currencyrow}>
-                          <Text style={styles.texth2th}>Coupon Code</Text>
-                        </View>
-                        <View style={styles.currencyrow}>
-                          <Text style={styles.texth2tCouponCode}>
-                            {fixedDecimalPlaces(custom_code_discount_value)}
-                          </Text>
-                        </View>
-                      </View>
-                    )}
-                    {discount_value !== '0' && (
-                      <View style={styles.rowend}>
-                        <View style={styles.currencyrow2}></View>
-                        <View style={styles.currencyrow}>
-                          <Text style={styles.texth2th}>Discount</Text>
-                        </View>
-                        <View style={styles.currencyrow}>
-                          <Text style={styles.texth2tDiscount}>
-                            {fixedDecimalPlaces(discount_value)}
-                          </Text>
-                        </View>
-                      </View>
-                    )}
-                    {delivery_charges !== '0' && (
-                      <View style={styles.rowend}>
-                        <View style={styles.currencyrow2}></View>
-                        <View style={styles.currencyrow}>
-                          <Text style={styles.texth2th}>Delivery Charges</Text>
-                        </View>
-                        <View style={styles.currencyrow}>
-                          <Text style={styles.texth2tDeliveryCharges}>
-                            {fixedDecimalPlaces(delivery_charges)}
-                          </Text>
-                        </View>
-                      </View>
-                    )}
-                    {tax_value !== '0' && (
-                      <View style={styles.rowend}>
-                        <View style={styles.currencyrow2}></View>
-                        <View style={styles.currencyrow}>
-                          <Text style={styles.texth2th}>Tax</Text>
-                        </View>
-                        <View style={styles.currencyrow}>
-                          <Text style={styles.textTax}>
-                            {fixedDecimalPlaces(tax_value)}
-                          </Text>
-                        </View>
-                      </View>
-                    )}
-
-                    {service_charges !== '0' && (
-                      <View style={styles.rowend}>
-                        <View style={styles.currencyrow2}></View>
-                        <View style={styles.currencyrow}>
-                          <Text style={styles.texth2th}>Service Charges</Text>
-                        </View>
-                        <View style={styles.currencyrow}>
-                          <Text style={styles.texServiceCharges}>
-                            {fixedDecimalPlaces(service_charges)}
-                          </Text>
-                        </View>
-                      </View>
-                    )}
-
-                    <View style={styles.divider}></View>
-                    <View style={styles.rowend}>
-                      <View style={styles.currencyrow2}></View>
-                      <View style={styles.currencyrow}>
-                        <Text style={styles.texth2g}>Grand Total</Text>
-                      </View>
-                      <View style={styles.currencyrow}>
-                        <Text style={styles.texth2g2}>
-                          {fixedDecimalPlaces(grand_total)}
-                        </Text>
-                      </View>
-                    </View>
-                  </View>
+                  </>
                 )}
                 <View style={styles.headerDivider}></View>
               </Page>
