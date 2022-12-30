@@ -57,7 +57,7 @@ const BusinessListing = () => {
     } else {
       setBusinesses(JSON.parse(localStorage.getItem("allBusinessesInfo")!));
     }
-  }, 1000);
+  }, 400);
 
   return localStorage.getItem("tdLogin") ? (
     <MainCard

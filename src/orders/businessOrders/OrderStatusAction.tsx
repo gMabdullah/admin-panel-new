@@ -19,7 +19,8 @@ import {
   TimelineItem,
 } from "@mui/lab";
 
-import Progress from "components/Progress";
+import useAxios from "axios-hooks";
+
 import CustomButton from "components/CustomButton";
 import MainCard from "components/cards/MainCard";
 import TdTextField from "components/TdTextField";
@@ -27,13 +28,7 @@ import Notify from "components/Notify";
 
 import { convertMinutesInToHours } from "orders/HelperFunctions";
 import { OptionSetContext } from "orders/context/OptionSetContext";
-
 import StatusActionButton from "./StatusActionButton";
-
-import useAxios, { configure } from "axios-hooks";
-import { axios } from "config";
-
-configure({ axios });
 
 const useStyles = makeStyles(() => ({
   TimeLineRoot: {
@@ -167,8 +162,7 @@ const OrderStatusAction = ({
         setNotifyType("success");
         setNotify(true);
         setComment("");
-      }
-      if (notifyResponse.status === "0") {
+      } else if (notifyResponse.status === "0") {
         setEmailNotificationModal(false);
         setNotifyMessage("Notify Failed");
         setNotifyType("error");

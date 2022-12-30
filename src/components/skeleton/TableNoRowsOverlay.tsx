@@ -26,7 +26,7 @@ const StyledGridOverlay = styled("div")(({ theme }) => ({
   },
 }));
 
-export const OrderListingNoRowsOverlay = () => {
+export const TableNoRowsOverlay = () => {
   return (
     <StyledGridOverlay>
       <svg
@@ -68,7 +68,7 @@ export const OrderListingNoRowsOverlay = () => {
           </g>
         </g>
       </svg>
-      <Box sx={{ mt: 1 }}>No Order</Box>
+      <Box sx={{ mt: 1 }}>No Data</Box>
     </StyledGridOverlay>
   );
 };

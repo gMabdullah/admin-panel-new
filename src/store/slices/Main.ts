@@ -10,6 +10,7 @@ interface dateProps {
   currency: string;
   label: string;
   paymentSettings: StripeSettings;
+  delivery_services: DeliveryServices;
 }
 
 // initial state
@@ -28,6 +29,12 @@ const initialState: dateProps = {
     preauth: false,
     status: 404,
   },
+  delivery_services: {
+    status: "0",
+    service_name: "",
+    service_action: "",
+    order_status: "",
+  }
 };
 
 // ==============================|| SLICE - Date Picker ||============================== //
@@ -52,6 +59,7 @@ const main = createSlice({
       state.currency = payload.currency;
       state.label = payload.label;
       state.paymentSettings = payload.payment_settings.stripe_settings;
+      state.delivery_services  = payload.delivery_services;
     },
   },
 });

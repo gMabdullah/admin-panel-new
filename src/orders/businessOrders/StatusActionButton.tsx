@@ -1,20 +1,27 @@
-import { Modal, Stack } from "@mui/material";
-import Typography from "@mui/material/Typography";
-import { OptionSetContext } from "orders/context/OptionSetContext";
 import React, { useContext, useState } from "react";
+
+import { Modal, Stack, Typography } from "@mui/material";
+import { SelectChangeEvent } from "@mui/material/Select";
+
+import useAxios from "axios-hooks";
+
+import { OptionSetContext } from "orders/context/OptionSetContext";
+
 import MainCard from "components/cards/MainCard";
+import DropDown from "components/DropDown";
 import Notify from "components/Notify";
 import TdTextField from "components/TdTextField";
 import CustomButton from "components/CustomButton";
+
 import { OrderTimelineProp } from "./OrderStatusAction";
 import { useSelector } from "store";
 import { IQBAL_BUSINESS_ID } from "constants/BusinessIds";
+import { PRE_AUTH_CONFIRM_PAYMENT, TOSSDOWN_SITE } from "config";
 
-import useAxios, { configure } from "axios-hooks";
-import { axios, PRE_AUTH_CONFIRM_PAYMENT, TOSSDOWN_SITE } from "config";
-
-configure({ axios });
-
+interface errorProps {
+  commentError: string;
+  shippingError: string;
+}
 // Local Storage
 const { eatout_id, user_id } = JSON.parse(
   localStorage.getItem("businessInfo")!
@@ -31,7 +38,10 @@ const StatusActionButton = ({
 
   const [toggleStatusModal, setToggleStatusModal] = useState<boolean>(false);
   const [comment, setComment] = useState("");
-  const [commentError, setCommentError] = useState("");
+  const [error, setError] = useState<errorProps>({
+    commentError: "",
+    shippingError: "",
+  });
   const [notify, setNotify] = useState<boolean>(false);
   const [notifyMessage, setNotifyMessage] = useState("");
   const [notifyType, setNotifyType] = useState<
@@ -41,8 +51,13 @@ const StatusActionButton = ({
   // Global States
   const { selectedOrderContext, setSelectedOrderContext } =
     useContext(OptionSetContext);
-  const { paymentSettings } = useSelector((state) => state.main);
-
+  const { paymentSettings, delivery_services: deliveryServices } = useSelector(
+    (state) => state.main
+  );
+  const [selectDeliveryService, setSelectDeliveryService] = useState<string>(
+    "select_delivery_service"
+  );
+  const [shipping, setShipping] = useState<string>("select_shipping");
   //======================================= API Calls & Handlers =======================================//
 
   const preAuthPaymentAPIPayload = (item: OrderDetailTypes) => {
@@ -71,7 +86,7 @@ const StatusActionButton = ({
   );
 
   // order status update API call payload
-  const orderStatusUpdateAPIPayload = () => {
+  const orderStatusUpdateAPIPayload = (tracking_id?: string) => {
     const { order_id } = selectedOrderContext;
 
     const formData = new FormData();
@@ -80,7 +95,17 @@ const StatusActionButton = ({
     formData.append("order_id", order_id);
     formData.append("status", currentStatus);
     formData.append("eatout_uid", user_id);
-    formData.append("comment", comment);
+    formData.append(
+      "comment",
+      selectDeliveryService !== "select_delivery_service" &&
+        selectDeliveryService !== "self_deliver"
+        ? tracking_id
+          ? tracking_id
+          : ""
+        : comment
+        ? comment
+        : ""
+    );
     formData.append("admin_id", user_id);
     formData.append("source", "biz");
     return formData;
@@ -95,7 +120,42 @@ const StatusActionButton = ({
     { manual: true }
   );
 
-  const updateOrderStatus = async () => {
+  // Delivery Service API
+  const deliveryServiceAPIPayload = () => {
+    const formData = new FormData();
+
+    formData.append("business_id", eatout_id);
+    formData.append("order_data", JSON.stringify(selectedOrderContext));
+    formData.append("comment", comment);
+    formData.append("action", selectDeliveryService);
+    formData.append("delivery_type", `${1}`);
+    formData.append("admin_id", user_id);
+    formData.append("source", "biz");
+    return formData;
+  };
+  const [{}, deliveryServiceAPI] = useAxios(
+    {
+      url: "/thirdparty_delivery_service",
+      method: "POST",
+    },
+    { manual: true }
+  );
+
+  const deliveryService = async () => {
+    const result = await deliveryServiceAPI({
+      data: deliveryServiceAPIPayload(),
+    });
+
+    if (result.data.status == "200" || result.data.status === "201") {
+      await updateOrderStatus(result.data.tracking_id);
+    } else if (result.data.status === "400" || result.data.status === "404") {
+      setNotifyMessage(result.data.message);
+      setNotifyType("error");
+      setNotify(true);
+    }
+  };
+
+  const updateOrderStatus = async (tracking_id?: string) => {
     const { pre_auth, grand_total } = selectedOrderContext;
 
     let result: any = "";
@@ -109,7 +169,6 @@ const StatusActionButton = ({
           setNotifyType("error");
           return;
         }
-
         // tezmart
         if (paymentSettings.preauth && paymentSettings.status === 200) {
           result = await preAuthPaymentAPICall({
@@ -139,24 +198,25 @@ const StatusActionButton = ({
       } else {
         // Update Order Status API call
         result = await orderStatusUpdateAPICall({
-          data: orderStatusUpdateAPIPayload(),
+          data: orderStatusUpdateAPIPayload(tracking_id),
         });
       }
       const getResultsFirst = async () => {
+        // if no result found
+        if (!result || !result.data) return;
+
         const {
-          data: { status, message },
+          data: { status, message, message_id },
         } = result;
 
-        if (status === 400 || status === 0 || status === "0") {
+        if (status === 400 || status == 0) {
           setNotifyMessage(
-            "Order cannot be updated because the grand total of the order is greater than the pre-authorized charge."
+            // "Order cannot be updated because the grand total of the order is greater than the pre-authorized charge."
+            message_id
           );
           setNotifyType("error");
           setNotify(true);
-        } else if (
-          status &&
-          (status === 200 || status === 1 || status === "1")
-        ) {
+        } else if (status && (status === 200 || status == 1)) {
           setNotifyMessage(message);
           setNotifyType("success");
           setNotify(true);
@@ -171,25 +231,77 @@ const StatusActionButton = ({
     target: { value: React.SetStateAction<string> };
   }) => {
     setComment(e.target.value);
-    setCommentError("");
+    setError({ commentError: "", shippingError: "" });
   };
 
   const toggleOrderStatusModal = () => {
+    // Reset states
+    // if(toggleStatusModal){
+    //   setSelectDeliveryService("")
+    //   setShipping("")
+    // }
     setToggleStatusModal((prevModalState) => !prevModalState);
-    setCommentError("");
+    setError({ commentError: "", shippingError: "" });
   };
 
   const changeOrderStatus = () => {
     if (currentStatus === "Cancel" && !comment) {
-      setCommentError("Required*");
+      setError({ commentError: "Required*", shippingError: "" });
       return;
+    } else if (
+      selectShipping() &&
+      selectDeliveryService &&
+      selectDeliveryService !== "select_delivery_service"
+    ) {
+      setError({ commentError: "", shippingError: "" });
+      // handle tcs shipping case
+      deliveryService();
+    } else if (
+      selectDeliveryService !== "tcs_logistics" &&
+      selectDeliveryService !== "self_deliver" &&
+      selectDeliveryService !== "select_delivery_service"
+    ) {
+      deliveryService();
+    } else {
+      updateOrderStatus();
     }
 
-    updateOrderStatus();
     toggleOrderStatusModal();
   };
 
   const closeNotify = () => setNotify(false);
+  const selectShipping = () => {
+    if (shipping == "select_shipping" || !shipping) {
+      setError({
+        commentError: "",
+        shippingError: "Please Select Shipping Type",
+      });
+      return false;
+    }
+    return true;
+  };
+
+  const handleDeliverService = (
+    event: SelectChangeEvent<typeof selectDeliveryService>
+  ) => {
+    const {
+      target: { value, name },
+    } = event;
+
+    if (
+      name == "shipping"
+      // && value !== "select_shipping"
+    ) {
+      setShipping(value);
+    } else if (
+      name == "selectDeliveryService"
+      // && value !== "select_delivery_service"
+    ) {
+      setSelectDeliveryService(value);
+    }
+
+    setError({ commentError: "", shippingError: "" });
+  };
 
   return (
     <>
@@ -289,20 +401,69 @@ const StatusActionButton = ({
                     placeholder="Your Comment Here"
                     value={comment}
                     onChange={handleComment}
-                    error={commentError === "" ? false : true}
-                    helperText={commentError}
+                    error={error.commentError === "" ? false : true}
+                    helperText={error.commentError}
                   />
                 </Stack>
               </Stack>
             ) : (
-              <Stack mt="24px" mb="48px">
-                <TdTextField
-                  label="Reason/comment"
-                  placeholder="Your Comment Here"
-                  value={comment}
-                  onChange={handleComment}
-                />
-              </Stack>
+              <>
+                {currentStatus == deliveryServices.order_status &&
+                  deliveryServices.status === "1" && (
+                    <Stack>
+                      <DropDown
+                        name="selectDeliveryService"
+                        label="Select Delivery Service"
+                        handleChange={handleDeliverService}
+                        value={selectDeliveryService}
+                        defaultValue="select_delivery_service"
+                        options={[
+                          {
+                            label: "Select Delivery Service",
+                            value: "select_delivery_service",
+                          },
+                          { label: "Self Deliver", value: "self_deliver" },
+                          {
+                            label: deliveryServices.service_name,
+                            value: deliveryServices.service_action,
+                          },
+                        ]}
+                      />
+                    </Stack>
+                  )}
+                {selectDeliveryService == "tcs_logistics" && (
+                  <>
+                    <Stack>
+                      <DropDown
+                        name="shipping"
+                        label="Select Shipping"
+                        handleChange={handleDeliverService}
+                        value={shipping}
+                        defaultValue="select_shipping"
+                        options={[
+                          {
+                            label: "Select Shipping",
+                            value: "select_shipping",
+                          },
+                          { label: "One Day Delivery", value: "0" },
+                          { label: "Two Days Delivery", value: "1" },
+                        ]}
+                        error={error.shippingError !== "" ? true : false}
+                        // helperText={error.shippingError}
+                      />
+                      <div>{error.shippingError}</div>
+                    </Stack>
+                  </>
+                )}
+                <Stack mt="24px" mb="48px">
+                  <TdTextField
+                    label="Reason/comment"
+                    placeholder="Your Comment Here"
+                    value={comment}
+                    onChange={handleComment}
+                  />
+                </Stack>
+              </>
             )}
 
             <Stack direction="row" sx={{ justifyContent: "end" }} spacing={1.5}>
