@@ -29,10 +29,10 @@ const Orders: OrdersSideBarMenu = {
       breadcrumbs: false,
     },
     {
-      id: "cart-abandonment",
-      title: "Cart Abandonment",
+      id: "abandoned-carts",
+      title: "Abandoned Carts",
       type: "item",
-      url: "/orders/cart-abandonment",
+      url: "/orders/abandoned-carts",
       breadcrumbs: false,
     },
   ],
