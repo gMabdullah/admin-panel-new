@@ -169,7 +169,6 @@ const StatusActionButton = ({
           setNotifyType("error");
           return;
         }
-
         // tezmart
         if (paymentSettings.preauth && paymentSettings.status === 200) {
           result = await preAuthPaymentAPICall({
@@ -207,12 +206,13 @@ const StatusActionButton = ({
         if (!result || !result.data) return;
 
         const {
-          data: { status, message },
+          data: { status, message, message_id },
         } = result;
 
         if (status === 400 || status == 0) {
           setNotifyMessage(
-            "Order cannot be updated because the grand total of the order is greater than the pre-authorized charge."
+            // "Order cannot be updated because the grand total of the order is greater than the pre-authorized charge."
+            message_id
           );
           setNotifyType("error");
           setNotify(true);
