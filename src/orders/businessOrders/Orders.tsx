@@ -42,6 +42,7 @@ import {
   IQBAL_BUSINESS_ID,
   orderListingColumns,
   ordersType,
+  TEZMART_BUSINESS_ID,
 } from "constants/BusinessIds";
 import { setDate, setGlobalSettings } from "store/slices/Main";
 import OrderDetail from "./OrderDetail";
@@ -360,7 +361,10 @@ const Orders = () => {
           label: "Pre-Authorized",
           value: "Pre-Authorized",
         });
-      } else if (pre_auth["pre_auth"] && pre_auth["status"] === 200) {
+      } else if (
+        // pre_auth["pre_auth"] && pre_auth["status"] === 200
+        eatout_id == TEZMART_BUSINESS_ID
+      ) {
         remainingStatuses.push({
           label: "Pre-Authorized",
           value: "Pre-Authorized",
