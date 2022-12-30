@@ -101,15 +101,14 @@ export interface OrderTimelineProp {
   refetchTimelineCallback: () => void;
 }
 
-const { eatout_id, user_id } = JSON.parse(
-  localStorage.getItem("businessInfo")!
-);
-
 const OrderStatusAction = ({
   selectedOrder,
   order_id,
   user_email,
 }: SelectedOrderDetailTypes) => {
+  const { eatout_id, user_id } = JSON.parse(
+    localStorage.getItem("businessInfo")!
+  );
   // local States
   const [orderTimeline, setOrderTimeline] =
     useState<OrderTimelineResponse["result"]>();
