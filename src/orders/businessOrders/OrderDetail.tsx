@@ -118,16 +118,15 @@ interface orderDetailsProps {
 
 let errorMessage = { address: "", mobileNo: "", deliveryCharges: "" };
 
-const { eatout_id, user_id } = JSON.parse(
-  localStorage.getItem("businessInfo")!
-);
-
 const OrderDetail = ({
   setOrderDetailModal,
   orderDetailModal,
   setSelectionModel,
   selectedOrder,
 }: orderDetailsProps) => {
+  const { eatout_id, user_id } = JSON.parse(
+    localStorage.getItem("businessInfo")!
+  );
   const classes = useStyles();
   const {
     options,
