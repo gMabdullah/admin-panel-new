@@ -137,9 +137,8 @@ const OrderDetail = ({
     editAbleItem,
     setEditAbleItem,
   } = useContext(OptionSetContext);
-  const { decimalPlaces, minimumSpend, currency } = useSelector(
-    (state) => state.main
-  );
+  const { decimalPlaces, minimumSpend, currency, startDate, endDate } =
+    useSelector((state) => state.main);
   const [fieldError, setFieldError] = useState(errorMessage);
   const [orderDetailLoader, setOrderDetailLoader] = useState(false);
   const [customerDetailLoader, setCustomerDetailLoader] = useState(false);
@@ -189,7 +188,8 @@ const OrderDetail = ({
   // single order API call payload
   const getSingleOrderAPIPayload = () => {
     const formData = new FormData();
-
+    formData.append("from_date", `${startDate}`);
+    formData.append("to_date", `${endDate}`);
     formData.append("eatout_id", eatout_id);
     formData.append("order_id", `${selectedOrder.order_id}`);
     formData.append("user_email", selectedOrder.user_email);
