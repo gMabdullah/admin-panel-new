@@ -1018,21 +1018,23 @@ const OrderDetail = ({
     return rowSkeletonLoader && params.row.item_id === lastItem[0].item_id ? (
       <Skeleton animation="wave" height={15} width="90%" />
     ) : (
-      <Stack direction="row" spacing={0.25} sx={{ alignItems: "end" }}>
-        <Typography
-          sx={{
-            fontFamily: "Roboto",
-            fontStyle: "normal",
-            fontWeight: "400",
-            fontSize: "10px",
-            color: "#757575",
-          }}
-        >
-          {orderFromAPI[0] !== undefined && orderFromAPI[0].currency}
-        </Typography>
-        <Typography variant={"subtitle1"} sx={{ color: "#212121" }}>
-          {parseFloat(params.value).toFixed(decimalPlaces)}
-        </Typography>
+      <Stack sx={{ alignItems: "center" }}>
+        <Stack direction="row" spacing={0.25} sx={{ alignItems: "end" }}>
+          <Typography
+            sx={{
+              fontFamily: "Roboto",
+              fontStyle: "normal",
+              fontWeight: "400",
+              fontSize: "10px",
+              color: "#757575",
+            }}
+          >
+            {orderFromAPI[0] !== undefined && orderFromAPI[0].currency}
+          </Typography>
+          <Typography variant={"subtitle1"} sx={{ color: "#212121" }}>
+            {parseFloat(params.value).toFixed(decimalPlaces)}
+          </Typography>
+        </Stack>
       </Stack>
     );
   };
