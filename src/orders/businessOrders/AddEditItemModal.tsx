@@ -677,8 +677,8 @@ const AddEditItemModal = ({
             image={imagePreviewLink}
             alt="Burger"
             sx={{
-              height: "400px",
-              width: "400px",
+              height: "50vh",
+              width: "25vw",
               borderRadius: "8px",
               m: "10px",
             }}
