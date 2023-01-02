@@ -34,7 +34,7 @@ const initialState: dateProps = {
     service_name: "",
     service_action: "",
     order_status: "",
-  }
+  },
 };
 
 // ==============================|| SLICE - Date Picker ||============================== //
@@ -52,14 +52,14 @@ const main = createSlice({
       state.endDate = null;
     },
     setGlobalSettings(state, action) {
-      const payload = action.payload.result;
+      const payload = action.payload;
       state.globalSettings = payload;
       state.decimalPlaces = payload.decimal_places;
       state.minimumSpend = payload.minimum_spend;
       state.currency = payload.currency;
       state.label = payload.label;
       state.paymentSettings = payload.payment_settings.stripe_settings;
-      state.delivery_services  = payload.delivery_services;
+      state.delivery_services = payload.delivery_services;
     },
   },
 });
