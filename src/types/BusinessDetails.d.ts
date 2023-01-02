@@ -1,5 +1,3 @@
-// import SourceAdminId from "./Commons";
-
 interface BusinessDetailsRequest extends SourceAdminId {
   restaurant_id: number;
 }
@@ -71,4 +69,39 @@ interface BusinessDetailsResponseResultAddress {
 interface BusinessDetailsResponseResultAddressLocation {
   lon: string;
   lat: string;
+}
+
+// business information object types on login
+interface BusinessInfo {
+  eatout_id: string;
+  user_id: string;
+  eatout_logo: string;
+  eatout_name: string;
+  eatout_username: string;
+  user_access: string[];
+  access_management: AccessManagement;
+  eatout_branches: EatoutBranch[];
+}
+
+interface AccessManagement {
+  branch: AccessManagementBranch[] | [];
+  role: string;
+  modules: string[] | [];
+  actions: string[] | [];
+  kds: any[];
+}
+
+interface AccessManagementBranch {
+  branch_id: string;
+  tax: string;
+  tax_type: string;
+  branch_address: string;
+  branch_contact: string;
+}
+
+interface EatoutBranch {
+  branch_id: string;
+  tax: string;
+  tax_type: string;
+  branch_address: string;
 }

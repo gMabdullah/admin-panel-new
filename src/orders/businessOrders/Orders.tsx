@@ -9,33 +9,44 @@ import {
   GridSelectionModel,
   GridRowHeightParams,
 } from "@mui/x-data-grid";
-
-import { Box, Chip, Typography, Grid, Stack } from "@mui/material";
+import {
+  Box,
+  Chip,
+  Typography,
+  Grid,
+  Stack,
+  Modal,
+  IconButton,
+} from "@mui/material";
+import { HighlightOffTwoTone } from "@mui/icons-material";
 import { SelectChangeEvent } from "@mui/material/Select";
 
-import MainCard from "components/cards/MainCard";
-import CustomButton from "components/CustomButton";
-import ExcelExport from "components/ExcelExport";
-import TdTextField from "components/TdTextField";
+import { PDFViewer } from "@react-pdf/renderer";
+import moment from "moment";
+import useAxios from "axios-hooks";
+
 import Progress from "components/Progress";
 import MultiSelectDropDown, {
   DropDownListType,
 } from "components/MultiSelectDropDown";
+import PackingSlip from "components/PackingSlip";
 import { OrderListingSkeleton } from "components/skeleton/OrderListingSkeleton";
-import { OrderListingNoRowsOverlay } from "components/skeleton/OrderListingNoRowsOverlay";
+import { TableNoRowsOverlay } from "components/skeleton/TableNoRowsOverlay";
+import MainCard from "components/cards/MainCard";
+import TdTextField from "components/TdTextField";
+import CustomButton from "components/CustomButton";
+import ExcelExport from "../../components/ExcelExport";
 
 import { OptionSetProvider } from "orders/context/OptionSetContext";
-import { IQBAL_BUSINESS_ID } from "constants/BusinessIds";
+import {
+  IQBAL_BUSINESS_ID,
+  orderListingColumns,
+  ordersType,
+  TEZMART_BUSINESS_ID,
+} from "constants/BusinessIds";
 import { setDate, setGlobalSettings } from "store/slices/Main";
-
 import OrderDetail from "./OrderDetail";
 import { useDispatch, useSelector } from "store";
-import moment from "moment";
-
-import useAxios, { configure } from "axios-hooks";
-import { axios } from "config";
-
-configure({ axios });
 
 const useStyles = makeStyles(() => ({
   colStyle1: {
@@ -56,43 +67,15 @@ export const applyDates = (refetch: any) => {
   return refetch;
 };
 
-const ordersType = [
-  { value: "", label: "All Order Type" },
-  { value: "1", label: "Pick Up" },
-  { value: "0", label: "Delivery" },
-  { value: "1", label: "Canada Post" },
-];
-
-export const tableData = [
-  { header: "Order ID", key: "order_id" },
-  { header: "Date", key: "date" },
-  { header: "Name", key: "name" },
-  { header: "Note", key: "note" },
-  { header: "Tip", key: "tip" },
-  { header: "Payment Method", key: "payment_type" },
-  { header: "Grand Total", key: "grand_total" },
-  { header: "Status", key: "status" },
-  { header: "Source", key: "source" },
-  { header: "Area", key: "user_area" },
-  { header: "Address", key: "address" },
-  { header: "City", key: "user_city" },
-  { header: "Tel #", key: "landline_number" },
-  { header: "Mobile No", key: "mobile_number" },
-  { header: "CNIC", key: "cnic" },
-  { header: "Email", key: "user_email" },
-  { header: "Status Comment", key: "statuscomment" },
-];
-
 export let last48Hours = true;
-
-const { eatout_id, user_id } = JSON.parse(
-  localStorage.getItem("businessInfo")!
-);
 
 const Orders = () => {
   let timeOut: NodeJS.Timeout;
   const classes = useStyles();
   const dispatch = useDispatch();
+  const { eatout_id, user_id } = JSON.parse(
+    localStorage.getItem("businessInfo")!
+  );
 
   const { startDate, endDate, decimalPlaces } = useSelector(
     (state) => state.main
@@ -109,6 +92,7 @@ const Orders = () => {
 
   const [branch, setBranch] = useState<DropDownListType[]>([]);
   const [orderDetailModal, setOrderDetailModal] = useState<boolean>(false);
+  const [packingSlip, setPackingSlip] = React.useState(false);
   const [selectionModel, setSelectionModel] = useState<GridSelectionModel>([]);
   const [branchName, setBranchName] = useState<string[]>(["All Branches"]);
   const [orderType, setOrderType] = React.useState<string[]>([
@@ -124,6 +108,10 @@ const Orders = () => {
   const [city, setCity] = React.useState<string[]>([
     dropdownCityFilter[0].label,
   ]);
+  const [packingSlipData, setPackingSlipData] = useState<
+    OrderListingResponse["result"]
+  >([]); // Todo :  Add Types ot it
+
   const [totalOrders, setTotalOrders] = React.useState<number>();
   const [page, setPage] = React.useState(0);
   const [pageSize, setPageSize] = React.useState(50);
@@ -199,6 +187,7 @@ const Orders = () => {
 
   const [{ data: globalSetting }] = useAxios({
     url: `/eatout_global_settings?restaurant_id=${eatout_id}&source=biz&admin_id=${user_id}`,
+    method: "GET",
   });
 
   const [{ data: allBranches }] = useAxios({
@@ -352,7 +341,7 @@ const Orders = () => {
   useEffect(() => {
     // Global Setting
     let pre_auth = { pre_auth: false, status: 404 };
-    if (globalSetting) {
+    if (globalSetting && globalSetting.result) {
       const { payment_settings } = globalSetting.result;
 
       dispatch(setGlobalSettings(globalSetting));
@@ -360,7 +349,7 @@ const Orders = () => {
       pre_auth["status"] = payment_settings.stripe_settings.status;
     }
     // load status dropdown
-    if (allStatuses) {
+    if (allStatuses && allStatuses.result) {
       const remainingStatuses = allStatuses.result.map((status: string) => ({
         label: status,
         value: status,
@@ -372,7 +361,10 @@ const Orders = () => {
           label: "Pre-Authorized",
           value: "Pre-Authorized",
         });
-      } else if (pre_auth["pre_auth"] && pre_auth["status"] === 200) {
+      } else if (
+        // pre_auth["pre_auth"] && pre_auth["status"] === 200
+        eatout_id == TEZMART_BUSINESS_ID
+      ) {
         remainingStatuses.push({
           label: "Pre-Authorized",
           value: "Pre-Authorized",
@@ -382,7 +374,7 @@ const Orders = () => {
       setStatusDropdown(remainingStatuses);
     }
     // load cities dropdown
-    if (allCities) {
+    if (allCities && allCities.result) {
       const remaingCities = allCities.result.map((status: string) => ({
         label: status,
         value: status,
@@ -459,6 +451,7 @@ const Orders = () => {
       });
     }, 1000);
   };
+  const printPreviewModal = () => setPackingSlip((state) => !state);
 
   const handleBranchChange = (event: SelectChangeEvent<typeof branchName>) => {
     const {
@@ -570,7 +563,7 @@ const Orders = () => {
     setApplyFilters(true);
   };
 
-  const AddCurrency = (params: GridRenderCellParams) => {
+  const addCurrency = (params: GridRenderCellParams) => {
     return (
       <Stack direction="row" spacing={0.25} sx={{ alignItems: "center" }}>
         <Typography
@@ -593,7 +586,7 @@ const Orders = () => {
   };
 
   // table data
-  const StyledStatus = (params: GridRenderCellParams) => {
+  const styledStatus = (params: GridRenderCellParams) => {
     let color = {
       borderRadius: "100px",
       fontFamily: "Roboto",
@@ -679,12 +672,17 @@ const Orders = () => {
   };
 
   const linearLoader = () => {
+    if (orders.length === 0) {
+      // loader for the first time when we have no orders
+      return <OrderListingSkeleton />;
+    }
+
     // loader on updating the order
     return <Progress type="linear" />;
   };
 
   const customNoRowsOverlay = () => {
-    return <OrderListingNoRowsOverlay />;
+    return <TableNoRowsOverlay />;
   };
 
   const columns: GridColumns = [
@@ -728,7 +726,7 @@ const Orders = () => {
       headerClassName: classes.colStyle1,
       flex: 0.7,
       sortable: false,
-      renderCell: StyledStatus,
+      renderCell: styledStatus,
     },
     {
       field: "grand_total",
@@ -738,7 +736,7 @@ const Orders = () => {
       headerAlign: "right",
       align: "right",
       sortable: false,
-      renderCell: AddCurrency,
+      renderCell: addCurrency,
     },
   ];
 
@@ -761,10 +759,36 @@ const Orders = () => {
     setSelectionModel([]);
     setPageSize(pageSizeNo);
   };
+  //=========================Packing Slip ================//
+
+  const packingSlipComponent = () => {
+    // Extract Selected Orders
+    const packingSlipData = selectionModel.map((selectedId) => {
+      const filterData = orders.filter((orderData) => {
+        if (orderData.order_id == selectedId) {
+          return true;
+        }
+      });
+
+      return filterData[0];
+    });
+    setPackingSlipData(packingSlipData);
+    setPackingSlip(true);
+  };
 
   return (
-    <>
-      <OptionSetProvider>
+    <OptionSetProvider>
+      <>
+        {/* Order Detail modal */}
+        {orderDetailModal && (
+          <OrderDetail
+            selectedOrder={selectedOrder}
+            orderDetailModal={orderDetailModal}
+            setOrderDetailModal={setOrderDetailModal}
+            setSelectionModel={setSelectionModel}
+          />
+        )}
+
         <MainCard
           title={
             <Grid container spacing={2}>
@@ -789,7 +813,7 @@ const Orders = () => {
 
                     "& .MuiOutlinedInput-input": {
                       background: "#F5F5F5",
-                      padding: "10px 3px !important",
+                      padding: "10px 16px 10px 0px !important",
                     },
                     "& .MuiOutlinedInput-notchedOutline": {
                       border: "unset",
@@ -815,19 +839,16 @@ const Orders = () => {
                     p: "12px 32px",
                     height: "44px",
                     width: "151px",
-                    color: "black",
-                    background: "#FFFFFF",
                     border: "1px solid #CCD1DB",
-
-                    "&:hover": {
-                      backgroundColor: "#FFFFFF",
-                    },
                   }}
+                  color={"primary"}
+                  onClick={packingSlipComponent}
+                  disabled={selectionModel.length > 0 ? false : true}
                 >
                   Packing Slip
                 </CustomButton>
                 <ExcelExport
-                  tableData={tableData}
+                  tableData={orderListingColumns}
                   orderListData={orders}
                   exportType={"OrdersList"}
                 />
@@ -909,10 +930,11 @@ const Orders = () => {
               },
             }}
           >
-            {orders.length === 0 ? (
+            {!allOrders ? (
               <OrderListingSkeleton />
             ) : (
-              <DataGrid // listing orders
+              //  listing orders
+              <DataGrid
                 rows={orders}
                 columns={columns}
                 rowCount={totalOrders}
@@ -955,18 +977,42 @@ const Orders = () => {
             )}
           </Box>
 
-          {/* Order Detail modal */}
-          {orderDetailModal && (
-            <OrderDetail
-              selectedOrder={selectedOrder}
-              orderDetailModal={orderDetailModal}
-              setOrderDetailModal={setOrderDetailModal}
-              setSelectionModel={setSelectionModel}
-            />
-          )}
+          <Modal open={packingSlip} sx={{ width: "99vw", Height: "99vh" }}>
+            <MainCard
+              title={
+                <Stack
+                  direction="row"
+                  sx={{ justifyContent: "space-between", alignItems: "center" }}
+                >
+                  <Box
+                    sx={{
+                      width: "100%",
+                      maxWidth: "190px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Typography variant={"h2"}>Print Preview</Typography>
+                  </Box>
+
+                  <IconButton sx={{ p: "unset" }} onClick={printPreviewModal}>
+                    <HighlightOffTwoTone
+                      sx={{ color: "#D84315" }}
+                      fontSize="large"
+                    />
+                  </IconButton>
+                </Stack>
+              }
+            >
+              <PDFViewer style={{ width: "95vw", height: "95vh" }}>
+                <PackingSlip packingSlipData={packingSlipData} />
+              </PDFViewer>
+            </MainCard>
+          </Modal>
         </MainCard>
-      </OptionSetProvider>
-    </>
+      </>
+    </OptionSetProvider>
   );
 };
 

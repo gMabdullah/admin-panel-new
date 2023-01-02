@@ -23,13 +23,8 @@ import Progress from "components/Progress";
 import Notify from "components/Notify";
 
 import { OptionSetContext } from "orders/context/OptionSetContext";
-
 import SelectOptionSet from "./SelectOptionSet";
-
-import useAxios, { configure } from "axios-hooks";
-import { axios } from "config";
-
-configure({ axios });
+import useAxios from "axios-hooks";
 
 interface AddEditItemProps {
   setAddEditItemModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -39,10 +34,6 @@ interface AddEditItemProps {
   editItemFlag: boolean;
 }
 
-const { eatout_id, user_id } = JSON.parse(
-  localStorage.getItem("businessInfo")!
-);
-
 const AddEditItemModal = ({
   openAddEditItemModal,
   setAddEditItemModal,
@@ -50,6 +41,9 @@ const AddEditItemModal = ({
   getEditItemCallback,
   editItemFlag,
 }: AddEditItemProps) => {
+  const { eatout_id, user_id } = JSON.parse(
+    localStorage.getItem("businessInfo")!
+  );
   let errorMessage = { quantityField: "" };
 
   const [imagePreview, setImagePreview] = React.useState(false);
@@ -275,7 +269,7 @@ const AddEditItemModal = ({
         url: `products?business_id=${eatout_id}&types=0&menu_type_id=0&offset=0&num=6&categories=0&brands=0&menu_item=0&query=${e.target.value}&attributes=1&source=biz&admin_id=${user_id}`,
       });
 
-      setSearchPreview(data);
+      data && setSearchPreview(data);
       setSearchLoader(false);
     }, 1000);
   };
@@ -507,13 +501,10 @@ const AddEditItemModal = ({
                             >
                               <Grid item xs>
                                 <Typography
+                                  variant="body1"
                                   sx={{
                                     ml: "12px",
                                     mb: "6px",
-                                    fontFamily: "Roboto",
-                                    fontStyle: "normal",
-                                    fontWeight: 400,
-                                    fontSize: "14px",
                                     color: "#757575",
                                   }}
                                 >
