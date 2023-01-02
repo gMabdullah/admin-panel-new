@@ -737,7 +737,8 @@ const OrderDetail = ({
 
       selectedOrder[0].total = final_order_array.sub_total;
       selectedOrder[0].grand_total = final_order_array.grand_total;
-      selectedOrder[0].tax = final_order_array.tax;
+      // selectedOrder[0].tax = final_order_array.tax;
+      selectedOrder[0].tax_value = final_order_array.tax;
       selectedOrder[0].discount_value = final_order_array.discount;
       selectedOrder[0].custom_code_discount_value =
         final_order_array.custom_code_discount_value;
@@ -2270,7 +2271,8 @@ const OrderDetail = ({
                                     )}
 
                                   {orderFromAPI[0] !== undefined &&
-                                    Number(orderFromAPI[0].discount) > 0 && (
+                                    Number(orderFromAPI[0].discount_value) >
+                                      0 && (
                                       <Stack // Discount
                                         direction={"row"}
                                         sx={{
@@ -2311,7 +2313,7 @@ const OrderDetail = ({
                                   </Stack>
 
                                   {orderFromAPI[0] !== undefined &&
-                                    Number(orderFromAPI[0].tax) > 0 && (
+                                    Number(orderFromAPI[0].tax_value) > 0 && (
                                       <Stack // Tax
                                         direction={"row"}
                                         sx={{
@@ -2441,7 +2443,8 @@ const OrderDetail = ({
                                     )}
 
                                   {orderFromAPI[0] !== undefined &&
-                                    Number(orderFromAPI[0].discount) > 0 && (
+                                    Number(orderFromAPI[0].discount_value) >
+                                      0 && (
                                       <Stack // discount
                                         direction={"row"}
                                         spacing={0.25}
@@ -2464,7 +2467,7 @@ const OrderDetail = ({
                                         </Typography>
                                         <Typography variant="h4">
                                           {parseFloat(
-                                            orderFromAPI[0].discount
+                                            orderFromAPI[0].discount_value
                                           ).toFixed(decimalPlaces)}
                                         </Typography>
                                       </Stack>
@@ -2500,7 +2503,7 @@ const OrderDetail = ({
                                   )}
 
                                   {orderFromAPI[0] !== undefined &&
-                                    Number(orderFromAPI[0].tax) > 0 && (
+                                    Number(orderFromAPI[0].tax_value) > 0 && (
                                       <Stack // tax
                                         direction={"row"}
                                         spacing={0.25}
@@ -2523,7 +2526,7 @@ const OrderDetail = ({
                                         </Typography>
                                         <Typography variant="h4">
                                           {parseFloat(
-                                            orderFromAPI[0].tax
+                                            orderFromAPI[0].tax_value
                                           ).toFixed(decimalPlaces)}
                                         </Typography>
                                       </Stack>
