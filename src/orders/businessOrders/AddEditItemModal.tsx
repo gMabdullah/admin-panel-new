@@ -274,6 +274,7 @@ const AddEditItemModal = ({
   };
 
   const selectedItemHandler = (item: any, index: number) => {
+    // item.status '0' and '1' equals item available and out of stock respectively
     if (item.status === "1") {
       setItemMessage("Item out of stock");
       setItemNotifyType("error");
