@@ -3,33 +3,20 @@ import { useNavigate } from "react-router-dom";
 
 import { Grid, Typography, Card, Checkbox, Paper } from "@mui/material";
 
+import useAxios from "axios-hooks";
+
+import Loader from "components/Loader";
 import CustomButton from "components/CustomButton";
 import TdTextField from "components/TdTextField";
 import Notify from "components/Notify";
 import Logo from "assets/Logo";
-
-import useAxios from "axios-hooks";
-
-const styles = {
-  paper: {
-    backgroundImage: `url(
-      "https://static.tossdown.com/site/b8bb6888-035a-4c00-a5bf-a2bc2f1a6c94.webp"
-    )`,
-    width: "100%",
-    height: "100%",
-    backgroundPosition: "center",
-    backgroundSize: "cover",
-    backgroundRepeat: "no-repeat",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: "unset",
-  },
-  paperImg: {
-    width: "100%",
-    padding: "0px 50px",
-  },
-};
+import {
+  paperStyle,
+  paperImgStyle,
+  poweredTossdownGridStyle,
+  rememberForgotPassGridStyle,
+  formSectionGrid6Style,
+} from "./Styles";
 
 const Login = () => {
   let fields = { emailField: "", passwordField: "" };
@@ -55,7 +42,7 @@ const Login = () => {
   };
 
   // login API
-  const [{}, loginAPICall] = useAxios(
+  const [{ loading: loginLoader }, loginAPICall] = useAxios(
     {
       url: "/eatout_user_login",
       method: "post",
@@ -80,6 +67,14 @@ const Login = () => {
   };
 
   const closeNotify = () => setNotify(false);
+
+  const handleEnterKeyPress = (
+    event: React.KeyboardEvent<HTMLElement> | undefined
+  ) => {
+    if (event && event.key === "Enter") {
+      handleLoginClick();
+    }
+  };
 
   const handleLoginClick = async () => {
     if (email === "") {
@@ -122,19 +117,13 @@ const Login = () => {
           closeNotify={closeNotify}
         />
       )}
+
+      {loginLoader && <Loader />}
+
       <Card>
         <Grid container>
           <Grid item xs={12} sx={{ display: "flex", height: "100vh" }}>
-            <Grid
-              item
-              xs={6}
-              sx={{
-                position: "relative",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
+            <Grid item xs={6} sx={formSectionGrid6Style}>
               <Grid sx={{ maxWidth: "428px" }}>
                 <Grid
                   item
@@ -186,6 +175,7 @@ const Login = () => {
                     error={fieldError.emailField === "" ? false : true}
                     helperText={fieldError.emailField}
                     autoFocus
+                    onKeyPress={handleEnterKeyPress}
                   />
                 </Grid>
                 <Grid item xs={12} sx={{ mb: "29px" }}>
@@ -196,42 +186,18 @@ const Login = () => {
                     onChange={passwordChangeHandler}
                     error={fieldError.passwordField === "" ? false : true}
                     helperText={fieldError.passwordField}
+                    onKeyPress={handleEnterKeyPress}
                   />
                 </Grid>
-                <Grid
-                  item
-                  xs={12}
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    mb: "37px",
-                  }}
-                >
+                <Grid item xs={12} sx={rememberForgotPassGridStyle}>
                   <Grid item sx={{ display: "flex", alignItems: "center" }}>
                     <Checkbox sx={{ p: "unset", mr: "11px" }} />
-                    <Typography
-                      sx={{
-                        fontFamily: "Roboto",
-                        fontStyle: " normal",
-                        fontWeight: 500,
-                        fontSize: " 14px",
-                        color: "#212121",
-                      }}
-                    >
+                    <Typography variant="subtitle1" sx={{ color: "#212121" }}>
                       Remember me
                     </Typography>
                   </Grid>
                   <Grid item>
-                    <Typography
-                      sx={{
-                        fontFamily: "Roboto",
-                        fontStyle: " normal",
-                        fontWeight: 500,
-                        fontSize: " 14px",
-                        color: "#212121",
-                      }}
-                    >
+                    <Typography variant="subtitle1" sx={{ color: "#212121" }}>
                       Forgot Password?
                     </Typography>
                   </Grid>
@@ -241,44 +207,22 @@ const Login = () => {
                     color="secondary"
                     variant={"contained"}
                     onClick={handleLoginClick}
-                    sx={{
-                      p: "14px 192.5px",
-                    }}
+                    sx={{ p: "14px 192.5px" }}
                   >
                     Sign in
                   </CustomButton>
                 </Grid>
               </Grid>
-              <Grid
-                item
-                xs={12}
-                sx={{
-                  position: "absolute",
-                  bottom: "0px",
-                  width: "100%",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  mb: "32px",
-                }}
-              >
-                <Typography
-                  sx={{
-                    fontFamily: "Roboto",
-                    fontStyle: " normal",
-                    fontWeight: 400,
-                    fontSize: " 14px",
-                    color: "#757575",
-                  }}
-                >
+              <Grid item xs={12} sx={poweredTossdownGridStyle}>
+                <Typography variant="body1" sx={{ color: "#757575" }}>
                   Powered by tossdown.com
                 </Typography>
               </Grid>
             </Grid>
             <Grid item xs={6}>
-              <Paper elevation={0} style={styles.paper}>
+              <Paper elevation={0} sx={paperStyle}>
                 <img
-                  style={styles.paperImg}
+                  style={paperImgStyle}
                   src="https://images-beta.tossdown.com/images/1ee2f8d4-b254-4489-b37d-3b6006769dad.webp"
                   alt="Login"
                 />

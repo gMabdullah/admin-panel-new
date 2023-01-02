@@ -9,12 +9,16 @@ import {
   CardMedia,
   Card,
   Chip,
+  Paper,
 } from "@mui/material";
 import {
   HighlightOffTwoTone as CloseIcon,
   Visibility as PreviewIcon,
   ArrowBackOutlined,
 } from "@mui/icons-material";
+
+import PerfectScrollbar from "react-perfect-scrollbar";
+import useAxios from "axios-hooks";
 
 import MainCard from "components/cards/MainCard";
 import TdTextField from "components/TdTextField";
@@ -24,7 +28,6 @@ import Notify from "components/Notify";
 
 import { OptionSetContext } from "orders/context/OptionSetContext";
 import SelectOptionSet from "./SelectOptionSet";
-import useAxios from "axios-hooks";
 
 interface AddEditItemProps {
   setAddEditItemModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -322,332 +325,356 @@ const AddEditItemModal = ({
           closeNotify={closeNotify}
         />
       )}
-      <Modal
-        sx={{ overflow: "auto" }}
-        open={openAddEditItemModal}
-        onClose={closeAddEditModal}
-      >
-        <MainCard
-          dividerSX={{ m: "0px 0px 33px 0px !important" }}
-          headerSX={{ p: "unset !important", mb: "16px" }}
-          contentSX={{
-            "& .MuiCardContent-root": {
-              p: "unset !important",
-            },
-            m: "unset",
-            p: "unset !important",
-          }}
+
+      <Modal open={openAddEditItemModal} onClose={closeAddEditModal}>
+        <Paper
           sx={{
-            position: "absolute",
-            m: "unset",
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
             width: "65vw",
-            p: "40px",
-            border: "none",
+            position: "absolute",
           }}
-          title={
-            <Grid container>
-              <Grid
-                item
-                xs={12}
+        >
+          <PerfectScrollbar
+            style={{
+              height: "100%",
+              maxHeight: "98vh",
+              overflowX: "hidden",
+              borderRadius: "8px",
+            }}
+          >
+            <MainCard
+              dividerSX={{ m: "0px 0px 33px 0px !important" }}
+              headerSX={{ p: "unset !important", mb: "16px" }}
+              contentSX={{
+                "& .MuiCardContent-root": {
+                  p: "unset !important",
+                },
+                m: "unset",
+                p: "unset !important",
+              }}
+              sx={{
+                m: "unset",
+                p: "40px",
+                border: "none",
+              }}
+              title={
+                <Grid container>
+                  <Grid
+                    item
+                    xs={12}
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Grid
+                      item
+                      xs={10}
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      {!isOptionSetLayer ? (
+                        <>
+                          <Typography
+                            variant="h3"
+                            sx={{
+                              width: "100%",
+                              maxWidth: "110px",
+                              fontFamily: "Roboto",
+                              fontStyle: "normal",
+                              fontWeight: 600,
+                              fontSize: "24px",
+                              color: "#212121",
+                              display: "flex",
+                            }}
+                          >
+                            {editItemFlag === true ? "Edit Item" : "Add Item"}
+                          </Typography>
+                          {!editItemFlag && searchLoader && (
+                            <Progress type="circle" />
+                          )}
+                        </>
+                      ) : (
+                        <>
+                          <IconButton
+                            onClick={backToSearchItem}
+                            sx={{ p: "unset", mr: "11px" }}
+                          >
+                            <ArrowBackOutlined />
+                          </IconButton>
+                          <Typography variant={"h3"}>{itemName}</Typography>
+                        </>
+                      )}
+                    </Grid>
+
+                    <Grid
+                      item
+                      xs={2}
+                      sx={{
+                        display: "flex",
+                        justifyContent: "flex-end",
+                        alignItems: "center",
+                      }}
+                    >
+                      <IconButton
+                        onClick={closeAddEditModal}
+                        sx={{ p: "unset" }}
+                      >
+                        <CloseIcon htmlColor="#616161" fontSize="large" />
+                      </IconButton>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              }
+            >
+              {isItemSelected ? (
+                isOptionSetLayer && <SelectOptionSet />
+              ) : (
+                <>
+                  {!editItemFlag && (
+                    <Grid container>
+                      <Grid item xs={12}>
+                        <Grid sx={{ mb: "32px" }}>
+                          <TdTextField
+                            type="search"
+                            placeholder="Search Item"
+                            Adornment
+                            onChange={handleSearchChange}
+                          />
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  )}
+                  <Grid
+                    container
+                    sx={{ mb: "32px" }}
+                    spacing={{ xs: 1 }}
+                    columns={{ xs: 2 }}
+                  >
+                    {itemSearchPreview &&
+                      itemSearchPreview?.items.map((item, cardIndex) => (
+                        <Grid
+                          item
+                          xs={1}
+                          key={cardIndex}
+                          sx={{
+                            p: "8px 0px 0px  8px !important",
+                          }}
+                        >
+                          <Card
+                            sx={{
+                              background: "#FFFFFF",
+                              border: "1px solid rgba(0, 0, 0, 0.23)",
+                              borderRadius: "8px",
+                              display: "flex",
+                            }}
+                          >
+                            <Grid container sx={{ position: "relative" }}>
+                              <CardMedia
+                                component="img"
+                                image={item.image}
+                                alt="Burger"
+                                sx={{
+                                  height: "56px",
+                                  width: "56px",
+                                  borderRadius: "8px",
+                                  m: "8px 0px 8px 8px",
+                                }}
+                              />
+
+                              <IconButton
+                                sx={{
+                                  position: "absolute",
+                                  left: "25%",
+                                  top: "21%",
+                                  color: "#FFFFFF",
+                                }}
+                                onClick={() =>
+                                  imagePreviewModalHandler(item.image)
+                                }
+                              >
+                                <PreviewIcon />
+                              </IconButton>
+                            </Grid>
+
+                            <CardActionArea
+                              onClick={() =>
+                                selectedItemHandler(item, cardIndex)
+                              }
+                            >
+                              <Grid
+                                item
+                                xs={12}
+                                sm
+                                container
+                                sx={{
+                                  justifyContent: "space-between",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <Grid
+                                  item
+                                  xs
+                                  container
+                                  direction="column"
+                                  spacing={2}
+                                >
+                                  <Grid item xs>
+                                    <Typography
+                                      variant="body1"
+                                      sx={{
+                                        ml: "12px",
+                                        mb: "6px",
+                                        color: "#757575",
+                                      }}
+                                    >
+                                      {item.name}
+                                    </Typography>
+                                    <Typography
+                                      sx={{
+                                        ml: "12px",
+                                        fontFamily: "Roboto",
+                                        fontStyle: "normal",
+                                        fontWeight: 700,
+                                        fontSize: "16px",
+                                        color: "#212121",
+                                      }}
+                                    >
+                                      {item.price}
+                                    </Typography>
+                                  </Grid>
+                                </Grid>
+
+                                <Grid item>
+                                  <Chip
+                                    label={`${
+                                      item.status === "0"
+                                        ? "Available"
+                                        : "Out of Stock"
+                                    }`}
+                                    sx={{
+                                      color: `${
+                                        item.status === "0"
+                                          ? "#00C853"
+                                          : "#D84315"
+                                      }`,
+                                      background: `${
+                                        item.status === "0"
+                                          ? "#C7FFD6"
+                                          : "#FBE9E7"
+                                      }`,
+                                      p: `${
+                                        item.status === "0"
+                                          ? "8px 17.5px"
+                                          : "8px"
+                                      }`,
+
+                                      alignItems: "center",
+                                      mr: "16px",
+                                      ml: "10px",
+
+                                      "& .MuiChip-label": {
+                                        p: "unset",
+                                      },
+                                    }}
+                                  />
+                                </Grid>
+                              </Grid>
+                            </CardActionArea>
+                          </Card>
+                        </Grid>
+                      ))}
+                  </Grid>
+                </>
+              )}
+
+              <Typography
+                variant={"h3"}
                 sx={{
-                  display: "flex",
-                  alignItems: "center",
+                  marginBottom: "24px",
+                  fontWeight: 700,
+                  color: "#000000",
                 }}
               >
-                <Grid
-                  item
-                  xs={10}
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  {!isOptionSetLayer ? (
-                    <>
-                      <Typography
-                        variant="h3"
-                        sx={{
-                          width: "100%",
-                          maxWidth: "110px",
-                          fontFamily: "Roboto",
-                          fontStyle: "normal",
-                          fontWeight: 600,
-                          fontSize: "24px",
-                          color: "#212121",
-                          display: "flex",
-                        }}
-                      >
-                        {editItemFlag === true ? "Edit Item" : "Add Item"}
-                      </Typography>
-                      {!editItemFlag && searchLoader && (
-                        <Progress type="circle" />
-                      )}
-                    </>
-                  ) : (
-                    <>
-                      <IconButton
-                        onClick={backToSearchItem}
-                        sx={{ p: "unset", mr: "11px" }}
-                      >
-                        <ArrowBackOutlined />
-                      </IconButton>
-                      <Typography variant={"h3"}>{itemName}</Typography>
-                    </>
-                  )}
+                Item Details
+              </Typography>
+              <Grid container sx={{ mb: "32px" }}>
+                <Grid item xs={12}>
+                  <Grid container sx={{ mb: "24px" }}>
+                    <Grid item xs={12} sx={{ display: "flex" }}>
+                      <Grid item xs={6} sx={{ mr: "8px" }}>
+                        <TdTextField
+                          disabled={true}
+                          label="Name"
+                          value={itemName}
+                        />
+                      </Grid>
+                      <Grid item xs={6}>
+                        <TdTextField
+                          disabled={true}
+                          label="Price"
+                          value={itemPrice}
+                        />
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                  <Grid container>
+                    <Grid item xs={12} sx={{ display: "flex" }}>
+                      <Grid item xs={6} sx={{ mr: "8px" }}>
+                        <TdTextField
+                          required={true}
+                          value={itemQuantity}
+                          type="number"
+                          label="Quantity"
+                          onChange={handleQuantityChange}
+                          error={fieldError.quantityField === "" ? false : true}
+                          helperText={fieldError.quantityField}
+                        />
+                      </Grid>
+                      <Grid item xs={6}>
+                        <TdTextField
+                          value={itemComments}
+                          label="Comment"
+                          onChange={handleCommentChange}
+                        />
+                      </Grid>
+                    </Grid>
+                  </Grid>
                 </Grid>
-
+              </Grid>
+              <Grid container>
                 <Grid
                   item
-                  xs={2}
+                  xs={12}
                   sx={{
                     display: "flex",
                     justifyContent: "flex-end",
                     alignItems: "center",
                   }}
                 >
-                  <IconButton onClick={closeAddEditModal} sx={{ p: "unset" }}>
-                    <CloseIcon htmlColor="#616161" fontSize="large" />
-                  </IconButton>
+                  <CustomButton
+                    variant={"contained"}
+                    color={"secondary"}
+                    onClick={addEditItemClick}
+                    sx={{
+                      p: "13px 43px",
+                      fontFamily: "Roboto",
+                      fontStyle: "normal",
+                      fontWeight: 500,
+                      fontSize: "13px",
+                    }}
+                  >
+                    {editItemFlag === true ? "Update" : "Add Item"}
+                  </CustomButton>
                 </Grid>
               </Grid>
-            </Grid>
-          }
-        >
-          {isItemSelected ? (
-            isOptionSetLayer && <SelectOptionSet />
-          ) : (
-            <>
-              {!editItemFlag && (
-                <Grid container>
-                  <Grid item xs={12}>
-                    <Grid sx={{ mb: "32px" }}>
-                      <TdTextField
-                        type="search"
-                        placeholder="Search Item"
-                        Adornment
-                        onChange={handleSearchChange}
-                      />
-                    </Grid>
-                  </Grid>
-                </Grid>
-              )}
-              <Grid
-                container
-                sx={{ mb: "32px" }}
-                spacing={{ xs: 1 }}
-                columns={{ xs: 2 }}
-              >
-                {itemSearchPreview &&
-                  itemSearchPreview?.items.map((item, cardIndex) => (
-                    <Grid
-                      item
-                      xs={1}
-                      key={cardIndex}
-                      sx={{
-                        p: "8px 0px 0px  8px !important",
-                      }}
-                    >
-                      <Card
-                        sx={{
-                          background: "#FFFFFF",
-                          border: "1px solid rgba(0, 0, 0, 0.23)",
-                          borderRadius: "8px",
-                          display: "flex",
-                        }}
-                      >
-                        <Grid container sx={{ position: "relative" }}>
-                          <CardMedia
-                            component="img"
-                            image={item.image}
-                            alt="Burger"
-                            sx={{
-                              height: "56px",
-                              width: "56px",
-                              borderRadius: "8px",
-                              m: "8px 0px 8px 8px",
-                            }}
-                          />
-
-                          <IconButton
-                            sx={{
-                              position: "absolute",
-                              left: "25%",
-                              top: "21%",
-                              color: "#FFFFFF",
-                            }}
-                            onClick={() => imagePreviewModalHandler(item.image)}
-                          >
-                            <PreviewIcon />
-                          </IconButton>
-                        </Grid>
-
-                        <CardActionArea
-                          onClick={() => selectedItemHandler(item, cardIndex)}
-                        >
-                          <Grid
-                            item
-                            xs={12}
-                            sm
-                            container
-                            sx={{
-                              justifyContent: "space-between",
-                              alignItems: "center",
-                            }}
-                          >
-                            <Grid
-                              item
-                              xs
-                              container
-                              direction="column"
-                              spacing={2}
-                            >
-                              <Grid item xs>
-                                <Typography
-                                  variant="body1"
-                                  sx={{
-                                    ml: "12px",
-                                    mb: "6px",
-                                    color: "#757575",
-                                  }}
-                                >
-                                  {item.name}
-                                </Typography>
-                                <Typography
-                                  sx={{
-                                    ml: "12px",
-                                    fontFamily: "Roboto",
-                                    fontStyle: "normal",
-                                    fontWeight: 700,
-                                    fontSize: "16px",
-                                    color: "#212121",
-                                  }}
-                                >
-                                  {item.price}
-                                </Typography>
-                              </Grid>
-                            </Grid>
-
-                            <Grid item>
-                              <Chip
-                                label={`${
-                                  item.status === "0"
-                                    ? "Available"
-                                    : "Out of Stock"
-                                }`}
-                                sx={{
-                                  color: `${
-                                    item.status === "0" ? "#00C853" : "#D84315"
-                                  }`,
-                                  background: `${
-                                    item.status === "0" ? "#C7FFD6" : "#FBE9E7"
-                                  }`,
-                                  p: `${
-                                    item.status === "0" ? "8px 17.5px" : "8px"
-                                  }`,
-
-                                  alignItems: "center",
-                                  mr: "16px",
-                                  ml: "10px",
-
-                                  "& .MuiChip-label": {
-                                    p: "unset",
-                                  },
-                                }}
-                              />
-                            </Grid>
-                          </Grid>
-                        </CardActionArea>
-                      </Card>
-                    </Grid>
-                  ))}
-              </Grid>
-            </>
-          )}
-
-          <Typography
-            variant={"h3"}
-            sx={{
-              marginBottom: "24px",
-              fontWeight: 700,
-              color: "#000000",
-            }}
-          >
-            Item Details
-          </Typography>
-          <Grid container sx={{ mb: "32px" }}>
-            <Grid item xs={12}>
-              <Grid container sx={{ mb: "24px" }}>
-                <Grid item xs={12} sx={{ display: "flex" }}>
-                  <Grid item xs={6} sx={{ mr: "8px" }}>
-                    <TdTextField
-                      disabled={true}
-                      label="Name"
-                      value={itemName}
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <TdTextField
-                      disabled={true}
-                      label="Price"
-                      value={itemPrice}
-                    />
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid container>
-                <Grid item xs={12} sx={{ display: "flex" }}>
-                  <Grid item xs={6} sx={{ mr: "8px" }}>
-                    <TdTextField
-                      required={true}
-                      value={itemQuantity}
-                      type="number"
-                      label="Quantity"
-                      onChange={handleQuantityChange}
-                      error={fieldError.quantityField === "" ? false : true}
-                      helperText={fieldError.quantityField}
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <TdTextField
-                      value={itemComments}
-                      label="Comment"
-                      onChange={handleCommentChange}
-                    />
-                  </Grid>
-                </Grid>
-              </Grid>
-            </Grid>
-          </Grid>
-          <Grid container>
-            <Grid
-              item
-              xs={12}
-              sx={{
-                display: "flex",
-                justifyContent: "flex-end",
-                alignItems: "center",
-              }}
-            >
-              <CustomButton
-                variant={"contained"}
-                color={"secondary"}
-                onClick={addEditItemClick}
-                sx={{
-                  p: "13px 43px",
-                  fontFamily: "Roboto",
-                  fontStyle: "normal",
-                  fontWeight: 500,
-                  fontSize: "13px",
-                }}
-              >
-                {editItemFlag === true ? "Update" : "Add Item"}
-              </CustomButton>
-            </Grid>
-          </Grid>
-        </MainCard>
+            </MainCard>
+          </PerfectScrollbar>
+        </Paper>
       </Modal>
 
       <Modal open={imagePreview} onClose={() => setImagePreview(false)}>
@@ -665,8 +692,8 @@ const AddEditItemModal = ({
             image={imagePreviewLink}
             alt="Burger"
             sx={{
-              height: "400px",
-              width: "400px",
+              height: "50vh",
+              width: "25vw",
               borderRadius: "8px",
               m: "10px",
             }}
