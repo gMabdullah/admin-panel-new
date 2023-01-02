@@ -64,7 +64,6 @@ const AddEditItemModal = ({
   const [itemComments, setItemComments] = React.useState(
     editAbleItem.length > 0 ? editAbleItem[0].comment : ""
   );
-  const [selectedItem, setSelectedItem] = React.useState({});
   const [searchLoader, setSearchLoader] = useState(false);
   const [fieldError, setFieldError] = useState(errorMessage);
   const [isItemSelected, setItemSelected] = useState(false);
@@ -275,18 +274,23 @@ const AddEditItemModal = ({
   };
 
   const selectedItemHandler = (item: any, index: number) => {
-    // check if item have option sets
-    let hasOptionSet = false;
-    if (item.options.length > 0) {
-      setOptions(item.options);
-      hasOptionSet = true;
+    if (item.status === "1") {
+      setItemMessage("Item out of stock");
+      setItemNotifyType("error");
+      setNotify(true);
+    } else {
+      // check if item have option sets
+      let hasOptionSet = false;
+      if (item.options.length > 0) {
+        setOptions(item.options);
+        hasOptionSet = true;
+      }
+      setItemIndex(index);
+      setItemName(item.name);
+      setItemPrice(item.price);
+      setItemSelected(true);
+      setOptionSetLayer(hasOptionSet);
     }
-    setItemIndex(index);
-    setSelectedItem(item);
-    setItemName(item.name);
-    setItemPrice(item.price);
-    setItemSelected(true);
-    setOptionSetLayer(hasOptionSet);
   };
 
   const handleCommentChange = (e: {
@@ -530,18 +534,26 @@ const AddEditItemModal = ({
                                 label={`${
                                   item.status === "0"
                                     ? "Available"
-                                    : "Not Available"
+                                    : "Out of Stock"
                                 }`}
                                 sx={{
                                   color: `${
-                                    item.status === "0" ? "#00C853" : "#673AB7"
+                                    item.status === "0" ? "#00C853" : "#D84315"
                                   }`,
                                   background: `${
-                                    item.status === "0" ? "#B9F6CA" : "#EDE7F6"
+                                    item.status === "0" ? "#C7FFD6" : "#FBE9E7"
                                   }`,
+                                  p: `${
+                                    item.status === "0" ? "8px 17.5px" : "8px"
+                                  }`,
+
                                   alignItems: "center",
-                                  p: "7px 15px",
                                   mr: "16px",
+                                  ml: "10px",
+
+                                  "& .MuiChip-label": {
+                                    p: "unset",
+                                  },
                                 }}
                               />
                             </Grid>
