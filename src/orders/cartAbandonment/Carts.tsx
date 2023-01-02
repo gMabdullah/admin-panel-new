@@ -187,8 +187,8 @@ const Carts = () => {
 
   const addCurrency = (params: GridRenderCellParams) => {
     return (
-      <Stack direction="row" spacing={0.25} sx={{ alignItems: "center" }}>
-        <Typography sx={currencyStyle}>{currency}</Typography>
+      <Stack direction="row" spacing={0.25} sx={{ alignItems: "end" }}>
+        <Typography sx={currencyStyle}>{params.row.currency}</Typography>
         <Typography variant="subtitle1" sx={{ color: "#212121" }}>
           {parseFloat(params.value).toFixed(decimalPlaces)}
         </Typography>
@@ -249,7 +249,7 @@ const Carts = () => {
       renderCell: formatString,
     },
     {
-      field: "total",
+      field: "gtotal",
       headerName: "Total",
       headerClassName: classes.headerStyles,
       flex: 0.6,
