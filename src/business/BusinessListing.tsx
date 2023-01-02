@@ -8,9 +8,11 @@ import {
   CardActionArea,
   CardMedia,
   Card,
+  Paper,
 } from "@mui/material";
 
 import { debounce } from "lodash";
+import PerfectScrollbar from "react-perfect-scrollbar";
 
 import MainCard from "components/cards/MainCard";
 import CustomButton from "components/CustomButton";
@@ -24,7 +26,7 @@ import {
   grid11Style,
   searchFieldStyle,
   grid1Style,
-  businessListingBoxStyle,
+  businessListingPaperStyle,
   businessListingCardStyle,
   cardMediaStyle,
 } from "./Styles";
@@ -95,50 +97,54 @@ const BusinessListing = () => {
         </Grid>
       }
     >
-      <Box sx={businessListingBoxStyle}>
-        <Grid container spacing={{ xs: 1 }} columns={{ xs: 4 }}>
-          {businesses &&
-            businesses.map((business: BusinessInfo, cardIndex: number) => (
-              <Grid
-                item
-                xs={1}
-                key={cardIndex}
-                sx={{
-                  p: "8px 0px 0px  8px !important",
-                }}
-              >
-                <Card sx={businessListingCardStyle}>
-                  <CardActionArea
-                    sx={{ p: "8px" }}
-                    onClick={() => handleBusinessSelection(cardIndex)}
+      <Paper sx={businessListingPaperStyle}>
+        <PerfectScrollbar style={{ overflowX: "hidden", borderRadius: "8px" }}>
+          <Box sx={{ p: "0px 30px" }}>
+            <Grid container spacing={{ xs: 1 }} columns={{ xs: 4 }}>
+              {businesses &&
+                businesses.map((business: BusinessInfo, cardIndex: number) => (
+                  <Grid
+                    item
+                    xs={1}
+                    key={cardIndex}
+                    sx={{
+                      p: "8px 0px 0px  8px !important",
+                    }}
                   >
-                    <Grid
-                      item
-                      xs={12}
-                      sx={{ display: "flex", alignItems: "center" }}
-                    >
-                      <CardMedia
-                        component="img"
-                        image={business.eatout_logo}
-                        alt="Logo"
-                        sx={cardMediaStyle}
-                      />
-
-                      <Typography
-                        variant="body1"
-                        sx={{
-                          color: "#212121",
-                        }}
+                    <Card sx={businessListingCardStyle}>
+                      <CardActionArea
+                        sx={{ p: "8px" }}
+                        onClick={() => handleBusinessSelection(cardIndex)}
                       >
-                        {business.eatout_name}
-                      </Typography>
-                    </Grid>
-                  </CardActionArea>
-                </Card>
-              </Grid>
-            ))}
-        </Grid>
-      </Box>
+                        <Grid
+                          item
+                          xs={12}
+                          sx={{ display: "flex", alignItems: "center" }}
+                        >
+                          <CardMedia
+                            component="img"
+                            image={business.eatout_logo}
+                            alt="Logo"
+                            sx={cardMediaStyle}
+                          />
+
+                          <Typography
+                            variant="body1"
+                            sx={{
+                              color: "#212121",
+                            }}
+                          >
+                            {business.eatout_name}
+                          </Typography>
+                        </Grid>
+                      </CardActionArea>
+                    </Card>
+                  </Grid>
+                ))}
+            </Grid>
+          </Box>
+        </PerfectScrollbar>
+      </Paper>
     </MainCard>
   ) : (
     <Navigate to="/" />

@@ -158,27 +158,16 @@ const NavItem = ({ item, level }: NavItemProps) => {
             )} */}
       </ListItemButton>
 
-      {item.title === "Performance" ? (
+      {(item.title === "Performance" || item.title === "Inventory") && (
         <Divider
           sx={{
-            mt: "10.5px",
-            mb: "10.5px",
+            m: "10.5px 0px",
             pl: "20px",
             pr: "15px",
             border: "1px solid rgba(0, 0, 0, 0.06)",
           }}
         />
-      ) : item.title === "Inventory" ? (
-        <Divider
-          sx={{
-            mt: "10.5px",
-            mb: "10.5px",
-            pl: "20px",
-            pr: "15px",
-            border: "1px solid rgba(0, 0, 0, 0.06)",
-          }}
-        />
-      ) : null}
+      )}
     </>
   );
 };
