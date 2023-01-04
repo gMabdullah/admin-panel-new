@@ -2,6 +2,7 @@ const contentStyle = {
   "& .MuiCardContent-root": {
     p: "unset !important",
   },
+  height: "calc(100vh - 138px)",
   m: "unset",
   p: "unset !important",
 };
@@ -9,8 +10,9 @@ const contentStyle = {
 const mainCardStyle = {
   m: "unset",
   borderRadius: "unset",
-  p: "32px",
+  p: "32px 32px 0px 32px",
   border: "none",
+  height: "100vh",
 };
 
 const grid12Style = {
@@ -47,10 +49,11 @@ const grid1Style = {
   justifyContent: "end",
 };
 
-const businessListingBoxStyle = {
+const businessListingPaperStyle = {
   borderRadius: "8px",
-  p: "24px 30px",
   background: "#E5E7EB",
+  height: "100%",
+  p: "24px 0px",
 };
 
 const businessListingCardStyle = {
@@ -76,7 +79,7 @@ export {
   grid11Style,
   searchFieldStyle,
   grid1Style,
-  businessListingBoxStyle,
+  businessListingPaperStyle,
   businessListingCardStyle,
   cardMediaStyle,
 };

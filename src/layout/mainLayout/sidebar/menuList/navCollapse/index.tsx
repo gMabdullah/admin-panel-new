@@ -196,7 +196,7 @@ const NavCollapse = ({ menu, level }: NavCollapseProps) => {
         )}
       </Collapse>
 
-      {menu.title === "Products" ? (
+      {menu.title === "Products" && (
         <Divider
           sx={{
             mt: "10.5px",
@@ -206,7 +206,7 @@ const NavCollapse = ({ menu, level }: NavCollapseProps) => {
             border: "1px solid rgba(0, 0, 0, 0.06)",
           }}
         />
-      ) : null}
+      )}
     </>
   );
 };

@@ -10,16 +10,16 @@ export const convertMinutesInToHours = (mins: number) => {
   if (days < 1) {
     // if less than Hour return only Minutes
     if (hours < 1) {
-      return `${minutes} Min(s)`;
+      return `${minutes} min(s)`;
     }
-    return `${hours} Hr(s) ${minutes} Min(s)`;
+    return `${hours} hr(s) ${minutes} min(s)`;
   } else {
     // show only days and minutes if hour is less than 1
     if (hours < 1) {
-      return `${days} Day(s) ${minutes} Min(s)`;
+      return `${days} day(s) ${minutes} min(s)`;
     }
     // return All days
-    return `${days} Day(s) ${hours} Hr(s) and ${minutes} Min(s)`;
+    return `${days} day(s) ${hours} hr(s) and ${minutes} min(s)`;
   }
 };
 
