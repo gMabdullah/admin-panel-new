@@ -7,6 +7,7 @@ import SearchField from "components/SearchField";
 import CustomButton from "components/CustomButton";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import MultiSelectDropDown from "components/MultiSelectDropDown";
+import DragDropTable from "components/DragDropTable";
 
 // dropdown data
 
@@ -22,6 +23,15 @@ const branches = [
   { label: "Johar Town Branch", value: "3" },
   { label: "Iqbal Town Branch", value: "4" },
 ];
+
+interface Data {
+  name: string;
+  code: string;
+  population: number;
+  size: number;
+  density: number;
+}
+
 
 const CustomReport = () => {
   const [report, setReport] = React.useState<string[]>([reports[0].label]);
@@ -134,6 +144,7 @@ const CustomReport = () => {
             dropDownList={branches}
             sx={{ width: "160px", height: "40px", ml: "8px", mt: "16px" }}
           />
+          <DragDropTable />
         </Grid>
       </Grid>
     </>
