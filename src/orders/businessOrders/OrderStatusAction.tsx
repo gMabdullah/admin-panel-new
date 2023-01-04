@@ -80,7 +80,7 @@ const useStyles = makeStyles(() => ({
   TimeLineConnector: {},
   TimeLineContent: {
     paddingLeft: "12px !important",
-    marginTop: "-11px",
+    marginTop: "-16px",
     marginBottom: "16px",
     paddingRight: "unset !important",
   },
@@ -361,6 +361,7 @@ const OrderStatusAction = ({
                       justifyContent="space-between"
                       display={"flex"}
                     >
+                      {timeline.date ?
                       <Stack spacing={1}>
                         <Stack
                           direction="row"
@@ -380,6 +381,12 @@ const OrderStatusAction = ({
                           {convertMinutesInToHours(timeline.minutes_passed)}
                         </Typography>
                       </Stack>
+                      :
+                        <Stack>
+                          <Typography variant="subtitle1">
+                          Awaiting status 
+                          </Typography>
+                        </Stack>}
                       <Stack>
                         {timeline.click === "1" ? (
                           statusAction(timeline)
