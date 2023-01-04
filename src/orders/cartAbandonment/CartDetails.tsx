@@ -123,6 +123,7 @@ const CartDetails = ({
       );
     }
   };
+  // format the weight column values
   const weightFormatting = (params: GridRenderCellParams) => {
     return params.row.weight_value && Number(params.row.weight_value) > 0 ? (
       <Typography variant="body1" sx={{ color: "#212121" }}>{`${parseFloat(
