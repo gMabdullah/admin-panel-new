@@ -185,25 +185,34 @@ const Orders = () => {
 
   //======================================= API Calls =======================================//
 
-  const [{ data: globalSetting }] = useAxios({
-    url: `/eatout_global_settings?restaurant_id=${eatout_id}&source=biz&admin_id=${user_id}`,
-    method: "GET",
-  });
+  const [{ data: globalSetting }, getGlobalSettingsAPI] = useAxios(
+    {
+      url: `/eatout_global_settings?restaurant_id=${eatout_id}&source=biz&admin_id=${user_id}`,
+      method: "GET",
+    },
+    { manual: true }
+  );
 
-  const [{ data: allBranches }] = useAxios({
-    url: `/get_eatout_branches?restaurant_id=${eatout_id}&source=biz&admin_id=${user_id}`,
-    method: "post",
-  });
+  const [{ data: allBranches }, getBranchesAPI] = useAxios(
+    {
+      url: `/get_eatout_branches?restaurant_id=${eatout_id}&source=biz&admin_id=${user_id}`,
+      method: "post",
+    },
+    { manual: true }
+  );
 
-  const [{ data: allStatuses }] = useAxios({
-    url: `/get_eatout_order_status`,
-    method: "post",
-    data: statusPayload({
-      eatout_id,
-      admin_id: user_id,
-      source: "biz",
-    }),
-  });
+  const [{ data: allStatuses }, getStatusAPI] = useAxios(
+    {
+      url: `/get_eatout_order_status`,
+      method: "post",
+      data: statusPayload({
+        eatout_id,
+        admin_id: user_id,
+        source: "biz",
+      }),
+    },
+    { manual: true }
+  );
 
   const [{ data: allOrders, loading: getOrderLoader }, ordersAPICall] =
     useAxios({
@@ -220,15 +229,18 @@ const Orders = () => {
       }),
     });
 
-  const [{ data: allCities }] = useAxios({
-    url: "/order_city_filter",
-    method: "post",
-    data: citiesPayload({
-      eatout_id,
-      source: "biz",
-      admin_id: user_id,
-    }),
-  });
+  const [{ data: allCities }, getCitiesAPI] = useAxios(
+    {
+      url: "/order_city_filter",
+      method: "post",
+      data: citiesPayload({
+        eatout_id,
+        source: "biz",
+        admin_id: user_id,
+      }),
+    },
+    { manual: true }
+  );
 
   //======================================= useEffect Hooks =======================================//
 
@@ -339,58 +351,74 @@ const Orders = () => {
 
   // component Did Mount
   useEffect(() => {
-    // Global Setting
-    let pre_auth = { pre_auth: false, status: 404 };
-    if (globalSetting && globalSetting.result) {
-      const { payment_settings } = globalSetting.result;
+    (async () => {
+      const globalSettings = await getGlobalSettingsAPI();
+      const statusResult = await getStatusAPI({
+        data: statusPayload({
+          eatout_id,
+          admin_id: user_id,
+          source: "biz",
+        }),
+      });
+      const citiesList = await getCitiesAPI();
+      const branchesList = await getBranchesAPI();
+      // Global Setting
+      let pre_auth = { pre_auth: false, status: 404 };
 
-      dispatch(setGlobalSettings(globalSetting));
-      pre_auth["pre_auth"] = payment_settings.stripe_settings.pre_auth;
-      pre_auth["status"] = payment_settings.stripe_settings.status;
-    }
-    // load status dropdown
-    if (allStatuses && allStatuses.result) {
-      const remainingStatuses = allStatuses.result.map((status: string) => ({
-        label: status,
-        value: status,
-      }));
-      remainingStatuses.unshift({ label: "All Status", value: "" });
-      //  Also will append with global api settings
-      if (eatout_id == IQBAL_BUSINESS_ID) {
-        remainingStatuses.push({
-          label: "Pre-Authorized",
-          value: "Pre-Authorized",
-        });
-      } else if (
-        // pre_auth["pre_auth"] && pre_auth["status"] === 200
-        eatout_id == TEZMART_BUSINESS_ID
-      ) {
-        remainingStatuses.push({
-          label: "Pre-Authorized",
-          value: "Pre-Authorized",
-        });
+      if (globalSettings.data && globalSettings.data.result) {
+        const { payment_settings } = globalSettings.data.result;
+
+        dispatch(setGlobalSettings(globalSettings.data.result));
+        pre_auth["pre_auth"] = payment_settings.stripe_settings.preauth;
+        pre_auth["status"] = payment_settings.stripe_settings.status;
+      }
+      // load status dropdown
+      if (statusResult.data && statusResult.data.result) {
+        const { result } = statusResult.data;
+        const remainingStatuses =
+          result &&
+          result.map((status: string) => ({
+            label: status,
+            value: status,
+          }));
+        remainingStatuses.unshift({ label: "All Status", value: "" });
+        //  Also will append with global api settings
+        if (eatout_id == IQBAL_BUSINESS_ID) {
+          remainingStatuses.push({
+            label: "Pre-Authorized",
+            value: "Pre-Authorized",
+          });
+        } else if (pre_auth["pre_auth"] && pre_auth["status"] === 200) {
+          remainingStatuses.push({
+            label: "Pre-Authorized",
+            value: "Pre-Authorized",
+          });
+        }
+
+        setStatusDropdown(remainingStatuses);
       }
 
-      setStatusDropdown(remainingStatuses);
-    }
-    // load cities dropdown
-    if (allCities && allCities.result) {
-      const remaingCities = allCities.result.map((status: string) => ({
-        label: status,
-        value: status,
-      }));
-      remaingCities.unshift({ label: "All Cities", value: "" });
-      setDropDownCityFilter(remaingCities);
-    }
-    if (allBranches) {
-      const branches = allBranches.map((item: GetBranchesResponse) => ({
-        value: item.branch_id,
-        label: item.location_address,
-      }));
-      branches.unshift({ label: "All Branches", value: "" });
-      setBranch(branches);
-    }
-  }, [globalSetting, allStatuses, allCities, allBranches]);
+      // load cities dropdown
+      if (citiesList && citiesList.data.result) {
+        const cities = citiesList.data.result;
+        const remaingCities = cities.map((status: string) => ({
+          label: status,
+          value: status,
+        }));
+        remaingCities.unshift({ label: "All Cities", value: "" });
+        setDropDownCityFilter(remaingCities);
+      }
+      // load Branches dropdown
+      if (branchesList && branchesList.data) {
+        const branches = branchesList.data.map((item: GetBranchesResponse) => ({
+          value: item.branch_id,
+          label: item.location_address,
+        }));
+        branches.unshift({ label: "All Branches", value: "" });
+        setBranch(branches);
+      }
+    })();
+  }, []);
 
   useEffect(() => {
     // api call to update the orders list according to filters
