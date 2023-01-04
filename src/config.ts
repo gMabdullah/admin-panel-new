@@ -4,7 +4,7 @@ const development = process.env.REACT_APP_BASEURL;
 const production = process.env.REACT_APP_LIVE;
 
 let environment: string | undefined = "";
-const type = development;
+const type = production;
 
 switch (type) {
   case production:
