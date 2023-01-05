@@ -47,6 +47,7 @@ import {
 import { setDate, setGlobalSettings } from "store/slices/Main";
 import OrderDetail from "./OrderDetail";
 import { useDispatch, useSelector } from "store";
+import BranchesDropdown from "components/readytouseComponents/BranchesDropdown";
 
 const useStyles = makeStyles(() => ({
   colStyle1: {
@@ -80,6 +81,7 @@ const Orders = () => {
   const { startDate, endDate, decimalPlaces } = useSelector(
     (state) => state.main
   );
+  const { selectedBranch } = useSelector((state) => state.dropdown);
   const [orders, setOrders] = useState<OrderListingResponse["result"] | []>([]);
   const [statusDropdown, setStatusDropdown] = React.useState<
     DropDownListType[]
@@ -90,16 +92,13 @@ const Orders = () => {
     user_email: "",
   });
 
-  const [branch, setBranch] = useState<DropDownListType[]>([]);
   const [orderDetailModal, setOrderDetailModal] = useState<boolean>(false);
   const [packingSlip, setPackingSlip] = React.useState(false);
   const [selectionModel, setSelectionModel] = useState<GridSelectionModel>([]);
-  const [branchName, setBranchName] = useState<string[]>(["All Branches"]);
   const [orderType, setOrderType] = React.useState<string[]>([
     ordersType[0].label,
   ]);
   const [canadaPost, setCanadaPost] = useState(false);
-  const [selectedBranch, setSelectedBranch] = useState<string>("");
   const [selectedOrderType, setSelectedOrderType] = useState<string>("");
 
   const [dropdownCityFilter, setDropDownCityFilter] = useState<
@@ -361,7 +360,6 @@ const Orders = () => {
         }),
       });
       const citiesList = await getCitiesAPI();
-      const branchesList = await getBranchesAPI();
       // Global Setting
       let pre_auth = { pre_auth: false, status: 404 };
 
@@ -407,15 +405,6 @@ const Orders = () => {
         }));
         remaingCities.unshift({ label: "All Cities", value: "" });
         setDropDownCityFilter(remaingCities);
-      }
-      // load Branches dropdown
-      if (branchesList && branchesList.data) {
-        const branches = branchesList.data.map((item: GetBranchesResponse) => ({
-          value: item.branch_id,
-          label: item.location_address,
-        }));
-        branches.unshift({ label: "All Branches", value: "" });
-        setBranch(branches);
       }
     })();
   }, []);
@@ -480,35 +469,6 @@ const Orders = () => {
     }, 1000);
   };
   const printPreviewModal = () => setPackingSlip((state) => !state);
-
-  const handleBranchChange = (event: SelectChangeEvent<typeof branchName>) => {
-    const {
-      target: { value },
-    } = event;
-    let branchValueForApiFilter: string[] = [];
-    branch &&
-      branch.map((branchData) => {
-        (typeof value === "string" ? [value] : value).map((label: string) => {
-          if (label == branchData.label) {
-            branchValueForApiFilter.push(branchData.value);
-          }
-        });
-      });
-
-    let selectedLabels = typeof value === "string" ? value.split(",") : value;
-    if (selectedLabels.length > 1) {
-      if (selectedLabels.includes("All Branches")) {
-        selectedLabels = selectedLabels.filter(
-          (label) => label !== "All Branches" && label
-        );
-        branchValueForApiFilter = branchValueForApiFilter.filter(
-          (value) => value !== "" && value
-        );
-      }
-    }
-    setSelectedBranch(branchValueForApiFilter[0]);
-    setBranchName(selectedLabels);
-  };
 
   const handleOrderTypeChange = (
     event: SelectChangeEvent<typeof orderType>
@@ -886,13 +846,8 @@ const Orders = () => {
         >
           <Grid container>
             <Grid item xs={12} sx={{ mb: "16px" }}>
-              <MultiSelectDropDown
-                value={branchName}
-                onChange={handleBranchChange}
-                dropDownList={branch}
-                sx={{ width: "160px", height: "40px" }}
-                onChangeButton={applyFilter}
-              />
+              {/* Branches Dropdown */}
+              <BranchesDropdown applyFilter={applyFilter} />
               <MultiSelectDropDown
                 value={orderType}
                 onChange={handleOrderTypeChange}

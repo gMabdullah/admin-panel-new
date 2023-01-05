@@ -121,7 +121,12 @@ export const getMinMaxAndRequired = (optionHead: any) => {
 
   return objToReturn;
 };
-
+export const getLocalStorage = () => {
+  const { eatout_id, user_id } = JSON.parse(
+    localStorage.getItem("businessInfo")!
+  );
+  return { eatout_id, user_id };
+};
 // clear local storage on logout
 export const clearStorage = () => {
   localStorage.removeItem("allBusinessesInfo");
