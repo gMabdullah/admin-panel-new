@@ -135,6 +135,8 @@ const OrderDetail = ({
     setSelectedOrderContext,
     editAbleItem,
     setEditAbleItem,
+    preventOrderUpdate,
+    setPreventOrderUpdate,
   } = useContext(OptionSetContext);
   const { decimalPlaces, minimumSpend, currency, startDate, endDate } =
     useSelector((state) => state.main);
@@ -1057,46 +1059,49 @@ const OrderDetail = ({
   };
 
   const actionsButton = (params: GridRowParams) => {
-    const actionsArray = [
-      <GridActionsCellItem
-        icon={<EditTwoTone />}
-        label="Edit"
-        showInMenu
-        onClick={async () => {
-          const item_id = Number(params.id);
-          const row = params.row;
+    // shows the edit/delete action buttons only on 'pending & viewed' statuses & having status button state false for the first time
+    return (orderFromAPI[0].status.toLowerCase() === "pending" ||
+      orderFromAPI[0].status.toLowerCase() === "viewed") &&
+      !preventOrderUpdate
+      ? [
+          <GridActionsCellItem
+            icon={<EditTwoTone />}
+            label="Edit"
+            showInMenu
+            onClick={async () => {
+              const item_id = Number(params.id);
+              const row = params.row;
 
-          // get single item API call (for edit item)
-          const {
-            data: { items },
-          } = await singleItemCall({
-            url: `/product_details?business_id=${eatout_id}&item_id=${item_id}&admin_id=${user_id}&source=biz`,
-          });
+              // get single item API call (for edit item)
+              const {
+                data: { items },
+              } = await singleItemCall({
+                url: `/product_details?business_id=${eatout_id}&item_id=${item_id}&admin_id=${user_id}&source=biz`,
+              });
 
-          if (
-            (Array.isArray(items) && items.length > 0) ||
-            items[0].status === "1" ||
-            items !== null
-          ) {
-            if (items[0].options.length > 0) {
-              setOptions(items[0].options);
-            }
+              if (
+                (Array.isArray(items) && items.length > 0) ||
+                items[0].status === "1" ||
+                items !== null
+              ) {
+                if (items[0].options.length > 0) {
+                  setOptions(items[0].options);
+                }
 
-            setEditAbleItem([row]);
-            setEditItemFlag(true);
-            openAddEditModal();
-          }
-        }}
-      />,
-      <GridActionsCellItem
-        icon={<DeleteTwoTone />}
-        label="Delete"
-        showInMenu
-        onClick={() => deleteOrderItem(Number(params.id))}
-      />,
-    ];
-
-    return actionsArray;
+                setEditAbleItem([row]);
+                setEditItemFlag(true);
+                openAddEditModal();
+              }
+            }}
+          />,
+          <GridActionsCellItem
+            icon={<DeleteTwoTone />}
+            label="Delete"
+            showInMenu
+            onClick={() => deleteOrderItem(Number(params.id))}
+          />,
+        ]
+      : [<div></div>];
   };
 
   const productFormatting = (params: GridRenderCellParams) => {
@@ -1486,6 +1491,7 @@ const OrderDetail = ({
       // if order is not in updating state
       setOrderDetailModal((state) => !state);
       setSelectionModel([]);
+      setPreventOrderUpdate(false);
     } else {
       setNotifyMessage("Cancel/Update order to proceed");
       setNotifyType("error");
@@ -2116,6 +2122,15 @@ const OrderDetail = ({
                                   color="secondary"
                                   startIcon={<AddTwoTone />}
                                   onClick={addItemClick}
+                                  disabled={
+                                    (orderFromAPI[0].status.toLowerCase() ===
+                                      "pending" ||
+                                      orderFromAPI[0].status.toLowerCase() ===
+                                        "viewed") &&
+                                    !preventOrderUpdate
+                                      ? false
+                                      : true
+                                  }
                                   sx={{
                                     p: "10px 24px",
                                     fontFamily: "Roboto",

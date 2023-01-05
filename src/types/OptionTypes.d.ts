@@ -9,6 +9,8 @@ interface AppContextInterface {
   setSelectedOrderContext: any;
   editAbleItem: any;
   setEditAbleItem: any;
+  preventOrderUpdate: boolean;
+  setPreventOrderUpdate: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 interface OptionSetType {
