@@ -40,7 +40,7 @@ const Feedback = Loadable(
 
 // products routing
 const ProductsItems = Loadable(
-  lazy(() => import("views/products/items/Items"))
+  lazy(() => import("product/MenuItem"))
 );
 const ProductsCategories = Loadable(
   lazy(() => import("views/products/categories/Categories"))

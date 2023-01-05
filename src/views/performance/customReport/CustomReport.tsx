@@ -8,9 +8,21 @@ import CustomButton from "components/CustomButton";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import MultiSelectDropDown from "components/MultiSelectDropDown";
 import DragDropTable from "components/DragDropTable";
+import DragDropTableNew from "components/DragDropTableNew";
+import MultipleSelectDropdown from "components/TdMultipleSelect";
+import TdTextField from "components/TdTextField";
 
 // dropdown data
+interface Option {
+  value: string;
+  label: string;
+}
 
+const options: Option[] = [
+  { value: 'option1', label: 'Option 1' },
+  { value: 'option2', label: 'Option 2' },
+  { value: 'option3', label: 'Option 3' },
+];
 const reports = [
   { label: "Reports", value: "1" },
   { label: "Pickup", value: "2" },
@@ -35,6 +47,10 @@ interface Data {
 
 const CustomReport = () => {
   const [report, setReport] = React.useState<string[]>([reports[0].label]);
+  const [selectedOptions, setSelectedOptions] = React.useState<string[]>([]);
+  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    setSelectedOptions(event.target.value as string[]);
+  };
 
   const handleReportsChange = (event: SelectChangeEvent<typeof report>) => {
     const {
@@ -131,20 +147,22 @@ const CustomReport = () => {
 
       <Grid container>
         <Grid item xs={12}>
+        <MultipleSelectDropdown/>
           <MultiSelectDropDown
             value={report}
             onChange={handleReportsChange}
             dropDownList={reports}
             sx={{ width: "160px", height: "40px", mt: "16px" }}
           />
-
+  {/* <TdTextField option={options} selectedOptions={selectedOptions} onChange={handleChange} type="dropdown" /> */}
           <MultiSelectDropDown
             value={branchName}
             onChange={handleBranchChange}
             dropDownList={branches}
             sx={{ width: "160px", height: "40px", ml: "8px", mt: "16px" }}
           />
-          <DragDropTable />
+           
+        
         </Grid>
       </Grid>
     </>
