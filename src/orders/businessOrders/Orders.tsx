@@ -48,6 +48,7 @@ import { setDate, setGlobalSettings } from "store/slices/Main";
 import OrderDetail from "./OrderDetail";
 import { useDispatch, useSelector } from "store";
 import BranchesDropdown from "components/readytouseComponents/BranchesDropdown";
+import CitiesDropdown from "components/readytouseComponents/CitiesDropdown";
 
 const useStyles = makeStyles(() => ({
   colStyle1: {
@@ -81,7 +82,9 @@ const Orders = () => {
   const { startDate, endDate, decimalPlaces } = useSelector(
     (state) => state.main
   );
-  const { selectedBranch } = useSelector((state) => state.dropdown);
+  const { selectedBranch, selectedCity } = useSelector(
+    (state) => state.dropdown
+  );
   const [orders, setOrders] = useState<OrderListingResponse["result"] | []>([]);
   const [statusDropdown, setStatusDropdown] = React.useState<
     DropDownListType[]
@@ -167,7 +170,11 @@ const Orders = () => {
     );
     formData.append(
       "city",
-      `${city}` ? (`${city}` === "All Cities" ? "" : `${city}`) : ""
+      `${selectedCity}`
+        ? `${selectedCity}` === "All Cities"
+          ? ""
+          : `${selectedCity}`
+        : ""
     );
     formData.append(
       "status",
@@ -188,14 +195,6 @@ const Orders = () => {
     {
       url: `/eatout_global_settings?restaurant_id=${eatout_id}&source=biz&admin_id=${user_id}`,
       method: "GET",
-    },
-    { manual: true }
-  );
-
-  const [{ data: allBranches }, getBranchesAPI] = useAxios(
-    {
-      url: `/get_eatout_branches?restaurant_id=${eatout_id}&source=biz&admin_id=${user_id}`,
-      method: "post",
     },
     { manual: true }
   );
@@ -848,6 +847,7 @@ const Orders = () => {
             <Grid item xs={12} sx={{ mb: "16px" }}>
               {/* Branches Dropdown */}
               <BranchesDropdown applyFilter={applyFilter} />
+              <CitiesDropdown applyFilter={applyFilter} />
               <MultiSelectDropDown
                 value={orderType}
                 onChange={handleOrderTypeChange}
@@ -855,13 +855,13 @@ const Orders = () => {
                 sx={{ width: "160px", height: "40px", ml: "8px" }}
                 onChangeButton={applyFilter}
               />
-              <MultiSelectDropDown
+              {/* <MultiSelectDropDown
                 value={city}
                 onChange={handleCityChange}
                 dropDownList={dropdownCityFilter}
                 sx={{ width: "160px", height: "40px", ml: "8px" }}
                 onChangeButton={applyFilter}
-              />
+              /> */}
               <MultiSelectDropDown
                 value={statuses}
                 onChange={handleStatusChange}
