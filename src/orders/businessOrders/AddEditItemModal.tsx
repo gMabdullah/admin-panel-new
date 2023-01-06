@@ -28,6 +28,7 @@ import Notify from "components/Notify";
 
 import { OptionSetContext } from "orders/context/OptionSetContext";
 import SelectOptionSet from "./SelectOptionSet";
+import TableChip from "components/TableChip";
 
 interface AddEditItemProps {
   setAddEditItemModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -550,38 +551,7 @@ const AddEditItemModal = ({
                                 </Grid>
 
                                 <Grid item>
-                                  <Chip
-                                    label={`${
-                                      item.status === "0"
-                                        ? "Available"
-                                        : "Out of Stock"
-                                    }`}
-                                    sx={{
-                                      color: `${
-                                        item.status === "0"
-                                          ? "#00C853"
-                                          : "#D84315"
-                                      }`,
-                                      background: `${
-                                        item.status === "0"
-                                          ? "#C7FFD6"
-                                          : "#FBE9E7"
-                                      }`,
-                                      p: `${
-                                        item.status === "0"
-                                          ? "8px 17.5px"
-                                          : "8px"
-                                      }`,
-
-                                      alignItems: "center",
-                                      mr: "16px",
-                                      ml: "10px",
-
-                                      "& .MuiChip-label": {
-                                        p: "unset",
-                                      },
-                                    }}
-                                  />
+                                  <TableChip statusValue={item.status}/>
                                 </Grid>
                               </Grid>
                             </CardActionArea>

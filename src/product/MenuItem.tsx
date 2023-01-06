@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useState,useEffect } from 'react'
 
-import { Typography, Grid,Stack,Divider } from '@mui/material'
+import { Typography, Grid,Stack,Divider,Box} from '@mui/material'
 import { SelectChangeEvent } from '@mui/material/Select'
 
 import SearchField from 'components/SearchField'
@@ -11,6 +11,8 @@ import MultiSelectDropDown from 'components/MultiSelectDropDown'
 import SortByAlphaIcon from '@mui/icons-material/SortByAlpha';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import MainCard from 'components/cards/MainCard'
+import DragDropTableNew from 'components/DragDropTableNew'
+import useAxios from "axios-hooks";
 
 // dropdown data
 const branches = [
@@ -40,8 +42,11 @@ const status = [
   { label: 'Confirmed', value: "3"},
   { label: 'Confirmed', value: "4" },
 ]
-
 const Items = () => {
+  const { eatout_id, user_id } = JSON.parse(
+    localStorage.getItem("businessInfo")!
+  );
+  const [items, setItems] = useState<ProductResponse["items"]>();
   const [branchName, setBranchName] = React.useState<string[]>([
     branches[0].label,
   ])
@@ -63,6 +68,32 @@ const Items = () => {
       typeof value === 'string' ? value.split(',') : value,
     )
   }
+// API Call For Product //
+const [{ data: productData },getProductApi] = useAxios(
+  {
+    url: `products?business_id=${eatout_id}&option_set=0&type&menu_type_id=0&num=&offset=&query=&cat_id=&brand_id=$&branch_id=&admin_id=${user_id}`,
+    method: "GET",
+  },
+  { manual: true }
+);
+console.log("itemsData",productData)
+/**************************************************** */
+
+
+/*********Get Item data from API Product for table***********/
+useEffect(() => {
+ (async ()=>{
+    const productResultApi=await getProductApi();
+    if(productResultApi.data && productResultApi.data.items.length > 0){
+      const {items } = productResultApi.data
+     // const {items}=productData;
+      setItems(items)
+      }
+ })()
+  
+
+}, []);
+
 
   const handleOrderTypeChange = (
     event: SelectChangeEvent<typeof orderType>,
@@ -98,7 +129,19 @@ const Items = () => {
       typeof value === 'string' ? value.split(',') : value,
     )
   }
+// Header Key of the table //
 
+ const keysOfItems :typeKeyOfItem["keysOfItems"]= [
+  { key: "image", value: "Image", align: "center" },
+  { key: "name", value: "Item Name", align: "left" },
+  { key: "category", value: "Category", align: "left" },
+  { key: "price", value: "Price", align: "right" },
+  { key: "discount", value: "Discount", align: "right" },
+  { key: "tax", value: "Tax %", align: "right" },
+  { key: "status", value: "Status", align: "left" },
+  { key: "", value: "Actions", align: "center" },
+];
+//
   return (
     <MainCard
       title={
@@ -153,7 +196,7 @@ const Items = () => {
       } // MainCard opening tag closed here
     >
       <Grid container>
-        <Grid item xs={12}>
+        <Grid item xs={12} display={"flex"}>
             <Grid item  xs={9}>
             <MultiSelectDropDown
             value={branchName}
@@ -182,49 +225,50 @@ const Items = () => {
             </Grid>
             <Grid item xs={3}>
             <Stack
-                            spacing={3}
+                            spacing={0.5}
                             direction="row"
                             divider={
                               <Divider
                                 orientation="vertical"
-                                sx={{ border: "1px solid #EEEEEE" }}
-                             //   flexItem
+                                sx={{ border: "1px solid #EEEEEE",display:"flex" }}
+                                
+                                flexItem
                               />
                             }
                           >
-                            
                                 <Stack
-                                 // direction="row"
-                                  sx={{
-                                    alignItems: "center",
-                                  }}
-                                  spacing={1}
                                 >
                                   <SortByAlphaIcon/>
-                                  
                                 </Stack>
-                              
 
                             <Stack
                            //   direction="row"
-                              sx={{
-                                alignItems: "center",
-                              }}
-                              spacing={1}
+                             
                             >
                               <FilterListIcon
-
-                                fontSize="small"
                               />
-                            </Stack>
-
-                          
-                               
-                             
+                            </Stack>  
                           </Stack>
             </Grid>
         </Grid>
       </Grid>
+      <Grid container>
+      <Grid item xs={12}>
+                <Typography
+                  variant="h5"
+                  sx={{
+                    mb: "20px",
+                    color: "#212121",
+                  }}
+                >
+                  {`400 Item(s)`}
+                </Typography>
+              </Grid>
+      </Grid>
+      <Box>
+       <DragDropTableNew items={items} keysOfItems={keysOfItems}/>
+      
+      </Box>
     </MainCard>
   )
 }

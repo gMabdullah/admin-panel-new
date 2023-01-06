@@ -7,9 +7,24 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import TableRow from '@mui/material/TableRow';
 import { Theme } from '@mui/system';
-import { items, keysofItems } from './ItemObject';
+import {
+  Box,
+  Chip,
+  Typography,
+  Grid,
+  Stack,
+  Modal,
+  IconButton,
+} from "@mui/material";
+import {
+
+  CardMedia,
+ 
+} from "@mui/material";
+import TableChip from './TableChip';
 //import { createStyles, makeStyles } from '@mui/material';
 
 // const useStyles = makeStyles((theme: Theme) =>
@@ -24,50 +39,15 @@ import { items, keysofItems } from './ItemObject';
 //     },
 //   }),
 // );
-interface Column {
-    id: 'name' | 'code' | 'population' | 'size' | 'density';
-    label: string;
-    minWidth?: number;
-    align?: 'right';
-    format?: (value: number) => string;
-  }
-  
-  const rows1:any=[
-    {
-    id:1,name:"India", code:32323232, population:323232, size:32323, density:3232323,   
-},
-{
-    id:2,name:"China", code:32323232, population:323232, size:32323, density:3232323
-}]
-const columns: readonly Column[] = [
-    { id: 'name', label: 'Name', minWidth: 170 },
-    { id: 'code', label: 'ISO\u00a0Code', minWidth: 100 },
-    {
-      id: 'population',
-      label: 'Population',
-      minWidth: 170,
-      align: 'right',
-      format: (value: number) => value.toLocaleString('en-US'),
-    },
-    {
-      id: 'size',
-      label: 'Size\u00a0(km\u00b2)',
-      minWidth: 170,
-      align: 'right',
-      format: (value: number) => value.toLocaleString('en-US'),
-    },
-    {
-      id: 'density',
-      label: 'Density',
-      minWidth: 170,
-      align: 'right',
-      format: (value: number) => value.toFixed(2),
-    },
-  ];
+interface tablePropsType {
+  items?:ProductResponse["items"]
+  keysOfItems:typeKeyOfItem["keysOfItems"]
+}
+
 const handleDragEnd = (result:any) => {
     // handle the end of a drag and drop event here
   };
-const DragDropTableNew:React.FC=()=> {
+const DragDropTableNew=({items,keysOfItems}:tablePropsType)=> {
   return (
     <>
 <DragDropContext onDragEnd={handleDragEnd}>
@@ -77,7 +57,7 @@ const DragDropTableNew:React.FC=()=> {
 <Table>
     <TableHead>
         <TableRow >
-        {keysofItems.map((column:any) => (
+        {keysOfItems?.map((column:any) => (
                 <TableCell
                   key={column.key}
                   align={column.align}
@@ -92,24 +72,41 @@ const DragDropTableNew:React.FC=()=> {
     <Droppable droppableId="table">
   {(provided, snapshot) => (
     <TableBody ref={provided.innerRef}>
-      {items.map((row:any, index:number) => (
+      {items  && items.map((row:any, index:number) => (
         <Draggable key={index} draggableId={index +""} index={index}>
           {(provided:any, snapshot) => (
-            <TableRow
+            <TableRow                 // Drag and drop on table
               ref={provided.innerRef}
               {...provided.draggableProps}
               {...provided.dragHandleProps}
               isDragging={snapshot.isDragging}
             >
-              {keysofItems.map((column) => (
+              {keysOfItems?.map((column) => (
+
+               
                 <TableCell
                   key={column.key}
-                  // align={column.align}
-                  // style={{ minWidth: column?.minWidth }}
+                  align={column.align}
+                 // style={{ minWidth: column?.minWidth }}
                 >
-                  {row[column.key]}
+                  {column.key ==="image" ? 
+                               <CardMedia
+                                component="img"
+                                image={row[column.key]}
+                                alt="Burger"
+                                sx={{
+                                  height: "52px",
+                                  width: "52px",
+                                }}
+                              />
+                              :column.key ==="status" ?
+                              
+                             ( <TableChip statusValue={row[column.key]}/>)
+                            :column.value ==="Actions" ?
+                            (<MoreVertIcon/>)
+                           : row[column.key]}
                 </TableCell>
-              ))}
+))}
             </TableRow>
           )}
         </Draggable>
