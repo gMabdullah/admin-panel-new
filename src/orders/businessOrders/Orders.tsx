@@ -792,16 +792,17 @@ const Orders = () => {
             <Grid item xs={12} sx={{ mb: "16px" }}>
               {/* Branches Dropdown */}
               <BranchesDropdown applyFilter={applyFilter} />
-              <CategoriesDropdown />
-              {/* <MultiSelectDropDown
+
+              <MultiSelectDropDown
                 value={orderType}
                 onChange={handleOrderTypeChange}
                 dropDownList={ordersType}
                 sx={{ width: "160px", height: "40px", ml: "8px" }}
                 onChangeButton={applyFilter}
-              /> */}
+              />
               {/* Cities Dropdown */}
               <CitiesDropdown applyFilter={applyFilter} />
+
               <MultiSelectDropDown
                 value={statuses}
                 onChange={handleStatusChange}
