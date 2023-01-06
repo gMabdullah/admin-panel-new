@@ -49,6 +49,7 @@ import OrderDetail from "./OrderDetail";
 import { useDispatch, useSelector } from "store";
 import BranchesDropdown from "components/readytouseComponents/BranchesDropdown";
 import CitiesDropdown from "components/readytouseComponents/CitiesDropdown";
+import CategoriesDropdown from "components/readytouseComponents/CategoriesDropdown";
 
 const useStyles = makeStyles(() => ({
   colStyle1: {
@@ -791,14 +792,14 @@ const Orders = () => {
             <Grid item xs={12} sx={{ mb: "16px" }}>
               {/* Branches Dropdown */}
               <BranchesDropdown applyFilter={applyFilter} />
-
-              <MultiSelectDropDown
+              <CategoriesDropdown />
+              {/* <MultiSelectDropDown
                 value={orderType}
                 onChange={handleOrderTypeChange}
                 dropDownList={ordersType}
                 sx={{ width: "160px", height: "40px", ml: "8px" }}
                 onChangeButton={applyFilter}
-              />
+              /> */}
               {/* Cities Dropdown */}
               <CitiesDropdown applyFilter={applyFilter} />
               <MultiSelectDropDown
