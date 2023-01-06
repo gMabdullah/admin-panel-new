@@ -103,13 +103,6 @@ const Orders = () => {
   ]);
   const [canadaPost, setCanadaPost] = useState(false);
   const [selectedOrderType, setSelectedOrderType] = useState<string>("");
-
-  const [dropdownCityFilter, setDropDownCityFilter] = useState<
-    DropDownListType[]
-  >([{ label: "All Cities", value: "" }]);
-  const [city, setCity] = React.useState<string[]>([
-    dropdownCityFilter[0].label,
-  ]);
   const [packingSlipData, setPackingSlipData] = useState<
     OrderListingResponse["result"]
   >([]); // Todo :  Add Types ot it
@@ -125,15 +118,6 @@ const Orders = () => {
   const prevPageSizeState = useRef<number | undefined>();
 
   //======================================= API Call Payloads =======================================//
-
-  const citiesPayload = (cityData: OrdersCityFilterRequest) => {
-    const formData = new FormData();
-
-    formData.append("eatout_id", eatout_id);
-    formData.append("admin_id", `${cityData["admin_id"]}`);
-    formData.append("source", `${cityData["source"]}`);
-    return formData;
-  };
 
   const statusPayload = (item: OrderStatusRequest) => {
     const formData = new FormData();
@@ -226,19 +210,6 @@ const Orders = () => {
         check: 1,
       }),
     });
-
-  const [{ data: allCities }, getCitiesAPI] = useAxios(
-    {
-      url: "/order_city_filter",
-      method: "post",
-      data: citiesPayload({
-        eatout_id,
-        source: "biz",
-        admin_id: user_id,
-      }),
-    },
-    { manual: true }
-  );
 
   //======================================= useEffect Hooks =======================================//
 
@@ -358,7 +329,6 @@ const Orders = () => {
           source: "biz",
         }),
       });
-      const citiesList = await getCitiesAPI();
       // Global Setting
       let pre_auth = { pre_auth: false, status: 404 };
 
@@ -393,17 +363,6 @@ const Orders = () => {
         }
 
         setStatusDropdown(remainingStatuses);
-      }
-
-      // load cities dropdown
-      if (citiesList && citiesList.data.result) {
-        const cities = citiesList.data.result;
-        const remaingCities = cities.map((status: string) => ({
-          label: status,
-          value: status,
-        }));
-        remaingCities.unshift({ label: "All Cities", value: "" });
-        setDropDownCityFilter(remaingCities);
       }
     })();
   }, []);
@@ -507,21 +466,6 @@ const Orders = () => {
 
     setOrderType(selectedLabels);
     setSelectedOrderType(selectedValues[0]);
-  };
-
-  const handleCityChange = (event: SelectChangeEvent<typeof city>) => {
-    const {
-      target: { value },
-    } = event;
-    let selectedLabels = typeof value === "string" ? value.split(",") : value;
-    if (selectedLabels.length > 1) {
-      if (selectedLabels.includes("All Cities")) {
-        selectedLabels = selectedLabels.filter(
-          (label) => label !== "All Cities" && label
-        );
-      }
-    }
-    setCity(selectedLabels);
   };
 
   const handleStatusChange = (event: SelectChangeEvent<typeof statuses>) => {
@@ -847,7 +791,7 @@ const Orders = () => {
             <Grid item xs={12} sx={{ mb: "16px" }}>
               {/* Branches Dropdown */}
               <BranchesDropdown applyFilter={applyFilter} />
-              <CitiesDropdown applyFilter={applyFilter} />
+
               <MultiSelectDropDown
                 value={orderType}
                 onChange={handleOrderTypeChange}
@@ -855,13 +799,8 @@ const Orders = () => {
                 sx={{ width: "160px", height: "40px", ml: "8px" }}
                 onChangeButton={applyFilter}
               />
-              {/* <MultiSelectDropDown
-                value={city}
-                onChange={handleCityChange}
-                dropDownList={dropdownCityFilter}
-                sx={{ width: "160px", height: "40px", ml: "8px" }}
-                onChangeButton={applyFilter}
-              /> */}
+              {/* Cities Dropdown */}
+              <CitiesDropdown applyFilter={applyFilter} />
               <MultiSelectDropDown
                 value={statuses}
                 onChange={handleStatusChange}
