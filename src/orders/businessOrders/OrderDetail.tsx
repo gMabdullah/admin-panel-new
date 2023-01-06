@@ -1059,7 +1059,7 @@ const OrderDetail = ({
   };
 
   const actionsButton = (params: GridRowParams) => {
-    // order items are editable only on pending & viewed statuses
+    // returns order items editable actions only on pending & viewed statuses
     return (orderFromAPI[0].status.toLowerCase() === "pending" ||
       orderFromAPI[0].status.toLowerCase() === "viewed") &&
       !preventOrderUpdate
