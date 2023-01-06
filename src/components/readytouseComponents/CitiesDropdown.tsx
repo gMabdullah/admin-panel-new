@@ -82,6 +82,7 @@ const CitiesDropdown = ({ applyFilter }: dropdownTypes) => {
       dropDownList={citiesList}
       sx={{ width: "160px", height: "40px", ml: "8px" }}
       onChangeButton={applyFilter}
+      disableButton={city.length == 0 ? true : false}
     />
   );
 };

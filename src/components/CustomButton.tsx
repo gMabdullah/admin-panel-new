@@ -52,6 +52,7 @@ const CustomButton = <T extends React.ElementType = "button">({
   style,
   color,
   size,
+  disabled,
   onClick,
   ...rest
 }: FormButtonType<T>): JSX.Element => {
@@ -72,6 +73,7 @@ const CustomButton = <T extends React.ElementType = "button">({
       style={style}
       color={color}
       size={size}
+      disabled={disabled}
       {...rest}
     >
       {children}
