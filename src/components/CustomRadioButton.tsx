@@ -13,20 +13,41 @@ type radioButtonTypes<T extends React.ElementType> = {
   value: string;
   label?: string;
   options?: { value: string; label: string }[];
-  sx?: Object;
+  sx?: object;
   row?: boolean;
 } & React.ComponentPropsWithoutRef<T>;
+
+const radioButtonStyle = {
+  "& .MuiFormControlLabel-root": {
+    mr: "25px",
+  },
+  "& .MuiTypography-root": {
+    fontSize: "12px",
+  },
+  "& .MuiRadio-root ": {
+    p: "8px",
+  },
+  "& .Mui-checked": {
+    color: "#DB154D !important",
+  },
+};
 
 const CustomRadioButton = <T extends React.ElementType = "select">({
   onChange,
   value,
   options,
   row,
+  sx,
   ...rest
 }: radioButtonTypes<T>): JSX.Element => {
   return (
     <>
-      <FormControl>
+      <FormControl
+        sx={{
+          ...radioButtonStyle,
+          ...sx,
+        }}
+      >
         <RadioGroup row={row} onChange={onChange} value={value} {...rest}>
           {options?.map<object>((option, index) => (
             <FormControlLabel

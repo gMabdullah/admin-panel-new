@@ -18,24 +18,13 @@ const DashboardOrders = () => {
 
       <CustomRadioButton
         row={true}
-        sx={{
-          "& .MuiFormControlLabel-root": {
-            mr: "25px",
-          },
-          "& .MuiTypography-root": {
-            fontSize: "12px",
-          },
-          "& .MuiRadio-root ": {
-            p: "8px",
-          },
-        }}
         options={[
-          { label: "All", value: "0" },
-          { label: "None", value: "1" },
-          { label: "Web", value: "2" },
-          { label: "POS", value: "3" },
+          { label: "All", value: "All" },
+          { label: "None", value: "None" },
+          { label: "Web", value: "Web" },
+          { label: "POS", value: "POS" },
         ]}
-        value={""} // onChange={canadaPostHandler}
+        value={"All"} // onChange={canadaPostHandler}
         // value={canadaPostDeliveryCharges}
       />
     </Stack>
