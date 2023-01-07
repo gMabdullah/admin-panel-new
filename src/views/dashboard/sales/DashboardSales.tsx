@@ -31,7 +31,7 @@ const DashboardSales = () => {
         </Grid>
 
         <Grid container>
-          <Grid item xs={12} sx={{ display: "flex" }}>
+          <Grid item xs={12} sx={{ display: "flex", mb: "8px" }}>
             <Grid item xs={6}>
               <TdTextField
                 // required={true}
@@ -197,7 +197,14 @@ const DashboardSales = () => {
         </Grid>
 
         <Grid container>
-          <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
+          <Grid
+            item
+            xs={12}
+            sx={{
+              display: "flex",
+              mb: "8px",
+            }}
+          >
             <Grid item xs={6}>
               <TdTextField
                 // required={true}
