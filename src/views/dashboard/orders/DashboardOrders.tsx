@@ -1,6 +1,7 @@
 import { Stack, Typography } from "@mui/material";
+import CustomDrawer from "components/CustomDrawer";
 import CustomRadioButton from "components/CustomRadioButton";
-import { useState } from "react";
+import { SyntheticEvent, useState } from "react";
 
 const DashboardOrders = () => {
   const [deliveryChargesList, setDeliveryChargesList] = useState([
@@ -27,6 +28,17 @@ const DashboardOrders = () => {
         value={"All"} // onChange={canadaPostHandler}
         // value={canadaPostDeliveryCharges}
       />
+
+      <CustomDrawer
+        anchor="right"
+        open={true}
+        // children={undefined}
+        onClose={function (event: SyntheticEvent<{}, Event>): void {
+          throw new Error("Function not implemented.");
+        }}
+      >
+        <h1>Dashboard Customer Component</h1>
+      </CustomDrawer>
     </Stack>
   );
 };
