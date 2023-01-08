@@ -30,6 +30,8 @@ const DashboardOrders = () => {
       />
 
       <CustomDrawer
+        title="Add Item"
+        buttonText="Save"
         anchor="right"
         open={true}
         // children={undefined}
@@ -37,6 +39,17 @@ const DashboardOrders = () => {
           throw new Error("Function not implemented.");
         }}
       >
+        <h1>Dashboard Customer Component</h1>
+        <h1>Dashboard Customer Component</h1>
+        <h1>Dashboard Customer Component</h1>
+        <h1>Dashboard Customer Component</h1>
+        <h1>Dashboard Customer Component</h1>
+        <h1>Dashboard Customer Component</h1>
+        <h1>Dashboard Customer Component</h1>
+        <h1>Dashboard Customer Component</h1>
+        <h1>Dashboard Customer Component</h1>
+        <h1>Dashboard Customer Component</h1>
+        <h1>Dashboard Customer Component</h1>
         <h1>Dashboard Customer Component</h1>
       </CustomDrawer>
     </Stack>
