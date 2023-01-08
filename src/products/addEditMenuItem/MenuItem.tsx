@@ -6,6 +6,10 @@ import TdTextField from "components/TdTextField";
 import CustomDrawer from "components/CustomDrawer";
 import CustomButton from "components/CustomButton";
 import CustomizedSwitch from "components/CustomSwitch";
+import DisplaySection from "./DisplaySection";
+import DiscountSection from "./DiscountSection";
+import InventorySection from "./InventorySection";
+import NutritionSection from "./NutritionSection";
 
 const MenuItem = () => {
   return (
@@ -18,7 +22,7 @@ const MenuItem = () => {
         throw new Error("Function not implemented.");
       }}
     >
-      <Stack sx={{ p: "32px 25px 2px" }}>
+      <Stack sx={{ p: "32px 25px 0px" }}>
         <Typography variant="h5" sx={{ mb: "24px" }}>
           Item Category
         </Typography>
@@ -200,6 +204,20 @@ const MenuItem = () => {
         </Grid>
 
         <Divider sx={{ mb: "24px" }} />
+
+        <DisplaySection />
+
+        <Divider sx={{ mt: "16px" }} />
+
+        <DiscountSection />
+
+        <Divider />
+
+        <InventorySection />
+
+        <Divider />
+
+        <NutritionSection />
       </Stack>
     </CustomDrawer>
   );

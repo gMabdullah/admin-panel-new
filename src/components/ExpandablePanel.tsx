@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
 
-const ExpandableSection = ({
+const ExpandablePanel = ({
   id,
   title,
   subTitle,
@@ -51,4 +51,4 @@ const ExpandableSection = ({
   );
 };
 
-export default ExpandableSection;
+export default ExpandablePanel;
