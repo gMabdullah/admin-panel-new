@@ -38,7 +38,7 @@ const DashboardSales = () => {
                 // value={itemQuantity}
                 type="date"
                 label="Discount Start"
-                sx={{ width: "100%" }}
+                // sx={{ width: "100%" }}
                 // onChange={handleQuantityChange}
                 // error={fieldError.quantityField === "" ? false : true}
                 // helperText={fieldError.quantityField}
@@ -50,7 +50,7 @@ const DashboardSales = () => {
                 // value={itemQuantity}
                 type="date"
                 label="Discount Expiry"
-                sx={{ width: "100%" }}
+                // sx={{ width: "100%" }}
                 // onChange={handleQuantityChange}
                 // error={fieldError.quantityField === "" ? false : true}
                 // helperText={fieldError.quantityField}
@@ -211,7 +211,7 @@ const DashboardSales = () => {
                 // value={itemQuantity}
                 type="number"
                 label="No of Palletes"
-                sx={{ width: "100%" }}
+                // sx={{ width: "100%" }}
                 // onChange={handleQuantityChange}
                 // error={fieldError.quantityField === "" ? false : true}
                 // helperText={fieldError.quantityField}
@@ -223,7 +223,7 @@ const DashboardSales = () => {
                 // value={itemQuantity}
                 type="number"
                 label="Pallet Price (PKR)"
-                sx={{ width: "100%" }}
+                // sx={{ width: "100%" }}
                 // onChange={handleQuantityChange}
                 // error={fieldError.quantityField === "" ? false : true}
                 // helperText={fieldError.quantityField}
