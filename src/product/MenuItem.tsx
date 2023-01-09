@@ -31,7 +31,7 @@ const Items = () => {
   const [items, setItems] = useState<ProductResponse["items"]>();
   const [applyFilters, setApplyFilters] = React.useState(false);
   const [toggleDrawer, setToggleDrawer] = useState(false);
-  const [itemsCount, setItemsCount] = useState(false);
+  const [itemsCount, setItemsCount] = useState("");
   // API Call For Product //
   const [{ data: productData }, getProductApi] = useAxios(
     {
@@ -76,24 +76,19 @@ const Items = () => {
     }
   }, [productData])
 
-  const linearLoader = () => {
-    // loader on updating the order
-    return <Progress type="linear" />;
-  };
-  // Header Key of the table //
+// Header Key of the table //
 
   const keysOfItems: typeKeyOfItem["keysOfItems"] = [
-    { key: "image", value: "Image", align: "center" },
-    { key: "name", value: "Item Name", align: "left" },
-    { key: "category", value: "Category", align: "left" },
-    { key: "price", value: "Price", align: "right" },
-    { key: "discount", value: "Discount", align: "right" },
-    { key: "tax", value: "Tax %", align: "right" },
-    { key: "status", value: "Status", align: "left" },
+    { key: "image", value: "Image", align: "left" ,width:"10%"},
+    { key: "name", value: "Item Name", align: "left" ,width:"30%"},
+    { key: "category", value: "Category", align: "left" ,width:"15%"},
+    { key: "price", value: "Price", align: "left" ,width:"10%"},
+    { key: "discount", value: "Discount", align: "right" ,width:"10%"},
+    { key: "tax", value: "Tax %", align: "right" ,width:"10%"},
+    { key: "status", value: "Status", align: "center" ,width:"10%"},
     { key: "", value: "Actions", align: "center" },
   ];
   const applyButtonFilter = () => {
-    debugger;
     setApplyFilters(true);
   };
   const handleDrawerToggle = () => {
@@ -144,26 +139,26 @@ const Items = () => {
                 variant={"contained"}
                 color={"secondary"}
                 startIcon={<AddTwoToneIcon />}
-                sx={{
-                  p: "12px 22px",
-                  height: "44px",
-                  width: "138px",
-                }}
-                onClick={handleDrawerToggle}
-              >
-                Add Item
-              </CustomButton>
-            </Grid>
+              sx={{
+                p: '12px 22px',
+                height: '44px',
+                width: '138px',
+              }}
+              onClick={handleDrawerToggle}
+            >
+              Add Item
+            </CustomButton>
           </Grid>
-        } // MainCard opening tag closed here
-      >
-        <Grid container>
-          <Grid item xs={12} display={"flex"}>
-            <Grid item xs={9}>
-              <MenuTypesDropdow applyFilter={applyButtonFilter} />
-              <BranchesDropdown applyFilter={applyButtonFilter} />
-              <BrandsDropdown applyFilter={applyButtonFilter} />
-              <CategoriesDropdown applyFilter={applyButtonFilter} />
+        </Grid>
+      } // MainCard opening tag closed here
+    >
+      <Grid container mb={"16px"}>
+        <Grid item xs={12} display={"flex"}>
+            <Grid item  xs={9}>
+              <MenuTypesDropdow applyFilter={applyButtonFilter}/>
+             <BranchesDropdown applyFilter={applyButtonFilter}/>
+             <BrandsDropdown applyFilter={applyButtonFilter} />
+             <CategoriesDropdown applyFilter={applyButtonFilter}/>
             </Grid>
             <Grid item xs={3} sx={gridIconsCss}>
               <Stack
@@ -186,29 +181,26 @@ const Items = () => {
                 </Stack>
               </Stack>
             </Grid>
-          </Grid>
         </Grid>
-        <Grid container>
-          <Grid item xs={12}>
-            <Typography
-              variant="h5"
-              sx={{
-                mb: "20px",
-                color: "#212121",
-              }}
-            >
-              {`400 Item(s)`}
-            </Typography>
-          </Grid>
-        </Grid>
-        <Box>
-          {productData && productData.length === 0 ? (
-            <OrderListingSkeleton />
-          ) : (
-            <DragDropTableNew items={items} keysOfItems={keysOfItems} />
-          )}
-        </Box>
-      </MainCard>
+      </Grid>
+      <Grid container>
+      <Grid item xs={12}>
+                <Typography
+                  variant="h5"
+                  sx={{
+                    mb: "20px",
+                    color: "#212121",
+                  }}
+                >
+                  {`${itemsCount} Item(s)`}                </Typography>
+              </Grid>
+      </Grid>
+      <Box>
+        {
+          (productData && productData.length ===0 )? <OrderListingSkeleton/>: <DragDropTableNew items={items} keysOfItems={keysOfItems}/>
+        }
+      </Box>
+    </MainCard>
     </>
   );
 };
