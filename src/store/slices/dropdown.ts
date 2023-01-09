@@ -5,6 +5,7 @@ interface dropdownTypes {
   selectedCity: string;
   selectedCategory: string;
   selectedBrand: string;
+  selectedMenu: string;
 }
 
 // initial state
@@ -13,6 +14,7 @@ const initialState: dropdownTypes = {
   selectedCity: "",
   selectedCategory: "",
   selectedBrand: "",
+  selectedMenu: "",
 };
 
 // ==============================|| SLICE - Date Picker ||============================== //
@@ -33,6 +35,9 @@ const dropdown = createSlice({
     setSelectedBrand(state, action) {
       state.selectedBrand = action.payload;
     },
+    setSelectedMenu(state, action) {
+      state.selectedMenu = action.payload;
+    },
   },
 });
 
@@ -43,4 +48,5 @@ export const {
   setSelectedCity,
   setSelectedCategory,
   setSelectedBrand,
+  setSelectedMenu,
 } = dropdown.actions;
