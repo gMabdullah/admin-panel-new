@@ -13,14 +13,12 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import MainCard from 'components/cards/MainCard'
 import DragDropTableNew from 'components/DragDropTableNew'
 import useAxios from "axios-hooks";
+import BranchesDropdown from 'components/readytouseComponents/BranchesDropdown'
+import CitiesDropdown from 'components/readytouseComponents/CitiesDropdown'
+import BrandsDropdown from 'components/readytouseComponents/BrandsDropdow'
+import CategoriesDropdown from 'components/readytouseComponents/CategoriesDropdown'
 
 // dropdown data
-const branches = [
-  { label: 'All Branches', value: "1" },
-  { label: 'Model Town Branch', value:"2" },
-  { label: 'Johar Town Branch', value: "3"},
-  { label: 'Iqbal Town Branch', value: "4" },
-]
 
 const ordersType = [
   { label: 'Orders Type', value: "1" },
@@ -29,45 +27,20 @@ const ordersType = [
   { label: 'COD', value: "4" },
 ]
 
-const cityList = [
-  { label: 'City', value: "1" },
-  { label: 'Lahore', value:"2" },
-  { label: 'Islamabad', value: "3"},
-  { label: 'Karachi', value: "4" },
-]
 
-const status = [
-  { label: 'Statuses', value: "1" },
-  { label: 'Pending', value:"2" },
-  { label: 'Confirmed', value: "3"},
-  { label: 'Confirmed', value: "4" },
-]
 const Items = () => {
   const { eatout_id, user_id } = JSON.parse(
     localStorage.getItem("businessInfo")!
   );
   const [items, setItems] = useState<ProductResponse["items"]>();
-  const [branchName, setBranchName] = React.useState<string[]>([
-    branches[0].label,
-  ])
+
+  const [applyFilters, setApplyFilters] = React.useState(false);
+
   const [orderType, setOrderType] = React.useState<string[]>([
     ordersType[0].label,
   ])
-  const [city, setCity] = React.useState<string[]>([cityList[0].label])
-  const [orderStatus, setOrderStatus] = React.useState<string[]>([
-    status[0].label,
-  ])
-
-  const handleBranchChange = (event: SelectChangeEvent<typeof branchName>) => {
-    const {
-      target: { value },
-    } = event
-
-    setBranchName(
-      // On autofill we get a stringified value.
-      typeof value === 'string' ? value.split(',') : value,
-    )
-  }
+ 
+ 
 // API Call For Product //
 const [{ data: productData },getProductApi] = useAxios(
   {
@@ -84,6 +57,9 @@ console.log("itemsData",productData)
 useEffect(() => {
  (async ()=>{
     const productResultApi=await getProductApi();
+    if(productResultApi && productResultApi.data.length>0){
+     // const {itemsCount}=productResultApi
+    }
     if(productResultApi.data && productResultApi.data.items.length > 0){
       const {items } = productResultApi.data
      // const {items}=productData;
@@ -93,6 +69,15 @@ useEffect(() => {
   
 
 }, []);
+useEffect(() => {
+  // api call to update the orders list according to filters
+  if (applyFilters) {
+    (async()=>{
+     await getProductApi()
+    })()
+    
+  }
+}, [applyFilters]);
 
 
   const handleOrderTypeChange = (
@@ -108,27 +93,8 @@ useEffect(() => {
     )
   }
 
-  const handleCityChange = (event: SelectChangeEvent<typeof city>) => {
-    const {
-      target: { value },
-    } = event
+ 
 
-    setCity(
-      // On autofill we get a stringified value.
-      typeof value === 'string' ? value.split(',') : value,
-    )
-  }
-
-  const handleStatusChange = (event: SelectChangeEvent<typeof orderStatus>) => {
-    const {
-      target: { value },
-    } = event
-
-    setOrderStatus(
-      // On autofill we get a stringified value.
-      typeof value === 'string' ? value.split(',') : value,
-    )
-  }
 // Header Key of the table //
 
  const keysOfItems :typeKeyOfItem["keysOfItems"]= [
@@ -141,6 +107,9 @@ useEffect(() => {
   { key: "status", value: "Status", align: "left" },
   { key: "", value: "Actions", align: "center" },
 ];
+const applyButtonFilter=()=>{
+  setApplyFilters(true)
+}
 //
   return (
     <MainCard
@@ -198,30 +167,10 @@ useEffect(() => {
       <Grid container>
         <Grid item xs={12} display={"flex"}>
             <Grid item  xs={9}>
-            <MultiSelectDropDown
-            value={branchName}
-            onChange={handleBranchChange}
-            dropDownList={branches}
-            sx={{ width: '160px', height: '40px' }}
-          />
-          <MultiSelectDropDown
-            value={orderType}
-            onChange={handleOrderTypeChange}
-            dropDownList={ordersType}
-            sx={{ width: '160px', height: '40px', ml: '8px' }}
-          />
-          <MultiSelectDropDown
-            value={city}
-            onChange={handleCityChange}
-            dropDownList={cityList}
-            sx={{ width: '160px', height: '40px', ml: '8px' }}
-          />
-          <MultiSelectDropDown
-            value={orderStatus}
-            onChange={handleStatusChange}
-            dropDownList={status}
-            sx={{ width: '130px', height: '40px', ml: '8px' }}
-          />
+          <BranchesDropdown applyFilter={applyButtonFilter}/>
+          <BrandsDropdown applyFilter={applyButtonFilter} />
+          <CitiesDropdown applyFilter={applyButtonFilter}/>
+          <CategoriesDropdown applyFilter={applyButtonFilter}/>
             </Grid>
             <Grid item xs={3}>
             <Stack

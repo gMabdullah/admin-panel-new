@@ -15,7 +15,7 @@ const BranchesDropdown = ({ applyFilter }: dropdownTypes) => {
   //   Get local Storage
   const { eatout_id, user_id } = getLocalStorage();
 
-  const [{}, getBranchesAPI] = useAxios(
+  const [{ loading, error }, getBranchesAPI] = useAxios(
     {
       url: `/get_eatout_branches?restaurant_id=${eatout_id}&source=biz&admin_id=${user_id}`,
       method: "post",
@@ -71,6 +71,9 @@ const BranchesDropdown = ({ applyFilter }: dropdownTypes) => {
     // set comma seperated labes in dropdown header
     setBranchName(selectedLabels);
   };
+
+  if (loading) return <span>Loading...</span>;
+  if (error) return <span>Getting Branches Failed</span>;
 
   return (
     <MultiSelectDropDown

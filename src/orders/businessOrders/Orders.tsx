@@ -49,6 +49,7 @@ import OrderDetail from "./OrderDetail";
 import { useDispatch, useSelector } from "store";
 import BranchesDropdown from "components/readytouseComponents/BranchesDropdown";
 import CitiesDropdown from "components/readytouseComponents/CitiesDropdown";
+import CategoriesDropdown from "components/readytouseComponents/CategoriesDropdown";
 
 const useStyles = makeStyles(() => ({
   colStyle1: {
@@ -801,6 +802,7 @@ const Orders = () => {
               />
               {/* Cities Dropdown */}
               <CitiesDropdown applyFilter={applyFilter} />
+
               <MultiSelectDropDown
                 value={statuses}
                 onChange={handleStatusChange}

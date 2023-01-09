@@ -133,3 +133,19 @@ export const clearStorage = () => {
   localStorage.removeItem("businessInfo");
   localStorage.removeItem("tdLogin");
 };
+
+export const compareItem = (
+  a: { label: string; value: string },
+  b: { label: string; value: string }
+) => {
+  // a should come before b in the sorted order
+  if (a.label.toLowerCase() < b.label.toLowerCase()) {
+    return -1;
+    // a should come after b in the sorted order
+  } else if (a.label.toLowerCase() > b.label.toLowerCase()) {
+    return 1;
+    // and and b are the same
+  } else {
+    return 0;
+  }
+};

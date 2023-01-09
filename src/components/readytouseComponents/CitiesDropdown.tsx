@@ -27,7 +27,7 @@ const CitiesDropdown = ({ applyFilter }: dropdownTypes) => {
     return formData;
   };
 
-  const [{}, getCitiesAPI] = useAxios(
+  const [{ loading, error }, getCitiesAPI] = useAxios(
     {
       url: "/order_city_filter",
       method: "post",
@@ -73,7 +73,8 @@ const CitiesDropdown = ({ applyFilter }: dropdownTypes) => {
     dispatch(setSelectedCity(selectedLabels));
     setCity(selectedLabels);
   };
-
+  if (loading) return <span>Loading...</span>;
+  if (error) return <span>Getting Cities Failed</span>;
   return (
     <MultiSelectDropDown
       value={city}
@@ -81,6 +82,7 @@ const CitiesDropdown = ({ applyFilter }: dropdownTypes) => {
       dropDownList={citiesList}
       sx={{ width: "160px", height: "40px", ml: "8px" }}
       onChangeButton={applyFilter}
+      disableButton={city.length == 0 ? true : false}
     />
   );
 };
