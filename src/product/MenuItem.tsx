@@ -26,7 +26,8 @@ const Items = () => {
   const [items, setItems] = useState<ProductResponse["items"]>();
   const [applyFilters, setApplyFilters] = React.useState(false);
   const [toggleDrawer, setToggleDrawer] = useState(false);
-  const [itemsCount,setItemsCount]=useState(false)
+  const [itemsCount,setItemsCount]=useState("")
+  console.log("items_count",itemsCount)
 // API Call For Product //
 const [{ data: productData },getProductApi] = useAxios(
   {
@@ -42,8 +43,11 @@ console.log("itemsData",productData)
 useEffect(() => {
  (async ()=>{
     const productResultApi=await getProductApi();
-    if(productResultApi && productResultApi.data.length>0){
-     
+    console.log("productResultApi",productResultApi)
+    if(productResultApi){
+      const {items_count } = productResultApi.data;
+      setItemsCount(items_count)
+
     }
     if(productResultApi.data && productResultApi.data.items.length > 0){
       const {items } = productResultApi.data
@@ -65,13 +69,13 @@ useEffect(() => {
 // Header Key of the table //
 
  const keysOfItems :typeKeyOfItem["keysOfItems"]= [
-  { key: "image", value: "Image", align: "center" },
-  { key: "name", value: "Item Name", align: "left" },
-  { key: "category", value: "Category", align: "left" },
-  { key: "price", value: "Price", align: "right" },
-  { key: "discount", value: "Discount", align: "right" },
-  { key: "tax", value: "Tax %", align: "right" },
-  { key: "status", value: "Status", align: "left" },
+  { key: "image", value: "Image", align: "left" ,width:"10%"},
+  { key: "name", value: "Item Name", align: "left" ,width:"30%"},
+  { key: "category", value: "Category", align: "left" ,width:"15%"},
+  { key: "price", value: "Price", align: "left" ,width:"10%"},
+  { key: "discount", value: "Discount", align: "right" ,width:"10%"},
+  { key: "tax", value: "Tax %", align: "right" ,width:"10%"},
+  { key: "status", value: "Status", align: "center" ,width:"10%"},
   { key: "", value: "Actions", align: "center" },
 ];
 const applyButtonFilter=()=>{
@@ -139,7 +143,7 @@ const handleDrawerToggle = () => {
         </Grid>
       } // MainCard opening tag closed here
     >
-      <Grid container>
+      <Grid container mb={"16px"}>
         <Grid item xs={12} display={"flex"}>
             <Grid item  xs={9}>
               <MenuTypesDropdow applyFilter={applyButtonFilter}/>
@@ -183,8 +187,7 @@ const handleDrawerToggle = () => {
                     color: "#212121",
                   }}
                 >
-                  {`400 Item(s)`}
-                </Typography>
+                  {`${itemsCount} Item(s)`}                </Typography>
               </Grid>
       </Grid>
       <Box>

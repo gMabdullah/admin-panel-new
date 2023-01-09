@@ -66,14 +66,15 @@ const DragDropTableNew=({items,keysOfItems}:tablePropsType)=> {
             fontSize: "10px",
             lineHeight: "12px",
             color: "#757575",
+           
           }}
         >
           {currency}
         </Typography>}
         {
-          value &&
- <Typography variant="subtitle1" sx={{ color: "#212121" }}>
- {parseFloat(value).toFixed(decimalPlaces)}
+          
+ <Typography variant="subtitle1" sx={{ color: "#212121" ,marginLeft:currency !=="" ? "" : "100px"}}>
+ {value ? parseFloat(value).toFixed(decimalPlaces):value}
 </Typography>
         }
        
@@ -94,7 +95,7 @@ const DragDropTableNew=({items,keysOfItems}:tablePropsType)=> {
                 <TableCell
                   key={column.key}
                   align={column.align}
-                  style={{ minWidth: column?.minWidth }}
+                  style={{ width: column?.width }}
                 >
                   {column.value}
                 </TableCell>
@@ -120,7 +121,7 @@ const DragDropTableNew=({items,keysOfItems}:tablePropsType)=> {
                 <TableCell
                   key={column.key}
                   align={column.align}
-                 // style={{ minWidth: column?.minWidth }}
+                 style={{ width: column?.width }}
                 >
                   {column.key ==="image" ? 
                                <CardMedia
@@ -130,6 +131,9 @@ const DragDropTableNew=({items,keysOfItems}:tablePropsType)=> {
                                 sx={{
                                   height: "52px",
                                   width: "52px",
+                                  display:"flex",
+                                  justifyContent:"center",
+                                  alignItems:"center"
                                 }}
                               />
                               :column.key ==="name"?
