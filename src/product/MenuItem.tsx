@@ -17,7 +17,8 @@ import BranchesDropdown from 'components/readytouseComponents/BranchesDropdown'
 import CitiesDropdown from 'components/readytouseComponents/CitiesDropdown'
 import BrandsDropdown from 'components/readytouseComponents/BrandsDropdow'
 import CategoriesDropdown from 'components/readytouseComponents/CategoriesDropdown'
-
+import MenuTypesDropdow from 'components/readytouseComponents/MenuTypesDropdow'
+import { OrderListingSkeleton } from "components/skeleton/OrderListingSkeleton";
 // dropdown data
 
 const ordersType = [
@@ -79,19 +80,6 @@ useEffect(() => {
   }
 }, [applyFilters]);
 
-
-  const handleOrderTypeChange = (
-    event: SelectChangeEvent<typeof orderType>,
-  ) => {
-    const {
-      target: { value },
-    } = event
-
-    setOrderType(
-      // On autofill we get a stringified value.
-      typeof value === 'string' ? value.split(',') : value,
-    )
-  }
 
  
 
@@ -167,10 +155,10 @@ const applyButtonFilter=()=>{
       <Grid container>
         <Grid item xs={12} display={"flex"}>
             <Grid item  xs={9}>
-          <BranchesDropdown applyFilter={applyButtonFilter}/>
-          <BrandsDropdown applyFilter={applyButtonFilter} />
-          <CitiesDropdown applyFilter={applyButtonFilter}/>
-          <CategoriesDropdown applyFilter={applyButtonFilter}/>
+              <MenuTypesDropdow applyFilter={applyButtonFilter}/>
+             <BranchesDropdown applyFilter={applyButtonFilter}/>
+             <BrandsDropdown applyFilter={applyButtonFilter} />
+             <CategoriesDropdown applyFilter={applyButtonFilter}/>
             </Grid>
             <Grid item xs={3}>
             <Stack
@@ -215,7 +203,10 @@ const applyButtonFilter=()=>{
               </Grid>
       </Grid>
       <Box>
-       <DragDropTableNew items={items} keysOfItems={keysOfItems}/>
+        {
+          (productData && productData.length ===0 )? <OrderListingSkeleton/>: <DragDropTableNew items={items} keysOfItems={keysOfItems}/>
+        }
+       
       
       </Box>
     </MainCard>

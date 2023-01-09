@@ -80,7 +80,7 @@ const BranchesDropdown = ({ applyFilter }: dropdownTypes) => {
       value={branchName}
       onChange={handleBranchChange}
       dropDownList={branches}
-      sx={{ width: "160px", height: "40px" }}
+      sx={{ width: "160px", height: "40px" ,ml:"8px"}}
       onChangeButton={applyFilter}
     />
   );
