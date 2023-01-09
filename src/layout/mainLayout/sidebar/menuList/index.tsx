@@ -5,7 +5,7 @@ import { Typography } from "@mui/material";
 
 import useAxios from "axios-hooks";
 
-import Loader from "components/Loader";
+import { SidebarSkeleton } from "components/skeleton/SidebarSkeleton";
 import NavCollapse from "./navCollapse";
 import NavItem from "./navItem";
 
@@ -16,6 +16,7 @@ const MenuList = () => {
 
   const [menuItems, setMenuItems] = useState<Element[] | []>([]);
 
+  // menu items json API call payload
   const menuItemsAPIPayload = () => {
     const formData = new FormData();
 
@@ -24,7 +25,8 @@ const MenuList = () => {
     return formData;
   };
 
-  const [{ loading: sideBarLoader }, menuItemsAPICall] = useAxios(
+  // menu items json API call
+  const [{}, menuItemsAPICall] = useAxios(
     {
       url: "/get_menu_json",
       method: "POST",
@@ -35,11 +37,13 @@ const MenuList = () => {
 
   useEffect(() => {
     (async () => {
+      // menu items json API call
       const {
-        data: { data },
+        data: { data, status },
       } = await menuItemsAPICall();
 
-      if (!Array.isArray(data)) {
+      // status 200 (getting required data in API response)
+      if (status === "200" && !Array.isArray(data)) {
         const navItems = data.items.map((item: any) => {
           switch (item.type) {
             case "collapse":
@@ -67,7 +71,8 @@ const MenuList = () => {
 
   return (
     <>
-      {sideBarLoader && <Loader />} {menuItems}
+      {menuItems.length === 0 && <SidebarSkeleton />}
+      {menuItems}
     </>
   );
 };
