@@ -1,8 +1,18 @@
+import React from "react";
+
 import { Stack, Typography } from "@mui/material";
 
 import CustomRadioButton from "components/CustomRadioButton";
 
 const DisplaySection = () => {
+  const [displayValue, setDisplayValue] = React.useState("All");
+
+  const displayChangeHandler = (event: {
+    target: { value: React.SetStateAction<string> };
+  }) => {
+    setDisplayValue(event.target.value);
+  };
+
   return (
     <Stack>
       <Typography variant="h5" sx={{ mb: "12px" }}>
@@ -17,8 +27,8 @@ const DisplaySection = () => {
           { label: "Web", value: "Web" },
           { label: "POS", value: "POS" },
         ]}
-        value={"All"} // onChange={canadaPostHandler}
-        // value={canadaPostDeliveryCharges}
+        value={displayValue}
+        onChange={displayChangeHandler}
       />
     </Stack>
   );

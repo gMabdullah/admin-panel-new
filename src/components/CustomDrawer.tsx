@@ -41,7 +41,7 @@ const CustomDrawer = ({
   onClose: (event: React.SyntheticEvent<{}>) => void;
 }) => {
   return (
-    <Drawer open={open} anchor={anchor}>
+    <Drawer open={open} onClose={onClose} anchor={anchor}>
       <Paper
         sx={{
           height: "100vh",
@@ -64,10 +64,7 @@ const CustomDrawer = ({
               {title}
             </Typography>
 
-            <IconButton
-              //  onClick={closeAddEditModal}
-              sx={{ p: "unset" }}
-            >
+            <IconButton onClick={onClose} sx={{ p: "unset" }}>
               <CloseIcon htmlColor="#D84315" fontSize="large" />
             </IconButton>
           </Grid>

@@ -12,15 +12,19 @@ import InventorySection from "./InventorySection";
 import NutritionSection from "./NutritionSection";
 
 const MenuItem = () => {
+  const [toggleDrawer, setToggleDrawer] = useState(false);
+
+  const handleDrawerToggle = () => {
+    setToggleDrawer((state) => !state);
+  };
+
   return (
     <CustomDrawer
       title="Add Item"
       buttonText="Save"
       anchor="right"
-      open={true}
-      onClose={function (event: SyntheticEvent<{}, Event>): void {
-        throw new Error("Function not implemented.");
-      }}
+      open={toggleDrawer}
+      onClose={handleDrawerToggle}
     >
       <Stack sx={{ p: "32px 25px 0px" }}>
         <Typography variant="h5" sx={{ mb: "24px" }}>
@@ -204,19 +208,12 @@ const MenuItem = () => {
         </Grid>
 
         <Divider sx={{ mb: "24px" }} />
-
         <DisplaySection />
-
         <Divider sx={{ mt: "16px" }} />
-
         <DiscountSection />
-
         <Divider />
-
         <InventorySection />
-
         <Divider />
-
         <NutritionSection />
       </Stack>
     </CustomDrawer>
