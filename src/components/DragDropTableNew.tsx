@@ -9,6 +9,7 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import TableRow from '@mui/material/TableRow';
+import { useSelector } from "store";
 import { Theme } from '@mui/system';
 import {
   Box,
@@ -18,6 +19,7 @@ import {
   Stack,
   Modal,
   IconButton,
+  Tooltip,
 } from "@mui/material";
 import {
 
@@ -39,6 +41,7 @@ import TableChip from './TableChip';
 //     },
 //   }),
 // );
+
 interface tablePropsType {
   items?:ProductResponse["items"]
   keysOfItems:typeKeyOfItem["keysOfItems"]
@@ -48,7 +51,37 @@ const handleDragEnd = (result:any) => {
     // handle the end of a drag and drop event here
   };
 const DragDropTableNew=({items,keysOfItems}:tablePropsType)=> {
+  const {  decimalPlaces } = useSelector(
+    (state) => state.main
+  );
+  const addCurrency = (value:any,currency:any) => {
+ 
+    return (
+      <Stack direction="row" spacing={0.25} sx={{ alignItems: "center" }}>
+       {currency !=="" && <Typography
+          sx={{
+            fontFamily: "Roboto",
+            fontStyle: "normal",
+            fontWeight: "400",
+            fontSize: "10px",
+            lineHeight: "12px",
+            color: "#757575",
+          }}
+        >
+          {currency}
+        </Typography>}
+        {
+          value &&
+ <Typography variant="subtitle1" sx={{ color: "#212121" }}>
+ {parseFloat(value).toFixed(decimalPlaces)}
+</Typography>
+        }
+       
+      </Stack>
+    );
+  };
   return (
+
     <>
 <DragDropContext onDragEnd={handleDragEnd}>
 
@@ -99,12 +132,33 @@ const DragDropTableNew=({items,keysOfItems}:tablePropsType)=> {
                                   width: "52px",
                                 }}
                               />
+                              :column.key ==="name"?
+                              <>
+                              <Typography variant='h5'>
+                               {row[column.key]}
+                              </Typography>
+                              <Tooltip placement="top-start" title={row.desc}>
+                              <div
+                              className="menu-description-css"
+                              style={{ fontSize: "10px" }}
+                               >
+                              {row.desc}
+                             </div>
+                             </Tooltip>
+                            
+                              </>
+                            :column.key ==="price"
+                              ?
+                              addCurrency(row[column.key],row.currency)
+                              :column.key ==="discount" ?
+                              addCurrency(row[column.key],"")
                               :column.key ==="status" ?
                               
                              ( <TableChip statusValue={row[column.key]}/>)
                             :column.value ==="Actions" ?
                             (<MoreVertIcon/>)
-                           : row[column.key]}
+
+                           : <Typography className="tableColumnCss">{row[column.key]}</Typography>}
                 </TableCell>
 ))}
             </TableRow>

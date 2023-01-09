@@ -14,3 +14,31 @@
   .MuiToolbar-root.MuiToolbar-gutters.MuiToolbar-regular.css-kvip5o-MuiToolbar-root{
 align-items: center !important;
   }
+  .menu-description-css{
+    display: block; /* Fallback for non-webkit */
+    display: -webkit-box;
+    max-width: 400px;
+    height: 10px * 1.4 * 2; /* Fallback for non-webkit */
+    /* margin: 0 auto; */
+    font-size: 10px;
+    line-height: 1.4;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .tableColumnCss{
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.334em;
+    font-family: "Roboto";
+    color: #212121;
+  }
+  .filterClassName{
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    color: #212121;
+  }
+  

@@ -1,47 +1,32 @@
 import React, { useState,useEffect } from 'react'
 
 import { Typography, Grid,Stack,Divider,Box} from '@mui/material'
-import { SelectChangeEvent } from '@mui/material/Select'
 
 import SearchField from 'components/SearchField'
 import CustomButton from 'components/CustomButton'
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined'
 import AddTwoToneIcon from '@mui/icons-material/AddTwoTone'
-import MultiSelectDropDown from 'components/MultiSelectDropDown'
 import SortByAlphaIcon from '@mui/icons-material/SortByAlpha';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import MainCard from 'components/cards/MainCard'
 import DragDropTableNew from 'components/DragDropTableNew'
 import useAxios from "axios-hooks";
 import BranchesDropdown from 'components/readytouseComponents/BranchesDropdown'
-import CitiesDropdown from 'components/readytouseComponents/CitiesDropdown'
 import BrandsDropdown from 'components/readytouseComponents/BrandsDropdow'
 import CategoriesDropdown from 'components/readytouseComponents/CategoriesDropdown'
 import MenuTypesDropdow from 'components/readytouseComponents/MenuTypesDropdow'
 import { OrderListingSkeleton } from "components/skeleton/OrderListingSkeleton";
-// dropdown data
-
-const ordersType = [
-  { label: 'Orders Type', value: "1" },
-  { label: 'Pickup', value:"2" },
-  { label: 'Delivery', value: "3"},
-  { label: 'COD', value: "4" },
-]
-
+import MenuItemDrawer from 'products/addEditMenuItem/MenuItem'
+import { gridIconsCss } from './StylesMenu'
 
 const Items = () => {
   const { eatout_id, user_id } = JSON.parse(
     localStorage.getItem("businessInfo")!
   );
   const [items, setItems] = useState<ProductResponse["items"]>();
-
   const [applyFilters, setApplyFilters] = React.useState(false);
-
-  const [orderType, setOrderType] = React.useState<string[]>([
-    ordersType[0].label,
-  ])
- 
- 
+  const [toggleDrawer, setToggleDrawer] = useState(false);
+  const [itemsCount,setItemsCount]=useState(false)
 // API Call For Product //
 const [{ data: productData },getProductApi] = useAxios(
   {
@@ -53,13 +38,12 @@ const [{ data: productData },getProductApi] = useAxios(
 console.log("itemsData",productData)
 /**************************************************** */
 
-
 /*********Get Item data from API Product for table***********/
 useEffect(() => {
  (async ()=>{
     const productResultApi=await getProductApi();
     if(productResultApi && productResultApi.data.length>0){
-     // const {itemsCount}=productResultApi
+     
     }
     if(productResultApi.data && productResultApi.data.items.length > 0){
       const {items } = productResultApi.data
@@ -67,8 +51,6 @@ useEffect(() => {
       setItems(items)
       }
  })()
-  
-
 }, []);
 useEffect(() => {
   // api call to update the orders list according to filters
@@ -79,9 +61,6 @@ useEffect(() => {
     
   }
 }, [applyFilters]);
-
-
- 
 
 // Header Key of the table //
 
@@ -98,8 +77,15 @@ useEffect(() => {
 const applyButtonFilter=()=>{
   setApplyFilters(true)
 }
+const handleDrawerToggle = () => {
+  setToggleDrawer((state) => !state);
+};
 //
   return (
+    <>
+    {
+      toggleDrawer && <MenuItemDrawer toggleDrawer={toggleDrawer} handleDrawerToggle={handleDrawerToggle}/>
+    }
     <MainCard
       title={
         <Grid container spacing={2}>
@@ -145,6 +131,7 @@ const applyButtonFilter=()=>{
                 height: '44px',
                 width: '138px',
               }}
+              onClick={handleDrawerToggle}
             >
               Add Item
             </CustomButton>
@@ -160,7 +147,7 @@ const applyButtonFilter=()=>{
              <BrandsDropdown applyFilter={applyButtonFilter} />
              <CategoriesDropdown applyFilter={applyButtonFilter}/>
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={3} sx={gridIconsCss}>
             <Stack
                             spacing={0.5}
                             direction="row"
@@ -179,8 +166,6 @@ const applyButtonFilter=()=>{
                                 </Stack>
 
                             <Stack
-                           //   direction="row"
-                             
                             >
                               <FilterListIcon
                               />
@@ -206,10 +191,9 @@ const applyButtonFilter=()=>{
         {
           (productData && productData.length ===0 )? <OrderListingSkeleton/>: <DragDropTableNew items={items} keysOfItems={keysOfItems}/>
         }
-       
-      
       </Box>
     </MainCard>
+    </>
   )
 }
 

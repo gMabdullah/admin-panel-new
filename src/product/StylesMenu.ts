@@ -27,3 +27,9 @@ export const AddItemStyle=
         width: "151px",
         border: "1px solid #CCD1DB",
       }
+export const gridIconsCss={
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "end",
+  color: "#212121",
+}

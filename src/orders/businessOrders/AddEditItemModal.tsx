@@ -425,7 +425,7 @@ const AddEditItemModal = ({
                         onClick={closeAddEditModal}
                         sx={{ p: "unset" }}
                       >
-                        <CloseIcon htmlColor="#616161" fontSize="large" />
+                        <CloseIcon htmlColor="#D84315" fontSize="large" />
                       </IconButton>
                     </Grid>
                   </Grid>
