@@ -10,7 +10,7 @@ import { setSelectedMenu } from "store/slices/dropdown";
 // required apply button handler to call respective api
 // 1 - use this type "dropdownTypes"
 
-const MenuTypesDropdow = ({ applyFilter }: dropdownTypes) => {
+const MenuTypesDropdown = ({ applyFilter }: dropdownTypes) => {
   const dispatch = useDispatch();
   const [menus, setMenus] = useState<DropDownListType[]>([]);
   const [menuName, setMenuName] = useState<string[]>(["Default Menu"]);
@@ -95,4 +95,4 @@ const MenuTypesDropdow = ({ applyFilter }: dropdownTypes) => {
   );
 };
 
-export default MenuTypesDropdow;
+export default MenuTypesDropdown;
