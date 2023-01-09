@@ -9,6 +9,7 @@ import useAxios from "axios-hooks";
 // import menuItem from "menuItems";
 import NavCollapse from "./navCollapse";
 import NavItem from "./navItem";
+import Loader from "components/Loader";
 
 // ==============================|| SIDEBAR MENU LIST ||============================== //
 
@@ -26,14 +27,21 @@ const MenuList = () => {
     return formData;
   };
 
-  const [{ data: menuItem }] = useAxios(
-    {
-      url: "/get_menu_json",
-      method: "POST",
-      data: menuItemsPayload(),
-    }
-    // { manual: true }
-  );
+  const [{ data: menuItem, loading: sideMenuLoader }, menuJSONAPICall] =
+    useAxios(
+      {
+        url: "/get_menu_json",
+        method: "POST",
+        data: menuItemsPayload(),
+      },
+      { manual: true }
+    );
+
+  useEffect(() => {
+    (async () => {
+      await menuJSONAPICall();
+    })();
+  }, []);
 
   useEffect(() => {
     menuItem && menuItem.data && setMenuItems(menuItem.data.items);
@@ -42,8 +50,6 @@ const MenuList = () => {
   let navItems: any[] = [];
 
   if (menuItems.length > 0) {
-    console.log("mmmmmmmmmm = ", menuItems);
-
     navItems = menuItems.map((item: any) => {
       switch (item.type) {
         case "collapse":
@@ -58,9 +64,15 @@ const MenuList = () => {
           );
       }
     });
+
+    console.log("mmmmmmmmmm = ", navItems);
   }
 
-  return <>{navItems}</>;
+  return (
+    <>
+      {sideMenuLoader && <Loader />} {navItems}
+    </>
+  );
 };
 
-export default memo(MenuList);
+export default MenuList;
