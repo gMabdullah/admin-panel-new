@@ -44,6 +44,7 @@ const Header = () => {
           [theme.breakpoints.down("md")]: {
             width: "auto",
           },
+          alignItems: "center",
         }}
       >
         <Box

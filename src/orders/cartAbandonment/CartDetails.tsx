@@ -123,7 +123,18 @@ const CartDetails = ({
       );
     }
   };
-
+  // format the weight column values
+  const weightFormatting = (params: GridRenderCellParams) => {
+    return params.row.weight_value && Number(params.row.weight_value) > 0 ? (
+      <Typography variant="body1" sx={{ color: "#212121" }}>{`${parseFloat(
+        params.row.weight_value
+      ).toFixed(decimalPlaces)} ${params.row.weight_unit}`}</Typography>
+    ) : (
+      <Typography variant="body1" sx={{ color: "#212121" }}>
+        -
+      </Typography>
+    );
+  };
   const columns: GridColumns = [
     {
       field: "menu_item_id",
@@ -138,6 +149,15 @@ const CartDetails = ({
       cellClassName: classes.tableItemNamePriceDiscountColumn,
       flex: 1.5,
       sortable: false,
+    },
+    {
+      field: "weight_value",
+      headerName: "Weight",
+      headerAlign: "right",
+      align: "right",
+      flex: 0.6,
+      sortable: false,
+      renderCell: weightFormatting,
     },
     {
       field: "dqty",
@@ -158,23 +178,23 @@ const CartDetails = ({
       sortable: false,
     },
     {
-      field: "discount",
-      headerName: "Discount",
+      field: "item_level_grand_total",
+      headerName: "Amount",
       flex: 0.6,
       headerAlign: "right",
       align: "right",
       sortable: false,
       renderCell: taxDiscountValidation,
     },
-    {
-      field: "tax",
-      headerName: "Tax",
-      flex: 0.4,
-      headerAlign: "right",
-      align: "right",
-      sortable: false,
-      renderCell: taxDiscountValidation,
-    },
+    // {
+    //   field: "tax",
+    //   headerName: "Tax",
+    //   flex: 0.4,
+    //   headerAlign: "right",
+    //   align: "right",
+    //   sortable: false,
+    //   renderCell: taxDiscountValidation,
+    // },
     {
       field: "dtotal",
       headerName: "Total",

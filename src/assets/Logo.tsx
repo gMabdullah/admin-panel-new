@@ -3,6 +3,7 @@ const Logo = () => {
     <svg
       width="120"
       height="40"
+      style={{ display: 'flex', alignSelf: 'center' }}
       viewBox="0 0 120 40"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -16,7 +17,7 @@ const Logo = () => {
         fill="#5F5E5F"
       />
     </svg>
-  );
-};
+  )
+}
 
-export default Logo;
+export default Logo
