@@ -51,19 +51,28 @@ const Items = () => {
         const { items } = productResultApi.data;
         setItems(items);
       }
+
+      if (productResultApi.data) {
+        const { items_count } = productResultApi.data;
+        setItemsCount(items_count);
+      }
+      
     })();
   }, []);
 
   useEffect(() => {
     // api call to update the orders list according to filters
     if (applyFilters) {
-      debugger;
       (async () => {
         // await getProductApi();
         const productResultApi = await getProductApi();
         if (productResultApi.data && productResultApi.data.items) {
           const { items } = productResultApi.data;
           setItems(items);
+        }
+        if (productResultApi.data) {
+          const { items_count } = productResultApi.data;
+          setItemsCount(items_count);
         }
       })();
     }
