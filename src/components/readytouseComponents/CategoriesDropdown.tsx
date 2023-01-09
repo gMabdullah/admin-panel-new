@@ -6,7 +6,7 @@ import MultiSelectDropDown, {
 } from "components/MultiSelectDropDown";
 import { getLocalStorage } from "orders/HelperFunctions";
 import { useDispatch, useSelector } from "store";
-import { setSelectedBranch } from "store/slices/dropdown";
+import { setSelectedCategory } from "store/slices/dropdown";
 // required apply button handler to call respective api
 // 1 - use this type "dropdownTypes"
 
@@ -85,7 +85,7 @@ const CategoriesDropdown = () => {
       }
     }
     // send values to reducer for consuming in api call
-    dispatch(setSelectedBranch(valueForApiFilter));
+    dispatch(setSelectedCategory(valueForApiFilter));
     // set comma seperated labes in dropdown header
     setCategoriesName(selectedLabels);
   };
