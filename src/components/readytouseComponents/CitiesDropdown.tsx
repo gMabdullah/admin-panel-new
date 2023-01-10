@@ -6,7 +6,7 @@ import MultiSelectDropDown, {
 } from "components/MultiSelectDropDown";
 import { getLocalStorage } from "orders/HelperFunctions";
 import { useDispatch, useSelector } from "store";
-import { setSelectedCity } from "store/slices/dropdown";
+import { setSelectedCity } from "store/slices/Dropdown";
 
 const CitiesDropdown = ({ applyFilter }: dropdownTypes) => {
   const dispatch = useDispatch();
