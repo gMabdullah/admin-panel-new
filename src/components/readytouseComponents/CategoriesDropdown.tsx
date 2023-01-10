@@ -10,7 +10,7 @@ import { setSelectedCategory } from "store/slices/dropdown";
 // required apply button handler to call respective api
 // 1 - use this type "dropdownTypes"
 
-const CategoriesDropdown = () => {
+const CategoriesDropdown = ({ applyFilter }: dropdownTypes) => {
   const dispatch = useDispatch();
   const { selectedCategory } = useSelector((state) => state.dropdown);
   const [categories, setCategories] = useState<DropDownListType[]>([]);
@@ -90,7 +90,6 @@ const CategoriesDropdown = () => {
     setCategoriesName(selectedLabels);
   };
 
-  if (loading) return <span>Loading...</span>;
   if (error) return <span>Getting Categories Failed</span>;
 
   return (
@@ -98,9 +97,8 @@ const CategoriesDropdown = () => {
       value={CategoriesName}
       onChange={handleCategoryChange}
       dropDownList={categories}
-      sx={{ width: "160px", height: "40px" }}
-      // Get on Change function from parent where this component is using.
-      onChangeButton={() => {}}
+      sx={{ width: "160px", height: "40px", ml: "8px" }} // Get on Change function from parent where this component is using.
+      onChangeButton={applyFilter}
     />
   );
 };

@@ -13,7 +13,7 @@ import { setSelectedMenu } from "store/slices/dropdown";
 const MenuTypesDropdown = ({ applyFilter }: dropdownTypes) => {
   const dispatch = useDispatch();
   const [menus, setMenus] = useState<DropDownListType[]>([]);
-  const [menuName, setMenuName] = useState<string[]>(["Default Menu"]);
+  const [menuName, setMenuName] = useState<string[]>(["Menu"]);
 
   //   Get local Storage
   const { eatout_id, user_id } = getLocalStorage();
@@ -40,7 +40,7 @@ const MenuTypesDropdown = ({ applyFilter }: dropdownTypes) => {
         // Sort A-Z
         menus.sort(compareItem);
         // Append All Brands option
-        menus.unshift({ label: "Default Menu", value: "" });
+        menus.unshift({ label: "Menu", value: "" });
         setMenus(menus);
       }
     })();
@@ -64,9 +64,9 @@ const MenuTypesDropdown = ({ applyFilter }: dropdownTypes) => {
     let selectedLabels = typeof value === "string" ? value.split(",") : value;
     // select all labels except all menus
     if (selectedLabels.length > 1) {
-      if (selectedLabels.includes("Default Menu")) {
+      if (selectedLabels.includes("Menu")) {
         selectedLabels = selectedLabels.filter(
-          (label) => label !== "Default Menu" && label
+          (label) => label !== "Menu" && label
         );
         // select all values except empty string because its of all menus case
         valueForApiFilter = valueForApiFilter.filter(
@@ -80,7 +80,6 @@ const MenuTypesDropdown = ({ applyFilter }: dropdownTypes) => {
     setMenuName(selectedLabels);
   };
 
-  if (loading) return <span>Loading...</span>;
   if (error) return <span>Getting Menus Failed</span>;
 
   return (
@@ -88,7 +87,7 @@ const MenuTypesDropdown = ({ applyFilter }: dropdownTypes) => {
       value={menuName}
       onChange={handleChange}
       dropDownList={menus}
-      sx={{ width: "160px", height: "40px" }}
+      sx={{ width: "160px", height: "40px", ml: "8px" }}
       // Get on Change function from parent where this component is using.
       onChangeButton={applyFilter}
     />

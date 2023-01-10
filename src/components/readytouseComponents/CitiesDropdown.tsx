@@ -73,7 +73,7 @@ const CitiesDropdown = ({ applyFilter }: dropdownTypes) => {
     dispatch(setSelectedCity(selectedLabels));
     setCity(selectedLabels);
   };
-  if (loading) return <span>Loading...</span>;
+
   if (error) return <span>Getting Cities Failed</span>;
   return (
     <MultiSelectDropDown
