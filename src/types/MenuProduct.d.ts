@@ -29,7 +29,7 @@ interface ProductResponse {
   menu_items: any[];
 }
 
-interface typeKeyOfItem {
+interface TypeKeyOfItem {
   keysOfItems: {
     key: string;
     value: string;

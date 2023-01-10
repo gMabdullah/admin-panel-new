@@ -45,7 +45,7 @@ const IQBAL_BUSINESS_ID = 12092,
     { value: "0", label: "Delivery" },
     { value: "1", label: "Canada Post" },
   ],
-  keysOfItems: typeKeyOfItem["keysOfItems"] = [
+  keysOfItems: TypeKeyOfItem["keysOfItems"] = [
     { key: "image", value: "Image", align: "left", width: "10%" },
     { key: "name", value: "Item Name", align: "left", width: "30%" },
     { key: "category", value: "Category", align: "left", width: "15%" },

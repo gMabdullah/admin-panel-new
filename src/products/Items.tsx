@@ -84,19 +84,6 @@ const Items = () => {
     }
   }, [productData]);
 
-  // // Header Key of the table
-
-  // const keysOfItems: typeKeyOfItem["keysOfItems"] = [
-  //   { key: "image", value: "Image", align: "left", width: "10%" },
-  //   { key: "name", value: "Item Name", align: "left", width: "30%" },
-  //   { key: "category", value: "Category", align: "left", width: "15%" },
-  //   { key: "price", value: "Price", align: "left", width: "10%" },
-  //   { key: "discount", value: "Discount", align: "right", width: "10%" },
-  //   { key: "tax", value: "Tax %", align: "right", width: "10%" },
-  //   { key: "status", value: "Status", align: "center", width: "10%" },
-  //   { key: "", value: "Actions", align: "center" },
-  // ];
-
   const applyButtonFilter = () => {
     setApplyFilters(true);
   };

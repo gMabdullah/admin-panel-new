@@ -38,16 +38,16 @@ import TableChip from "./TableChip";
 //   }),
 // );
 
-interface tablePropsType {
+interface TablePropsType {
   items?: ProductResponse["items"];
-  keysOfItems: typeKeyOfItem["keysOfItems"];
+  keysOfItems: TypeKeyOfItem["keysOfItems"];
 }
 
 const handleDragEnd = (result: any) => {
   // handle the end of a drag and drop event here
 };
 
-const DraggableTable = ({ items, keysOfItems }: tablePropsType) => {
+const DraggableTable = ({ items, keysOfItems }: TablePropsType) => {
   const { decimalPlaces } = useSelector((state) => state.main);
   const addCurrency = (value: any, currency: any) => {
     return (
