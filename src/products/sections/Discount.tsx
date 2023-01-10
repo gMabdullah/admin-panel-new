@@ -3,7 +3,7 @@ import { Grid, Stack } from "@mui/material";
 import ExpandablePanel from "components/ExpandablePanel";
 import TdTextField from "components/TdTextField";
 
-const DiscountSection = () => {
+const Discount = () => {
   return (
     <Stack>
       <ExpandablePanel
@@ -34,4 +34,4 @@ const DiscountSection = () => {
   );
 };
 
-export default DiscountSection;
+export default Discount;

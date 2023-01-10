@@ -1,15 +1,13 @@
-import { useState } from "react";
-
 import { Stack, Typography, Grid, Divider } from "@mui/material";
 
 import TdTextField from "components/TdTextField";
 import CustomDrawer from "components/CustomDrawer";
 import CustomButton from "components/CustomButton";
 import CustomizedSwitch from "components/CustomSwitch";
-import DisplaySection from "./DisplaySection";
-import DiscountSection from "./DiscountSection";
-import InventorySection from "./InventorySection";
-import NutritionSection from "./NutritionSection";
+import Display from "./sections/Display";
+import Discount from "./sections/Discount";
+import Inventory from "./sections/Inventory";
+import Nutrition from "./sections/Nutrition";
 
 interface addEditItemProps {
   toggleDrawer: boolean;
@@ -125,13 +123,13 @@ const AddEditItem = ({
         </Grid>
 
         <Divider sx={{ mb: "24px" }} />
-        <DisplaySection />
+        <Display />
         <Divider sx={{ mt: "16px" }} />
-        <DiscountSection />
+        <Discount />
         <Divider />
-        <InventorySection />
+        <Inventory />
         <Divider />
-        <NutritionSection />
+        <Nutrition />
       </Stack>
     </CustomDrawer>
   );

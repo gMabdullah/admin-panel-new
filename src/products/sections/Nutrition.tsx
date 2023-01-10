@@ -4,7 +4,7 @@ import CustomButton from "components/CustomButton";
 import ExpandablePanel from "components/ExpandablePanel";
 import TdTextField from "components/TdTextField";
 
-const NutritionSection = () => {
+const Nutrition = () => {
   return (
     <Stack sx={{ mb: "23px" }}>
       <ExpandablePanel
@@ -42,4 +42,4 @@ const NutritionSection = () => {
   );
 };
 
-export default NutritionSection;
+export default Nutrition;
