@@ -85,7 +85,7 @@ const BrandsDropdown = ({ applyFilter }: dropdownTypes) => {
     setBrandName(selectedLabels);
   };
 
-  if (loading) return <span>Loading...</span>;
+  // if (loading) return <span>Loading...</span>;
   if (error) return <span>Getting Brands Failed</span>;
 
   return (
@@ -93,7 +93,7 @@ const BrandsDropdown = ({ applyFilter }: dropdownTypes) => {
       value={BrandName}
       onChange={handleBrandChange}
       dropDownList={brands}
-      sx={{ width: "160px", height: "40px", ml: "8px" }}      // Get on Change function from parent where this component is using.
+      sx={{ width: "160px", height: "40px", ml: "8px" }} // Get on Change function from parent where this component is using.
       onChangeButton={applyFilter}
     />
   );

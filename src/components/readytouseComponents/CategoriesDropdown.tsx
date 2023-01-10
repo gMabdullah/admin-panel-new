@@ -90,7 +90,7 @@ const CategoriesDropdown = ({ applyFilter }: dropdownTypes) => {
     setCategoriesName(selectedLabels);
   };
 
-  if (loading) return <span>Loading...</span>;
+  // if (loading) return <span>Loading...</span>;
   if (error) return <span>Getting Categories Failed</span>;
 
   return (
@@ -98,7 +98,7 @@ const CategoriesDropdown = ({ applyFilter }: dropdownTypes) => {
       value={CategoriesName}
       onChange={handleCategoryChange}
       dropDownList={categories}
-      sx={{ width: "160px", height: "40px", ml: "8px" }}      // Get on Change function from parent where this component is using.
+      sx={{ width: "160px", height: "40px", ml: "8px" }} // Get on Change function from parent where this component is using.
       onChangeButton={applyFilter}
     />
   );

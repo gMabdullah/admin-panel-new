@@ -72,7 +72,7 @@ const BranchesDropdown = ({ applyFilter }: dropdownTypes) => {
     setBranchName(selectedLabels);
   };
 
-  if (loading) return <span>Loading...</span>;
+  // if (loading) return <span>Loading...</span>;
   if (error) return <span>Getting Branches Failed</span>;
 
   return (
@@ -80,7 +80,7 @@ const BranchesDropdown = ({ applyFilter }: dropdownTypes) => {
       value={branchName}
       onChange={handleBranchChange}
       dropDownList={branches}
-      sx={{ width: "160px", height: "40px" ,ml:"8px"}}
+      sx={{ width: "160px", height: "40px", ml: "8px" }}
       onChangeButton={applyFilter}
     />
   );

@@ -16,7 +16,7 @@ import BrandsDropdown from "components/readytouseComponents/BrandsDropdow";
 import CategoriesDropdown from "components/readytouseComponents/CategoriesDropdown";
 import MenuTypesDropdow from "components/readytouseComponents/MenuTypesDropdow";
 import { OrderListingSkeleton } from "components/skeleton/OrderListingSkeleton";
-import MenuItemDrawer from "products/addEditMenuItem/MenuItem";
+import AddEditItem from "products/addEditMenuItem/AddEditItem";
 import { gridIconsCss } from "./StylesMenu";
 import { useSelector } from "store";
 import Progress from "components/Progress";
@@ -25,9 +25,8 @@ const Items = () => {
   const { eatout_id, user_id } = JSON.parse(
     localStorage.getItem("businessInfo")!
   );
-  const { selectedMenu, selectedBranch, selectedCategory, selectedBrand } = useSelector(
-    (state) => state.dropdown
-  );
+  const { selectedMenu, selectedBranch, selectedCategory, selectedBrand } =
+    useSelector((state) => state.dropdown);
   const [items, setItems] = useState<ProductResponse["items"]>();
   const [applyFilters, setApplyFilters] = React.useState(false);
   const [toggleDrawer, setToggleDrawer] = useState(false);
@@ -56,7 +55,6 @@ const Items = () => {
         const { items_count } = productResultApi.data;
         setItemsCount(items_count);
       }
-      
     })();
   }, []);
 
@@ -77,24 +75,24 @@ const Items = () => {
       })();
     }
   }, [applyFilters]);
-  
-  useEffect(() =>{
-    // reset filter 
+
+  useEffect(() => {
+    // reset filter
     if (applyFilters) {
       setApplyFilters(false);
     }
-  }, [productData])
+  }, [productData]);
 
-// Header Key of the table //
+  // Header Key of the table //
 
   const keysOfItems: typeKeyOfItem["keysOfItems"] = [
-    { key: "image", value: "Image", align: "left" ,width:"10%"},
-    { key: "name", value: "Item Name", align: "left" ,width:"30%"},
-    { key: "category", value: "Category", align: "left" ,width:"15%"},
-    { key: "price", value: "Price", align: "left" ,width:"10%"},
-    { key: "discount", value: "Discount", align: "right" ,width:"10%"},
-    { key: "tax", value: "Tax %", align: "right" ,width:"10%"},
-    { key: "status", value: "Status", align: "center" ,width:"10%"},
+    { key: "image", value: "Image", align: "left", width: "10%" },
+    { key: "name", value: "Item Name", align: "left", width: "30%" },
+    { key: "category", value: "Category", align: "left", width: "15%" },
+    { key: "price", value: "Price", align: "left", width: "10%" },
+    { key: "discount", value: "Discount", align: "right", width: "10%" },
+    { key: "tax", value: "Tax %", align: "right", width: "10%" },
+    { key: "status", value: "Status", align: "center", width: "10%" },
     { key: "", value: "Actions", align: "center" },
   ];
   const applyButtonFilter = () => {
@@ -107,7 +105,7 @@ const Items = () => {
   return (
     <>
       {toggleDrawer && (
-        <MenuItemDrawer
+        <AddEditItem
           toggleDrawer={toggleDrawer}
           handleDrawerToggle={handleDrawerToggle}
         />
@@ -148,26 +146,26 @@ const Items = () => {
                 variant={"contained"}
                 color={"secondary"}
                 startIcon={<AddTwoToneIcon />}
-              sx={{
-                p: '12px 22px',
-                height: '44px',
-                width: '138px',
-              }}
-              onClick={handleDrawerToggle}
-            >
-              Add Item
-            </CustomButton>
+                sx={{
+                  p: "12px 22px",
+                  height: "44px",
+                  width: "138px",
+                }}
+                onClick={handleDrawerToggle}
+              >
+                Add Item
+              </CustomButton>
+            </Grid>
           </Grid>
-        </Grid>
-      } // MainCard opening tag closed here
-    >
-      <Grid container mb={"16px"}>
-        <Grid item xs={12} display={"flex"}>
-            <Grid item  xs={9}>
-              <MenuTypesDropdow applyFilter={applyButtonFilter}/>
-             <BranchesDropdown applyFilter={applyButtonFilter}/>
-             <BrandsDropdown applyFilter={applyButtonFilter} />
-             <CategoriesDropdown applyFilter={applyButtonFilter}/>
+        } // MainCard opening tag closed here
+      >
+        <Grid container mb={"16px"}>
+          <Grid item xs={12} display={"flex"}>
+            <Grid item xs={9}>
+              <MenuTypesDropdow applyFilter={applyButtonFilter} />
+              <BranchesDropdown applyFilter={applyButtonFilter} />
+              <BrandsDropdown applyFilter={applyButtonFilter} />
+              <CategoriesDropdown applyFilter={applyButtonFilter} />
             </Grid>
             <Grid item xs={3} sx={gridIconsCss}>
               <Stack
@@ -190,26 +188,29 @@ const Items = () => {
                 </Stack>
               </Stack>
             </Grid>
+          </Grid>
         </Grid>
-      </Grid>
-      <Grid container>
-      <Grid item xs={12}>
-                <Typography
-                  variant="h5"
-                  sx={{
-                    mb: "20px",
-                    color: "#212121",
-                  }}
-                >
-                  {`${itemsCount} Item(s)`}                </Typography>
-              </Grid>
-      </Grid>
-      <Box>
-        {
-          (productData && productData.length ===0 )? <OrderListingSkeleton/>: <DragDropTableNew items={items} keysOfItems={keysOfItems}/>
-        }
-      </Box>
-    </MainCard>
+        <Grid container>
+          <Grid item xs={12}>
+            <Typography
+              variant="h5"
+              sx={{
+                mb: "20px",
+                color: "#212121",
+              }}
+            >
+              {`${itemsCount} Item(s)`}{" "}
+            </Typography>
+          </Grid>
+        </Grid>
+        <Box>
+          {productData && productData.length === 0 ? (
+            <OrderListingSkeleton />
+          ) : (
+            <DragDropTableNew items={items} keysOfItems={keysOfItems} />
+          )}
+        </Box>
+      </MainCard>
     </>
   );
 };

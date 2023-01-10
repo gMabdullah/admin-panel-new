@@ -10,14 +10,12 @@ import DisplaySection from "./DisplaySection";
 import DiscountSection from "./DiscountSection";
 import InventorySection from "./InventorySection";
 import NutritionSection from "./NutritionSection";
+interface drawerPropsType {
+  toggleDrawer: boolean;
+  handleDrawerToggle: () => void;
+}
 
-const AddEditItem = () => {
-  const [toggleDrawer, setToggleDrawer] = useState(false);
-
-  const handleDrawerToggle = () => {
-    setToggleDrawer((state) => !state);
-  };
-
+const AddEditItem = ({ toggleDrawer, handleDrawerToggle }: drawerPropsType) => {
   return (
     <CustomDrawer
       title="Add Item"
