@@ -16,7 +16,7 @@ import cartReducer from "./slices/cart";
 import kanbanReducer from "./slices/kanban";
 import menuReducer from "./slices/menu";
 import mainReducer from "./slices/Main";
-import dropdownReducer from "./slices/dropdown";
+import dropdownReducer from "./slices/Dropdown";
 // ==============================|| COMBINE REDUCER ||============================== //
 
 const reducer = combineReducers({

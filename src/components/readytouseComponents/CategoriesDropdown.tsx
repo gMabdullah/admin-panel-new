@@ -6,7 +6,7 @@ import MultiSelectDropDown, {
 } from "components/MultiSelectDropDown";
 import { getLocalStorage } from "orders/HelperFunctions";
 import { useDispatch, useSelector } from "store";
-import { setSelectedCategory } from "store/slices/dropdown";
+import { setSelectedCategory } from "store/slices/Dropdown";
 // required apply button handler to call respective api
 // 1 - use this type "dropdownTypes"
 
