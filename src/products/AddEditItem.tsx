@@ -9,7 +9,7 @@ import Discount from "./sections/Discount";
 import Inventory from "./sections/Inventory";
 import Nutrition from "./sections/Nutrition";
 
-interface addEditItemProps {
+interface AddEditItemProps {
   toggleDrawer: boolean;
   handleDrawerToggle: () => void;
 }
@@ -17,7 +17,7 @@ interface addEditItemProps {
 const AddEditItem = ({
   toggleDrawer,
   handleDrawerToggle,
-}: addEditItemProps) => {
+}: AddEditItemProps) => {
   return (
     <CustomDrawer
       title="Add Item"
