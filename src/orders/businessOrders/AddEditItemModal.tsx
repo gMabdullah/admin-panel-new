@@ -551,7 +551,7 @@ const AddEditItemModal = ({
                                 </Grid>
 
                                 <Grid item>
-                                  <TableChip statusValue={item.status}/>
+                                  <TableChip statusValue={item.status} />
                                 </Grid>
                               </Grid>
                             </CardActionArea>

@@ -12,9 +12,9 @@ import MainCard from "components/cards/MainCard";
 import DragDropTableNew from "components/DragDropTableNew";
 import useAxios from "axios-hooks";
 import BranchesDropdown from "components/readytouseComponents/BranchesDropdown";
-import BrandsDropdown from "components/readytouseComponents/BrandsDropdow";
+import BrandsDropdown from "components/readytouseComponents/BrandsDropdown";
 import CategoriesDropdown from "components/readytouseComponents/CategoriesDropdown";
-import MenuTypesDropdow from "components/readytouseComponents/MenuTypesDropdow";
+import MenuTypesDropdown from "components/readytouseComponents/MenuTypesDropdown";
 import { OrderListingSkeleton } from "components/skeleton/OrderListingSkeleton";
 import AddEditItem from "products/addEditMenuItem/AddEditItem";
 import { gridIconsCss } from "./StylesMenu";
@@ -162,7 +162,7 @@ const Items = () => {
         <Grid container mb={"16px"}>
           <Grid item xs={12} display={"flex"}>
             <Grid item xs={9}>
-              <MenuTypesDropdow applyFilter={applyButtonFilter} />
+              <MenuTypesDropdown applyFilter={applyButtonFilter} />
               <BranchesDropdown applyFilter={applyButtonFilter} />
               <BrandsDropdown applyFilter={applyButtonFilter} />
               <CategoriesDropdown applyFilter={applyButtonFilter} />
