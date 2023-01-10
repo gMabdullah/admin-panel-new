@@ -30,13 +30,14 @@ interface ProductResponse {
 }
 
 interface typeKeyOfItem {
-  keysOfItems:{
-    key:string,
-    value:string,
-    align?: "left" | "center" | "right" | "justify" | "inherit" | undefined
-    width?:string
-  }[]
+  keysOfItems: {
+    key: string;
+    value: string;
+    align?: "left" | "center" | "right" | "justify" | "inherit" | undefined;
+    width?: string;
+  }[];
 }
+
 interface ProductResponseInfo {
   tax: string;
   discount: string;

@@ -10,7 +10,7 @@ import FilterListIcon from "@mui/icons-material/FilterList";
 import useAxios from "axios-hooks";
 
 import MainCard from "components/cards/MainCard";
-import DragDropTableNew from "components/DragDropTableNew";
+import DraggableTable from "components/DraggableTable";
 import SearchField from "components/SearchField";
 import CustomButton from "components/CustomButton";
 import BranchesDropdown from "components/readytouseComponents/BranchesDropdown";
@@ -22,6 +22,7 @@ import Progress from "components/Progress";
 import AddEditItem from "products/AddEditItem";
 import { gridIconsCss } from "./Styles";
 import { useSelector } from "store";
+import { keysOfItems } from "constants/BusinessIds";
 
 const Items = () => {
   const { eatout_id, user_id } = JSON.parse(
@@ -41,8 +42,6 @@ const Items = () => {
     },
     { manual: true }
   );
-  console.log("productData", productData);
-  /**************************************************** */
 
   /*********Get Item data from API Product for table***********/
   useEffect(() => {
@@ -85,25 +84,27 @@ const Items = () => {
     }
   }, [productData]);
 
-  // Header Key of the table //
+  // // Header Key of the table
 
-  const keysOfItems: typeKeyOfItem["keysOfItems"] = [
-    { key: "image", value: "Image", align: "left", width: "10%" },
-    { key: "name", value: "Item Name", align: "left", width: "30%" },
-    { key: "category", value: "Category", align: "left", width: "15%" },
-    { key: "price", value: "Price", align: "left", width: "10%" },
-    { key: "discount", value: "Discount", align: "right", width: "10%" },
-    { key: "tax", value: "Tax %", align: "right", width: "10%" },
-    { key: "status", value: "Status", align: "center", width: "10%" },
-    { key: "", value: "Actions", align: "center" },
-  ];
+  // const keysOfItems: typeKeyOfItem["keysOfItems"] = [
+  //   { key: "image", value: "Image", align: "left", width: "10%" },
+  //   { key: "name", value: "Item Name", align: "left", width: "30%" },
+  //   { key: "category", value: "Category", align: "left", width: "15%" },
+  //   { key: "price", value: "Price", align: "left", width: "10%" },
+  //   { key: "discount", value: "Discount", align: "right", width: "10%" },
+  //   { key: "tax", value: "Tax %", align: "right", width: "10%" },
+  //   { key: "status", value: "Status", align: "center", width: "10%" },
+  //   { key: "", value: "Actions", align: "center" },
+  // ];
+
   const applyButtonFilter = () => {
     setApplyFilters(true);
   };
+
   const handleDrawerToggle = () => {
     setToggleDrawer((state) => !state);
   };
-  //
+
   return (
     <>
       {toggleDrawer && (
@@ -201,7 +202,7 @@ const Items = () => {
                 color: "#212121",
               }}
             >
-              {`${itemsCount} Item(s)`}{" "}
+              {`${itemsCount} Item(s)`}
             </Typography>
           </Grid>
         </Grid>
@@ -209,7 +210,7 @@ const Items = () => {
           {productData && productData.length === 0 ? (
             <OrderListingSkeleton />
           ) : (
-            <DragDropTableNew items={items} keysOfItems={keysOfItems} />
+            <DraggableTable items={items} keysOfItems={keysOfItems} />
           )}
         </Box>
       </MainCard>
