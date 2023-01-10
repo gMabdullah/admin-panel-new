@@ -90,7 +90,6 @@ const CategoriesDropdown = ({ applyFilter }: dropdownTypes) => {
     setCategoriesName(selectedLabels);
   };
 
-  // if (loading) return <span>Loading...</span>;
   if (error) return <span>Getting Categories Failed</span>;
 
   return (

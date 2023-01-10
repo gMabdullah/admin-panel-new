@@ -72,7 +72,6 @@ const BranchesDropdown = ({ applyFilter }: dropdownTypes) => {
     setBranchName(selectedLabels);
   };
 
-  // if (loading) return <span>Loading...</span>;
   if (error) return <span>Getting Branches Failed</span>;
 
   return (

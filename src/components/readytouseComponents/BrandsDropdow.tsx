@@ -85,7 +85,6 @@ const BrandsDropdown = ({ applyFilter }: dropdownTypes) => {
     setBrandName(selectedLabels);
   };
 
-  // if (loading) return <span>Loading...</span>;
   if (error) return <span>Getting Brands Failed</span>;
 
   return (

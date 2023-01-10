@@ -80,7 +80,6 @@ const MenuTypesDropdow = ({ applyFilter }: dropdownTypes) => {
     setMenuName(selectedLabels);
   };
 
-  if (loading) return <span>Loading...</span>;
   if (error) return <span>Getting Menus Failed</span>;
 
   return (
@@ -88,7 +87,7 @@ const MenuTypesDropdow = ({ applyFilter }: dropdownTypes) => {
       value={menuName}
       onChange={handleChange}
       dropDownList={menus}
-      sx={{ width: "160px", height: "40px" ,ml:"8px"}}
+      sx={{ width: "160px", height: "40px", ml: "8px" }}
       // Get on Change function from parent where this component is using.
       onChangeButton={applyFilter}
     />
