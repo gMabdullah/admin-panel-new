@@ -39,9 +39,7 @@ const Feedback = Loadable(
 );
 
 // products routing
-const ProductsItems = Loadable(
-  lazy(() => import("product/MenuItem"))
-);
+const ProductsItems = Loadable(lazy(() => import("products/Items")));
 const ProductsCategories = Loadable(
   lazy(() => import("views/products/categories/Categories"))
 );

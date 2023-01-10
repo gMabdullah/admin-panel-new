@@ -1,5 +1,3 @@
-// Menu Item Listing Sx Props //////////
-
 export const orderTextStyle = {
   width: "260px",
   height: "40px",
@@ -16,12 +14,14 @@ export const orderTextStyle = {
     backgroundColor: "#F5F5F5",
   },
 };
+
 export const AddItemStyle = {
   p: "12px 32px",
   height: "44px",
   width: "151px",
   border: "1px solid #CCD1DB",
 };
+
 export const gridIconsCss = {
   display: "flex",
   alignItems: "center",

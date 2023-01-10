@@ -4,7 +4,7 @@ import { Stack, Typography } from "@mui/material";
 
 import CustomRadioButton from "components/CustomRadioButton";
 
-const DisplaySection = () => {
+const Display = () => {
   const [displayValue, setDisplayValue] = React.useState("All");
 
   const displayChangeHandler = (event: {
@@ -34,4 +34,4 @@ const DisplaySection = () => {
   );
 };
 
-export default DisplaySection;
+export default Display;

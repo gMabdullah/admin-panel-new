@@ -3,7 +3,7 @@ import { Grid, Stack } from "@mui/material";
 import ExpandablePanel from "components/ExpandablePanel";
 import TdTextField from "components/TdTextField";
 
-const InventorySection = () => {
+const Inventory = () => {
   return (
     <Stack>
       <ExpandablePanel
@@ -77,4 +77,4 @@ const InventorySection = () => {
   );
 };
 
-export default InventorySection;
+export default Inventory;

@@ -2,24 +2,26 @@ import React, { useState, useEffect } from "react";
 
 import { Typography, Grid, Stack, Divider, Box } from "@mui/material";
 
-import SearchField from "components/SearchField";
-import CustomButton from "components/CustomButton";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import AddTwoToneIcon from "@mui/icons-material/AddTwoTone";
 import SortByAlphaIcon from "@mui/icons-material/SortByAlpha";
 import FilterListIcon from "@mui/icons-material/FilterList";
+
+import useAxios from "axios-hooks";
+
 import MainCard from "components/cards/MainCard";
 import DragDropTableNew from "components/DragDropTableNew";
-import useAxios from "axios-hooks";
+import SearchField from "components/SearchField";
+import CustomButton from "components/CustomButton";
 import BranchesDropdown from "components/readytouseComponents/BranchesDropdown";
 import BrandsDropdown from "components/readytouseComponents/BrandsDropdown";
 import CategoriesDropdown from "components/readytouseComponents/CategoriesDropdown";
 import MenuTypesDropdown from "components/readytouseComponents/MenuTypesDropdown";
 import { OrderListingSkeleton } from "components/skeleton/OrderListingSkeleton";
-import AddEditItem from "products/addEditMenuItem/AddEditItem";
-import { gridIconsCss } from "./StylesMenu";
-import { useSelector } from "store";
 import Progress from "components/Progress";
+import AddEditItem from "products/AddEditItem";
+import { gridIconsCss } from "./Styles";
+import { useSelector } from "store";
 
 const Items = () => {
   const { eatout_id, user_id } = JSON.parse(
