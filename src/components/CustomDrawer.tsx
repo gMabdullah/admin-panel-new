@@ -8,37 +8,32 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
-import {
-  HighlightOffTwoTone as CloseIcon,
-  Visibility as PreviewIcon,
-  ArrowBackOutlined,
-} from "@mui/icons-material";
+import { HighlightOffTwoTone as CloseIcon } from "@mui/icons-material";
 
 import PerfectScrollbar from "react-perfect-scrollbar";
-import MainCard from "./cards/MainCard";
+
 import CustomButton from "components/CustomButton";
 
 const CustomDrawer = ({
-  // id,
   title,
   buttonText,
-  // subTitle,
   anchor,
   children,
   sx,
   onClose,
   open,
+  onClick,
+  handleCancelClick,
 }: {
-  // id?: string;
   title: React.ReactNode | string;
   buttonText: string;
-  // subTitle?: React.ReactNode | string;
   anchor: "left" | "top" | "right" | "bottom";
   children: React.ReactNode;
-  // children?: React.ReactNode;
   sx?: Object;
   open: boolean;
   onClose: (event: React.SyntheticEvent<{}>) => void;
+  onClick: (event?: React.MouseEvent<HTMLButtonElement>) => void;
+  handleCancelClick: (event?: React.MouseEvent<HTMLButtonElement>) => void;
 }) => {
   return (
     <Drawer open={open} onClose={onClose} anchor={anchor}>
@@ -104,9 +99,7 @@ const CustomDrawer = ({
                   backgroundColor: "#F5F5F5",
                 },
               }}
-
-              // onClick={packingSlipComponent}
-              // disabled={selectionModel.length > 0 ? false : true}
+              onClick={handleCancelClick}
             >
               Cancel
             </CustomButton>
@@ -116,13 +109,9 @@ const CustomDrawer = ({
               sx={{
                 p: "12px 50.5px",
                 ml: "12px",
-                // height: "44px",
-                // width: "151px",
-                // border: "1px solid #CCD1DB",
               }}
               color={"secondary"}
-              // onClick={packingSlipComponent}
-              // disabled={selectionModel.length > 0 ? false : true}
+              onClick={onClick}
             >
               {buttonText}
             </CustomButton>

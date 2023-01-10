@@ -1,8 +1,4 @@
-import React from "react";
-
-import { Grid, Stack, Typography } from "@mui/material";
-
-// .css-1ayqzxq-MuiPaper-root-MuiAccordion-root.Mui-expanded:last-of-type
+import { Grid, Stack } from "@mui/material";
 
 import CustomButton from "components/CustomButton";
 import ExpandablePanel from "components/ExpandablePanel";
@@ -24,28 +20,10 @@ const NutritionSection = () => {
         <Grid container>
           <Grid item xs={12} sx={{ display: "flex", mb: "12px", mt: "24px" }}>
             <Grid item xs={6}>
-              <TdTextField
-                // required={true}
-                // value={itemQuantity}
-                // type="number"
-                label="Nutrition Name"
-                // sx={{ width: "100%" }}
-                // onChange={handleQuantityChange}
-                // error={fieldError.quantityField === "" ? false : true}
-                // helperText={fieldError.quantityField}
-              />
+              <TdTextField label="Nutrition Name" />
             </Grid>
             <Grid item xs={6} sx={{ ml: "8px" }}>
-              <TdTextField
-                // required={true}
-                // value={itemQuantity}
-                type="number"
-                label="Nutrition Value"
-                // sx={{ width: "100%" }}
-                // onChange={handleQuantityChange}
-                // error={fieldError.quantityField === "" ? false : true}
-                // helperText={fieldError.quantityField}
-              />
+              <TdTextField type="number" label="Nutrition Value" />
             </Grid>
           </Grid>
         </Grid>
@@ -55,7 +33,6 @@ const NutritionSection = () => {
             color: "#DB154D",
             fontSize: "13px",
             lineHeight: "unset",
-            // mb: "23px",
           }}
         >
           Add Nutrition
