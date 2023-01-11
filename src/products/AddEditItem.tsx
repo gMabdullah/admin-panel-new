@@ -8,6 +8,7 @@ import Display from "./sections/Display";
 import Discount from "./sections/Discount";
 import Inventory from "./sections/Inventory";
 import Nutrition from "./sections/Nutrition";
+import AddCategory from "./AddCategory";
 
 interface AddEditItemProps {
   toggleDrawer: boolean;
@@ -53,7 +54,7 @@ const AddEditItem = ({
             </CustomButton>
           </Grid>
         </Grid>
-
+        <AddCategory />
         <Divider sx={{ m: "24px 0 31px" }} />
 
         <Grid container>

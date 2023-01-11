@@ -54,8 +54,12 @@ const IQBAL_BUSINESS_ID = 12092,
     { key: "tax", value: "Tax %", align: "right", width: "10%" },
     { key: "status", value: "Status", align: "center", width: "10%" },
     { key: "", value: "Actions", align: "center" },
-  ];
-
+  ],
+  // Regex all only
+  // - small and capital alphabates
+  // - positive numbers
+  // - not more than one hypen or Minus sign
+  alphaNumericRegex = /^[a-zA-Z0-9 &-]*$/;
 export {
   DWP_BUSINESS_ID,
   DWP_STAGING_BUSINESS_ID,
@@ -67,4 +71,5 @@ export {
   orderListingColumns,
   ordersType,
   keysOfItems,
+  alphaNumericRegex,
 };

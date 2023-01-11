@@ -40,6 +40,7 @@ type FormButtonType<T extends React.ElementType> = {
         muiName: string;
       });
   endIcon?: React.ReactElement;
+  ref?: React.MutableRefObject<null>;
 } & React.ComponentPropsWithoutRef<T>;
 
 const CustomButton = <T extends React.ElementType = "button">({
@@ -54,6 +55,7 @@ const CustomButton = <T extends React.ElementType = "button">({
   size,
   disabled,
   onClick,
+  ref,
   ...rest
 }: FormButtonType<T>): JSX.Element => {
   return (
@@ -74,6 +76,7 @@ const CustomButton = <T extends React.ElementType = "button">({
       color={color}
       size={size}
       disabled={disabled}
+      ref={ref}
       {...rest}
     >
       {children}
