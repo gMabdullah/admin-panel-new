@@ -9,6 +9,7 @@ import {
 } from "orders/HelperFunctions";
 import CustomButton from "components/CustomButton";
 import { alphaNumericRegex } from "constants/BusinessIds";
+import RichEditor from "components/RichEditor";
 
 let typingTimer: any = "";
 const doneTypingInterval = 1000;
@@ -156,7 +157,6 @@ const AddCategory = () => {
   };
   //   return Error if API failed
   if (slugError) return <p>Validaton Slug API Failed</p>;
-  console.log("slug", slug);
   return (
     <Stack sx={{ p: "32px 25px 0px" }}>
       <Grid container>
@@ -190,6 +190,7 @@ const AddCategory = () => {
             rows={4}
           />
         </Grid>
+        <RichEditor description={description} setDescription={setDescription} />
       </Grid>
       <CustomButton
         variant={"contained"}

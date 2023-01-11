@@ -177,3 +177,19 @@ export const capitalizeFLetter = (value: string) => {
   // Directly return the joined string
   return splitStr.join(" ");
 };
+const handleLeadingZero = (n: number) => (n < 10 ? "0" + n : n);
+// Format time
+export const formatDate = (date: any) => {
+  return (
+    date.getFullYear() +
+    "-" +
+    handleLeadingZero(date.getMonth() + 1) +
+    "-" +
+    handleLeadingZero(date.getDate()) +
+    " " +
+    handleLeadingZero(date.getHours()) +
+    ":" +
+    handleLeadingZero(date.getMinutes()) +
+    ":00"
+  );
+};
