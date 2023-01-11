@@ -47,6 +47,8 @@ import {
 import { setDate, setGlobalSettings } from "store/slices/Main";
 import OrderDetail from "./OrderDetail";
 import { useDispatch, useSelector } from "store";
+import DropDownSearch from "components/DropDownSearch";
+import InputFieldWithSelect from "components/DropDownSearch";
 
 const useStyles = makeStyles(() => ({
   colStyle1: {
@@ -182,7 +184,10 @@ const Orders = () => {
     );
     return formData;
   };
-
+const dropDownList =[{
+  value:"test",
+  label:"test"
+}]
   //======================================= API Calls =======================================//
 
   const [{ data: globalSetting }, getGlobalSettingsAPI] = useAxios(
@@ -886,13 +891,9 @@ const Orders = () => {
         >
           <Grid container>
             <Grid item xs={12} sx={{ mb: "16px" }}>
-              <MultiSelectDropDown
-                value={branchName}
-                onChange={handleBranchChange}
-                dropDownList={branch}
-                sx={{ width: "160px", height: "40px" }}
-                onChangeButton={applyFilter}
-              />
+              <DropDownSearch  value={dropDownList}
+              onChange={handleOrderTypeChange}
+              dropDownList={dropDownList} onInputChange={undefined} getOptionSelected={undefined} label={"test"}/>
               <MultiSelectDropDown
                 value={orderType}
                 onChange={handleOrderTypeChange}
