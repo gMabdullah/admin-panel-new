@@ -21,7 +21,7 @@ type TextFieldType<T extends React.ElementType> = {
   disabled?: boolean;
   multiline?: boolean;
   onKeyPress?: (event?: React.KeyboardEvent<HTMLElement>) => void;
-  row?: boolean;
+  rows?: number;
   textTransform?: string;
   helperText?: React.ReactNode;
   onChange?: React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement>;
@@ -56,8 +56,6 @@ const CssTextField = withStyles({
             ? `translate(14px, -6px) scale(0.68)`
             : `translate(14px, 12px) scale(1)`
           : "",
-      backgroundColor:
-        props.type === "date" || props.multiline === true ? "white" : "",
       paddingRight: props.type === "date" || props.multiline === true ? 5 : "",
       paddingLeft: props.type === "date" || props.multiline === true ? 5 : "",
     },
@@ -134,7 +132,7 @@ const TdTextField = <T extends React.ElementType = "input">({
   disabled,
   multiline,
   onKeyPress,
-  row,
+  rows,
   textTransform,
   helperText,
   onChange,
@@ -216,7 +214,7 @@ const TdTextField = <T extends React.ElementType = "input">({
       variant="outlined"
       multiline={multiline === true ? true : false}
       onKeyPress={onKeyPress}
-      row={row}
+      rows={rows}
       texttransform={textTransform ? textTransform : ""}
       helperText={helperText}
       onChange={onChange}

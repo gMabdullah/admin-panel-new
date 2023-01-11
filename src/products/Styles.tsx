@@ -28,3 +28,32 @@ export const gridIconsCss = {
   justifyContent: "end",
   color: "#212121",
 };
+
+const nutritionTableStyle = {
+  width: "100%",
+  "& .MuiDataGrid-root": {
+    border: "1px solid #EEEEEE",
+    borderRadius: "8px",
+    color: "#212121",
+
+    "& .MuiDataGrid-footerContainer": {
+      borderTop: "1px solid #EEEEEE",
+    },
+    "& .MuiDataGrid-columnHeaders": {
+      background: "#F5F5F5",
+      borderBottom: "1px solid #EEEEEE",
+    },
+    "& .MuiDataGrid-cell": {
+      borderBottom: "1px solid #EEEEEE",
+    },
+    "& .MuiDataGrid-columnSeparator": {
+      display: "none",
+    },
+    "& .MuiDataGrid-cell:focus-within, & .MuiDataGrid-cell:focus, & .MuiDataGrid-columnHeader:focus, & .MuiDataGrid-columnHeader:focus-within":
+      {
+        outline: "none",
+      },
+  },
+};
+
+export { nutritionTableStyle };

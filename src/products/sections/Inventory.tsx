@@ -51,6 +51,7 @@ const Inventory = () => {
             </Grid>
           </Grid>
         </Grid>
+
         <Grid container>
           <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
             <Grid item xs={6}>
