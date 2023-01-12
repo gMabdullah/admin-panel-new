@@ -228,4 +228,4 @@ const TdTextField = <T extends React.ElementType = "input">({
     />
   );
 };
-export default TdTextField;
+export default (TdTextField);

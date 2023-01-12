@@ -47,8 +47,7 @@ import {
 import { setDate, setGlobalSettings } from "store/slices/Main";
 import OrderDetail from "./OrderDetail";
 import { useDispatch, useSelector } from "store";
-import DropDownSearch from "components/DropDownSearch";
-import InputFieldWithSelect from "components/DropDownSearch";
+import DropDownSearch from "components/customDropDown/DropDownSearch";
 
 const useStyles = makeStyles(() => ({
   colStyle1: {
@@ -82,6 +81,7 @@ const Orders = () => {
   const { startDate, endDate, decimalPlaces } = useSelector(
     (state) => state.main
   );
+  const [selected, setSelected] = useState<string[]>([]);
   const [orders, setOrders] = useState<OrderListingResponse["result"] | []>([]);
   const [statusDropdown, setStatusDropdown] = React.useState<
     DropDownListType[]
@@ -184,10 +184,7 @@ const Orders = () => {
     );
     return formData;
   };
-const dropDownList =[{
-  value:"test",
-  label:"test"
-}]
+const dropDownList =["Option1eeeeeeeeee eeeeeee eeeeee eeeee eee eee eeeeeeeeee Option1eeeeeeeeee eeeeeee eeeeee eeeee eee eee eeeeeeeeee","Option1eeeeeeeeee eeeeeee eeeeee eeeee eee eee eeeeeeeeee Option1eeeeeeeeee eeeeeee eeeeee eeeee eee eee eeeeeeeeee","Option1eeeeeeeeee eeeeeee eeeeee eeeee eee eee eeeeeeeeee Option1eeeeeeeeee eeeeeee eeeeee eeeee eee eee eeeeeeeeee Option1eeeeeeeeee eeeeeee eeeeee eeeee eee eee eeeeeeeeee"]
   //======================================= API Calls =======================================//
 
   const [{ data: globalSetting }, getGlobalSettingsAPI] = useAxios(
@@ -891,9 +888,8 @@ const dropDownList =[{
         >
           <Grid container>
             <Grid item xs={12} sx={{ mb: "16px" }}>
-              <DropDownSearch  value={dropDownList}
-              onChange={handleOrderTypeChange}
-              dropDownList={dropDownList} onInputChange={undefined} getOptionSelected={undefined} label={"test"}/>
+              <DropDownSearch  
+                dropDownList={dropDownList} onChange={setSelected} />
               <MultiSelectDropDown
                 value={orderType}
                 onChange={handleOrderTypeChange}
