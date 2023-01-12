@@ -5,18 +5,44 @@ import Compressor from "compressorjs";
 import { formatDate, getLocalStorage } from "orders/HelperFunctions";
 import useAxios from "axios-hooks";
 import { AWS_BUCKET_URL } from "config";
+import { Grid } from "@mui/material";
 
 interface editorProps {
   description: string;
   setDescription: React.Dispatch<React.SetStateAction<string>>;
 }
-
+interface imageAPIProps {
+  imageType: string;
+  imageTableType: string;
+  resize: number;
+  files: File[];
+  im_date: string;
+}
 const RichEditor = ({ description, setDescription }: editorProps) => {
   const { eatout_id, user_id } = getLocalStorage();
 
-  const payload = () => {
+  const payload = ({
+    imageType,
+    imageTableType,
+    resize,
+    files,
+    im_date,
+  }: imageAPIProps) => {
     const formData = new FormData();
     formData.append("eatout_id", eatout_id);
+
+    formData.append("image_type", imageType);
+    formData.append("im_type", imageTableType);
+    formData.append("resize", `${resize}`);
+
+    if (imageTableType === "bulk") {
+      for (let index = 0; index < files.length; index++) {
+        const filterImagesFromData = files[index];
+        formData.append("files", filterImagesFromData);
+      }
+    } else {
+      formData.append("files", `${files}`);
+    }
 
     formData.append("admin_id", `${user_id}`);
     formData.append("source", "biz");
@@ -24,13 +50,12 @@ const RichEditor = ({ description, setDescription }: editorProps) => {
   };
   // uploadImageAWS
   const [
-    { loading: addCategoryLoading, error: addCategoryError },
+    { loading: imageLoading, error: imageUploadError },
     uploadImageToAWSAPI,
   ] = useAxios(
     {
       url: AWS_BUCKET_URL,
       method: "POST",
-      data: payload(),
     },
     { manual: true }
   );
@@ -60,7 +85,7 @@ const RichEditor = ({ description, setDescription }: editorProps) => {
     return new File([u8arr], filename, { type: mime });
   };
   // Image upload handling
-  const imageUploadHandler = (blobInfo: any, success: any, failure: any) => {
+  const imageUploadHandler = (blobInfo?: any, success?: any, failure?: any) => {
     if (blobInfo.blob()) {
       const fileName = blobInfo.blob().name;
       const fileType = blobInfo.blob().type;
@@ -92,16 +117,16 @@ const RichEditor = ({ description, setDescription }: editorProps) => {
               );
             }
 
-            let dataObj = {
-              imageType: "images",
-              imageTableType: "bulk",
-              resize: 1,
-              files: [compressedFile],
-              im_date: formatDate(new Date()),
-            };
-
             try {
-              let { data } = await uploadImageAWS(dataObj);
+              let { data } = await uploadImageToAWSAPI({
+                data: payload({
+                  imageType: "images",
+                  imageTableType: "bulk",
+                  resize: 1,
+                  files: [compressedFile],
+                  im_date: formatDate(new Date()),
+                }),
+              });
               success(data[0].imageUrl);
             } catch (err) {
               failure(err);
@@ -119,21 +144,26 @@ const RichEditor = ({ description, setDescription }: editorProps) => {
       //   toast.error("No image attached!", toastOptions);
     }
   };
+
+  if (imageUploadError) return <span>Image Uploading Failed</span>;
+
   return (
-    <Editor
-      apiKey={TINY_EDITOR_API_KEY}
-      value={description}
-      init={{
-        height: 300,
-        plugins:
-          "link image code lists fullscreen autolink table " +
-          "preview autosave anchor media wordcount",
-        content_style:
-          "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
-        images_upload_handler: () => imageUploadHandler,
-      }}
-      onEditorChange={(e) => setDescription(e)}
-    />
+    <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
+      <Editor
+        apiKey={TINY_EDITOR_API_KEY}
+        value={description}
+        init={{
+          height: 300,
+          plugins:
+            "link image code lists fullscreen autolink table " +
+            "preview autosave anchor media wordcount",
+          content_style:
+            "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
+          // images_upload_handler: imageUploadHandler,
+        }}
+        onEditorChange={(e) => setDescription(e)}
+      />
+    </Grid>
   );
 };
 

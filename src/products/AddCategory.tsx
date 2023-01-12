@@ -10,6 +10,7 @@ import {
 import CustomButton from "components/CustomButton";
 import { alphaNumericRegex } from "constants/BusinessIds";
 import RichEditor from "components/RichEditor";
+import Display from "./sections/Display";
 
 let typingTimer: any = "";
 const doneTypingInterval = 1000;
@@ -21,6 +22,10 @@ const AddCategory = () => {
     [categoryError, setCategoryError] = useState(""),
     [isSlugAvailable, setIsSlugAvailable] = useState(true),
     [description, setDescription] = useState(""),
+    // remove edit case bit after receiving from parent
+    [editcase, setEditcase] = useState(false),
+    // Get it from Global setting
+    [editor, setEditor] = useState(true),
     { eatout_id, user_id } = getLocalStorage(),
     ref = useRef();
   //
@@ -32,20 +37,24 @@ const AddCategory = () => {
       `${capitalizeFLetter(categoryName)?.trim()}`
     );
     formData.append("slug", slug.replace(/\-$/i, " "));
+    formData.append("description", description);
 
-    // formData.append("description", description)
     // formData.append("menu_type_id", );
     // formData.append("display_source", );
+
+    // category  id goes here
+    if (editcase) formData.append("category_id", `${14081}`);
+
     formData.append("admin_id", `${user_id}`);
     formData.append("source", "biz");
     return formData;
   };
   const [
-    { loading: addCategoryLoading, error: addCategoryError },
-    addCategoryAPI,
+    { loading: addEditCategoryLoading, error: addEditCategoryError },
+    addEditCategoryAPI,
   ] = useAxios(
     {
-      url: `add_menu_item_category`,
+      url: editcase ? `add_menu_item_category` : `edit_menu_item_category`,
       method: "POST",
       data: payload(),
     },
@@ -81,16 +90,21 @@ const AddCategory = () => {
   const addEditCategory = async () => {
     if (validateCategory()) {
       // if add case
-      const categoryResult = await addCategoryAPI();
+      const categoryResult = await addEditCategoryAPI();
       if (categoryResult && categoryResult.data) {
         const { status, message, result } = categoryResult.data;
         // category added
         if (status == 1) {
           console.log("message", message);
+          // reset states after
+          setSlug("");
+          setCategoryName("");
+          setDescription("");
         } else if (status == 0) {
           // category not added
           console.log("message", message);
         }
+        // close modal after completion
       }
     }
   };
@@ -180,18 +194,25 @@ const AddCategory = () => {
             onKeyDown={handleOnKeydown}
           />
         </Grid>
-        <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
-          <TdTextField
-            name="description"
-            label="Category description"
-            value={description}
-            onChange={handleChange}
-            multiline={true}
-            rows={4}
+        {editor ? (
+          <RichEditor
+            description={description}
+            setDescription={setDescription}
           />
-        </Grid>
-        <RichEditor description={description} setDescription={setDescription} />
+        ) : (
+          <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
+            <TdTextField
+              name="description"
+              label="Category description"
+              value={description}
+              onChange={handleChange}
+              multiline={true}
+              rows={4}
+            />
+          </Grid>
+        )}
       </Grid>
+      <Display />
       <CustomButton
         variant={"contained"}
         color={"secondary"}
