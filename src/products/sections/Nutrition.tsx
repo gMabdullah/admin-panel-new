@@ -129,19 +129,20 @@ const Nutrition = () => {
             <Grid item xs={6}>
               <TdTextField
                 label="Nutrition Name"
-                value={customerAddress}
-                onChange={handleAddressChange}
-                error={fieldError.address === "" ? false : true}
-                helperText={fieldError.address}
+                // value={customerAddress}
+                // onChange={handleAddressChange}
+                // error={fieldError.address === "" ? false : true}
+                // helperText={fieldError.address}
               />
             </Grid>
+
             <Grid item xs={6} sx={{ ml: "8px" }}>
               <TdTextField
                 label="Nutrition Value"
-                value={customerAddress}
-                onChange={handleAddressChange}
-                error={fieldError.address === "" ? false : true}
-                helperText={fieldError.address}
+                // value={customerAddress}
+                // onChange={handleAddressChange}
+                // error={fieldError.address === "" ? false : true}
+                // helperText={fieldError.address}
               />
             </Grid>
           </Grid>
