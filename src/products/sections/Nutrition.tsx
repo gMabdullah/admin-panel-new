@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import { DeleteTwoTone, EditTwoTone } from "@mui/icons-material";
 import { Grid, Stack, Box } from "@mui/material";
 import {
@@ -22,40 +24,90 @@ const useStyles = makeStyles(() => ({
 const Nutrition = () => {
   const classes = useStyles();
 
+  const [nutritionRows, setNutritionRows] = useState<
+    ItemDetailsResponseItemNutritionsTable[] | []
+  >([]);
+  const [nutrition, setNutrition] = useState({
+    name: "",
+    value: "",
+  });
+  const [editNutrition, setEditNutrition] = useState({
+    editFlag: false,
+    nutrition: { name: "", value: "", id: "" },
+  });
+
+  const handleChange = (e: { target: { value: string; name: string } }) => {
+    console.log("nutrition = ", nutrition);
+    setNutrition({ ...nutrition, [e.target.name]: e.target.value });
+  };
+
+  const addEditNutrition = () => {
+    if (nutrition.name && nutrition.value) {
+      if (editNutrition.editFlag) {
+        const updatedNutrition = nutritionRows.map((item) =>
+          item.id === editNutrition.nutrition.id
+            ? { ...editNutrition.nutrition, ...nutrition }
+            : item
+        );
+
+        setNutritionRows(updatedNutrition);
+        setEditNutrition({
+          editFlag: false,
+          nutrition: { name: "", value: "", id: "" },
+        });
+      } else {
+        setNutritionRows([
+          { ...nutrition, id: `${nutritionRows.length + 1}` },
+          ...nutritionRows,
+        ]);
+      }
+
+      setNutrition({
+        name: "",
+        value: "",
+      });
+    } else {
+      // set field error;
+    }
+  };
+
+  const deleteNutrition = (itemId: number) => {
+    if (!editNutrition.editFlag) {
+      const nutritionArray = nutritionRows.filter(
+        (item) => item.id !== String(itemId)
+      );
+
+      setNutritionRows(nutritionArray);
+      setNutrition({
+        name: "",
+        value: "",
+      });
+    }
+  };
+
+  const editNutritions = (row: ItemDetailsResponseItemNutritionsTable) => {
+    setEditNutrition({
+      editFlag: true,
+      nutrition: row,
+    });
+
+    setNutrition({
+      name: row.name,
+      value: row.value,
+    });
+  };
+
   const actionsButton = (params: GridRowParams) => {
     const actionsArray = [
       <GridActionsCellItem
         icon={<EditTwoTone />}
         label=""
-        // showInMenu
-        // onClick={async () => {
-        //   // const item_id = Number(params.id);
-        //   // const row = params.row;
-        //   // // get single item API call (for edit item)
-        //   // const {
-        //   //   data: { items },
-        //   // } = await singleItemCall({
-        //   //   url: `/product_details?business_id=${eatout_id}&item_id=${item_id}&admin_id=${user_id}&source=biz`,
-        //   // });
-        //   // if (
-        //   //   (Array.isArray(items) && items.length > 0) ||
-        //   //   items[0].status === "1" ||
-        //   //   items !== null
-        //   // ) {
-        //   //   if (items[0].options.length > 0) {
-        //   //     setOptions(items[0].options);
-        //   //   }
-        //   //   setEditAbleItem([row]);
-        //   //   setEditItemFlag(true);
-        //   //   openAddEditModal();
-        //   // }
-        // }}
+        onClick={() => editNutritions(params.row)}
       />,
       <GridActionsCellItem
         icon={<DeleteTwoTone htmlColor="#D84315" />}
         label=""
-        // showInMenu
-        // onClick={() => deleteOrderItem(Number(params.id))}
+        onClick={() => deleteNutrition(Number(params.id))}
       />,
     ];
 
@@ -64,7 +116,7 @@ const Nutrition = () => {
 
   const columns: GridColumns = [
     {
-      field: "item_name",
+      field: "name",
       headerName: "Name",
       flex: 1,
       sortable: false,
@@ -73,7 +125,7 @@ const Nutrition = () => {
       // renderCell: productFormatting,
     },
     {
-      field: "item_value",
+      field: "value",
       headerName: "Value",
       flex: 0.5,
       align: "right",
@@ -97,22 +149,20 @@ const Nutrition = () => {
     },
   ];
 
-  const rows = [
-    {
-      id: 1,
-      item_id: "11",
-      item_name: "aa",
-      item_value: "12g",
-    },
-    {
-      id: 2,
-      item_id: "22",
-      item_name: "bb",
-      item_value: "12g",
-    },
-  ];
-
-  const handleChange = (e: { target: { value: string; name: string } }) => {};
+  // const rows = [
+  //   {
+  //     id: 1,
+  //     // item_id: "11",
+  //     item_name: "aa",
+  //     item_value: "12g",
+  //   },
+  //   {
+  //     id: 2,
+  //     // item_id: "22",
+  //     item_name: "bb",
+  //     item_value: "12g",
+  //   },
+  // ];
 
   return (
     <Stack sx={{ mb: "32px" }}>
@@ -130,8 +180,9 @@ const Nutrition = () => {
           <Grid item xs={12} sx={{ display: "flex", mb: "12px", mt: "24px" }}>
             <Grid item xs={6}>
               <TdTextField
+                name="name"
                 label="Nutrition Name"
-                // value={customerAddress}
+                value={nutrition.name}
                 onChange={handleChange}
                 // error={fieldError.address === "" ? false : true}
                 // helperText={fieldError.address}
@@ -140,8 +191,9 @@ const Nutrition = () => {
 
             <Grid item xs={6} sx={{ ml: "8px" }}>
               <TdTextField
+                name="value"
                 label="Nutrition Value"
-                // value={customerAddress}
+                value={nutrition.value}
                 onChange={handleChange}
                 // error={fieldError.address === "" ? false : true}
                 // helperText={fieldError.address}
@@ -157,25 +209,27 @@ const Nutrition = () => {
             lineHeight: "unset",
             mb: "17px",
           }}
+          onClick={addEditNutrition}
         >
-          Add Nutrition
+          {editNutrition.editFlag ? "Update Nutrition" : " Add Nutrition"}
         </CustomButton>
 
-        <Box
-          sx={{
-            ...nutritionTableStyle,
-          }}
-        >
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            getRowId={(row: any) => row.item_id}
-            autoHeight
-            disableColumnMenu
-            hideFooterSelectedRowCount
-            hideFooter
-          />
-        </Box>
+        {nutritionRows.length > 0 && (
+          <Box
+            sx={{
+              ...nutritionTableStyle,
+            }}
+          >
+            <DataGrid
+              rows={nutritionRows}
+              columns={columns}
+              autoHeight
+              disableColumnMenu
+              hideFooterSelectedRowCount
+              hideFooter
+            />
+          </Box>
+        )}
       </ExpandablePanel>
     </Stack>
   );

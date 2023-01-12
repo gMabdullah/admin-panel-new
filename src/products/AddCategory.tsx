@@ -170,7 +170,7 @@ const AddCategory = () => {
     }
   };
   //   return Error if API failed
-  if (slugError) return <p>Validaton Slug API Failed</p>;
+  if (slugError) return <p>Validation Slug API Failed</p>;
   return (
     <Stack sx={{ p: "32px 25px 0px" }}>
       <Grid container>
