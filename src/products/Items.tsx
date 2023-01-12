@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 
 import { Typography, Grid, Stack, Divider, Box } from "@mui/material";
 
@@ -21,19 +21,26 @@ import { OrderListingSkeleton } from "components/skeleton/OrderListingSkeleton";
 import Progress from "components/Progress";
 import AddEditItem from "products/AddEditItem";
 import { gridIconsCss } from "./Styles";
-import { useSelector } from "store";
+import { dispatch, useSelector } from "store";
 import { keysOfItems } from "constants/BusinessIds";
+import {
+  ProductsContext,
+  // reducer,
+  // initialState,
+} from "./context/ProductsContext";
 
 const Items = () => {
   const { eatout_id, user_id } = JSON.parse(
     localStorage.getItem("businessInfo")!
   );
+
   const { selectedMenu, selectedBranch, selectedCategory, selectedBrand } =
     useSelector((state) => state.dropdown);
   const [items, setItems] = useState<ProductResponse["items"]>();
   const [applyFilters, setApplyFilters] = React.useState(false);
   const [toggleDrawer, setToggleDrawer] = useState(false);
   const [itemsCount, setItemsCount] = useState("");
+  // const [state, dispatch] = useReducer(reducer, initialState);
 
   // API Call For Product //
   const [{ data: productData }, getProductApi] = useAxios(
@@ -94,115 +101,118 @@ const Items = () => {
   };
 
   return (
-    <>
-      {toggleDrawer && (
-        <AddEditItem
-          toggleDrawer={toggleDrawer}
-          handleDrawerToggle={handleDrawerToggle}
-        />
-      )}
-      <MainCard
-        title={
-          <Grid container spacing={2}>
-            <Grid
-              item
-              xs={6}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <Typography variant="h3">Menu Items</Typography>
+    <ProductsContext.Provider>
+      <>
+        {toggleDrawer && (
+          <AddEditItem
+            toggleDrawer={toggleDrawer}
+            handleDrawerToggle={handleDrawerToggle}
+          />
+        )}
 
-              <SearchField
-                iconPrimary={SearchOutlinedIcon}
-                placeholder="Search Item"
+        <MainCard
+          title={
+            <Grid container spacing={2}>
+              <Grid
+                item
+                xs={6}
                 sx={{
-                  width: "260px",
-                  height: "40px",
-                  marginLeft: "36px",
+                  display: "flex",
+                  alignItems: "center",
                 }}
-              />
-            </Grid>
-            <Grid
-              item
-              xs={6}
-              sx={{
-                display: "flex",
-                justifyContent: "flex-end",
-                alignItems: "center",
-              }}
-            >
-              <CustomButton
-                variant={"contained"}
-                color={"secondary"}
-                startIcon={<AddTwoToneIcon />}
-                sx={{
-                  p: "12px 22px",
-                  height: "44px",
-                  width: "138px",
-                }}
-                onClick={handleDrawerToggle}
               >
-                Add Item
-              </CustomButton>
-            </Grid>
-          </Grid>
-        } // MainCard opening tag closed here
-      >
-        <Grid container mb={"16px"}>
-          <Grid item xs={12} display={"flex"}>
-            <Grid item xs={9}>
-              <MenuTypesDropdown applyFilter={applyButtonFilter} />
-              <BranchesDropdown applyFilter={applyButtonFilter} />
-              <BrandsDropdown applyFilter={applyButtonFilter} />
-              <CategoriesDropdown applyFilter={applyButtonFilter} />
-            </Grid>
-            <Grid item xs={3} sx={gridIconsCss}>
-              <Stack
-                spacing={0.5}
-                direction="row"
-                divider={
-                  <Divider
-                    orientation="vertical"
-                    sx={{ border: "1px solid #EEEEEE", display: "flex" }}
-                    flexItem
-                  />
-                }
-              >
-                <Stack>
-                  <SortByAlphaIcon />
-                </Stack>
+                <Typography variant="h3">Menu Items</Typography>
 
-                <Stack>
-                  <FilterListIcon />
+                <SearchField
+                  iconPrimary={SearchOutlinedIcon}
+                  placeholder="Search Item"
+                  sx={{
+                    width: "260px",
+                    height: "40px",
+                    marginLeft: "36px",
+                  }}
+                />
+              </Grid>
+              <Grid
+                item
+                xs={6}
+                sx={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  alignItems: "center",
+                }}
+              >
+                <CustomButton
+                  variant={"contained"}
+                  color={"secondary"}
+                  startIcon={<AddTwoToneIcon />}
+                  sx={{
+                    p: "12px 22px",
+                    height: "44px",
+                    width: "138px",
+                  }}
+                  onClick={handleDrawerToggle}
+                >
+                  Add Item
+                </CustomButton>
+              </Grid>
+            </Grid>
+          } // MainCard opening tag closed here
+        >
+          <Grid container mb={"16px"}>
+            <Grid item xs={12} display={"flex"}>
+              <Grid item xs={9}>
+                <MenuTypesDropdown applyFilter={applyButtonFilter} />
+                <BranchesDropdown applyFilter={applyButtonFilter} />
+                <BrandsDropdown applyFilter={applyButtonFilter} />
+                <CategoriesDropdown applyFilter={applyButtonFilter} />
+              </Grid>
+              <Grid item xs={3} sx={gridIconsCss}>
+                <Stack
+                  spacing={0.5}
+                  direction="row"
+                  divider={
+                    <Divider
+                      orientation="vertical"
+                      sx={{ border: "1px solid #EEEEEE", display: "flex" }}
+                      flexItem
+                    />
+                  }
+                >
+                  <Stack>
+                    <SortByAlphaIcon />
+                  </Stack>
+
+                  <Stack>
+                    <FilterListIcon />
+                  </Stack>
                 </Stack>
-              </Stack>
+              </Grid>
             </Grid>
           </Grid>
-        </Grid>
-        <Grid container>
-          <Grid item xs={12}>
-            <Typography
-              variant="h5"
-              sx={{
-                mb: "20px",
-                color: "#212121",
-              }}
-            >
-              {`${itemsCount} Item(s)`}
-            </Typography>
+          <Grid container>
+            <Grid item xs={12}>
+              <Typography
+                variant="h5"
+                sx={{
+                  mb: "20px",
+                  color: "#212121",
+                }}
+              >
+                {`${itemsCount} Item(s)`}
+              </Typography>
+            </Grid>
           </Grid>
-        </Grid>
-        <Box>
-          {productData && productData.length === 0 ? (
-            <OrderListingSkeleton />
-          ) : (
-            <DraggableTable items={items} keysOfItems={keysOfItems} />
-          )}
-        </Box>
-      </MainCard>
-    </>
+          <Box>
+            {productData && productData.length === 0 ? (
+              <OrderListingSkeleton />
+            ) : (
+              <DraggableTable items={items} keysOfItems={keysOfItems} />
+            )}
+          </Box>
+        </MainCard>
+      </>
+    </ProductsContext.Provider>
   );
 };
 
