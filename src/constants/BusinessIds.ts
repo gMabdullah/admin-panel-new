@@ -64,17 +64,3 @@ export const IQBAL_BUSINESS_ID = 12092,
     { key: "status", value: "Status", align: "center", width: "10%" },
     { key: "", value: "Actions", align: "center" },
   ];
-
-// export {
-//   DWP_BUSINESS_ID,
-//   DWP_STAGING_BUSINESS_ID,
-//   AMANAT_BUSINESS_ID,
-//   AMANAT_STAGING_BUSINESS_ID,
-//   IQBAL_BUSINESS_ID,
-//   TEZMART_BUSINESS_ID,
-//   OrderDetailColumns,
-//   orderListingColumns,
-//   ordersType,
-//   keysOfItems,
-//   alphaNumericRegex,
-// };

@@ -112,6 +112,8 @@ const Nutrition = () => {
     },
   ];
 
+  const handleChange = (e: { target: { value: string; name: string } }) => {};
+
   return (
     <Stack sx={{ mb: "32px" }}>
       <ExpandablePanel
@@ -130,7 +132,7 @@ const Nutrition = () => {
               <TdTextField
                 label="Nutrition Name"
                 // value={customerAddress}
-                // onChange={handleAddressChange}
+                onChange={handleChange}
                 // error={fieldError.address === "" ? false : true}
                 // helperText={fieldError.address}
               />
@@ -140,7 +142,7 @@ const Nutrition = () => {
               <TdTextField
                 label="Nutrition Value"
                 // value={customerAddress}
-                // onChange={handleAddressChange}
+                onChange={handleChange}
                 // error={fieldError.address === "" ? false : true}
                 // helperText={fieldError.address}
               />
