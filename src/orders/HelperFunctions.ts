@@ -149,3 +149,47 @@ export const compareItem = (
     return 0;
   }
 };
+
+export const slugify = (slug: string) => {
+  return (
+    slug
+      .toString()
+      .trim()
+      .toLowerCase()
+      // remove any special character with spaces
+      .replace(/[\W_]+/g, " ")
+      // remove more than one spaces and dashes
+      .replace(/\s+|-+/g, "-")
+      // remove -dashes from start of string
+      .replace(/^\-/i, " ")
+  );
+};
+
+export const capitalizeFLetter = (value: string) => {
+  // handle null, undefined etc
+  if (!value) return;
+
+  let splitStr = value.toLowerCase().split(" ");
+  for (let i = 0; i < splitStr.length; i++) {
+    splitStr[i] =
+      splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
+  }
+  // Directly return the joined string
+  return splitStr.join(" ");
+};
+const handleLeadingZero = (n: number) => (n < 10 ? "0" + n : n);
+// Format time
+export const formatDate = (date: any) => {
+  return (
+    date.getFullYear() +
+    "-" +
+    handleLeadingZero(date.getMonth() + 1) +
+    "-" +
+    handleLeadingZero(date.getDate()) +
+    " " +
+    handleLeadingZero(date.getHours()) +
+    ":" +
+    handleLeadingZero(date.getMinutes()) +
+    ":00"
+  );
+};
