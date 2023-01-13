@@ -203,3 +203,23 @@ export const reorder = (list: any, sequence:any) => {
 
   return result;
 };
+export const sortMenuItems = (shortValues:any,type:string,shortType:string) => {
+ 
+if(shortType==="itemShort"){
+  shortValues.map((Items:any) => {
+    if (type === "0") {
+      Items.menu_item = Items.menu_item.sort((a:any, b:any) => {
+        if (a.name < b.name) return -1;
+        if (b.name < a.name) return 1;
+        return 0;
+      });
+    } else {
+      Items.menu_item = Items.menu_item.sort((a:any, b:any) => {
+        if (a.name > b.name) return -1;
+        if (b.name > a.name) return 1;
+        return 0;
+      });
+    }
+  });
+} 
+}

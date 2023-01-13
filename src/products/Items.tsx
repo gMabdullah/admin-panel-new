@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useReducer } from "react";
 
-import { Typography, Grid, Stack, Divider, Box } from "@mui/material";
+import { Typography, Grid, Stack, Divider, Box, IconButton } from "@mui/material";
 
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import AddTwoToneIcon from "@mui/icons-material/AddTwoTone";
@@ -28,7 +28,7 @@ import {
   // reducer,
   // initialState,
 } from "./context/ProductsContext";
-import { reorder } from "orders/HelperFunctions";
+import { reorder, sortMenuItems } from "orders/HelperFunctions";
 
 const Items = () => {
   const { eatout_id, user_id } = JSON.parse(
@@ -106,7 +106,34 @@ const [{}, shortItemId] = useAxios(
   const applyButtonFilter = () => {
     setApplyFilters(true);
   };
+const sortingItems =async (sortingType:any)=>{
+  let  sortItems;
+    if (sortingType === "0") {
+      sortItems = items?.sort((a:any, b: any) => {
+        if (a.name < b.name) return -1;
+        if (b.name < a.name) return 1;
+        return 0;
+      });
+    } else {
+       sortItems = items?.sort((a, b) => {
+        if (a.name > b.name) return -1;
+        if (b.name > a.name) return 1;
+        return 0;
+      });
+    }
+   
+  const formData = new FormData();
 
+ 
+      sortItems?.map(({ menu_item_id }) => {
+      formData.append("categoryArray[]", menu_item_id);
+    });
+    const shortItemResponse=await shortItemId({
+      data:formData
+  })
+  setItems(sortItems)
+
+}
   const handleDrawerToggle = () => {
     setToggleDrawer((state) => !state);
   };
@@ -210,7 +237,9 @@ const [{}, shortItemId] = useAxios(
                   }
                 >
                   <Stack>
+                    <IconButton onClick={()=>sortingItems("0")}>
                     <SortByAlphaIcon />
+                    </IconButton>
                   </Stack>
 
                   <Stack>
