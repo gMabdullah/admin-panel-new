@@ -41,14 +41,27 @@ import TableChip from "./TableChip";
 interface TablePropsType {
   items?: ProductResponse["items"];
   keysOfItems: TypeKeyOfItem["keysOfItems"];
+  setSequenceItem?:any
+  shortDragDropItems?:any
 }
 
-const handleDragEnd = (result: any) => {
-  // handle the end of a drag and drop event here
-};
 
-const DraggableTable = ({ items, keysOfItems }: TablePropsType) => {
+
+
+const DraggableTable = ({ items, keysOfItems ,setSequenceItem,shortDragDropItems}: TablePropsType) => {
   const { decimalPlaces } = useSelector((state) => state.main);
+  const handleDragEnd = (result:any) => {
+    debugger;
+    const sortArray=[
+      {
+        source:result.source.index,
+        destination:result.destination.index
+      }
+    ]
+    //setSequenceItem(sortArray)
+    shortDragDropItems(sortArray)
+    // handle the end of a drag and drop event here
+  };
   const addCurrency = (value: any, currency: any) => {
     return (
       <Stack direction="row" spacing={0.25} sx={{ alignItems: "center" }}>

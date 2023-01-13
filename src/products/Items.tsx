@@ -28,6 +28,7 @@ import {
   // reducer,
   // initialState,
 } from "./context/ProductsContext";
+import { reorder } from "orders/HelperFunctions";
 
 const Items = () => {
   const { eatout_id, user_id } = JSON.parse(
@@ -40,6 +41,8 @@ const Items = () => {
   const [applyFilters, setApplyFilters] = React.useState(false);
   const [toggleDrawer, setToggleDrawer] = useState(false);
   const [itemsCount, setItemsCount] = useState("");
+  const [sequenceItem,setSequenceItem]=useState([])
+  console.log("sequenceItem",sequenceItem)
   // const [state, dispatch] = useReducer(reducer, initialState);
 
   // API Call For Product //
@@ -99,7 +102,17 @@ const Items = () => {
   const handleDrawerToggle = () => {
     setToggleDrawer((state) => !state);
   };
+ // Drag And Drop Shorting
+ const shortDragDropItems=(sortArray:any)=>{      
+                                                       
+  debugger
+  let shortItems=reorder(items,sortArray)
+  debugger
+  //let shortItems:any
 
+  // eslint-disable-next-line @typescript-eslint/no-redeclare
+  //let shortItems=reorder(items,sequenceItem)
+}
   return (
     <ProductsProvider>
       <>
@@ -207,7 +220,7 @@ const Items = () => {
             {productData && productData.length === 0 ? (
               <OrderListingSkeleton />
             ) : (
-              <DraggableTable items={items} keysOfItems={keysOfItems} />
+              <DraggableTable items={items} keysOfItems={keysOfItems} setSequenceItem={setSequenceItem} shortDragDropItems={shortDragDropItems}/>
             )}
           </Box>
         </MainCard>

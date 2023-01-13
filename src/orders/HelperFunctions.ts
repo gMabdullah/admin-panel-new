@@ -193,3 +193,13 @@ export const formatDate = (date: any) => {
     ":00"
   );
 };
+
+// Drag And drop For Product listing Reorder Function
+export const reorder = (list: any, sequence:any) => {
+  debugger
+  const result = Array.from(list);
+  const [removed] = result.splice(sequence[0].source, 1);
+  result.splice(sequence[0].destination, 0, removed);
+
+  return result;
+};
