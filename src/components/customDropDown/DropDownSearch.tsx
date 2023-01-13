@@ -9,7 +9,6 @@ export interface DropDownListType {
 }
 
 interface DropDownListTypeSearchType {
- // size?:'"small" | "medium" | undefined',
   error?: boolean,
   label?: string,
   placeholder?:string
@@ -20,8 +19,7 @@ interface DropDownListTypeSearchType {
   disabled?:boolean,
   
 } 
-const  MultiSelect=({
- // size,
+const  DropDownSearch=({
   error,
   label,
   placeholder,
@@ -29,7 +27,6 @@ const  MultiSelect=({
   onChange,
   helperText,
   dropDownList,
-  
   disabled,
 }:DropDownListTypeSearchType)=> {
   const classes = useStyles();
@@ -75,4 +72,4 @@ const  MultiSelect=({
   );
 }
 
-export default React.memo (MultiSelect);
+export default React.memo (DropDownSearch);
