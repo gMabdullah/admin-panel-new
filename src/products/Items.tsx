@@ -24,7 +24,7 @@ import { gridIconsCss } from "./Styles";
 import { dispatch, useSelector } from "store";
 import { keysOfItems } from "constants/BusinessIds";
 import {
-  ProductsContext,
+  ProductsProvider,
   // reducer,
   // initialState,
 } from "./context/ProductsContext";
@@ -101,7 +101,7 @@ const Items = () => {
   };
 
   return (
-    <ProductsContext.Provider>
+    <ProductsProvider>
       <>
         {toggleDrawer && (
           <AddEditItem
@@ -212,7 +212,7 @@ const Items = () => {
           </Box>
         </MainCard>
       </>
-    </ProductsContext.Provider>
+    </ProductsProvider>
   );
 };
 

@@ -60,7 +60,7 @@ const reducer = (state: State, action: Action) => {
 export const ProductsProvider = ({
   children,
 }: {
-  children: React.ReactElement;
+  children: React.ReactNode;
 }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
