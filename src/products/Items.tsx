@@ -38,6 +38,7 @@ const Items = () => {
   const { selectedMenu, selectedBranch, selectedCategory, selectedBrand } =
     useSelector((state) => state.dropdown);
   const [items, setItems] = useState<ProductResponse["items"]>();
+  console.log("items",items)
   const [applyFilters, setApplyFilters] = React.useState(false);
   const [toggleDrawer, setToggleDrawer] = useState(false);
   const [itemsCount, setItemsCount] = useState("");
@@ -53,7 +54,14 @@ const Items = () => {
     },
     { manual: true }
   );
-
+// API Call For Shorting //
+const [{}, shortItemId] = useAxios(
+  {
+    url: "/sort_items",
+    method: "post",
+  },
+  { manual: true }
+);
   /*********Get Item data from API Product for table***********/
   useEffect(() => {
     (async () => {
@@ -103,10 +111,19 @@ const Items = () => {
     setToggleDrawer((state) => !state);
   };
  // Drag And Drop Shorting
- const shortDragDropItems=(sortArray:any)=>{      
+ const shortDragDropItems=async(sortArray:any)=>{      
                                                        
   debugger
-  let shortItems=reorder(items,sortArray)
+  let shortItems:any=reorder(items,sortArray)
+  setItems(shortItems)
+  const formData = new FormData();
+  for (let index = 0; index < shortItems.length; index++) {
+    formData.append("categoryArray[]", shortItems[index].menu_item_id);
+  }
+ const shortItemResponse=await shortItemId({
+    data:formData
+})
+  console.log("shortItems",shortItemResponse)
   debugger
   //let shortItems:any
 
