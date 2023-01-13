@@ -50,7 +50,6 @@ export const useStyles:any = makeStyles((theme) => ({
           "& fieldset": {
             borderColor: "#bababa",
             borderWidth: 0.8,
-          //  cursor: props.disabled === true ? "not-allowed" : "arrow",
           },
           "&:hover fieldset": {
             borderColor: "#e51451",
@@ -64,7 +63,6 @@ export const useStyles:any = makeStyles((theme) => ({
             fontSize:
              13 ,
             fontWeight: "200",
-         //  textTransform: (props: { texttransform: any; }) => props.texttransform,
           },
           "&.MuiOutlinedInput-root .MuiTypography-root": {
             color: "#545454",
@@ -74,9 +72,6 @@ export const useStyles:any = makeStyles((theme) => ({
           },
           "& .MuiOutlinedInput-input": {
            padding:"2px !important" ,
-          },
-          "& .MuiOutlinedInput-adornedEnd .MuiAutocomplete-endAdornment": {
-           // display: props.inHead ? "none" : "",
           },
         },
       
