@@ -7,9 +7,8 @@ export interface DropDownListType {
   label: string;
   id: string;
 }
-
 interface DropDownListTypeSearchType {
-  error?: boolean,
+  isError?: boolean,
   label?: string,
   placeholder?:string
   value?:DropDownListType[]
@@ -20,7 +19,7 @@ interface DropDownListTypeSearchType {
   
 } 
 const  DropDownSearch=({
-  error,
+  isError,
   label,
   placeholder,
   value,
@@ -30,8 +29,6 @@ const  DropDownSearch=({
   disabled,
 }:DropDownListTypeSearchType)=> {
   const classes = useStyles();
-  
-
   const handleChange = (event: React.ChangeEvent<{}>, values: DropDownListType[]) => {
     onChange(values);
   };
@@ -48,7 +45,7 @@ const  DropDownSearch=({
         renderInput={(params) => (
           <TextField
             {...params}
-            error={error}
+            error={isError}
             variant="outlined"
             label={label}
             placeholder={placeholder}
