@@ -5,7 +5,7 @@ import { useStyles } from "./DropDownStyles";
 
 export interface DropDownListType {
   label: string;
-  id: string;
+  value: string;
 }
 interface DropDownListTypeSearchType {
   isError?: boolean,
@@ -16,8 +16,10 @@ interface DropDownListTypeSearchType {
   onChange: (selected: DropDownListType[]) => void,
   dropDownList: DropDownListType[],
   disabled?:boolean,
-  
+  isMultiSelect?:boolean,
+  name?:string
 } 
+
 const  DropDownSearch=({
   isError,
   label,
@@ -27,20 +29,35 @@ const  DropDownSearch=({
   helperText,
   dropDownList,
   disabled,
+  name,
+  isMultiSelect
 }:DropDownListTypeSearchType)=> {
   const classes = useStyles();
-  const handleChange = (event: React.ChangeEvent<{}>, values: DropDownListType[]) => {
+  const renderTags=(tagValue:any, getTagProps:any) =>
+tagValue.map((option:DropDownListType, index:number) => (
+  <Chip 
+  variant="outlined" 
+  label={option.label} 
+  {...getTagProps({ index })} 
+  className={classes.chip}
+  deleteIcon={<CloseIcon/>}
+    />
+))
+  const handleChange = (event: React.ChangeEvent<{}>, values: any,name:string) => {
+  
     onChange(values);
   };
+  
   return (
     <div className={classes.root}>
       <Autocomplete
       disabled={disabled}
-        multiple
+        multiple={isMultiSelect}
         id="checkboxes-tags-demo"
         options={dropDownList}
         disableCloseOnSelect
         onChange={handleChange}
+        clearOnBlur={true}
         getOptionLabel={(option) => option.label}
         renderInput={(params) => (
           <TextField
@@ -52,17 +69,7 @@ const  DropDownSearch=({
             helperText={helperText}
           />
         )}
-        renderTags={(tagValue, getTagProps) =>
-          tagValue.map((option, index) => (
-            <Chip 
-            variant="outlined" 
-            label={option.label} 
-            {...getTagProps({ index })} 
-            className={classes.chip}
-            deleteIcon={<CloseIcon/>}
-              />
-          ))
-        }
+        renderTags={isMultiSelect ? renderTags : undefined}
     
       />
     </div>
