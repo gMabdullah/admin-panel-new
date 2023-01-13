@@ -886,6 +886,13 @@ const Orders = () => {
         >
           <Grid container>
             <Grid item xs={12} sx={{ mb: "16px" }}>
+            <MultiSelectDropDown
+                value={branchName}
+                onChange={handleBranchChange}
+                dropDownList={branch}
+                sx={{ width: "160px", height: "40px" }}
+                onChangeButton={applyFilter}
+              />
               <MultiSelectDropDown
                 value={orderType}
                 onChange={handleOrderTypeChange}
