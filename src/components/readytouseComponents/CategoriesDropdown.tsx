@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { SelectChangeEvent } from "@mui/material";
 import useAxios from "axios-hooks";
 import MultiSelectDropDown, {
@@ -7,6 +7,7 @@ import MultiSelectDropDown, {
 import { getLocalStorage } from "orders/HelperFunctions";
 import { useDispatch, useSelector } from "store";
 import { setSelectedCategory } from "store/slices/Dropdown";
+import { ProductsContext } from "products/context/ProductsContext";
 // required apply button handler to call respective api
 // 1 - use this type "dropdownTypes"
 
@@ -17,6 +18,7 @@ const CategoriesDropdown = ({ applyFilter }: dropdownTypes) => {
   const [CategoriesName, setCategoriesName] = useState<string[]>([
     "All Categories",
   ]);
+  const { state } = useContext(ProductsContext);
 
   //   Get local Storage
   const { eatout_id, user_id } = getLocalStorage();
@@ -47,6 +49,10 @@ const CategoriesDropdown = ({ applyFilter }: dropdownTypes) => {
             label: category.category_name,
           })
         );
+
+        // categories in context to use in addItem
+        state.allCategories = [...categories];
+
         categories.unshift({ label: "All Categories", value: "" });
 
         setCategories(categories);
