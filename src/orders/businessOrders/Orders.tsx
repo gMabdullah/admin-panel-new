@@ -888,8 +888,6 @@ const dropDownList =["Option1eeeeeeeeee eeeeeee eeeeee eeeee eee eee eeeeeeeeee 
         >
           <Grid container>
             <Grid item xs={12} sx={{ mb: "16px" }}>
-              <DropDownSearch  
-                dropDownList={dropDownList} onChange={setSelected} />
               <MultiSelectDropDown
                 value={orderType}
                 onChange={handleOrderTypeChange}

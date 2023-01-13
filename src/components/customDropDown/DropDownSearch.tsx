@@ -5,7 +5,7 @@ import { useStyles } from "./DropDownStyles";
 
 export interface DropDownListType {
   label: string;
-  value: string;
+  id: string;
 }
 
 interface DropDownListTypeSearchType {
@@ -15,8 +15,8 @@ interface DropDownListTypeSearchType {
   placeholder?:string
   value?:DropDownListType[]
   helperText?:string
-  onChange: (selected: string[]) => void;
-  dropDownList: string[],
+  onChange: (selected: DropDownListType[]) => void,
+  dropDownList: DropDownListType[],
   disabled?:boolean,
   
 } 
@@ -33,34 +33,36 @@ const  MultiSelect=({
   disabled,
 }:DropDownListTypeSearchType)=> {
   const classes = useStyles();
-  const [selected, setSelected] = React.useState<string[]>([]);
+  
 
-  const handleChange = (event: React.ChangeEvent<{}>, values: string[]) => {
-    setSelected(values);
+  const handleChange = (event: React.ChangeEvent<{}>, values: DropDownListType[]) => {
     onChange(values);
   };
   return (
     <div className={classes.root}>
       <Autocomplete
+      disabled={disabled}
         multiple
         id="checkboxes-tags-demo"
         options={dropDownList}
         disableCloseOnSelect
         onChange={handleChange}
-        getOptionLabel={(option) => option}
+        getOptionLabel={(option) => option.label}
         renderInput={(params) => (
           <TextField
             {...params}
+            error={error}
             variant="outlined"
-            label="Select options"
-            
+            label={label}
+            placeholder={placeholder}
+            helperText={helperText}
           />
         )}
         renderTags={(tagValue, getTagProps) =>
           tagValue.map((option, index) => (
             <Chip 
             variant="outlined" 
-            label={option} 
+            label={option.label} 
             {...getTagProps({ index })} 
             className={classes.chip}
             deleteIcon={<CloseIcon/>}
