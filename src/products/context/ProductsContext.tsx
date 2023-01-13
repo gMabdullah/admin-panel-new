@@ -1,20 +1,5 @@
 import React, { useState, createContext, useReducer } from "react";
 
-interface State {
-  name: string;
-  age: number;
-}
-
-// interface Action {
-//   type: string;
-//   payload: any;
-// }
-
-const initialState: State = {
-  name: "",
-  age: 0,
-};
-
 // export const initialState: State = {
 //   name: "",
 //   age: 0,
@@ -43,8 +28,23 @@ interface ProductsContextInterface {
   dispatch: React.Dispatch<Action>;
 }
 
-export const ProductsContext =
-  createContext<ProductsContextInterface>(initialState);
+interface Action {
+  type: string;
+  payload: any;
+}
+
+interface State {
+  // categoriesData:
+}
+
+const initialState: State = {
+  // categoriesData:
+};
+
+export const ProductsContext = createContext<ProductsContextInterface>({
+  state: initialState,
+  dispatch: () => null,
+});
 
 const reducer = (state: State, action: Action) => {
   switch (action.type) {
@@ -62,7 +62,6 @@ export const ProductsProvider = ({
 }: {
   children: React.ReactElement;
 }) => {
-  const [options, setOptions] = useState<any>([]);
   const [state, dispatch] = useReducer(reducer, initialState);
 
   return (
