@@ -1,27 +1,4 @@
-import React, { useState, createContext, useReducer } from "react";
-
-// export const initialState: State = {
-//   name: "",
-//   age: 0,
-// };
-
-// export const reducer = (state: State, action: Action) => {
-//   switch (action.type) {
-//     case "UPDATE_NAME":
-//       return { ...state, name: action.payload };
-//     case "UPDATE_AGE":
-//       return { ...state, age: action.payload };
-//     default:
-//       return state;
-//   }
-// };
-
-// export const ProductsContext = createContext<[State, React.Dispatch<Action>]>([
-//   initialState,
-//   () => {},
-// ]);
-
-// const defaultValue = {};
+import React, { createContext, useReducer } from "react";
 
 interface ProductsContextInterface {
   state: State;
@@ -45,8 +22,8 @@ interface State {
   allCategories: DropdownValue[];
   // itemCategory => single select dropdown
   itemName: string;
-  itemPrice: number;
-  itemTax: number;
+  itemPrice: string;
+  itemTax: string;
   // itemBrand => single select dropdown
   // itemOptionSets => multi select dropdown
   // itemToGroup => multi select dropdown
@@ -54,14 +31,32 @@ interface State {
   itemAvailability: string;
   itemSpecialInstructions: string;
   itemDisplay: string;
+  // discountstate 1
+  // discountstate 2
+  // discountstate 3
+  itemDescription: string;
+  // itemShortDescription:string
+  // itemLongDescription:string
+  itemWeight: string;
+  // itemWeightUnit: { value: "", label: "" },  => single select dropdown
+  itemPricePer: string;
+  itemMinimumQuantity: string;
+  itemCartons: string;
+  itemSku: string;
+  itemUnitPrice: string;
+  itemProductCode: string;
+  itemUniversalProductCode: string;
+  itemPallets: string;
+  itemPalletPrice: string;
+  itemNutritions: string | ItemDetailsResponseItemNutritions[];
 }
 
 const initialState: State = {
   allCategories: [],
   // itemCategories => single select dropdown
   itemName: "",
-  itemPrice: 0,
-  itemTax: 0,
+  itemPrice: "",
+  itemTax: "",
   // itemBrand => single select dropdown
   // itemOptionSets => multi select dropdown
   // itemToGroup => multi select dropdown
@@ -69,6 +64,24 @@ const initialState: State = {
   itemAvailability: "0", // 1 and 0 => item not available and available respectively
   itemSpecialInstructions: "0", // 1 and 0 => allow and don't allow special instruction respectively
   itemDisplay: "0", // 0, 1, 2, and 3 => display (all , none, web, and pos) respectively
+  // discountstate 1
+  // discountstate 2
+  // discountstate 3
+  itemDescription: "",
+  // itemShortDescription:'',
+  // itemLongDescription:'',
+  itemWeight: "",
+  // itemWeightUnit: { value: "", label: "" }, => single select dropdown
+  itemPricePer: "",
+  itemMinimumQuantity: "",
+  itemCartons: "",
+  itemSku: "",
+  itemUnitPrice: "",
+  itemProductCode: "",
+  itemUniversalProductCode: "",
+  itemPallets: "",
+  itemPalletPrice: "",
+  itemNutritions: "",
 };
 
 export const ProductsContext = createContext<ProductsContextInterface>({
@@ -80,9 +93,8 @@ const reducer = (state: State, action: Action) => {
   switch (action.type) {
     case "textField":
     case "radioButton":
-      return { ...state, [action.payload.name]: action.payload.value };
     case "switchComponent":
-      return { ...state, age: action.payload };
+      return { ...state, [action.payload.name]: action.payload.value };
     case "clearState":
       return { ...state, age: action.payload };
     default:

@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 
-import { Stack, Typography, Grid, Divider } from "@mui/material";
+import { Switch, Stack, Typography, Grid, Divider } from "@mui/material";
 
 import TdTextField from "components/TdTextField";
 import CustomDrawer from "components/CustomDrawer";
@@ -24,29 +24,35 @@ const AddEditItem = ({
 }: AddEditItemProps) => {
   const { state, dispatch } = useContext(ProductsContext);
 
-  const [checked, setChecked] = useState(true);
+  // const [checked, setChecked] = useState(true);
 
   // console.log("all categories = ", state.allCategories);
   // console.log("item Name = ", state.itemName);
   // console.log("item price = ", state.itemPrice);
   // console.log("item tax = ", state.itemTax);
   // console.log("item Special Note = ", state.itemSpecialNote);
-  // console.log("item Special Note = ", state.itemAvailability);
-  // console.log("item Special Note = ", state.itemSpecialInstructions);
+  // console.log("item availability = ", state.itemAvailability);
+  // console.log("item Special instructions = ", state.itemSpecialInstructions);
 
-  // const handleSwitchChange = (event: {
-  //   target: { checked: any; name: any };
-  // }) => {
-  //   // const handleSwitchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   // setChecked(event.target.checked);
-  //   // setChecked(event.target.name);
-  //   console.log("event = ", event);
-  // };
-
-  const handleSwitchChange = (event: {
-    target: { name: string; checked: boolean };
-  }) => {
-    event && setChecked(event.target.checked);
+  const handleSwitchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.name === "itemSpecialInstructions") {
+      dispatch({
+        type: "switchComponent",
+        payload: {
+          name: event.target.name,
+          value: event.target.checked ? "1" : "0",
+        },
+      });
+    }
+    if (event.target.name === "itemAvailability") {
+      dispatch({
+        type: "switchComponent",
+        payload: {
+          name: event.target.name,
+          value: event.target.checked ? "0" : "1",
+        },
+      });
+    }
   };
 
   return (
@@ -178,6 +184,7 @@ const AddEditItem = ({
             {/* 1 and 0 => item not available and available respectively */}
             <CustomizedSwitch
               checked={state.itemAvailability === "0"}
+              // value={state.itemAvailability}
               name="itemAvailability"
               label="Availability"
               sx={{
@@ -187,14 +194,15 @@ const AddEditItem = ({
                 },
               }}
               onChange={handleSwitchChange}
-              // onChange={(e) => console.log(e?.target.name)}
+              // onChange={(e) => console.log(e)}
             />
             {/* 1 and 0 => allow and don't allow special instruction respectively */}
             <CustomizedSwitch
               checked={state.itemSpecialInstructions === "1"}
+              // value={state.itemSpecialInstructions}
               name="itemSpecialInstructions"
               label="Special Instructions"
-              // onChange={handleSwitchChange}
+              onChange={handleSwitchChange}
             />
           </Grid>
         </Grid>
