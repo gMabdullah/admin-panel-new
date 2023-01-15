@@ -9,6 +9,7 @@ interface dateProps {
   minimumSpend: number;
   currency: string;
   label: string;
+  richEditor: string;
   paymentSettings: StripeSettings;
   delivery_services: DeliveryServices;
 }
@@ -22,6 +23,7 @@ const initialState: dateProps = {
   minimumSpend: 0,
   currency: "",
   label: "",
+  richEditor: "",
   paymentSettings: {
     account_id: "",
     active: false,
@@ -54,6 +56,7 @@ const main = createSlice({
     setGlobalSettings(state, action) {
       const payload = action.payload;
       state.globalSettings = payload;
+      state.richEditor = payload.settings.editor;
       state.decimalPlaces = payload.decimal_places;
       state.minimumSpend = payload.minimum_spend;
       state.currency = payload.currency;

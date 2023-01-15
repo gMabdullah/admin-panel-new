@@ -9,6 +9,8 @@ import Discount from "./sections/Discount";
 import Inventory from "./sections/Inventory";
 import Nutrition from "./sections/Nutrition";
 import AddCategory from "./AddCategory";
+import { useState } from "react";
+import CustomModal from "components/CustomModal";
 
 interface AddEditItemProps {
   toggleDrawer: boolean;
@@ -19,6 +21,11 @@ const AddEditItem = ({
   toggleDrawer,
   handleDrawerToggle,
 }: AddEditItemProps) => {
+  const [addCategoryModal, setAddCategoryModal] = useState(false);
+  const toggleCategoryModal = () => {
+    setAddCategoryModal((prevState) => !prevState);
+  };
+
   return (
     <CustomDrawer
       title="Add Item"
@@ -29,6 +36,28 @@ const AddEditItem = ({
       handleCancelClick={handleDrawerToggle}
       onClick={handleDrawerToggle}
     >
+      {addCategoryModal && (
+        <CustomModal
+          title="Add Category"
+          buttonText="Add Category"
+          open={addCategoryModal}
+          onClose={toggleCategoryModal}
+          children={<AddCategory toggleCategoryModal={toggleCategoryModal} />}
+          paperStyle={{
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: "45vw",
+            position: "absolute",
+          }}
+          scrollbarStyle={{
+            height: "100%",
+            maxHeight: "98vh",
+            overflowX: "hidden",
+            borderRadius: "8px",
+          }}
+        />
+      )}
       <Stack sx={{ p: "32px 25px 0px" }}>
         <Typography variant="h5" sx={{ mb: "24px" }}>
           Item Category
@@ -43,6 +72,7 @@ const AddEditItem = ({
         <Grid container>
           <Grid item xs={12}>
             <CustomButton
+              onClick={toggleCategoryModal}
               sx={{
                 p: "unset",
                 color: "#DB154D",
@@ -54,7 +84,7 @@ const AddEditItem = ({
             </CustomButton>
           </Grid>
         </Grid>
-        <AddCategory />
+
         <Divider sx={{ m: "24px 0 31px" }} />
 
         <Grid container>

@@ -11,24 +11,36 @@ import CustomButton from "components/CustomButton";
 import { alphaNumericRegex } from "constants/BusinessIds";
 import RichEditor from "components/RichEditor";
 import Display from "./sections/Display";
+import { useSelector } from "store";
+import Notify from "components/Notify";
 
 let typingTimer: any = "";
 const doneTypingInterval = 1000;
 
-const AddCategory = () => {
-  const [slug, setSlug] = useState(""),
-    [slugErr, setSlugErr] = useState(""),
+interface addEditCategoryProps {
+  toggleCategoryModal: () => void;
+}
+let errorMessage = { categoryError: "", slugError: "" };
+
+const AddCategory = ({ toggleCategoryModal }: addEditCategoryProps) => {
+  const { richEditor } = useSelector((state) => state.main),
+    [slug, setSlug] = useState(""),
     [categoryName, setCategoryName] = useState(""),
-    [categoryError, setCategoryError] = useState(""),
     [isSlugAvailable, setIsSlugAvailable] = useState(true),
     [description, setDescription] = useState(""),
+    // Erros
+    [errors, setErrors] = useState(errorMessage),
     // remove edit case bit after receiving from parent
     [editcase, setEditcase] = useState(false),
-    // Get it from Global setting
-    [editor, setEditor] = useState(true),
-    { eatout_id, user_id } = getLocalStorage(),
-    ref = useRef();
-  //
+    // Notifications
+    [notify, setNotify] = useState<boolean>(false),
+    [notifyMessage, setNotifyMessage] = useState(""),
+    [notifyType, setNotifyType] = useState<
+      "success" | "info" | "warning" | "error"
+    >("info"),
+    // Local storage
+    { eatout_id, user_id } = getLocalStorage();
+
   const payload = () => {
     const formData = new FormData();
     formData.append("eatout_id", eatout_id);
@@ -54,7 +66,7 @@ const AddCategory = () => {
     addEditCategoryAPI,
   ] = useAxios(
     {
-      url: editcase ? `add_menu_item_category` : `edit_menu_item_category`,
+      url: editcase ? `edit_menu_item_category` : `add_menu_item_category`,
       method: "POST",
       data: payload(),
     },
@@ -62,7 +74,7 @@ const AddCategory = () => {
   );
 
   // Validate Slug API
-  const [{ loading: slugLoading, error: slugError }, validateSlugAPI] =
+  const [{ loading: slugLoading, error: slugAPIError }, validateSlugAPI] =
     useAxios(
       {
         url: `check_category_slug?business_id=${eatout_id}&slug=${slug.trim()}&admin_id=${user_id}&source=biz`,
@@ -71,40 +83,31 @@ const AddCategory = () => {
       { manual: true }
     );
 
-  //   component Did Mount
-  //   useEffect(() => {
-  //     // const element = ref.current;
-  //     window.addEventListener("keypress", (e: { key: string }) => {
-  //       if (e.key == "Enter") {
-  //         debugger;
-  //       }
-  //     });
-  //     return () =>
-  //       window.removeEventListener("keypress", (e: { key: string }) => {
-  //         if (e.key == "Enter") {
-  //           debugger;
-  //         }
-  //       });
-  //   }, []);
-
   const addEditCategory = async () => {
     if (validateCategory()) {
       // if add case
-      const categoryResult = await addEditCategoryAPI();
+      const categoryResult = await addEditCategoryAPI({
+        data: payload(),
+      });
       if (categoryResult && categoryResult.data) {
         const { status, message, result } = categoryResult.data;
         // category added
         if (status == 1) {
           console.log("message", message);
           // reset states after
-          setSlug("");
           setCategoryName("");
+          setSlug("");
           setDescription("");
+          toggleCategoryModal();
+          setNotifyMessage(message);
+          setNotifyType("success");
+          setNotify(true);
         } else if (status == 0) {
           // category not added
-          console.log("message", message);
+          setNotifyMessage(message);
+          setNotifyType("error");
+          setNotify(true);
         }
-        // close modal after completion
       }
     }
   };
@@ -128,107 +131,155 @@ const AddCategory = () => {
         if (slugResult && slugResult.data) {
           const { success, message } = slugResult.data;
           setIsSlugAvailable(success);
-          !success && setCategoryError(message);
+          !success && setErrors({ ...errors, slugError: message });
         }
       }
     } catch (error) {
-      console.log("validation slug error", error);
+      setNotifyMessage("Validation Slug Failed");
+      setNotifyType("error");
+      setNotify(true);
     }
   };
 
   const validateCategory = () => {
     if (categoryName === "") {
-      setCategoryError("Name can't be empty");
+      setErrors({ ...errors, categoryError: "Name can't be empty" });
       return false;
     }
     if (slug === "") {
-      setCategoryError("Slug can't be empty");
+      setErrors({ ...errors, slugError: "Slug can't be empty" });
       return false;
     }
     if (!isSlugAvailable) {
-      setCategoryError("Slug already exist");
+      setErrors({ ...errors, slugError: "Slug already exist" });
       return false;
     }
     return true;
   };
   const handleChange = (e: { target: { value: string; name: string } }) => {
+    const { name, value } = e.target;
+
     if (alphaNumericRegex.test(e.target.value)) {
-      const { name, value } = e.target;
       //   categoryName case
       if (e.target.name == "category") {
         setCategoryName(value);
         setSlug(slugify(value));
-        setCategoryError("");
-        setSlugErr("");
+        setErrors({ categoryError: "", slugError: "" });
       } else if (name == "slug") {
         // slug case
         setSlug(slugify(value));
-        setSlugErr("");
-      } else if (name == "description") {
-        setDescription(value);
+        setErrors({ ...errors, slugError: "" });
       }
+    } else if (name == "description") {
+      setDescription(value);
     }
   };
+
   //   return Error if API failed
-  if (slugError) return <p>Validaton Slug API Failed</p>;
+  if (slugAPIError) return <p>Validaton Slug API Failed</p>;
+  if (addEditCategoryError) return <p> Category API Failed</p>;
+
   return (
-    <Stack sx={{ p: "32px 25px 0px" }}>
-      <Grid container>
-        <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
-          <TdTextField
-            name="category"
-            label="Category Name"
-            value={categoryName}
-            onChange={handleChange}
-            onKeyUp={hanldeOnKeyUp}
-            onKeyDown={handleOnKeydown}
-          />
-        </Grid>
-        <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
-          <TdTextField
-            name="slug"
-            label="Category Slug"
-            value={slug}
-            onChange={handleChange}
-            onKeyUp={hanldeOnKeyUp}
-            onKeyDown={handleOnKeydown}
-          />
-        </Grid>
-        {editor ? (
-          <RichEditor
-            description={description}
-            setDescription={setDescription}
-          />
-        ) : (
+    <>
+      {notify && (
+        <Notify
+          message={notifyMessage}
+          type={notifyType}
+          notify={notify}
+          closeNotify={() => setNotify(false)}
+        />
+      )}
+      <Stack sx={{ p: "32px 40px 0px" }}>
+        <Grid container>
           <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
             <TdTextField
-              name="description"
-              label="Category description"
-              value={description}
+              name="category"
+              label="Category Name"
+              value={categoryName}
               onChange={handleChange}
-              multiline={true}
-              rows={4}
+              onKeyUp={hanldeOnKeyUp}
+              onKeyDown={handleOnKeydown}
+              error={errors.categoryError === "" ? false : true}
+              helperText={errors.categoryError}
             />
           </Grid>
-        )}
-      </Grid>
-      <Display />
-      <CustomButton
-        variant={"contained"}
-        color={"secondary"}
-        onClick={addEditCategory}
-        // ref={ref}
-        sx={{
-          p: "13px 43px",
-          fontFamily: "Roboto",
-          fontStyle: "normal",
-          fontWeight: 500,
-          fontSize: "13px",
-        }}
-      >
-        Add Category
-      </CustomButton>
-    </Stack>
+          <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
+            <TdTextField
+              name="slug"
+              label="Category Slug"
+              value={slug}
+              onChange={handleChange}
+              onKeyUp={hanldeOnKeyUp}
+              onKeyDown={handleOnKeydown}
+              error={errors.slugError === "" ? false : true}
+              helperText={errors.slugError}
+            />
+          </Grid>
+          {richEditor ? (
+            <RichEditor
+              description={description}
+              setDescription={setDescription}
+            />
+          ) : (
+            <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
+              <TdTextField
+                name="description"
+                label="Category description"
+                value={description}
+                onChange={handleChange}
+                multiline={true}
+                rows={4}
+              />
+            </Grid>
+          )}
+        </Grid>
+        <Display />
+        <Grid container>
+          <Grid
+            item
+            xs={12}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "end",
+              p: "40px !important",
+            }}
+          >
+            <CustomButton
+              variant={"contained"}
+              sx={{
+                p: "12px 44.5px",
+                background: "#F5F5F5",
+                color: "#212121",
+                "&:hover": {
+                  backgroundColor: "#F5F5F5",
+                },
+              }}
+              onClick={toggleCategoryModal}
+            >
+              Cancel
+            </CustomButton>
+
+            <CustomButton
+              variant={"contained"}
+              sx={{
+                p: "12px 26px",
+                ml: "12px",
+              }}
+              color={"secondary"}
+              onClick={addEditCategory}
+              disabled={
+                errors.categoryError === "" && errors.slugError === ""
+                  ? false
+                  : true
+              }
+            >
+              Add Category
+            </CustomButton>
+          </Grid>
+        </Grid>
+      </Stack>
+    </>
   );
 };
 
