@@ -93,7 +93,6 @@ const AddCategory = ({ toggleCategoryModal }: addEditCategoryProps) => {
         const { status, message, result } = categoryResult.data;
         // category added
         if (status == 1) {
-          console.log("message", message);
           // reset states after
           setCategoryName("");
           setSlug("");
