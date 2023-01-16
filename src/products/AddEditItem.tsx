@@ -1,17 +1,23 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
-import { Switch, Stack, Typography, Grid, Divider } from "@mui/material";
+import { Stack, Typography, Grid, Divider } from "@mui/material";
+
+import useAxios from "axios-hooks";
 
 import TdTextField from "components/TdTextField";
 import CustomDrawer from "components/CustomDrawer";
 import CustomButton from "components/CustomButton";
 import CustomizedSwitch from "components/CustomSwitch";
+import DropDownSearch, {
+  DropDownListType,
+} from "components/customDropDown/DropDownSearch";
 import Display from "./sections/Display";
 import Discount from "./sections/Discount";
 import Inventory from "./sections/Inventory";
 import Nutrition from "./sections/Nutrition";
 import Description from "./sections/Description";
 import { ProductsContext } from "./context/ProductsContext";
+import { compareItem, getLocalStorage } from "orders/HelperFunctions";
 
 interface AddEditItemProps {
   toggleDrawer: boolean;
@@ -24,9 +30,62 @@ const AddEditItem = ({
 }: AddEditItemProps) => {
   const { state, dispatch } = useContext(ProductsContext);
 
+  const [selected, setSelected] = useState<DropDownListType[]>([]);
+
+  // option sets API call payload
+  const optionSetsAPIPayload = () => {
+    const formData = new FormData();
+
+    formData.append("eatout_id", getLocalStorage().eatout_id);
+    formData.append("admin_id", getLocalStorage().user_id);
+    formData.append("source", "biz");
+    return formData;
+  };
+
+  // option sets API call
+  const [{ data: allOptionSets }, optionSetsAPICall] = useAxios(
+    {
+      url: "/get_option_sets",
+      method: "POST",
+      data: optionSetsAPIPayload(),
+    }
+    // { manual: true }
+  );
+
+  console.log("selected dropdown = ", selected);
+
+  useEffect(() => {}, [selected]);
+
+  useEffect(() => {
+    // console.log("all option sets = ", allOptionSets);
+
+    if (
+      allOptionSets &&
+      allOptionSets.status === "1" &&
+      Array.isArray(allOptionSets.result)
+    ) {
+      const optionSets = allOptionSets.result.map(
+        (optionSet: { id: string; name: string }) => ({
+          value: optionSet.id,
+          label: optionSet.name,
+        })
+      );
+
+      state.allOptionSets = optionSets.sort(compareItem);
+    }
+
+    // console.log("all  state .option sets = ", state.allOptionSets);
+
+    // state.allOptionSets
+  }, [allOptionSets]);
+
   // const [checked, setChecked] = useState(true);
 
   // console.log("all categories = ", state.allCategories);
+  // console.log("all brands = ", state.allBrands);
+  // console.log("all group items = ", state.allItemsForGrouping);
+  // console.log("all option sets = ", state.allOptionSets);
+
   // console.log("item Name = ", state.itemName);
   // console.log("item price = ", state.itemPrice);
   // console.log("item tax = ", state.itemTax);
@@ -72,7 +131,11 @@ const AddEditItem = ({
 
         <Grid container>
           <Grid item xs={12} sx={{ display: "flex", mb: "12px" }}>
-            <TdTextField label="Choose Category" />
+            {/* <TdTextField label="Choose Category" /> */}
+            <DropDownSearch
+              dropDownList={state.allCategories}
+              onChange={setSelected}
+            />
           </Grid>
         </Grid>
 
@@ -142,20 +205,34 @@ const AddEditItem = ({
         <Grid container>
           <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
             <Grid item xs={6}>
-              <TdTextField label="Select Brand" />
+              {/* <TdTextField label="Select Brand" /> */}
+              <DropDownSearch
+                dropDownList={state.allBrands}
+                onChange={setSelected}
+              />
             </Grid>
           </Grid>
         </Grid>
 
         <Grid container>
           <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
-            <TdTextField label="Select Option Sets" />
+            {/* <TdTextField label="Select Option Sets" /> */}
+            <DropDownSearch
+              dropDownList={state.allOptionSets}
+              onChange={setSelected}
+              isMultiSelect={true}
+            />
           </Grid>
         </Grid>
 
         <Grid container>
           <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
-            <TdTextField label="Select Items to Group" />
+            {/* <TdTextField label="Select Items to Group" /> */}
+            <DropDownSearch
+              dropDownList={state.allItemsForGrouping}
+              onChange={setSelected}
+              isMultiSelect={true}
+            />
           </Grid>
         </Grid>
 
@@ -194,7 +271,6 @@ const AddEditItem = ({
                 },
               }}
               onChange={handleSwitchChange}
-              // onChange={(e) => console.log(e)}
             />
             {/* 1 and 0 => allow and don't allow special instruction respectively */}
             <CustomizedSwitch

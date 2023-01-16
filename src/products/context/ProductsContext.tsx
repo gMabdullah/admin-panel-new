@@ -20,13 +20,16 @@ interface DropdownValue {
 
 interface State {
   allCategories: DropdownValue[];
-  // itemCategory => single select dropdown
+  allBrands: DropdownValue[];
+  allItemsForGrouping: DropdownValue[];
+  allOptionSets: DropdownValue[];
+  itemCategoryId: string;
   itemName: string;
   itemPrice: string;
   itemTax: string;
-  // itemBrand => single select dropdown
+  itemBrand: string;
   // itemOptionSets => multi select dropdown
-  // itemToGroup => multi select dropdown
+  itemToGroup: string;
   itemSpecialNote: string;
   itemAvailability: string;
   itemSpecialInstructions: string;
@@ -53,13 +56,16 @@ interface State {
 
 const initialState: State = {
   allCategories: [],
-  // itemCategories => single select dropdown
+  allBrands: [],
+  allItemsForGrouping: [],
+  allOptionSets: [],
+  itemCategoryId: "",
   itemName: "",
   itemPrice: "",
   itemTax: "",
-  // itemBrand => single select dropdown
+  itemBrand: "",
   // itemOptionSets => multi select dropdown
-  // itemToGroup => multi select dropdown
+  itemToGroup: "",
   itemSpecialNote: "",
   itemAvailability: "0", // 1 and 0 => item not available and available respectively
   itemSpecialInstructions: "0", // 1 and 0 => allow and don't allow special instruction respectively

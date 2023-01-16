@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer } from "react";
+import React, { useState, useEffect, useReducer, useContext } from "react";
 
 import { Typography, Grid, Stack, Divider, Box } from "@mui/material";
 
@@ -24,6 +24,7 @@ import { gridIconsCss } from "./Styles";
 import { dispatch, useSelector } from "store";
 import { keysOfItems } from "constants/BusinessIds";
 import {
+  ProductsContext,
   ProductsProvider,
   // reducer,
   // initialState,
@@ -40,7 +41,7 @@ const Items = () => {
   const [applyFilters, setApplyFilters] = React.useState(false);
   const [toggleDrawer, setToggleDrawer] = useState(false);
   const [itemsCount, setItemsCount] = useState("");
-  // const [state, dispatch] = useReducer(reducer, initialState);
+  const { state } = useContext(ProductsContext);
 
   // API Call For Product //
   const [{ data: productData }, getProductApi] = useAxios(
@@ -58,6 +59,17 @@ const Items = () => {
       if (productResultApi.data && productResultApi.data.items.length > 0) {
         const { items } = productResultApi.data;
         setItems(items);
+
+        state.allItemsForGrouping = items.map((item: ProductResponseItem) => {
+          if (!item.is_grouped) {
+            return {
+              value: item.menu_item_id,
+              label: item.sku ? item.name + " (" + item.sku + ")" : item.name,
+            };
+          }
+        });
+
+        // state.allItemsForGrouping = [...items];
       }
 
       if (productResultApi.data) {
