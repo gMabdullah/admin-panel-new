@@ -24,6 +24,7 @@ import {
   toCapitalizeFirstLetter,
 } from "orders/HelperFunctions";
 import CustomModal from "components/CustomModal";
+import { useSelector } from "store";
 
 interface AddEditItemProps {
   toggleDrawer: boolean;
@@ -38,7 +39,11 @@ const AddEditItem = ({
   getProductApi,
 }: // addItemCallback,
 AddEditItemProps) => {
-  const [addCategoryModal, setAddCategoryModal] = useState(false);
+  const { richEditor } = useSelector((state) => state.main),
+    [shortDescription, setShortDescription] = useState(""),
+    [longDescription, setLongDescription] = useState(""),
+    [addCategoryModal, setAddCategoryModal] = useState(false);
+
   const toggleCategoryModal = () => {
     setAddCategoryModal((prevState) => !prevState);
   };
@@ -142,6 +147,37 @@ AddEditItemProps) => {
     // state.allOptionSets
   }, [allOptionSets]);
 
+  useEffect(() => {
+    richEditor && splitShortLongDescription();
+  }, []);
+  // Populate values of description in Edit Item case
+  function splitShortLongDescription() {
+    const { itemDescription } = state;
+    // check for short description tag exist
+    if (itemDescription && itemDescription.includes("<short_desc>")) {
+      const shortDesc = itemDescription.slice(
+        itemDescription.indexOf("<short_desc>"),
+        itemDescription.indexOf("</short_desc>")
+      );
+      setShortDescription(shortDesc);
+    }
+    // check if long description tag exist
+    if (itemDescription && itemDescription.includes("<long_desc>")) {
+      const longDesc = itemDescription.slice(
+        itemDescription.indexOf("<long_desc>"),
+        itemDescription.indexOf("</long_desc>")
+      );
+      setLongDescription(longDesc);
+    }
+    // if short and long description doesn't exist
+    if (
+      itemDescription &&
+      !itemDescription.includes("<short_desc>") &&
+      !itemDescription.includes("<long_desc>")
+    ) {
+      setLongDescription(itemDescription);
+    }
+  }
   // const [checked, setChecked] = useState(true);
 
   // console.log("all categories = ", state.allCategories);
@@ -176,7 +212,17 @@ AddEditItemProps) => {
       });
     }
   };
+  const addShortLongTags = () => {
+    const checkShortDesc =
+        shortDescription &&
+        `<short_desc>${shortDescription}</short_desc>`.toString(),
+      checkLongDesc =
+        longDescription &&
+        `<long_desc>${longDescription}</long_desc>`.toString(),
+      combineIt = `${checkShortDesc}${checkLongDesc}`;
 
+    return combineIt.replace(/\n|\t/g, " ");
+  };
   const addItemCallback = async () => {
     //===============================================================================================================================
 
@@ -247,7 +293,9 @@ AddEditItemProps) => {
       eatout_id: getLocalStorage().eatout_id,
       category_id: "13420",
       name: toCapitalizeFirstLetter(state.itemName).trim(),
-      description: state.itemDescription,
+      description: richEditor
+        ? addShortLongTags().split('"').join("'").replace(/\n/g, "")
+        : state.itemDescription,
       allow_note: state.itemSpecialInstructions,
       special_note: state.itemSpecialNote,
       price: state.itemPrice,
@@ -567,7 +615,12 @@ AddEditItemProps) => {
         <Divider sx={{ mt: "16px" }} />
         <Discount />
         <Divider />
-        <Description />
+        <Description
+          shortDescription={shortDescription}
+          longDescription={longDescription}
+          setShortDescription={setShortDescription}
+          setLongDescription={setLongDescription}
+        />
         <Divider />
         <Inventory />
         <Divider />

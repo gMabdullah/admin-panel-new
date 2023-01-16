@@ -170,13 +170,13 @@ const RichEditor = ({
             "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
           // images_upload_handler: imageUploadHandler,
         }}
-        onEditorChange={(e) => {
-          if (itemEditor) {
-            setDescriptionFromItem(e);
-          } else {
-            description && setDescription(e);
-          }
-        }}
+        // onEditorChange={(e) => {
+        //   if (itemEditor) {
+        //     setDescriptionFromItem(e);
+        //   } else {
+        //     description && setDescription(e);
+        //   }
+        // }}
       />
     </Grid>
   );

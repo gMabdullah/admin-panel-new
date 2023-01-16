@@ -9,11 +9,20 @@ import { ProductsContext } from "../context/ProductsContext";
 import { useSelector } from "store";
 import RichEditor from "components/RichEditor";
 
-const Description = () => {
+interface DescriptionProp {
+  shortDescription: string;
+  longDescription: string;
+  setShortDescription: React.Dispatch<React.SetStateAction<string>>;
+  setLongDescription: React.Dispatch<React.SetStateAction<string>>;
+}
+const Description = ({
+  shortDescription,
+  longDescription,
+  setShortDescription,
+  setLongDescription,
+}: DescriptionProp) => {
   const { richEditor } = useSelector((state) => state.main),
     { state, dispatch } = useContext(ProductsContext);
-
-  // console.log("item Description = ", state.itemDescription);
   return (
     <Stack>
       <ExpandablePanel
@@ -23,20 +32,37 @@ const Description = () => {
       >
         <Grid container>
           {richEditor ? (
-            <RichEditor
-              description={state.itemDescription}
-              setDescriptionFromItem={(e) =>
-                dispatch({
-                  type: "textField",
-                  payload: { name: e.target.name, value: e.target.value },
-                })
-              }
-              itemEditor={true}
-            />
+            <>
+              <p>Short Description</p>
+              <RichEditor
+                description={shortDescription}
+                setDescriptionFromItem={
+                  (e) => setShortDescription(e.target.value)
+                  // dispatch({
+                  //   type: "textField",
+                  //   payload: { name: e.target.name, value: e.target.value },
+                  // })
+                }
+                itemEditor={true}
+              />
+              <p>Long Description</p>
+              <RichEditor
+                description={longDescription}
+                setDescriptionFromItem={
+                  (e) => setLongDescription(e.target.value)
+                  // dispatch({
+                  //   type: "textField",
+                  //   payload: { name: e.target.name, value: e.target.value },
+                  // })
+                }
+                itemEditor={true}
+              />
+            </>
           ) : (
             <Grid item xs={12} sx={{ display: "flex", mb: "22px" }}>
               <TdTextField
                 name="itemDescription"
+                value={state.itemDescription}
                 rows={6}
                 multiline={true}
                 label="Description"
