@@ -23,6 +23,7 @@ import {
 } from "@mui/material";
 import { CardMedia } from "@mui/material";
 import TableChip from "./TableChip";
+import Progress from "./Progress";
 //import { createStyles, makeStyles } from '@mui/material';
 
 // const useStyles = makeStyles((theme: Theme) =>
@@ -39,10 +40,11 @@ import TableChip from "./TableChip";
 // );
 
 interface TablePropsType {
-  items?: ProductResponse["items"];
-  keysOfItems: TypeKeyOfItem["keysOfItems"];
-  setSequenceItem?:any
-  shortDragDropItems?:any
+  items?: ProductResponse["items"],
+  keysOfItems: TypeKeyOfItem["keysOfItems"],
+  setSequenceItem?:any,
+  shortDragDropItems?:any,
+//  linearLoader?:boolean
 }
 
 
@@ -50,6 +52,8 @@ interface TablePropsType {
 
 const DraggableTable = ({ items, keysOfItems ,setSequenceItem,shortDragDropItems}: TablePropsType) => {
   const { decimalPlaces } = useSelector((state) => state.main);
+  const [linearLoader,setLinearLoader]=useState<boolean>(true)
+
   const handleDragEnd = (result:any) => {
     debugger;
     const sortArray=[
@@ -96,6 +100,8 @@ const DraggableTable = ({ items, keysOfItems ,setSequenceItem,shortDragDropItems
   return (
     <>
       <DragDropContext onDragEnd={handleDragEnd}>
+     
+
         <div>
           <Table>
             <TableHead>
@@ -111,7 +117,7 @@ const DraggableTable = ({ items, keysOfItems ,setSequenceItem,shortDragDropItems
                 ))}
               </TableRow>
             </TableHead>
-            <Droppable droppableId="table">
+            { <Droppable droppableId="table">
               {(provided, snapshot) => (
                 <TableBody ref={provided.innerRef}>
                   {items &&
@@ -121,7 +127,9 @@ const DraggableTable = ({ items, keysOfItems ,setSequenceItem,shortDragDropItems
                         draggableId={index + ""}
                         index={index}
                       >
-                        {(provided: any, snapshot) => (
+                        {(provided: any, snapshot) => {
+                    
+                          return (
                           // Drag and drop on table
                           <TableRow
                             ref={provided.innerRef}
@@ -181,13 +189,18 @@ const DraggableTable = ({ items, keysOfItems ,setSequenceItem,shortDragDropItems
                               </TableCell>
                             ))}
                           </TableRow>
-                        )}
+                          )
+                         } }
                       </Draggable>
                     ))}
                   {provided.placeholder}
                 </TableBody>
               )}
-            </Droppable>
+            </Droppable>}
+            {
+             
+          
+             }
           </Table>
         </div>
       </DragDropContext>

@@ -8,7 +8,7 @@ import SortByAlphaIcon from "@mui/icons-material/SortByAlpha";
 import FilterListIcon from "@mui/icons-material/FilterList";
 
 import useAxios from "axios-hooks";
-
+import { debounce } from "lodash";
 import MainCard from "components/cards/MainCard";
 import DraggableTable from "components/DraggableTable";
 import SearchField from "components/SearchField";
@@ -29,6 +29,9 @@ import {
   // initialState,
 } from "./context/ProductsContext";
 import { reorder, sortMenuItems } from "orders/HelperFunctions";
+import TdTextField from "components/TdTextField";
+import Loader from "components/Loader";
+let troggleSorting=true
 
 const Items = () => {
   const { eatout_id, user_id } = JSON.parse(
@@ -43,17 +46,37 @@ const Items = () => {
   const [toggleDrawer, setToggleDrawer] = useState(false);
   const [itemsCount, setItemsCount] = useState("");
   const [sequenceItem,setSequenceItem]=useState([])
+  const [searchQueryItems,setSearchQueryItems]=useState<string>("")
+  const [linearLoader,setLinearLoader]=useState<boolean>(false)
   console.log("sequenceItem",sequenceItem)
   // const [state, dispatch] = useReducer(reducer, initialState);
 
   // API Call For Product //
   const [{ data: productData }, getProductApi] = useAxios(
     {
-      url: `products?business_id=${eatout_id}&option_set=0&type=1&menu_type_id=${selectedMenu}&num=100&offset=0&query=&cat_id=${selectedCategory}&brand_id=${selectedBrand}&branch_id=${selectedBranch}&admin_id=${user_id}&source=biz`,
+      url: `products?business_id=${eatout_id}&option_set=0&type=1&menu_type_id=${selectedMenu}&num=100&offset=0&query=${searchQueryItems}&cat_id=${selectedCategory}&brand_id=${selectedBrand}&branch_id=${selectedBranch}&admin_id=${user_id}&source=biz`,
       method: "GET",
     },
     { manual: true }
   );
+  console.log("productData",productData)
+  const handleSearchChange = debounce ((e: { target: { value: string } }) => {
+    (async () => {
+      debugger
+      if(e.target.value!==""){
+        setSearchQueryItems(e.target.value)
+      }else{
+        setSearchQueryItems(e.target.value)
+        getProductApi()
+      }
+      // await getProductApi();
+     
+     
+    })();
+     
+      
+    
+  }, 1000);
 // API Call For Shorting //
 const [{}, shortItemId] = useAxios(
   {
@@ -65,18 +88,23 @@ const [{}, shortItemId] = useAxios(
   /*********Get Item data from API Product for table***********/
   useEffect(() => {
     (async () => {
+    
       const productResultApi = await getProductApi();
+      //setLinearLoader(true)
       if (productResultApi.data && productResultApi.data.items.length > 0) {
         const { items } = productResultApi.data;
         setItems(items);
+       // setLinearLoader(false)
+
       }
 
       if (productResultApi.data) {
         const { items_count } = productResultApi.data;
         setItemsCount(items_count);
+
       }
     })();
-  }, []);
+  }, [searchQueryItems]);
 
   useEffect(() => {
     // api call to update the orders list according to filters
@@ -106,15 +134,18 @@ const [{}, shortItemId] = useAxios(
   const applyButtonFilter = () => {
     setApplyFilters(true);
   };
-const sortingItems =async (sortingType:any)=>{
+const sortingItems =async ()=>{
   let  sortItems;
-    if (sortingType === "0") {
+    if (troggleSorting) {
+      troggleSorting=false;
       sortItems = items?.sort((a:any, b: any) => {
         if (a.name < b.name) return -1;
         if (b.name < a.name) return 1;
+
         return 0;
       });
     } else {
+      troggleSorting=true;
        sortItems = items?.sort((a, b) => {
         if (a.name > b.name) return -1;
         if (b.name > a.name) return 1;
@@ -124,7 +155,7 @@ const sortingItems =async (sortingType:any)=>{
    
   const formData = new FormData();
 
- 
+  setLinearLoader(true)
       sortItems?.map(({ menu_item_id }) => {
       formData.append("categoryArray[]", menu_item_id);
     });
@@ -132,6 +163,7 @@ const sortingItems =async (sortingType:any)=>{
       data:formData
   })
   setItems(sortItems)
+  setLinearLoader(false)
 
 }
   const handleDrawerToggle = () => {
@@ -140,7 +172,7 @@ const sortingItems =async (sortingType:any)=>{
  // Drag And Drop Shorting
  const shortDragDropItems=async(sortArray:any)=>{      
                                                        
-  debugger
+  setLinearLoader(true)
   let shortItems:any=reorder(items,sortArray)
   setItems(shortItems)
   const formData = new FormData();
@@ -150,6 +182,7 @@ const sortingItems =async (sortingType:any)=>{
  const shortItemResponse=await shortItemId({
     data:formData
 })
+setLinearLoader(false)
   console.log("shortItems",shortItemResponse)
   debugger
   //let shortItems:any
@@ -166,7 +199,7 @@ const sortingItems =async (sortingType:any)=>{
             handleDrawerToggle={handleDrawerToggle}
           />
         )}
-
+     {  linearLoader && <Loader/>}
         <MainCard
           title={
             <Grid container spacing={2}>
@@ -180,9 +213,10 @@ const sortingItems =async (sortingType:any)=>{
               >
                 <Typography variant="h3">Menu Items</Typography>
 
-                <SearchField
-                  iconPrimary={SearchOutlinedIcon}
-                  placeholder="Search Item"
+                <TdTextField
+                  type="search"
+                  placeholder="Search Items"
+                  onChange={handleSearchChange}
                   sx={{
                     width: "260px",
                     height: "40px",
@@ -237,36 +271,40 @@ const sortingItems =async (sortingType:any)=>{
                   }
                 >
                   <Stack>
-                    <IconButton onClick={()=>sortingItems("0")}>
+                    <IconButton onClick={()=>sortingItems()}>
                     <SortByAlphaIcon />
                     </IconButton>
                   </Stack>
-
+                  <IconButton>
                   <Stack>
                     <FilterListIcon />
                   </Stack>
+                  </IconButton>
                 </Stack>
               </Grid>
             </Grid>
           </Grid>
           <Grid container>
-            <Grid item xs={12}>
-              <Typography
-                variant="h5"
-                sx={{
-                  mb: "20px",
-                  color: "#212121",
-                }}
-              >
-                {`${itemsCount} Item(s)`}
-              </Typography>
-            </Grid>
+            { itemsCount &&
+                 <Grid item xs={12}>
+                 <Typography
+                   variant="h5"
+                   sx={{
+                     mb: "20px",
+                     color: "#212121",
+                   }}
+                 >
+                   {`${itemsCount} Item(s)`}
+                 </Typography>
+               </Grid>
+            }
+         
           </Grid>
           <Box>
-            {productData && productData.length === 0 ? (
+            { productData=== undefined ? (
               <OrderListingSkeleton />
             ) : (
-              <DraggableTable items={items} keysOfItems={keysOfItems} setSequenceItem={setSequenceItem} shortDragDropItems={shortDragDropItems}/>
+              <DraggableTable items={items} keysOfItems={keysOfItems} setSequenceItem={setSequenceItem} shortDragDropItems={shortDragDropItems} />
             )}
           </Box>
         </MainCard>
