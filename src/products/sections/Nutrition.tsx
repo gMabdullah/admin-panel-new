@@ -37,7 +37,6 @@ const Nutrition = () => {
   });
 
   const handleChange = (e: { target: { value: string; name: string } }) => {
-    console.log("nutrition = ", nutrition);
     setNutrition({ ...nutrition, [e.target.name]: e.target.value });
   };
 

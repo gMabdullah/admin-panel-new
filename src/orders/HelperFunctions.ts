@@ -195,31 +195,33 @@ export const formatDate = (date: any) => {
 };
 
 // Drag And drop For Product listing Reorder Function
-export const reorder = (list: any, sequence:any) => {
-  debugger
+export const reorder = (list: any, sequence: any) => {
   const result = Array.from(list);
   const [removed] = result.splice(sequence[0].source, 1);
   result.splice(sequence[0].destination, 0, removed);
 
   return result;
 };
-export const sortMenuItems = (shortValues:any,type:string,shortType:string) => {
- 
-if(shortType==="itemShort"){
-  shortValues.map((Items:any) => {
-    if (type === "0") {
-      Items.menu_item = Items.menu_item.sort((a:any, b:any) => {
-        if (a.name < b.name) return -1;
-        if (b.name < a.name) return 1;
-        return 0;
-      });
-    } else {
-      Items.menu_item = Items.menu_item.sort((a:any, b:any) => {
-        if (a.name > b.name) return -1;
-        if (b.name > a.name) return 1;
-        return 0;
-      });
-    }
-  });
-} 
-}
+export const sortMenuItems = (
+  shortValues: any,
+  type: string,
+  shortType: string
+) => {
+  if (shortType === "itemShort") {
+    shortValues.map((Items: any) => {
+      if (type === "0") {
+        Items.menu_item = Items.menu_item.sort((a: any, b: any) => {
+          if (a.name < b.name) return -1;
+          if (b.name < a.name) return 1;
+          return 0;
+        });
+      } else {
+        Items.menu_item = Items.menu_item.sort((a: any, b: any) => {
+          if (a.name > b.name) return -1;
+          if (b.name > a.name) return 1;
+          return 0;
+        });
+      }
+    });
+  }
+};
