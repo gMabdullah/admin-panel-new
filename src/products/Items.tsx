@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 
 import {
   Typography,
@@ -6,6 +6,7 @@ import {
   Stack,
   Divider,
   Box,
+  IconButton,
   TablePagination,
 } from "@mui/material";
 
@@ -15,7 +16,7 @@ import SortByAlphaIcon from "@mui/icons-material/SortByAlpha";
 import FilterListIcon from "@mui/icons-material/FilterList";
 
 import useAxios from "axios-hooks";
-
+import { debounce } from "lodash";
 import MainCard from "components/cards/MainCard";
 import DraggableTable from "components/DraggableTable";
 import SearchField from "components/SearchField";
@@ -28,13 +29,19 @@ import { OrderListingSkeleton } from "components/skeleton/OrderListingSkeleton";
 import Progress from "components/Progress";
 import AddEditItem from "products/AddEditItem";
 import { gridIconsCss } from "./Styles";
-import { useSelector } from "store";
+import { dispatch, useSelector } from "store";
 import { keysOfItems } from "constants/BusinessIds";
+import { ProductsProvider } from "./context/ProductsContext";
+import { reorder, sortMenuItems } from "orders/HelperFunctions";
+import TdTextField from "components/TdTextField";
+import Loader from "components/Loader";
+let troggleSorting = true;
 
 const Items = () => {
   const { eatout_id, user_id } = JSON.parse(
     localStorage.getItem("businessInfo")!
   );
+
   const { selectedMenu, selectedBranch, selectedCategory, selectedBrand } =
     useSelector((state) => state.dropdown);
   const [items, setItems] = useState<ProductResponse["items"]>([]);
@@ -44,6 +51,11 @@ const Items = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(100);
   const [apiCallFlag, setApiCallFlag] = React.useState("");
+  const [sequenceItem, setSequenceItem] = useState([]);
+  const [searchQueryItems, setSearchQueryItems] = useState<string>("");
+  const [linearLoader, setLinearLoader] = useState<boolean>(false);
+  // const [state, dispatch] = useReducer(reducer, initialState);
+
   // API Call For Product //
   const [{ data: productData }, getProductsAPI] = useAxios(
     {
@@ -55,23 +67,43 @@ const Items = () => {
     { manual: true }
   );
 
+  const handleSearchChange = debounce((e: { target: { value: string } }) => {
+    (async () => {
+      if (e.target.value !== "") {
+        setSearchQueryItems(e.target.value);
+      } else {
+        setSearchQueryItems(e.target.value);
+        getProductsAPI();
+      }
+    })();
+  }, 1000);
+  // API Call For Shorting //
+  const [{ error: storingError }, shortItemId] = useAxios(
+    {
+      url: "/sort_items",
+      method: "post",
+    },
+    { manual: true }
+  );
   /*********Get Item data from API Product for table***********/
   useEffect(() => {
     (async () => {
       const productResultApi = await getProductsAPI();
+      //setLinearLoader(true)
       if (productResultApi.data && productResultApi.data.items.length > 0) {
         const { items } = productResultApi.data;
         setItems(items);
+        // setLinearLoader(false)
       } else {
         setPage(0);
       }
 
       if (productResultApi.data) {
         const { items_count } = productResultApi.data;
-        setItemsCount(Number(items_count));
+        setItemsCount(items_count);
       }
     })();
-  }, []);
+  }, [searchQueryItems]);
 
   useEffect(() => {
     // api call to update the item list according to filters
@@ -109,9 +141,51 @@ const Items = () => {
     setApiCallFlag("");
     setApplyFilters(true);
   };
+  const sortingItems = async () => {
+    let sortItems;
+    if (troggleSorting) {
+      troggleSorting = false;
+      sortItems = items?.sort((a: any, b: any) => {
+        if (a.name < b.name) return -1;
+        if (b.name < a.name) return 1;
 
+        return 0;
+      });
+    } else {
+      troggleSorting = true;
+      sortItems = items?.sort((a, b) => {
+        if (a.name > b.name) return -1;
+        if (b.name > a.name) return 1;
+        return 0;
+      });
+    }
+
+    const formData = new FormData();
+
+    setLinearLoader(true);
+    sortItems?.map(({ menu_item_id }) => {
+      formData.append("categoryArray[]", menu_item_id);
+    });
+    const shortItemResponse = await shortItemId({
+      data: formData,
+    });
+    setItems(sortItems);
+    setLinearLoader(false);
+  };
   const handleDrawerToggle = () => {
     setToggleDrawer((state) => !state);
+  };
+  // Drag And Drop Shorting
+  const shortDragDropItems = async (sortArray: any) => {
+    setLinearLoader(true);
+    let shortItems: any = reorder(items, sortArray);
+    setItems(shortItems);
+    const formData = new FormData();
+    for (let index = 0; index < shortItems.length; index++) {
+      formData.append("categoryArray[]", shortItems[index].menu_item_id);
+    }
+    const shortItemResponse = await shortItemId({ data: formData });
+    setLinearLoader(false);
   };
 
   const handleChangePage = (
@@ -131,13 +205,14 @@ const Items = () => {
   };
 
   return (
-    <>
+    <ProductsProvider>
       {toggleDrawer && (
         <AddEditItem
           toggleDrawer={toggleDrawer}
           handleDrawerToggle={handleDrawerToggle}
         />
       )}
+      {linearLoader && <Loader />}
       <MainCard
         title={
           <Grid container spacing={2}>
@@ -151,9 +226,10 @@ const Items = () => {
             >
               <Typography variant="h3">Menu Items</Typography>
 
-              <SearchField
-                iconPrimary={SearchOutlinedIcon}
-                placeholder="Search Item"
+              <TdTextField
+                type="search"
+                placeholder="Search Items"
+                onChange={handleSearchChange}
                 sx={{
                   width: "260px",
                   height: "40px",
@@ -208,48 +284,59 @@ const Items = () => {
                 }
               >
                 <Stack>
-                  <SortByAlphaIcon />
+                  <IconButton onClick={() => sortingItems()}>
+                    <SortByAlphaIcon />
+                  </IconButton>
                 </Stack>
-
-                <Stack>
-                  <FilterListIcon />
-                </Stack>
+                <IconButton>
+                  <Stack>
+                    <FilterListIcon />
+                  </Stack>
+                </IconButton>
               </Stack>
             </Grid>
           </Grid>
         </Grid>
         <Grid container>
-          <Grid item xs={12}>
-            <Typography
-              variant="h5"
-              sx={{
-                mb: "20px",
-                color: "#212121",
-              }}
-            >
-              {`${rowsPerPage} Item(s)`}
-            </Typography>
-          </Grid>
+          {itemsCount && (
+            <Grid item xs={12}>
+              <Typography
+                variant="h5"
+                sx={{
+                  mb: "20px",
+                  color: "#212121",
+                }}
+              >
+                {`${rowsPerPage} Item(s)`}
+              </Typography>
+            </Grid>
+          )}
         </Grid>
         <Box sx={{ width: "100%", overflow: "hidden" }}>
-          {productData && productData.length === 0 ? (
+          {productData === undefined ? (
             <OrderListingSkeleton />
           ) : (
-            <DraggableTable items={items} keysOfItems={keysOfItems} />
+            <>
+              <DraggableTable
+                items={items}
+                keysOfItems={keysOfItems}
+                setSequenceItem={setSequenceItem}
+                shortDragDropItems={shortDragDropItems}
+              />
+              <TablePagination
+                component="div"
+                count={itemsCount}
+                page={page}
+                onPageChange={handleChangePage}
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                rowsPerPageOptions={[100, 200, 500, 1000, 2000]}
+              />
+            </>
           )}
-          <TablePagination
-            component="div"
-            count={itemsCount}
-            page={page}
-            onPageChange={handleChangePage}
-            rowsPerPage={rowsPerPage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-            rowsPerPageOptions={[100, 200, 500, 1000, 2000]}
-          />
         </Box>
       </MainCard>
-    </>
+    </ProductsProvider>
   );
 };
-
 export default Items;

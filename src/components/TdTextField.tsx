@@ -58,8 +58,6 @@ const CssTextField = withStyles({
             ? `translate(14px, -6px) scale(0.68)`
             : `translate(14px, 12px) scale(1)`
           : "",
-      backgroundColor:
-        props.type === "date" || props.multiline === true ? "white" : "",
       paddingRight: props.type === "date" || props.multiline === true ? 5 : "",
       paddingLeft: props.type === "date" || props.multiline === true ? 5 : "",
     },

@@ -9,6 +9,7 @@ import Discount from "./sections/Discount";
 import Inventory from "./sections/Inventory";
 import Nutrition from "./sections/Nutrition";
 import AddCategory from "./AddCategory";
+import Description from "./sections/Description";
 import { useState } from "react";
 import CustomModal from "components/CustomModal";
 
@@ -124,15 +125,20 @@ const AddEditItem = ({
           </Grid>
         </Grid>
 
-        <Grid container>
+        {/* <Grid container>
           <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
             <TdTextField type="text" label="Description" />
           </Grid>
-        </Grid>
+        </Grid> */}
 
         <Grid container>
           <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
-            <TdTextField type="text" label="Special Note" />
+            <TdTextField
+              rows={2}
+              multiline={true}
+              type="text"
+              label="Special Note"
+            />
           </Grid>
         </Grid>
 
@@ -157,6 +163,8 @@ const AddEditItem = ({
         <Display />
         <Divider sx={{ mt: "16px" }} />
         <Discount />
+        <Divider />
+        <Description />
         <Divider />
         <Inventory />
         <Divider />

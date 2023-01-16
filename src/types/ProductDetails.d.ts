@@ -26,7 +26,7 @@ interface ItemDetailsResponseItem {
   menu_cat_image: string;
   menu_cat_image_thumbnail: string;
   menu_cat_sku: string;
-  nutritions: string;
+  nutritions: string | ItemDetailsResponseItemNutritions[];
   price: string;
   currency: string;
   desc: string;
@@ -104,4 +104,15 @@ interface ItemDetailsResponseItemOptions {
 
 interface ItemDetailsResponseItemProductSettings {
   apply_delivery_charges: boolean;
+}
+
+interface ItemDetailsResponseItemNutritions {
+  name: string;
+  value: string;
+}
+
+interface ItemDetailsResponseItemNutritionsTable {
+  id: string;
+  name: string;
+  value: string;
 }
