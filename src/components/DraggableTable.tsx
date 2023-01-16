@@ -49,6 +49,14 @@ const handleDragEnd = (result: any) => {
 
 const DraggableTable = ({ items, keysOfItems }: TablePropsType) => {
   const { decimalPlaces } = useSelector((state) => state.main);
+  const [page, setPage] = useState(2);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const handleChangePage = (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number
+  ) => {
+    setPage(newPage);
+  };
   const addCurrency = (value: any, currency: any) => {
     return (
       <Stack direction="row" spacing={0.25} sx={{ alignItems: "center" }}>
@@ -83,8 +91,8 @@ const DraggableTable = ({ items, keysOfItems }: TablePropsType) => {
   return (
     <>
       <DragDropContext onDragEnd={handleDragEnd}>
-        <div>
-          <Table>
+        <TableContainer sx={{ maxHeight: "80vh" }}>
+          <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
                 {keysOfItems?.map((column: any) => (
@@ -176,7 +184,7 @@ const DraggableTable = ({ items, keysOfItems }: TablePropsType) => {
               )}
             </Droppable>
           </Table>
-        </div>
+        </TableContainer>
       </DragDropContext>
     </>
   );
