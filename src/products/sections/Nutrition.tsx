@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 import { DeleteTwoTone, EditTwoTone } from "@mui/icons-material";
 import { Grid, Stack, Box } from "@mui/material";
@@ -13,6 +13,7 @@ import { makeStyles } from "@mui/styles";
 import CustomButton from "components/CustomButton";
 import ExpandablePanel from "components/ExpandablePanel";
 import TdTextField from "components/TdTextField";
+import { ProductsContext } from "../context/ProductsContext";
 import { nutritionTableStyle } from "../Styles";
 
 const useStyles = makeStyles(() => ({
@@ -23,6 +24,7 @@ const useStyles = makeStyles(() => ({
 
 const Nutrition = () => {
   const classes = useStyles();
+  const { state } = useContext(ProductsContext);
 
   const [nutritionRows, setNutritionRows] = useState<
     ItemDetailsResponseItemNutritionsTable[] | []
@@ -43,11 +45,17 @@ const Nutrition = () => {
   const addEditNutrition = () => {
     if (nutrition.name && nutrition.value) {
       if (editNutrition.editFlag) {
-        const updatedNutrition = nutritionRows.map((item) =>
-          item.id === editNutrition.nutrition.id
-            ? { ...editNutrition.nutrition, ...nutrition }
-            : item
-        );
+        const updatedNutrition = nutritionRows.map((item, index) => {
+          if (item.id === editNutrition.nutrition.id) {
+            // update state in useReducer hook
+            if (Array.isArray(state.itemNutritions)) {
+              state.itemNutritions[index] = nutrition;
+            }
+            return { ...editNutrition.nutrition, ...nutrition };
+          } else {
+            return item;
+          }
+        });
 
         setNutritionRows(updatedNutrition);
         setEditNutrition({
@@ -55,10 +63,18 @@ const Nutrition = () => {
           nutrition: { name: "", value: "", id: "" },
         });
       } else {
+        // setting state for table
         setNutritionRows([
           { ...nutrition, id: `${nutritionRows.length + 1}` },
           ...nutritionRows,
         ]);
+
+        // update state in useReducer hook
+        if (Array.isArray(state.itemNutritions)) {
+          state.itemNutritions = [nutrition, ...state.itemNutritions];
+        } else {
+          state.itemNutritions = [nutrition];
+        }
       }
 
       setNutrition({
@@ -72,9 +88,24 @@ const Nutrition = () => {
 
   const deleteNutrition = (itemId: number) => {
     if (!editNutrition.editFlag) {
-      const nutritionArray = nutritionRows.filter(
-        (item) => item.id !== String(itemId)
-      );
+      const nutritionArray = nutritionRows.filter((item, index) => {
+        if (item.id !== String(itemId)) {
+          return item;
+        } else {
+          // update state in useReducer hook
+          if (
+            Array.isArray(state.itemNutritions) &&
+            state.itemNutritions.length > 1
+          ) {
+            state.itemNutritions = [
+              ...state.itemNutritions.slice(0, index),
+              ...state.itemNutritions.slice(index + 1),
+            ];
+          } else {
+            state.itemNutritions = "";
+          }
+        }
+      });
 
       setNutritionRows(nutritionArray);
       setNutrition({

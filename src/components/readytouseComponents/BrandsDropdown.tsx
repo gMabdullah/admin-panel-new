@@ -1,17 +1,23 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+
 import { SelectChangeEvent } from "@mui/material";
+
 import useAxios from "axios-hooks";
+
 import MultiSelectDropDown, {
   DropDownListType,
 } from "components/MultiSelectDropDown";
 import { compareItem, getLocalStorage } from "orders/HelperFunctions";
 import { useDispatch, useSelector } from "store";
 import { setSelectedBrand } from "store/slices/Dropdown";
+import { ProductsContext } from "products/context/ProductsContext";
 // required apply button handler to call respective api
 // 1 - use this type "dropdownTypes"
 
 const BrandsDropdown = ({ applyFilter }: dropdownTypes) => {
   const dispatch = useDispatch();
+  const { state } = useContext(ProductsContext);
+
   const { selectedCategory } = useSelector((state) => state.dropdown);
   const [brands, setBrands] = useState<DropDownListType[]>([]);
   const [BrandName, setBrandName] = useState<string[]>(["All Brands"]);
@@ -44,6 +50,9 @@ const BrandsDropdown = ({ applyFilter }: dropdownTypes) => {
         }));
         // Sort A-Z
         brands.sort(compareItem);
+
+        state.allBrands = [...brands];
+
         // Append All Brands option
         brands.unshift({ label: "All Brands", value: "" });
         setBrands(brands);

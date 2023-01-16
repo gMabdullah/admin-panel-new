@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer } from "react";
+import React, { useState, useEffect, useReducer, useContext } from "react";
 
 import {
   Typography,
@@ -31,10 +31,14 @@ import AddEditItem from "products/AddEditItem";
 import { gridIconsCss } from "./Styles";
 import { dispatch, useSelector } from "store";
 import { keysOfItems } from "constants/BusinessIds";
-import { ProductsProvider } from "./context/ProductsContext";
+import { ProductsProvider, ProductsContext } from "./context/ProductsContext";
 import { reorder, sortMenuItems } from "orders/HelperFunctions";
 import TdTextField from "components/TdTextField";
 import Loader from "components/Loader";
+import {
+  getLocalStorage,
+  toCapitalizeFirstLetter,
+} from "orders/HelperFunctions";
 let troggleSorting = true;
 
 const Items = () => {
@@ -54,6 +58,7 @@ const Items = () => {
   const [sequenceItem, setSequenceItem] = useState([]);
   const [searchQueryItems, setSearchQueryItems] = useState<string>("");
   const [linearLoader, setLinearLoader] = useState<boolean>(false);
+  const { state } = useContext(ProductsContext);
   // const [state, dispatch] = useReducer(reducer, initialState);
 
   // API Call For Product //
@@ -93,6 +98,17 @@ const Items = () => {
       if (productResultApi.data && productResultApi.data.items.length > 0) {
         const { items } = productResultApi.data;
         setItems(items);
+
+        state.allItemsForGrouping = items.map((item: ProductResponseItem) => {
+          if (!item.is_grouped) {
+            return {
+              value: item.menu_item_id,
+              label: item.sku ? item.name + " (" + item.sku + ")" : item.name,
+            };
+          }
+        });
+
+        // state.allItemsForGrouping = [...items];
         // setLinearLoader(false)
       } else {
         setPage(0);
@@ -204,12 +220,200 @@ const Items = () => {
     setPage(0);
   };
 
+  // const addItemCallback = () => {
+  //   //===============================================================================================================================
+
+  //   // callApiToAddMenuItem = () => {
+  //   // let attributeIDsString = "";
+  //   // let menuItemIDsString = "";
+  //   // const { selectedMenuItem, selectedImagesId } = this.props;
+  //   // const {
+  //   //   selectedBrands,
+  //   //   selectedCategory,
+  //   //   itemName,
+  //   //   itemDescription,
+  //   //   isSpecialNote,
+  //   //   specialNote,
+  //   //   itemPrice,
+  //   //   itemTax,
+  //   //   itemDiscount,
+  //   //   itemWeight,
+  //   //   itemSku,
+  //   //   itemProductCode,
+  //   //   itemUniversalProductCode,
+  //   //   unitPriceItem,
+  //   //   itemCarton,
+  //   //   itemCartonPrice,
+  //   //   itemPallet,
+  //   //   itemPalletPrice,
+  //   //   isItemAvailable,
+  //   //   isItemDisplay,
+  //   //   orderLimit,
+  //   //   inventoryLimit,
+  //   //   pricePer,
+  //   //   WeightUnit,
+  //   //   discountStart,
+  //   //   discountExpiry,
+  //   //   minimumOrderQuantity,
+  //   //   attributeArray,
+  //   //   maxDistance,
+  //   // } = this.state;
+
+  //   //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  //   // const eatout_id = localStorage.getItem("eatout_id");
+  //   // const brandId = selectedBrands !== null ? selectedBrands.value : "";
+  //   // //this check only will execute when product have attributes
+  //   // attributeIDsString =
+  //   //   attributeArray && attributeArray.filter((n) => n).join();
+
+  //   // const menuItems =
+  //   //   this.getProductsForGrouping() !== "" ? this.getProductsForGrouping() : [];
+  //   // menuItemIDsString = menuItems.join();
+
+  //   // const optionSets =
+  //   //   this.getOptionSets() !== ""
+  //   //     ? JSON.stringify(this.getOptionSets())
+  //   //     : JSON.stringify([]);
+  //   // const filterTags = this.getFilterTag() !== "" ? this.getFilterTag() : [];
+
+  //   // const suggestions =
+  //   //   this.getSuggestions() !== "" ? JSON.stringify(this.getSuggestions()) : "";
+  //   // const nutritions =
+  //   //   this.getNutritions() !== "" ? JSON.stringify(this.getNutritions()) : "";
+  //   // const branches =
+  //   //   this.getBranchesId() !== "" ? JSON.stringify(this.getBranchesId()) : "";
+
+  //   console.log("state = ", state);
+
+  //   const addItemPayloadKeys = {
+  //     item_id: "",
+  //     eatout_id: getLocalStorage().eatout_id,
+  //     category_id: "13420",
+  //     name: toCapitalizeFirstLetter(state.itemName).trim(),
+  //     description: state.itemDescription,
+  //     allow_note: state.itemSpecialInstructions,
+  //     special_note: state.itemSpecialNote,
+  //     price: state.itemPrice,
+  //     tax: state.itemTax,
+  //     tags_ids: "",
+  //     discount: "0", // required in api
+  //     weight: state.itemWeight,
+  //     sku: state.itemSku.trim(),
+  //     product_code: state.itemProductCode.trim(),
+  //     universal_product_code: state.itemUniversalProductCode.trim(),
+  //     unit_price: state.itemUnitPrice,
+  //     carton_size: "", // required in api
+  //     carton_price: "", // required in api
+  //     pallet_size: "", // required in api
+  //     pallet_price: state.itemPalletPrice,
+  //     brand_id: "",
+  //     option_sets: "[]",
+  //     nutritions: state.itemNutritions,
+  //     suggestions: "", // required in api
+  //     branches: "", // required in api
+  //     status: state.itemAvailability,
+  //     display_source: state.itemDisplay,
+  //     order_limit: "",
+  //     inv_limit: "",
+  //     price_per: state.itemPricePer,
+  //     min_qty: state.itemMinimumQuantity,
+  //     images: "", // required in api
+  //     item_weight_with_unit: "",
+  //     // item_weight_with_unit: `${itemWeight} ${
+  //     //   Object.keys(WeightUnit).length > 0 ? WeightUnit.value : ""
+  //     // }`.trim(),
+  //     discount_expiry: "",
+  //     discount_start_at: "",
+  //     attribute_ids: "",
+  //     product_group_ids: "",
+  //     max_distance: "0",
+  //     // max_distance: maxDistance ? maxDistance : "0",
+  //   };
+  //   // const addItemPayloadKeys = {
+  //   //   item_id: "",
+  //   //   eatout_id: "12092",
+  //   //   category_id: "13420",
+  //   //   name: "Add item test",
+  //   //   description: "",
+  //   //   allow_note: "0",
+  //   //   special_note: "",
+  //   //   price: "9999",
+  //   //   tax: "2",
+  //   //   tags_ids: "",
+  //   //   discount: "", // required in api
+  //   //   weight: "",
+  //   //   sku: "",
+  //   //   product_code: "",
+  //   //   universal_product_code: "",
+  //   //   unit_price: "",
+  //   //   carton_size: "", // required in api
+  //   //   carton_price: "",
+  //   //   pallet_size: "", // required in api
+  //   //   pallet_price: "",
+  //   //   brand_id: "",
+  //   //   option_sets: "[]",
+  //   //   nutritions: "",
+  //   //   suggestions: "", // required in api
+  //   //   branches: "", // required in api
+  //   //   status: "0",
+  //   //   display_source: "0",
+  //   //   order_limit: "",
+  //   //   inv_limit: "",
+  //   //   price_per: "",
+  //   //   min_qty: "",
+  //   //   images: "", // required in api
+  //   //   item_weight_with_unit: "",
+  //   //   // item_weight_with_unit: `${itemWeight} ${
+  //   //   //   Object.keys(WeightUnit).length > 0 ? WeightUnit.value : ""
+  //   //   // }`.trim(),
+  //   //   discount_expiry: "",
+  //   //   discount_start_at: "",
+  //   //   attribute_ids: "",
+  //   //   product_group_ids: "",
+  //   //   max_distance: "0",
+  //   //   // max_distance: maxDistance ? maxDistance : "0",
+  //   // };
+
+  //   addItemAPICall({
+  //     data: addItemAPIPayload({ items: [addItemPayloadKeys] }),
+  //   });
+
+  //   console.log("add Item Payload Keys = ", addItemPayloadKeys);
+
+  //   // let jsonParamArr = [];
+  //   // jsonParamArr.push(addItemPayloadKeys);
+  //   // const jsonObj = {
+  //   //   items: jsonParamArr,
+  //   // };
+  //   // var formData = {
+  //   //   url: "",
+  //   //   body: {
+  //   //     menu_items: JSON.stringify(jsonObj),
+  //   //   },
+  //   // };
+
+  //   // formData = ObjToFormData(formData);
+  //   // const api = new YourRestApi();
+  //   // this.setState({ isLoadingAddMenuItem: true });
+  //   // api
+  //   //   .addMenuItemNew(formData)
+  //   //   .then((response) => this.apiResponseAddMenuItemNew(response)) // Successfull responce
+  //   //   .catch((err) => this.apiError(err)); // Catch any error
+  //   // // };
+
+  //   //===============================================================================================================================
+
+  //   // close the drawer
+  //   setToggleDrawer((state) => !state);
+  // };
+
   return (
     <ProductsProvider>
       {toggleDrawer && (
         <AddEditItem
           toggleDrawer={toggleDrawer}
           handleDrawerToggle={handleDrawerToggle}
+          getProductApi={getProductsAPI}
         />
       )}
       {linearLoader && <Loader />}
