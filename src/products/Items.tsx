@@ -39,6 +39,7 @@ import {
   getLocalStorage,
   toCapitalizeFirstLetter,
 } from "orders/HelperFunctions";
+import { searchFieldStyle } from "business/Styles";
 let troggleSorting = true;
 
 const Items = () => {
@@ -62,15 +63,16 @@ const Items = () => {
   // const [state, dispatch] = useReducer(reducer, initialState);
 
   // API Call For Product //
-  const [{ data: productData }, getProductsAPI] = useAxios(
-    {
-      url: `products?business_id=${eatout_id}&option_set=0&type=1&menu_type_id=${selectedMenu}&num=${rowsPerPage}&offset=${
-        page * rowsPerPage
-      }&query=&cat_id=${selectedCategory}&brand_id=${selectedBrand}&branch_id=${selectedBranch}&admin_id=${user_id}&source=biz`,
-      method: "GET",
-    },
-    { manual: true }
-  );
+  const [{ data: productData, loading: productLoading }, getProductsAPI] =
+    useAxios(
+      {
+        url: `products?business_id=${eatout_id}&option_set=0&type=1&menu_type_id=${selectedMenu}&num=${rowsPerPage}&offset=${
+          page * rowsPerPage
+        }&query=${searchQueryItems}&cat_id=${selectedCategory}&brand_id=${selectedBrand}&branch_id=${selectedBranch}&admin_id=${user_id}&source=biz`,
+        method: "GET",
+      },
+      { manual: true }
+    );
 
   const handleSearchChange = debounce((e: { target: { value: string } }) => {
     (async () => {
@@ -78,12 +80,12 @@ const Items = () => {
         setSearchQueryItems(e.target.value);
       } else {
         setSearchQueryItems(e.target.value);
-        getProductsAPI();
+        await getProductsAPI();
       }
     })();
   }, 1000);
   // API Call For Shorting //
-  const [{ error: storingError }, shortItemId] = useAxios(
+  const [{ error: storingError, loading: sortLoading }, shortItemId] = useAxios(
     {
       url: "/sort_items",
       method: "post",
@@ -124,7 +126,9 @@ const Items = () => {
   useEffect(() => {
     // api call to update the item list according to filters
     if (applyFilters) {
+      // setLinearLoader(true);
       getProductsAPI();
+      // setLinearLoader(false);
     }
   }, [applyFilters]);
 
@@ -150,7 +154,9 @@ const Items = () => {
   }, [productData]);
 
   useEffect(() => {
+    // setLinearLoader(true);
     getProductsAPI();
+    // setLinearLoader(false);
   }, [page, rowsPerPage]);
 
   const applyButtonFilter = () => {
@@ -178,7 +184,7 @@ const Items = () => {
 
     const formData = new FormData();
 
-    setLinearLoader(true);
+    // setLinearLoader(true);
     sortItems?.map(({ menu_item_id }) => {
       formData.append("categoryArray[]", menu_item_id);
     });
@@ -186,14 +192,14 @@ const Items = () => {
       data: formData,
     });
     setItems(sortItems);
-    setLinearLoader(false);
+    // setLinearLoader(false);
   };
   const handleDrawerToggle = () => {
     setToggleDrawer((state) => !state);
   };
   // Drag And Drop Shorting
   const shortDragDropItems = async (sortArray: any) => {
-    setLinearLoader(true);
+    // setLinearLoader(true);
     let shortItems: any = reorder(items, sortArray);
     setItems(shortItems);
     const formData = new FormData();
@@ -201,7 +207,7 @@ const Items = () => {
       formData.append("categoryArray[]", shortItems[index].menu_item_id);
     }
     const shortItemResponse = await shortItemId({ data: formData });
-    setLinearLoader(false);
+    // setLinearLoader(false);
   };
 
   const handleChangePage = (
@@ -416,7 +422,7 @@ const Items = () => {
           getProductApi={getProductsAPI}
         />
       )}
-      {linearLoader && <Loader />}
+      {(productLoading || sortLoading) && <Loader />}
       <MainCard
         title={
           <Grid container spacing={2}>
@@ -434,11 +440,7 @@ const Items = () => {
                 type="search"
                 placeholder="Search Items"
                 onChange={handleSearchChange}
-                sx={{
-                  width: "260px",
-                  height: "40px",
-                  marginLeft: "36px",
-                }}
+                sx={searchFieldStyle}
               />
             </Grid>
             <Grid
