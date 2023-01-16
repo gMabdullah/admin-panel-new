@@ -9,7 +9,11 @@ import { Grid } from "@mui/material";
 
 interface editorProps {
   description: string;
-  setDescription: React.Dispatch<React.SetStateAction<string>>;
+  setDescription?: React.Dispatch<React.SetStateAction<string>>;
+  setDescriptionFromItem?:
+    | React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> &
+        React.ChangeEventHandler<HTMLInputElement>;
+  itemEditor?: boolean;
 }
 interface imageAPIProps {
   imageType: string;
@@ -18,7 +22,12 @@ interface imageAPIProps {
   files: File[];
   im_date: string;
 }
-const RichEditor = ({ description, setDescription }: editorProps) => {
+const RichEditor = ({
+  description,
+  setDescription,
+  itemEditor,
+  setDescriptionFromItem,
+}: editorProps) => {
   const { eatout_id, user_id } = getLocalStorage();
 
   const payload = ({
@@ -161,7 +170,13 @@ const RichEditor = ({ description, setDescription }: editorProps) => {
             "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
           // images_upload_handler: imageUploadHandler,
         }}
-        onEditorChange={(e) => setDescription(e)}
+        onEditorChange={(e) => {
+          if (itemEditor) {
+            setDescriptionFromItem(e);
+          } else {
+            description && setDescription(e);
+          }
+        }}
       />
     </Grid>
   );
