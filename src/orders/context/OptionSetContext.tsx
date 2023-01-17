@@ -11,6 +11,8 @@ const defaultValue = {
   setSelectedOrderContext: "",
   editAbleItem: [],
   setEditAbleItem: "",
+  preventOrderUpdate: false,
+  setPreventOrderUpdate: () => {},
 };
 
 export const OptionSetContext =
@@ -19,13 +21,14 @@ export const OptionSetContext =
 export const OptionSetProvider = ({
   children,
 }: {
-  children: React.ReactElement;
+  children: React.ReactNode;
 }) => {
   const [options, setOptions] = useState<any>([]);
   const [indexOptionSet, setIndexOptionSet] = useState(0);
   const [optionSetEdit, setOptionSetEdit] = useState(false);
   const [selectedOrderContext, setSelectedOrderContext] = useState({});
   const [editAbleItem, setEditAbleItem] = useState([]);
+  const [preventOrderUpdate, setPreventOrderUpdate] = useState<boolean>(false);
 
   return (
     <OptionSetContext.Provider
@@ -40,6 +43,8 @@ export const OptionSetProvider = ({
         setSelectedOrderContext,
         editAbleItem,
         setEditAbleItem,
+        preventOrderUpdate,
+        setPreventOrderUpdate,
       }}
     >
       {children}

@@ -319,6 +319,7 @@ const OrderStatusAction = ({
                 <CustomButton
                   variant="contained"
                   color={"secondary"}
+                  sx={{ p: "7px 21px" }}
                   onClick={toggleEmailNotificationModal}
                 >
                   Notify

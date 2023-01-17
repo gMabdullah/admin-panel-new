@@ -9,6 +9,7 @@ type switchType<T extends React.ElementType> = {
   checked?: boolean;
   value?: string;
   name?: string;
+  sx?: object;
 };
 
 const PurpleSwitch = withStyles({
@@ -31,11 +32,12 @@ const CustomizedSwitch = <T extends React.ElementType = "button">({
   value,
   label,
   name,
+  sx,
   ...rest
 }: switchType<T>): JSX.Element => {
   return (
     <>
-      <FormGroup>
+      <FormGroup sx={sx}>
         <FormControlLabel
           control={
             <PurpleSwitch
