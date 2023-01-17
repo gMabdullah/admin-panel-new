@@ -80,6 +80,7 @@ const Orders = () => {
   const { startDate, endDate, decimalPlaces } = useSelector(
     (state) => state.main
   );
+
   const [orders, setOrders] = useState<OrderListingResponse["result"] | []>([]);
   const [statusDropdown, setStatusDropdown] = React.useState<
     DropDownListType[]
@@ -182,7 +183,6 @@ const Orders = () => {
     );
     return formData;
   };
-
   //======================================= API Calls =======================================//
 
   const [{ data: globalSetting }, getGlobalSettingsAPI] = useAxios(
@@ -888,7 +888,7 @@ const Orders = () => {
         >
           <Grid container>
             <Grid item xs={12} sx={{ mb: "16px" }}>
-              <MultiSelectDropDown
+            <MultiSelectDropDown
                 value={branchName}
                 onChange={handleBranchChange}
                 dropDownList={branch}
