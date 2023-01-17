@@ -593,22 +593,24 @@ const Orders = () => {
 
   const addCurrency = (params: GridRenderCellParams) => {
     return (
-      <Stack direction="row" spacing={0.25} sx={{ alignItems: "center" }}>
-        <Typography
-          sx={{
-            fontFamily: "Roboto",
-            fontStyle: "normal",
-            fontWeight: "400",
-            fontSize: "10px",
-            lineHeight: "12px",
-            color: "#757575",
-          }}
-        >
-          {params.row.currency}
-        </Typography>
-        <Typography variant="subtitle1" sx={{ color: "#212121" }}>
-          {parseFloat(params.value).toFixed(decimalPlaces)}
-        </Typography>
+      <Stack sx={{ alignItems: "center" }}>
+        <Stack direction="row" spacing={0.25} sx={{ alignItems: "end" }}>
+          <Typography
+            sx={{
+              fontFamily: "Roboto",
+              fontStyle: "normal",
+              fontWeight: "400",
+              fontSize: "10px",
+              color: "#757575",
+              mb: "1.9px",
+            }}
+          >
+            {params.row.currency}
+          </Typography>
+          <Typography variant="subtitle1" sx={{ color: "#212121" }}>
+            {parseFloat(params.value).toFixed(decimalPlaces)}
+          </Typography>
+        </Stack>
       </Stack>
     );
   };
