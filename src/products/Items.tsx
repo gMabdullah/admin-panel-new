@@ -40,6 +40,8 @@ import {
   toCapitalizeFirstLetter,
 } from "orders/HelperFunctions";
 import { searchFieldStyle } from "business/Styles";
+const file = require("../assets/files/downloadSample.xlsx");
+
 let troggleSorting = true;
 
 const Items = () => {
@@ -53,6 +55,7 @@ const Items = () => {
   const [applyFilters, setApplyFilters] = React.useState(false);
   const [toggleDrawer, setToggleDrawer] = useState(false);
   const [itemsCount, setItemsCount] = useState(100);
+
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(100);
   const [apiCallFlag, setApiCallFlag] = React.useState("");
@@ -461,7 +464,17 @@ const Items = () => {
                   height: "44px",
                   width: "138px",
                 }}
-                onClick={handleDrawerToggle}
+                // onClick={handleDrawerToggle}
+                onClick={() => {
+                  let link = document.createElement("a");
+                  link.setAttribute("download", "Menu-Sample.xlsx");
+                  debugger;
+                  link.href = file;
+                  // require("../../src/assets/files/download-sample.xlsx");
+                  document.body.appendChild(link);
+                  link.click();
+                  link.remove();
+                }}
               >
                 Add Item
               </CustomButton>
