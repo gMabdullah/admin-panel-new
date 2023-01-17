@@ -33,6 +33,9 @@ type TextFieldType<T extends React.ElementType> = {
   sx?: object;
   className?: object;
   error?: boolean;
+  InputLabelProps?: {
+    shrink: boolean;
+};
   required?: boolean;
 } & React.ComponentPropsWithoutRef<T>;
 
@@ -148,6 +151,7 @@ const TdTextField = <T extends React.ElementType = "input">({
   required,
   onKeyUp,
   onKeyDown,
+  InputLabelProps,
   ...rest
 }: TextFieldType<T>): JSX.Element => {
   const [values, setValues] = React.useState({
@@ -226,6 +230,7 @@ const TdTextField = <T extends React.ElementType = "input">({
       onChange={onChange}
       onBlur={onBlur}
       defaultValue={defaultValue}
+      InputLabelProps={InputLabelProps}
       sx={{ ...fieldSX, ...sx }}
       error={error}
       {...rest}
