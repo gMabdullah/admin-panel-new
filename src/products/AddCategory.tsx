@@ -14,7 +14,7 @@ import {
   getLocalStorage,
   slugify,
 } from "orders/HelperFunctions";
-import { alphaNumericRegex } from "constants/BusinessIds";
+import { alphaNumericRegex } from "constants/constants";
 import Display from "./sections/Display";
 import { useSelector } from "store";
 

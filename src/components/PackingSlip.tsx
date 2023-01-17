@@ -1,25 +1,25 @@
-import React from 'react'
-import { Document, Page, Text, View } from '@react-pdf/renderer'
-import { styles } from './PackingSlipStyles'
+import React from "react";
+import { Document, Page, Text, View } from "@react-pdf/renderer";
+import { styles } from "./PackingSlipStyles";
 import {
   AMANAT_BUSINESS_ID,
   DWP_BUSINESS_ID,
   DWP_STAGING_BUSINESS_ID,
   AMANAT_STAGING_BUSINESS_ID,
-} from 'constants/BusinessIds'
+} from "constants/constants";
 interface propsTypes {
-  packingSlipData: OrderListingResponse['result']
-  pdfType?: string
-  totalWeight?: number
-  weightUnit?: string
+  packingSlipData: OrderListingResponse["result"];
+  pdfType?: string;
+  totalWeight?: number;
+  weightUnit?: string;
 }
 const PackingSlip = (props: propsTypes) => {
   const { eatout_name, eatout_id } = JSON.parse(
-    localStorage.getItem('businessInfo')!,
-  )
+    localStorage.getItem("businessInfo")!
+  );
   const fixedDecimalPlaces = (value: string) => {
-    return parseFloat(value).toFixed(0) // Add Descaimal Places From Local storage
-  }
+    return parseFloat(value).toFixed(0); // Add Descaimal Places From Local storage
+  };
   return (
     <>
       <Document>
@@ -54,11 +54,11 @@ const PackingSlip = (props: propsTypes) => {
               custom_code_discount_value,
               discount_value,
               cnic,
-            } = selectedOrder
+            } = selectedOrder;
 
             return (
               <Page size="A4" style={styles.page} key={index} wrap>
-                {props.pdfType === 'pdf' ? (
+                {props.pdfType === "pdf" ? (
                   <View>
                     <View style={styles.pdfEatOutNameView}>
                       <Text style={styles.pdfEatOutName}>{eatout_name}</Text>
@@ -116,7 +116,7 @@ const PackingSlip = (props: propsTypes) => {
                           {orderType}
                         </Text>
                       </View>
-                      {delivery_date !== '0000-00-00 00:00:00' && (
+                      {delivery_date !== "0000-00-00 00:00:00" && (
                         <View style={styles.row}>
                           <Text style={styles.detailBoxTextCss}>
                             Delivery Time:
@@ -151,7 +151,7 @@ const PackingSlip = (props: propsTypes) => {
                           {address}
                         </Text>
                       </View>
-                      {note !== '' && (
+                      {note !== "" && (
                         <View style={styles.row}>
                           <Text style={styles.detailBoxTextCss}>Note:</Text>
                           <Text style={styles.detailBoxTextCssNote}>
@@ -162,7 +162,7 @@ const PackingSlip = (props: propsTypes) => {
                     </View>
                   </View>
                 </View>
-                {props.pdfType === 'pdf' ? (
+                {props.pdfType === "pdf" ? (
                   <View style={styles.tablerowhead}>
                     <View style={styles.tablePadding}>
                       <View style={styles.tableColPdfItemHead}>
@@ -181,8 +181,8 @@ const PackingSlip = (props: propsTypes) => {
                         <Text style={styles.textth2}>
                           {eatout_id === DWP_STAGING_BUSINESS_ID ||
                           eatout_id === DWP_BUSINESS_ID
-                            ? 'MRP'
-                            : 'Price'}
+                            ? "MRP"
+                            : "Price"}
                         </Text>
                       </View>
                       <View style={styles.tablecolPdf}>
@@ -227,52 +227,52 @@ const PackingSlip = (props: propsTypes) => {
                   {order_detail.map(
                     (
                       orderDetail: OrderListingResponseOrderDetail,
-                      i: number,
+                      i: number
                     ) => {
-                      let row = orderDetail
-                      let options: any = {}
-                      const optionSets: any = []
-                      let count = 0
-                      let innerOptionsName = ''
+                      let row = orderDetail;
+                      let options: any = {};
+                      const optionSets: any = [];
+                      let count = 0;
+                      let innerOptionsName = "";
                       if (
                         row.options &&
-                        row.options !== '[]' &&
-                        row.options !== '{}' &&
+                        row.options !== "[]" &&
+                        row.options !== "{}" &&
                         Object.keys(row.options).length !== 0
                       ) {
-                        options = JSON.parse(row.options)
-                        if (typeof options === 'string') {
-                          options = JSON.parse(options)
+                        options = JSON.parse(row.options);
+                        if (typeof options === "string") {
+                          options = JSON.parse(options);
                         }
 
                         for (const key in options) {
                           options[key].map((opt: any) => {
-                            innerOptionsName = ''
+                            innerOptionsName = "";
                             let haveInnerOpt =
-                              opt.inner_options !== '' ? true : false
+                              opt.inner_options !== "" ? true : false;
                             optionSets.push({
                               name: opt.name,
                               quantity: opt.quantity,
                               price: opt.price,
                               weight: opt.weight,
                               haveInnerOptions: haveInnerOpt,
-                            })
-                            let inner_options = opt.inner_options
-                            if (inner_options !== '') {
+                            });
+                            let inner_options = opt.inner_options;
+                            if (inner_options !== "") {
                               for (const innerKey in inner_options) {
                                 inner_options[innerKey].map((innerOpt: any) => {
-                                  innerOptionsName = `${innerOptionsName}${innerOpt.name},`
-                                })
+                                  innerOptionsName = `${innerOptionsName}${innerOpt.name},`;
+                                });
                               }
                             }
-                            optionSets[count].inner_options = innerOptionsName
-                            count++
-                          })
+                            optionSets[count].inner_options = innerOptionsName;
+                            count++;
+                          });
                         }
                       }
                       return (
                         <React.Fragment key={i}>
-                          {props.pdfType === 'pdf' ? (
+                          {props.pdfType === "pdf" ? (
                             <View style={styles.tablerow}>
                               <View style={styles.tableColPdfItemRow}>
                                 <Text style={styles.texttPdfItem}>{i + 1}</Text>
@@ -305,12 +305,12 @@ const PackingSlip = (props: propsTypes) => {
                                       {`${f.name}${
                                         parseFloat(f.price)
                                           .toFixed(2)
-                                          .toString() === '0.00'
-                                          ? ''
+                                          .toString() === "0.00"
+                                          ? ""
                                           : `, Qty: ${f.quantity}, Price: ${f.price}`
                                       } ${
-                                        f.inner_options === ''
-                                          ? ''
+                                        f.inner_options === ""
+                                          ? ""
                                           : `(${f.inner_options})`
                                       }`}
                                     </Text>
@@ -320,12 +320,12 @@ const PackingSlip = (props: propsTypes) => {
                                       {`${f.name}${
                                         parseFloat(f.price)
                                           .toFixed(2)
-                                          .toString() === '0.00'
-                                          ? ''
+                                          .toString() === "0.00"
+                                          ? ""
                                           : `, Qty: ${f.quantity}, Price: ${f.price}`
                                       }`}
                                     </Text>
-                                  ),
+                                  )
                                 )}
                                 <Text style={styles.texttcom}>
                                   {`${orderDetail.comment}`}
@@ -350,7 +350,7 @@ const PackingSlip = (props: propsTypes) => {
                               {props.totalWeight !== 0 && (
                                 <View style={styles.tableColPdfWeight}>
                                   <Text style={styles.texttPdf}>{`${parseFloat(
-                                    orderDetail.weight + '',
+                                    orderDetail.weight + ""
                                   ).toFixed(0)} ${
                                     orderDetail.weight_unit
                                   }`}</Text>
@@ -358,13 +358,13 @@ const PackingSlip = (props: propsTypes) => {
                               )}
                               <View style={styles.tableColPdf}>
                                 <Text style={styles.texttPdf}>
-                                  {fixedDecimalPlaces(orderDetail.total + '')}
+                                  {fixedDecimalPlaces(orderDetail.total + "")}
                                 </Text>
                               </View>
                               <View style={styles.tableColPdf}>
                                 <Text style={styles.texttPdf}>
                                   {fixedDecimalPlaces(
-                                    orderDetail.item_level_grand_total + '',
+                                    orderDetail.item_level_grand_total + ""
                                   )}
                                 </Text>
                               </View>
@@ -403,12 +403,12 @@ const PackingSlip = (props: propsTypes) => {
                                       {`${f.name}${
                                         parseFloat(f.price)
                                           .toFixed(2)
-                                          .toString() === '0.00'
-                                          ? ''
+                                          .toString() === "0.00"
+                                          ? ""
                                           : `, Qty: ${f.quantity}, Price: ${f.price}`
                                       } ${
-                                        f.inner_options === ''
-                                          ? ''
+                                        f.inner_options === ""
+                                          ? ""
                                           : `(${f.inner_options})`
                                       }`}
                                     </Text>
@@ -421,12 +421,12 @@ const PackingSlip = (props: propsTypes) => {
                                       {`${f.name}${
                                         parseFloat(f.price)
                                           .toFixed(2)
-                                          .toString() === '0.00'
-                                          ? ''
+                                          .toString() === "0.00"
+                                          ? ""
                                           : `, Qty: ${f.quantity}, Price: ${f.price}`
                                       }`}
                                     </Text>
-                                  ),
+                                  )
                                 )}
                                 <Text>{`${orderDetail.comment}`}</Text>
                               </View>
@@ -447,8 +447,8 @@ const PackingSlip = (props: propsTypes) => {
 
                           <View style={styles.divider}></View>
                         </React.Fragment>
-                      )
-                    },
+                      );
+                    }
                   )}
                 </View>
 
@@ -456,7 +456,7 @@ const PackingSlip = (props: propsTypes) => {
                 <View style={styles.rowend} wrap={false}>
                   <View
                     style={
-                      props.pdfType === 'pdf'
+                      props.pdfType === "pdf"
                         ? styles.currencyrow2Pdf
                         : styles.currencyrow2
                     }
@@ -469,7 +469,7 @@ const PackingSlip = (props: propsTypes) => {
                   {total_qty && (
                     <View
                       style={
-                        props.pdfType === 'pdf'
+                        props.pdfType === "pdf"
                           ? styles.currencyrowTotalQuantityPdf
                           : styles.currencyrowTotalQuantity
                       }
@@ -478,13 +478,13 @@ const PackingSlip = (props: propsTypes) => {
                     </View>
                   )}
                 </View>
-                {props.pdfType === 'pdf' && (
+                {props.pdfType === "pdf" && (
                   <>
                     <View>
                       <View style={styles.rowend}>
                         <View
                           style={
-                            props.pdfType === 'pdf'
+                            props.pdfType === "pdf"
                               ? styles.currencyrow2Pdf
                               : styles.currencyrow2
                           }
@@ -494,8 +494,8 @@ const PackingSlip = (props: propsTypes) => {
                             {/* showing  "Total Amount (Inclusive of Taxes)" only for DWP  */}
                             {eatout_id === DWP_STAGING_BUSINESS_ID ||
                             eatout_id === DWP_BUSINESS_ID
-                              ? 'Total Amount (Inclusive of Taxes)'
-                              : 'Total'}
+                              ? "Total Amount (Inclusive of Taxes)"
+                              : "Total"}
                           </Text>
                         </View>
                         <View style={styles.currencyrow}>
@@ -504,7 +504,7 @@ const PackingSlip = (props: propsTypes) => {
                           </Text>
                         </View>
                       </View>
-                      {custom_code_type === '0' && (
+                      {custom_code_type === "0" && (
                         <View style={styles.rowend}>
                           <View style={styles.currencyrow2Pdf}></View>
                           <View style={styles.currencyrow}>
@@ -517,7 +517,7 @@ const PackingSlip = (props: propsTypes) => {
                           </View>
                         </View>
                       )}
-                      {discount_value !== '0.00' && (
+                      {discount_value !== "0.00" && (
                         <View style={styles.rowend}>
                           <View style={styles.currencyrow2Pdf}></View>
                           <View style={styles.currencyrow}>
@@ -530,7 +530,7 @@ const PackingSlip = (props: propsTypes) => {
                           </View>
                         </View>
                       )}
-                      {delivery_charges !== '0.00' && (
+                      {delivery_charges !== "0.00" && (
                         <View style={styles.rowend}>
                           <View style={styles.currencyrow2Pdf}></View>
                           <View style={styles.currencyrow}>
@@ -545,7 +545,7 @@ const PackingSlip = (props: propsTypes) => {
                           </View>
                         </View>
                       )}
-                      {tax_value !== '0.00' && (
+                      {tax_value !== "0.00" && (
                         <View style={styles.rowend}>
                           <View style={styles.currencyrow2Pdf}></View>
                           <View style={styles.currencyrow}>
@@ -559,7 +559,7 @@ const PackingSlip = (props: propsTypes) => {
                         </View>
                       )}
 
-                      {service_charges !== '0.00' && (
+                      {service_charges !== "0.00" && (
                         <View style={styles.rowend}>
                           <View style={styles.currencyrow2Pdf}></View>
                           <View style={styles.currencyrow}>
@@ -590,11 +590,11 @@ const PackingSlip = (props: propsTypes) => {
                 )}
                 <View style={styles.headerDivider}></View>
               </Page>
-            )
-          },
+            );
+          }
         )}
       </Document>
     </>
-  )
-}
-export default PackingSlip
+  );
+};
+export default PackingSlip;

@@ -15,7 +15,7 @@ import CustomButton from "components/CustomButton";
 
 import { OrderTimelineProp } from "./OrderStatusAction";
 import { useSelector } from "store";
-import { IQBAL_BUSINESS_ID } from "constants/BusinessIds";
+import { IQBAL_BUSINESS_ID } from "constants/constants";
 import { PRE_AUTH_CONFIRM_PAYMENT, TOSSDOWN_SITE } from "config";
 
 interface errorProps {

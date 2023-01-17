@@ -1,6 +1,6 @@
 import React from "react";
 import { Editor } from "@tinymce/tinymce-react";
-import { TINY_EDITOR_API_KEY } from "constants/BusinessIds";
+import { TINY_EDITOR_API_KEY } from "constants/constants";
 import Compressor from "compressorjs";
 import { formatDate, getLocalStorage } from "orders/HelperFunctions";
 import useAxios from "axios-hooks";
