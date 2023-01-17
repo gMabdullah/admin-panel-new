@@ -40,7 +40,7 @@ import {
   toCapitalizeFirstLetter,
 } from "orders/HelperFunctions";
 import { searchFieldStyle } from "business/Styles";
-const file = require("../assets/files/downloadSample.xlsx");
+import file from "../assets/files/downloadSample.xlsx";
 
 let troggleSorting = true;
 
@@ -464,17 +464,17 @@ const Items = () => {
                   height: "44px",
                   width: "138px",
                 }}
-                // onClick={handleDrawerToggle}
-                onClick={() => {
-                  let link = document.createElement("a");
-                  link.setAttribute("download", "Menu-Sample.xlsx");
-                  debugger;
-                  link.href = file;
-                  // require("../../src/assets/files/download-sample.xlsx");
-                  document.body.appendChild(link);
-                  link.click();
-                  link.remove();
-                }}
+                onClick={handleDrawerToggle}
+                // onClick={() => {
+                //   let link = document.createElement("a");
+                //   link.setAttribute("download", "Menu-Sample.xlsx");
+                //   debugger;
+                //   link.href = file;
+                //   // require("../../src/assets/files/download-sample.xlsx");
+                //   document.body.appendChild(link);
+                //   link.click();
+                //   link.remove();
+                // }}
               >
                 Add Item
               </CustomButton>
