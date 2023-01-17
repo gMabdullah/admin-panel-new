@@ -4,7 +4,7 @@ import { FormGroup, FormControlLabel, Switch } from "@mui/material";
 import { withStyles } from "@mui/styles";
 
 type switchType<T extends React.ElementType> = {
-  onChange?: (event?: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   label?: string;
   checked?: boolean;
   value?: string;

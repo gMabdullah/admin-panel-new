@@ -29,7 +29,7 @@ const grid11Style = {
 const searchFieldStyle = {
   width: "260px",
   height: "44px",
-  marginLeft: "24px",
+  marginLeft: "48px",
 
   "& .MuiOutlinedInput-input": {
     background: "#F5F5F5",

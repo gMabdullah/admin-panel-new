@@ -21,7 +21,15 @@ import dropdownReducer from "./slices/Dropdown";
 
 const reducer = combineReducers({
   dropdown: dropdownReducer,
-  main: mainReducer,
+  // main: mainReducer,
+  main: persistReducer(
+    {
+      key: "global",
+      storage,
+      keyPrefix: "ts-",
+    },
+    mainReducer
+  ),
   snackbar: snackbarReducer,
   cart: persistReducer(
     {

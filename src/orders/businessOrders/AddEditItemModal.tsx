@@ -672,4 +672,5 @@ const AddEditItemModal = ({
     </>
   );
 };
+
 export default AddEditItemModal;

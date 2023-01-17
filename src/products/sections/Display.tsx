@@ -1,16 +1,26 @@
-import React from "react";
+import React, { useContext } from "react";
 
 import { Stack, Typography } from "@mui/material";
 
 import CustomRadioButton from "components/CustomRadioButton";
+import { ProductsContext } from "../context/ProductsContext";
 
 const Display = () => {
-  const [displayValue, setDisplayValue] = React.useState("All");
+  const {
+    state: { itemDisplay },
+    dispatch,
+  } = useContext(ProductsContext);
 
   const displayChangeHandler = (event: {
-    target: { value: React.SetStateAction<string> };
+    target: { name: string; value: string };
   }) => {
-    setDisplayValue(event.target.value);
+    dispatch({
+      type: "radioButton",
+      payload: {
+        name: event.target.name,
+        value: event.target.value,
+      },
+    });
   };
 
   return (
@@ -18,16 +28,16 @@ const Display = () => {
       <Typography variant="h5" sx={{ mb: "12px" }}>
         Display
       </Typography>
-
       <CustomRadioButton
+        name="itemDisplay"
         row={true}
         options={[
-          { label: "All", value: "All" },
-          { label: "None", value: "None" },
-          { label: "Web", value: "Web" },
-          { label: "POS", value: "POS" },
+          { label: "All", value: "0" },
+          { label: "None", value: "1" },
+          { label: "Web", value: "2" },
+          { label: "POS", value: "3" },
         ]}
-        value={displayValue}
+        value={itemDisplay}
         onChange={displayChangeHandler}
       />
     </Stack>

@@ -1,9 +1,14 @@
+import React, { useContext } from "react";
+
 import { Grid, Stack } from "@mui/material";
 
 import ExpandablePanel from "components/ExpandablePanel";
 import TdTextField from "components/TdTextField";
+import { ProductsContext } from "../context/ProductsContext";
 
 const Inventory = () => {
+  const { dispatch } = useContext(ProductsContext);
+
   return (
     <Stack>
       <ExpandablePanel
@@ -14,61 +19,154 @@ const Inventory = () => {
         <Grid container>
           <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
             <Grid item xs={6}>
-              <TdTextField type="number" label="Item Weight" />
+              <TdTextField
+                name="itemWeight"
+                type="number"
+                label="Item Weight"
+                onChange={(e) =>
+                  dispatch({
+                    type: "textField",
+                    payload: { name: e.target.name, value: e.target.value },
+                  })
+                }
+              />
             </Grid>
             <Grid item xs={6} sx={{ ml: "8px" }}>
-              <TdTextField label="Item Unit" />
-            </Grid>
-          </Grid>
-        </Grid>
-
-        <Grid container>
-          <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
-            <Grid item xs={6}>
-              <TdTextField type="number" label="Price Per" />
-            </Grid>
-            <Grid item xs={6} sx={{ ml: "8px" }}>
-              <TdTextField type="number" label="Minimum Quantity" />
-            </Grid>
-          </Grid>
-        </Grid>
-
-        <Grid container>
-          <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
-            <Grid item xs={6}>
-              <TdTextField type="number" label="No. of Cartons" />
-            </Grid>
-          </Grid>
-        </Grid>
-
-        <Grid container>
-          <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
-            <Grid item xs={6}>
-              <TdTextField label="SKU" />
-            </Grid>
-            <Grid item xs={6} sx={{ ml: "8px" }}>
-              <TdTextField type="number" label="Unit Price (PKR)" />
+              <TdTextField label="Weight Unit" />
             </Grid>
           </Grid>
         </Grid>
         <Grid container>
           <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
             <Grid item xs={6}>
-              <TdTextField label="Product Code" />
+              <TdTextField
+                name="itemPricePer"
+                type="number"
+                label="Price Per"
+                onChange={(e) =>
+                  dispatch({
+                    type: "textField",
+                    payload: { name: e.target.name, value: e.target.value },
+                  })
+                }
+              />
             </Grid>
             <Grid item xs={6} sx={{ ml: "8px" }}>
-              <TdTextField label="Universal Product Code" />
+              <TdTextField
+                name="itemMinimumQuantity"
+                type="number"
+                label="Minimum Quantity"
+                onChange={(e) =>
+                  dispatch({
+                    type: "textField",
+                    payload: { name: e.target.name, value: e.target.value },
+                  })
+                }
+              />
             </Grid>
           </Grid>
         </Grid>
-
+        <Grid container>
+          <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
+            <Grid item xs={6}>
+              <TdTextField
+                name="itemCartons"
+                type="number"
+                label="No. of Cartons"
+                onChange={(e) =>
+                  dispatch({
+                    type: "textField",
+                    payload: { name: e.target.name, value: e.target.value },
+                  })
+                }
+              />
+            </Grid>
+          </Grid>
+        </Grid>
+        <Grid container>
+          <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
+            <Grid item xs={6}>
+              <TdTextField
+                name="itemSku"
+                label="SKU"
+                onChange={(e) =>
+                  dispatch({
+                    type: "textField",
+                    payload: { name: e.target.name, value: e.target.value },
+                  })
+                }
+              />
+            </Grid>
+            <Grid item xs={6} sx={{ ml: "8px" }}>
+              <TdTextField
+                name="itemUnitPrice"
+                type="number"
+                label="Unit Price"
+                onChange={(e) =>
+                  dispatch({
+                    type: "textField",
+                    payload: { name: e.target.name, value: e.target.value },
+                  })
+                }
+              />
+            </Grid>
+          </Grid>
+        </Grid>
+        <Grid container>
+          <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
+            <Grid item xs={6}>
+              <TdTextField
+                name="itemProductCode"
+                label="Product Code"
+                onChange={(e) =>
+                  dispatch({
+                    type: "textField",
+                    payload: { name: e.target.name, value: e.target.value },
+                  })
+                }
+              />
+            </Grid>
+            <Grid item xs={6} sx={{ ml: "8px" }}>
+              <TdTextField
+                name="itemUniversalProductCode"
+                label="Universal Product Code"
+                onChange={(e) =>
+                  dispatch({
+                    type: "textField",
+                    payload: { name: e.target.name, value: e.target.value },
+                  })
+                }
+              />
+            </Grid>
+          </Grid>
+        </Grid>
         <Grid container>
           <Grid item xs={12} sx={{ display: "flex", mb: "22px" }}>
             <Grid item xs={6}>
-              <TdTextField type="number" label="No of Palletes" />
+              <TdTextField
+                name="itemPallets"
+                type="number"
+                label="No of Pallets"
+                onChange={(e) =>
+                  dispatch({
+                    type: "textField",
+                    payload: { name: e.target.name, value: e.target.value },
+                  })
+                }
+              />
             </Grid>
             <Grid item xs={6} sx={{ ml: "8px" }}>
-              <TdTextField type="number" label="Pallet Price (PKR)" />
+              <TdTextField
+                name="itemPalletPrice"
+                type="number"
+                label="Pallet Price"
+                onChange={(e) =>
+                  dispatch({
+                    type: "textField",
+                    payload: { name: e.target.name, value: e.target.value },
+                  })
+                }
+              />
             </Grid>
           </Grid>
         </Grid>

@@ -35,6 +35,10 @@ export const ORDER_PUSHER_EVENT = environment?.includes("beta1")
   ? process.env.REACT_APP_PUSHER_DEV
   : process.env.REACT_APP_PUSHER_PRODUCTION;
 
+export const AWS_BUCKET_URL = environment?.includes("beta1")
+  ? process.env.REACT_APP_AWS_BUCKET_URL_DEV
+  : process.env.REACT_APP_AWS_BUCKET_URL_PROD;
+
 export const axios = Axios.create({
   baseURL: environment,
 });

@@ -1,9 +1,7 @@
 import { Chip } from "@mui/material";
-
 interface propsType {
   statusValue: string;
 }
-
 const TableChip = ({ statusValue }: propsType) => {
   return (
     <Chip
