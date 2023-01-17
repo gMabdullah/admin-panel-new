@@ -1,18 +1,22 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Stack, Typography, Grid, Divider } from "@mui/material";
-import TdTextField from "components/TdTextField";
+import { useState } from "react";
+
+import { Stack, Grid } from "@mui/material";
+
 import useAxios from "axios-hooks";
+
+import CustomButton from "components/CustomButton";
+import TdTextField from "components/TdTextField";
+import RichEditor from "components/RichEditor";
+import Notify from "components/Notify";
+
 import {
   capitalizeFLetter,
   getLocalStorage,
   slugify,
 } from "orders/HelperFunctions";
-import CustomButton from "components/CustomButton";
 import { alphaNumericRegex } from "constants/BusinessIds";
-import RichEditor from "components/RichEditor";
 import Display from "./sections/Display";
 import { useSelector } from "store";
-import Notify from "components/Notify";
 
 let typingTimer: any = "";
 const doneTypingInterval = 1000;

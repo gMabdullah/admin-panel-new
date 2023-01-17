@@ -1,4 +1,5 @@
 import { useContext, useState } from "react";
+
 import { DeleteTwoTone, EditTwoTone } from "@mui/icons-material";
 import { Grid, Stack, Box } from "@mui/material";
 import {
@@ -8,16 +9,19 @@ import {
   GridRowParams,
 } from "@mui/x-data-grid";
 import { makeStyles } from "@mui/styles";
+
 import CustomButton from "components/CustomButton";
 import ExpandablePanel from "components/ExpandablePanel";
 import TdTextField from "components/TdTextField";
 import { ProductsContext } from "../context/ProductsContext";
 import { nutritionTableStyle } from "../Styles";
+
 const useStyles = makeStyles(() => ({
   nutritionNameColumnStyle: {
     paddingLeft: "24px !important",
   },
 }));
+
 const Nutrition = () => {
   const classes = useStyles();
   const { state } = useContext(ProductsContext);
@@ -32,9 +36,11 @@ const Nutrition = () => {
     editFlag: false,
     nutrition: { name: "", value: "", id: "" },
   });
+
   const handleChange = (e: { target: { value: string; name: string } }) => {
     setNutrition({ ...nutrition, [e.target.name]: e.target.value });
   };
+
   const addEditNutrition = () => {
     if (nutrition.name && nutrition.value) {
       if (editNutrition.editFlag) {
@@ -75,6 +81,7 @@ const Nutrition = () => {
       // set field error;
     }
   };
+
   const deleteNutrition = (itemId: number) => {
     if (!editNutrition.editFlag) {
       const nutritionArray = nutritionRows.filter((item, index) => {
@@ -102,6 +109,7 @@ const Nutrition = () => {
       });
     }
   };
+
   const editNutritions = (row: ItemDetailsResponseItemNutritionsTable) => {
     setEditNutrition({
       editFlag: true,
@@ -112,6 +120,7 @@ const Nutrition = () => {
       value: row.value,
     });
   };
+
   const actionsButton = (params: GridRowParams) => {
     const actionsArray = [
       <GridActionsCellItem
@@ -127,6 +136,7 @@ const Nutrition = () => {
     ];
     return actionsArray;
   };
+
   const columns: GridColumns = [
     {
       field: "name",
@@ -221,4 +231,5 @@ const Nutrition = () => {
     </Stack>
   );
 };
+
 export default Nutrition;

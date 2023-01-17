@@ -1,6 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
+
 import { Stack, Typography, Grid, Divider } from "@mui/material";
+
 import useAxios from "axios-hooks";
+
 import TdTextField from "components/TdTextField";
 import CustomDrawer from "components/CustomDrawer";
 import CustomButton from "components/CustomButton";
@@ -8,6 +11,7 @@ import CustomizedSwitch from "components/CustomSwitch";
 import DropDownSearch, {
   DropDownListType,
 } from "components/customDropDown/DropDownSearch";
+import CustomModal from "components/CustomModal";
 import Display from "./sections/Display";
 import Discount from "./sections/Discount";
 import Inventory from "./sections/Inventory";
@@ -20,28 +24,23 @@ import {
   getLocalStorage,
   toCapitalizeFirstLetter,
 } from "orders/HelperFunctions";
-import CustomModal from "components/CustomModal";
 import { useSelector } from "store";
+
 interface AddEditItemProps {
   toggleDrawer: boolean;
   handleDrawerToggle: () => void;
   getProductApi: any;
-  // addItemCallback: () => void;
 }
+
 const AddEditItem = ({
   toggleDrawer,
   handleDrawerToggle,
   getProductApi,
-}: // addItemCallback,
-AddEditItemProps) => {
+}: AddEditItemProps) => {
   const { richEditor } = useSelector((state) => state.main),
     [shortDescription, setShortDescription] = useState(""),
     [longDescription, setLongDescription] = useState(""),
     [addCategoryModal, setAddCategoryModal] = useState(false);
-  const toggleCategoryModal = () => {
-    setAddCategoryModal((prevState) => !prevState);
-  };
-  const { state, dispatch } = useContext(ProductsContext);
   const [selectedCategory, setSelectedCategory] = useState<DropDownListType[]>(
     []
   );
@@ -52,6 +51,8 @@ AddEditItemProps) => {
   const [selectedGroupedItem, setSelectedGroupedItem] = useState<
     DropDownListType[]
   >([]);
+  const { state, dispatch } = useContext(ProductsContext);
+
   // add item API call payload
   const addItemAPIPayload = (item: any) => {
     const formData = new FormData();
@@ -61,15 +62,16 @@ AddEditItemProps) => {
     formData.append("source", "biz");
     return formData;
   };
+
   // add item API call
   const [{}, addItemAPICall] = useAxios(
     {
       url: "/add_menu_item_new",
       method: "POST",
-      // data: addItemAPIPayload(),
     },
     { manual: true }
   );
+
   // option sets API call payload
   const optionSetsAPIPayload = () => {
     const formData = new FormData();
@@ -78,15 +80,13 @@ AddEditItemProps) => {
     formData.append("source", "biz");
     return formData;
   };
+
   // option sets API call
-  const [{ data: allOptionSets }, optionSetsAPICall] = useAxios(
-    {
-      url: "/get_option_sets",
-      method: "POST",
-      data: optionSetsAPIPayload(),
-    }
-    // { manual: true }
-  );
+  const [{ data: allOptionSets }, optionSetsAPICall] = useAxios({
+    url: "/get_option_sets",
+    method: "POST",
+    data: optionSetsAPIPayload(),
+  });
 
   useEffect(() => {
     // status 1 => getting required response from API
@@ -104,9 +104,23 @@ AddEditItemProps) => {
       state.allOptionSets = optionSets.sort(compareItem);
     }
   }, [allOptionSets]);
+
   useEffect(() => {
     richEditor && splitShortLongDescription();
   }, []);
+
+  const handleChange = (
+    event: React.ChangeEvent<{}>,
+    value: any,
+    name: string
+  ) => {
+    setSelectedCategory(value.value);
+  };
+
+  const toggleCategoryModal = () => {
+    setAddCategoryModal((prevState) => !prevState);
+  };
+
   // Populate values of description in Edit Item case
   function splitShortLongDescription() {
     const { itemDescription } = state;
@@ -156,6 +170,7 @@ AddEditItemProps) => {
       });
     }
   };
+
   const addShortLongTags = () => {
     const checkShortDesc =
         shortDescription &&
@@ -166,11 +181,12 @@ AddEditItemProps) => {
       combineIt = `${checkShortDesc}${checkLongDesc}`;
     return combineIt.replace(/\n|\t/g, " ");
   };
+
   const addItemCallback = async () => {
     const addItemPayloadKeys = {
       item_id: "",
       eatout_id: getLocalStorage().eatout_id,
-      category_id: "13420",
+      category_id: selectedCategory ? selectedCategory : "",
       name: toCapitalizeFirstLetter(state.itemName).trim(),
       description: richEditor
         ? addShortLongTags().split('"').join("'").replace(/\n/g, "")
@@ -217,9 +233,11 @@ AddEditItemProps) => {
     await addItemAPICall({
       data: addItemAPIPayload({ items: [addItemPayloadKeys] }),
     });
+
     getProductApi();
     handleDrawerToggle();
   };
+
   return (
     <CustomDrawer
       title="Add Item"
@@ -258,11 +276,11 @@ AddEditItemProps) => {
         </Typography>
         <Grid container>
           <Grid item xs={12} sx={{ display: "flex", mb: "12px" }}>
-            {/* <TdTextField label="Choose Category" /> */}
             <DropDownSearch
               label="Category"
               dropDownList={state.allCategories}
               onChange={setSelectedCategory}
+              handleChange={handleChange}
             />
           </Grid>
         </Grid>
@@ -329,7 +347,6 @@ AddEditItemProps) => {
         <Grid container>
           <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
             <Grid item xs={6}>
-              {/* <TdTextField label="Select Brand" /> */}
               <DropDownSearch
                 label="Brands"
                 dropDownList={state.allBrands}
@@ -340,7 +357,6 @@ AddEditItemProps) => {
         </Grid>
         <Grid container>
           <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
-            {/* <TdTextField label="Select Option Sets" /> */}
             <DropDownSearch
               label="Option Sets"
               dropDownList={state.allOptionSets}
@@ -351,7 +367,6 @@ AddEditItemProps) => {
         </Grid>
         <Grid container>
           <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
-            {/* <TdTextField label="Select Items to Group" /> */}
             <DropDownSearch
               label="Items to Group"
               dropDownList={state.allItemsForGrouping}

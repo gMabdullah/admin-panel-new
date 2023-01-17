@@ -1,18 +1,14 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
+
 import { Grid, Stack } from "@mui/material";
+
 import ExpandablePanel from "components/ExpandablePanel";
 import TdTextField from "components/TdTextField";
 import { ProductsContext } from "../context/ProductsContext";
+
 const Inventory = () => {
-  const { state, dispatch } = useContext(ProductsContext);
-  // console.log("item Weight = ", state.itemWeight);
-  // console.log("item Price Per = ", state.itemPricePer);
-  // console.log("item Minimum Quantity = ",  state.itemMinimumQuantity);
-  // console.log("item cartons = ", typeof state.itemCartons);
-  // console.log("item itemSku = ", state.itemSku);
-  // console.log("item itemUnitPrice = ", state.itemUnitPrice);
-  // console.log("item itemPallets = ", state.itemPallets);
-  // console.log("item itemPalletPrice = ", state.itemPalletPrice);
+  const { dispatch } = useContext(ProductsContext);
+
   return (
     <Stack>
       <ExpandablePanel
@@ -178,4 +174,5 @@ const Inventory = () => {
     </Stack>
   );
 };
+
 export default Inventory;

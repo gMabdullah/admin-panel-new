@@ -1,50 +1,29 @@
-import React, { useState, useEffect } from "react";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import Paper from "@mui/material/Paper";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TablePagination from "@mui/material/TablePagination";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import TableRow from "@mui/material/TableRow";
-import { useSelector } from "store";
-import { Theme } from "@mui/system";
-import {
-  Box,
-  Chip,
-  Typography,
-  Grid,
-  Stack,
-  Modal,
-  IconButton,
-  Tooltip,
-} from "@mui/material";
-import { CardMedia } from "@mui/material";
-import TableChip from "./TableChip";
-import Progress from "./Progress";
-//import { createStyles, makeStyles } from '@mui/material';
+import { useState } from "react";
 
-// const useStyles = makeStyles((theme: Theme) =>
-//   createStyles({
-//     root: {
-//       width: '100%',
-//       marginTop: theme.spacing(3),
-//       overflowX: 'auto',
-//     },
-//     table: {
-//       minWidth: 650,
-//     },
-//   }),
-// );
+import {
+  Typography,
+  Stack,
+  Tooltip,
+  CardMedia,
+  TableBody,
+  Table,
+  TableCell,
+  TableHead,
+  TableRow,
+  TableContainer,
+} from "@mui/material";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+
+import { useSelector } from "store";
+import TableChip from "./TableChip";
 
 interface TablePropsType {
   items?: ProductResponse["items"];
   keysOfItems: TypeKeyOfItem["keysOfItems"];
   setSequenceItem?: any;
   shortDragDropItems?: any;
-  //  linearLoader?:boolean
 }
 
 const DraggableTable = ({
@@ -67,6 +46,7 @@ const DraggableTable = ({
     shortDragDropItems(sortArray);
     // handle the end of a drag and drop event here
   };
+
   const addCurrency = (value: any, currency: any) => {
     return (
       <Stack direction="row" spacing={0.25} sx={{ alignItems: "center" }}>
@@ -98,6 +78,7 @@ const DraggableTable = ({
       </Stack>
     );
   };
+
   return (
     <>
       <DragDropContext onDragEnd={handleDragEnd}>

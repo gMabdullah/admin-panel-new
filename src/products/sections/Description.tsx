@@ -1,13 +1,13 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 
 import { Grid, Stack } from "@mui/material";
 
 import ExpandablePanel from "components/ExpandablePanel";
 import TdTextField from "components/TdTextField";
+import RichEditor from "components/RichEditor";
 
 import { ProductsContext } from "../context/ProductsContext";
 import { useSelector } from "store";
-import RichEditor from "components/RichEditor";
 
 interface DescriptionProp {
   shortDescription: string;
@@ -15,6 +15,7 @@ interface DescriptionProp {
   setShortDescription: React.Dispatch<React.SetStateAction<string>>;
   setLongDescription: React.Dispatch<React.SetStateAction<string>>;
 }
+
 const Description = ({
   shortDescription,
   longDescription,
@@ -23,6 +24,7 @@ const Description = ({
 }: DescriptionProp) => {
   const { richEditor } = useSelector((state) => state.main),
     { state, dispatch } = useContext(ProductsContext);
+
   return (
     <Stack>
       <ExpandablePanel

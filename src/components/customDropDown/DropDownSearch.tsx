@@ -21,6 +21,11 @@ interface DropDownListTypeSearchType {
   disabled?: boolean;
   isMultiSelect?: boolean;
   name?: string;
+  handleChange?: (
+    event: React.ChangeEvent<{}>,
+    value: any,
+    name: string
+  ) => void;
 }
 
 const DropDownSearch = ({
@@ -31,6 +36,7 @@ const DropDownSearch = ({
   onChange,
   helperText,
   dropDownList,
+  handleChange,
   disabled,
   name,
   isMultiSelect,
@@ -46,13 +52,6 @@ const DropDownSearch = ({
         deleteIcon={<CloseIcon />}
       />
     ));
-  const handleChange = (
-    event: React.ChangeEvent<{}>,
-    values: any,
-    name: string
-  ) => {
-    onChange(values);
-  };
 
   return (
     <div className={classes.root}>

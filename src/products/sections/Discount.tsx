@@ -22,10 +22,22 @@ const Discount = () => {
         <Grid container>
           <Grid item xs={12} sx={{ display: "flex", mb: "22px" }}>
             <Grid item xs={6}>
-              <TdTextField type="date" label="Discount Start" />
+              <TdTextField
+                type="date"
+                label="Discount Start"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
             </Grid>
             <Grid item xs={6} sx={{ ml: "8px" }}>
-              <TdTextField type="date" label="Discount Expiry" />
+              <TdTextField
+                type="date"
+                label="Discount Expiry"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
             </Grid>
           </Grid>
         </Grid>

@@ -1,12 +1,16 @@
 import React, { useContext } from "react";
+
 import { Stack, Typography } from "@mui/material";
+
 import CustomRadioButton from "components/CustomRadioButton";
 import { ProductsContext } from "../context/ProductsContext";
+
 const Display = () => {
   const {
     state: { itemDisplay },
     dispatch,
   } = useContext(ProductsContext);
+
   const displayChangeHandler = (event: {
     target: { name: string; value: string };
   }) => {
@@ -18,6 +22,7 @@ const Display = () => {
       },
     });
   };
+
   return (
     <Stack>
       <Typography variant="h5" sx={{ mb: "12px" }}>
@@ -38,4 +43,5 @@ const Display = () => {
     </Stack>
   );
 };
+
 export default Display;
