@@ -1,11 +1,15 @@
 import React from "react";
-import { Editor } from "@tinymce/tinymce-react";
-import { TINY_EDITOR_API_KEY } from "constants/constants";
-import Compressor from "compressorjs";
-import { formatDate, getLocalStorage } from "orders/HelperFunctions";
-import useAxios from "axios-hooks";
-import { AWS_BUCKET_URL } from "config";
+
 import { Grid } from "@mui/material";
+
+import { Editor } from "@tinymce/tinymce-react";
+import Compressor from "compressorjs";
+import useAxios from "axios-hooks";
+
+import { TINY_EDITOR_API_KEY } from "../constants";
+
+import { formatDate, getLocalStorage } from "orders/HelperFunctions";
+import { AWS_BUCKET_URL } from "config";
 
 interface editorProps {
   description: string;
@@ -15,6 +19,7 @@ interface editorProps {
         React.ChangeEventHandler<HTMLInputElement>;
   itemEditor?: boolean;
 }
+
 interface imageAPIProps {
   imageType: string;
   imageTableType: string;
@@ -22,6 +27,7 @@ interface imageAPIProps {
   files: File[];
   im_date: string;
 }
+
 const RichEditor = ({
   description,
   setDescription,
@@ -57,6 +63,7 @@ const RichEditor = ({
     formData.append("source", "biz");
     return formData;
   };
+
   // uploadImageAWS
   const [
     { loading: imageLoading, error: imageUploadError },
@@ -68,6 +75,7 @@ const RichEditor = ({
     },
     { manual: true }
   );
+
   const blobToDataURL = (
     blob: Blob,
     callback: {
@@ -93,6 +101,7 @@ const RichEditor = ({
 
     return new File([u8arr], filename, { type: mime });
   };
+
   // Image upload handling
   const imageUploadHandler = (blobInfo?: any, success?: any, failure?: any) => {
     if (blobInfo.blob()) {

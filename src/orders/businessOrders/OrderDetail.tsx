@@ -64,7 +64,7 @@ import {
   DWP_STAGING_BUSINESS_ID,
   AMANAT_STAGING_BUSINESS_ID,
   OrderDetailColumns,
-} from "constants/constants";
+} from "../../constants";
 import { OptionSetContext } from "orders/context/OptionSetContext";
 import { toCapitalizeFirstLetter } from "orders/HelperFunctions";
 import OrderStatusAction from "./OrderStatusAction";

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 
 import {
   Typography,
@@ -10,7 +10,6 @@ import {
   TablePagination,
 } from "@mui/material";
 
-import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import AddTwoToneIcon from "@mui/icons-material/AddTwoTone";
 import SortByAlphaIcon from "@mui/icons-material/SortByAlpha";
 import FilterListIcon from "@mui/icons-material/FilterList";
@@ -19,20 +18,18 @@ import useAxios from "axios-hooks";
 import { debounce } from "lodash";
 import MainCard from "components/cards/MainCard";
 import DraggableTable from "components/DraggableTable";
-import SearchField from "components/SearchField";
 import CustomButton from "components/CustomButton";
 import BranchesDropdown from "components/readytouseComponents/BranchesDropdown";
 import BrandsDropdown from "components/readytouseComponents/BrandsDropdown";
 import CategoriesDropdown from "components/readytouseComponents/CategoriesDropdown";
 import MenuTypesDropdown from "components/readytouseComponents/MenuTypesDropdown";
 import { OrderListingSkeleton } from "components/skeleton/OrderListingSkeleton";
-import Progress from "components/Progress";
 import Loader from "components/Loader";
 
 import AddEditItem from "products/AddEditItem";
 import { gridIconsCss } from "./Styles";
-import { dispatch, useSelector } from "store";
-import { keysOfItems } from "constants/constants";
+import { useSelector } from "store";
+import { keysOfItems } from "../constants";
 import { ProductsProvider, ProductsContext } from "./context/ProductsContext";
 import { reorder, sortMenuItems } from "orders/HelperFunctions";
 import TdTextField from "components/TdTextField";
@@ -64,7 +61,6 @@ const Items = () => {
   const [searchQueryItems, setSearchQueryItems] = useState<string>("");
   const [linearLoader, setLinearLoader] = useState<boolean>(false);
   const { state } = useContext(ProductsContext);
-  // const [state, dispatch] = useReducer(reducer, initialState);
 
   // API Call For Product //
   const [{ data: productData, loading: productLoading }, getProductsAPI] =
@@ -88,6 +84,7 @@ const Items = () => {
       }
     })();
   }, 1000);
+
   // API Call For Shorting //
   const [{ error: storingError, loading: sortLoading }, shortItemId] = useAxios(
     {
@@ -96,7 +93,9 @@ const Items = () => {
     },
     { manual: true }
   );
+
   /*********Get Item data from API Product for table***********/
+
   useEffect(() => {
     (async () => {
       const productResultApi = await getProductsAPI();
@@ -113,9 +112,6 @@ const Items = () => {
             };
           }
         });
-
-        // state.allItemsForGrouping = [...items];
-        // setLinearLoader(false)
       } else {
         setPage(0);
       }
@@ -167,6 +163,7 @@ const Items = () => {
     setApiCallFlag("");
     setApplyFilters(true);
   };
+
   const sortingItems = async () => {
     let sortItems;
     if (troggleSorting) {
@@ -198,9 +195,11 @@ const Items = () => {
     setItems(sortItems);
     // setLinearLoader(false);
   };
+
   const handleDrawerToggle = () => {
     setToggleDrawer((state) => !state);
   };
+
   // Drag And Drop Shorting
   const shortDragDropItems = async (sortArray: any) => {
     // setLinearLoader(true);
@@ -372,4 +371,5 @@ const Items = () => {
     </ProductsProvider>
   );
 };
+
 export default Items;

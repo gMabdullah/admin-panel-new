@@ -1,18 +1,22 @@
 import React from "react";
+
 import { Document, Page, Text, View } from "@react-pdf/renderer";
+
 import { styles } from "./PackingSlipStyles";
 import {
   AMANAT_BUSINESS_ID,
   DWP_BUSINESS_ID,
   DWP_STAGING_BUSINESS_ID,
   AMANAT_STAGING_BUSINESS_ID,
-} from "constants/constants";
+} from "../constants";
+
 interface propsTypes {
   packingSlipData: OrderListingResponse["result"];
   pdfType?: string;
   totalWeight?: number;
   weightUnit?: string;
 }
+
 const PackingSlip = (props: propsTypes) => {
   const { eatout_name, eatout_id } = JSON.parse(
     localStorage.getItem("businessInfo")!

@@ -46,7 +46,7 @@ import {
   orderListingColumns,
   ordersType,
   TEZMART_BUSINESS_ID,
-} from "constants/constants";
+} from "../../constants";
 import { setDate, setGlobalSettings } from "store/slices/Main";
 import OrderDetail from "./OrderDetail";
 import { useDispatch, useSelector } from "store";
