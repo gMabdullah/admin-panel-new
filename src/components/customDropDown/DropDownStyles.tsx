@@ -2,6 +2,7 @@ import { makeStyles } from "@mui/styles";
 
 export const useStyles: any = makeStyles((theme) => ({
   root: {
+    width: "100%",
     "& div.MuiOutlinedInput-multiline": {
       fontSize: 13,
     },

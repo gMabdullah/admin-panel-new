@@ -28,6 +28,7 @@ import TableChip from "components/TableChip";
 
 import { OptionSetContext } from "orders/context/OptionSetContext";
 import SelectOptionSet from "./SelectOptionSet";
+import TableChip from "components/TableChip";
 
 interface AddEditItemProps {
   setAddEditItemModal: React.Dispatch<React.SetStateAction<boolean>>;
