@@ -47,6 +47,9 @@ import {
 import { setDate, setGlobalSettings } from "store/slices/Main";
 import OrderDetail from "./OrderDetail";
 import { useDispatch, useSelector } from "store";
+import BranchesDropdown from "components/readytouseComponents/BranchesDropdown";
+import CitiesDropdown from "components/readytouseComponents/CitiesDropdown";
+import CategoriesDropdown from "components/readytouseComponents/CategoriesDropdown";
 
 const useStyles = makeStyles(() => ({
   colStyle1: {
@@ -80,7 +83,9 @@ const Orders = () => {
   const { startDate, endDate, decimalPlaces } = useSelector(
     (state) => state.main
   );
-
+  const { selectedBranch, selectedCity } = useSelector(
+    (state) => state.dropdown
+  );
   const [orders, setOrders] = useState<OrderListingResponse["result"] | []>([]);
   const [statusDropdown, setStatusDropdown] = React.useState<
     DropDownListType[]
@@ -91,24 +96,14 @@ const Orders = () => {
     user_email: "",
   });
 
-  const [branch, setBranch] = useState<DropDownListType[]>([]);
   const [orderDetailModal, setOrderDetailModal] = useState<boolean>(false);
   const [packingSlip, setPackingSlip] = React.useState(false);
   const [selectionModel, setSelectionModel] = useState<GridSelectionModel>([]);
-  const [branchName, setBranchName] = useState<string[]>(["All Branches"]);
   const [orderType, setOrderType] = React.useState<string[]>([
     ordersType[0].label,
   ]);
   const [canadaPost, setCanadaPost] = useState(false);
-  const [selectedBranch, setSelectedBranch] = useState<string>("");
   const [selectedOrderType, setSelectedOrderType] = useState<string>("");
-
-  const [dropdownCityFilter, setDropDownCityFilter] = useState<
-    DropDownListType[]
-  >([{ label: "All Cities", value: "" }]);
-  const [city, setCity] = React.useState<string[]>([
-    dropdownCityFilter[0].label,
-  ]);
   const [packingSlipData, setPackingSlipData] = useState<
     OrderListingResponse["result"]
   >([]); // Todo :  Add Types ot it
@@ -124,15 +119,6 @@ const Orders = () => {
   const prevPageSizeState = useRef<number | undefined>();
 
   //======================================= API Call Payloads =======================================//
-
-  const citiesPayload = (cityData: OrdersCityFilterRequest) => {
-    const formData = new FormData();
-
-    formData.append("eatout_id", eatout_id);
-    formData.append("admin_id", `${cityData["admin_id"]}`);
-    formData.append("source", `${cityData["source"]}`);
-    return formData;
-  };
 
   const statusPayload = (item: OrderStatusRequest) => {
     const formData = new FormData();
@@ -169,7 +155,11 @@ const Orders = () => {
     );
     formData.append(
       "city",
-      `${city}` ? (`${city}` === "All Cities" ? "" : `${city}`) : ""
+      `${selectedCity}`
+        ? `${selectedCity}` === "All Cities"
+          ? ""
+          : `${selectedCity}`
+        : ""
     );
     formData.append(
       "status",
@@ -183,20 +173,13 @@ const Orders = () => {
     );
     return formData;
   };
+
   //======================================= API Calls =======================================//
 
   const [{ data: globalSetting }, getGlobalSettingsAPI] = useAxios(
     {
       url: `/eatout_global_settings?restaurant_id=${eatout_id}&source=biz&admin_id=${user_id}`,
       method: "GET",
-    },
-    { manual: true }
-  );
-
-  const [{ data: allBranches }, getBranchesAPI] = useAxios(
-    {
-      url: `/get_eatout_branches?restaurant_id=${eatout_id}&source=biz&admin_id=${user_id}`,
-      method: "post",
     },
     { manual: true }
   );
@@ -228,19 +211,6 @@ const Orders = () => {
         check: 1,
       }),
     });
-
-  const [{ data: allCities }, getCitiesAPI] = useAxios(
-    {
-      url: "/order_city_filter",
-      method: "post",
-      data: citiesPayload({
-        eatout_id,
-        source: "biz",
-        admin_id: user_id,
-      }),
-    },
-    { manual: true }
-  );
 
   //======================================= useEffect Hooks =======================================//
 
@@ -360,8 +330,6 @@ const Orders = () => {
           source: "biz",
         }),
       });
-      const citiesList = await getCitiesAPI();
-      const branchesList = await getBranchesAPI();
       // Global Setting
       let pre_auth = { pre_auth: false, status: 404 };
 
@@ -396,26 +364,6 @@ const Orders = () => {
         }
 
         setStatusDropdown(remainingStatuses);
-      }
-
-      // load cities dropdown
-      if (citiesList && citiesList.data.result) {
-        const cities = citiesList.data.result;
-        const remaingCities = cities.map((status: string) => ({
-          label: status,
-          value: status,
-        }));
-        remaingCities.unshift({ label: "All Cities", value: "" });
-        setDropDownCityFilter(remaingCities);
-      }
-      // load Branches dropdown
-      if (branchesList && branchesList.data) {
-        const branches = branchesList.data.map((item: GetBranchesResponse) => ({
-          value: item.branch_id,
-          label: item.location_address,
-        }));
-        branches.unshift({ label: "All Branches", value: "" });
-        setBranch(branches);
       }
     })();
   }, []);
@@ -481,35 +429,6 @@ const Orders = () => {
   };
   const printPreviewModal = () => setPackingSlip((state) => !state);
 
-  const handleBranchChange = (event: SelectChangeEvent<typeof branchName>) => {
-    const {
-      target: { value },
-    } = event;
-    let branchValueForApiFilter: string[] = [];
-    branch &&
-      branch.map((branchData) => {
-        (typeof value === "string" ? [value] : value).map((label: string) => {
-          if (label == branchData.label) {
-            branchValueForApiFilter.push(branchData.value);
-          }
-        });
-      });
-
-    let selectedLabels = typeof value === "string" ? value.split(",") : value;
-    if (selectedLabels.length > 1) {
-      if (selectedLabels.includes("All Branches")) {
-        selectedLabels = selectedLabels.filter(
-          (label) => label !== "All Branches" && label
-        );
-        branchValueForApiFilter = branchValueForApiFilter.filter(
-          (value) => value !== "" && value
-        );
-      }
-    }
-    setSelectedBranch(branchValueForApiFilter[0]);
-    setBranchName(selectedLabels);
-  };
-
   const handleOrderTypeChange = (
     event: SelectChangeEvent<typeof orderType>
   ) => {
@@ -548,21 +467,6 @@ const Orders = () => {
 
     setOrderType(selectedLabels);
     setSelectedOrderType(selectedValues[0]);
-  };
-
-  const handleCityChange = (event: SelectChangeEvent<typeof city>) => {
-    const {
-      target: { value },
-    } = event;
-    let selectedLabels = typeof value === "string" ? value.split(",") : value;
-    if (selectedLabels.length > 1) {
-      if (selectedLabels.includes("All Cities")) {
-        selectedLabels = selectedLabels.filter(
-          (label) => label !== "All Cities" && label
-        );
-      }
-    }
-    setCity(selectedLabels);
   };
 
   const handleStatusChange = (event: SelectChangeEvent<typeof statuses>) => {
@@ -888,13 +792,9 @@ const Orders = () => {
         >
           <Grid container>
             <Grid item xs={12} sx={{ mb: "16px" }}>
-            <MultiSelectDropDown
-                value={branchName}
-                onChange={handleBranchChange}
-                dropDownList={branch}
-                sx={{ width: "160px", height: "40px" }}
-                onChangeButton={applyFilter}
-              />
+              {/* Branches Dropdown */}
+              <BranchesDropdown applyFilter={applyFilter} />
+
               <MultiSelectDropDown
                 value={orderType}
                 onChange={handleOrderTypeChange}
@@ -902,13 +802,9 @@ const Orders = () => {
                 sx={{ width: "160px", height: "40px", ml: "8px" }}
                 onChangeButton={applyFilter}
               />
-              <MultiSelectDropDown
-                value={city}
-                onChange={handleCityChange}
-                dropDownList={dropdownCityFilter}
-                sx={{ width: "160px", height: "40px", ml: "8px" }}
-                onChangeButton={applyFilter}
-              />
+              {/* Cities Dropdown */}
+              <CitiesDropdown applyFilter={applyFilter} />
+
               <MultiSelectDropDown
                 value={statuses}
                 onChange={handleStatusChange}

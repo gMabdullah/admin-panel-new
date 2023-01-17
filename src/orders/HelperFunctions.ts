@@ -121,10 +121,31 @@ export const getMinMaxAndRequired = (optionHead: any) => {
 
   return objToReturn;
 };
-
+export const getLocalStorage = () => {
+  const { eatout_id, user_id } = JSON.parse(
+    localStorage.getItem("businessInfo")!
+  );
+  return { eatout_id, user_id };
+};
 // clear local storage on logout
 export const clearStorage = () => {
   localStorage.removeItem("allBusinessesInfo");
   localStorage.removeItem("businessInfo");
   localStorage.removeItem("tdLogin");
+};
+
+export const compareItem = (
+  a: { label: string; value: string },
+  b: { label: string; value: string }
+) => {
+  // a should come before b in the sorted order
+  if (a.label.toLowerCase() < b.label.toLowerCase()) {
+    return -1;
+    // a should come after b in the sorted order
+  } else if (a.label.toLowerCase() > b.label.toLowerCase()) {
+    return 1;
+    // and and b are the same
+  } else {
+    return 0;
+  }
 };

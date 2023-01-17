@@ -8,7 +8,6 @@ import {
   CardActionArea,
   CardMedia,
   Card,
-  Chip,
   Paper,
 } from "@mui/material";
 import {
@@ -25,10 +24,10 @@ import TdTextField from "components/TdTextField";
 import CustomButton from "components/CustomButton";
 import Progress from "components/Progress";
 import Notify from "components/Notify";
+import TableChip from "components/TableChip";
 
 import { OptionSetContext } from "orders/context/OptionSetContext";
 import SelectOptionSet from "./SelectOptionSet";
-import TableChip from "components/TableChip";
 
 interface AddEditItemProps {
   setAddEditItemModal: React.Dispatch<React.SetStateAction<boolean>>;

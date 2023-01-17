@@ -52,6 +52,7 @@ type MultiSelectPropType = {
   size?: "small" | "medium" | "large";
   sx?: Object;
   onChangeButton?: (event?: React.MouseEvent<HTMLButtonElement>) => void;
+  disableButton?: boolean;
 };
 
 const MultiSelectDropDown: React.FC<MultiSelectPropType> = ({
@@ -59,6 +60,7 @@ const MultiSelectDropDown: React.FC<MultiSelectPropType> = ({
   onChange,
   dropDownList,
   sx,
+  disableButton,
   onChangeButton,
 }) => {
   return (
@@ -113,6 +115,7 @@ const MultiSelectDropDown: React.FC<MultiSelectPropType> = ({
             bottom: 0,
           }}
           onClick={onChangeButton}
+          disabled={disableButton}
         >
           Apply
         </CustomButton>

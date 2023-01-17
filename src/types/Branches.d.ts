@@ -41,3 +41,6 @@ interface Cart {
   tax: number | string;
   tax_type: string;
 }
+interface dropdownTypes {
+  applyFilter: () => void;
+}

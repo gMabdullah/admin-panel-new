@@ -18,7 +18,6 @@ import BrandsDropdown from "components/readytouseComponents/BrandsDropdown";
 import CategoriesDropdown from "components/readytouseComponents/CategoriesDropdown";
 import MenuTypesDropdown from "components/readytouseComponents/MenuTypesDropdown";
 import { OrderListingSkeleton } from "components/skeleton/OrderListingSkeleton";
-import Progress from "components/Progress";
 import AddEditItem from "products/AddEditItem";
 import { gridIconsCss } from "./Styles";
 import { useSelector } from "store";
@@ -34,7 +33,8 @@ const Items = () => {
   const [applyFilters, setApplyFilters] = React.useState(false);
   const [toggleDrawer, setToggleDrawer] = useState(false);
   const [itemsCount, setItemsCount] = useState("");
-  // API Call For Product //
+
+  // API Call For Product
   const [{ data: productData }, getProductApi] = useAxios(
     {
       url: `products?business_id=${eatout_id}&option_set=0&type=1&menu_type_id=${selectedMenu}&num=100&offset=0&query=&cat_id=${selectedCategory}&brand_id=${selectedBrand}&branch_id=${selectedBranch}&admin_id=${user_id}&source=biz`,
@@ -44,6 +44,7 @@ const Items = () => {
   );
 
   /*********Get Item data from API Product for table***********/
+
   useEffect(() => {
     (async () => {
       const productResultApi = await getProductApi();
