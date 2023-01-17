@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
+
 import { SelectChangeEvent } from "@mui/material";
+
 import useAxios from "axios-hooks";
+
 import MultiSelectDropDown, {
   DropDownListType,
 } from "components/MultiSelectDropDown";
 import { compareItem, getLocalStorage } from "orders/HelperFunctions";
-import { useDispatch, useSelector } from "store";
-import { setSelectedMenu } from "store/slices/dropdown";
+import { useDispatch } from "store";
+import { setSelectedMenu } from "store/slices/Dropdown";
 // required apply button handler to call respective api
 // 1 - use this type "dropdownTypes"
 
