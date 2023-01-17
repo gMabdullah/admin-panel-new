@@ -1,10 +1,10 @@
-
 import { makeStyles } from "@mui/styles";
 
 
 
 export const useStyles:any = makeStyles((theme) => ({
     root: {
+    
       width:"100%",
         "& div.MuiOutlinedInput-multiline": {
           fontSize:13,
@@ -72,7 +72,7 @@ export const useStyles:any = makeStyles((theme) => ({
             fontWeight: "200",
           },
           "& .MuiOutlinedInput-input": {
-           padding:"2px !important" ,
+           padding:"1s2px !important" ,
           },
         },
       
