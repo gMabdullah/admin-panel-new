@@ -238,7 +238,9 @@ const Items = () => {
           getProductApi={getProductsAPI}
         />
       )}
+
       {(productLoading || sortLoading) && <Loader />}
+
       <MainCard
         title={
           <Grid container spacing={2}>
