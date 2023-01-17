@@ -38,7 +38,7 @@ const AddEditItem = ({
 AddEditItemProps) => {
   const { state, dispatch } = useContext(ProductsContext);
 
-  const [selectedCategory, setSelectedCategory] = useState<DropDownListType[]>(
+  const [selectedCategory, setSelectedCategory] = useState<any>(
     []
   );
   const [selectedBrand, setSelectedBrand] = useState<DropDownListType[]>([]);
@@ -48,7 +48,7 @@ AddEditItemProps) => {
   const [selectedGroupedItem, setSelectedGroupedItem] = useState<
     DropDownListType[]
   >([]);
-
+console.log("selectedCategory",selectedCategory)
   // add item API call payload
   const addItemAPIPayload = (item: any) => {
     const formData = new FormData();
@@ -59,7 +59,14 @@ AddEditItemProps) => {
     formData.append("source", "biz");
     return formData;
   };
-
+  const handleChange = (
+    event: React.ChangeEvent<{}>,
+    value: any,
+    name: string
+  ) => {
+    debugger;
+    setSelectedCategory(value.value);
+  };
   // add item API call
   const [{}, addItemAPICall] = useAxios(
     {
@@ -238,7 +245,7 @@ AddEditItemProps) => {
     const addItemPayloadKeys = {
       item_id: "",
       eatout_id: getLocalStorage().eatout_id,
-      category_id: "13420",
+      category_id: selectedCategory ? selectedCategory:"",
       name: toCapitalizeFirstLetter(state.itemName).trim(),
       description: state.itemDescription,
       allow_note: state.itemSpecialInstructions,
@@ -381,6 +388,7 @@ AddEditItemProps) => {
               label="Category"
               dropDownList={state.allCategories}
               onChange={setSelectedCategory}
+              handleChange={handleChange}
             />
           </Grid>
         </Grid>
