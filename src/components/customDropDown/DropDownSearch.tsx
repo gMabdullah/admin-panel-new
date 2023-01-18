@@ -16,7 +16,7 @@ interface DropDownListTypeSearchType {
   placeholder?: string;
   value?: DropDownListType[];
   helperText?: string;
-  onChange: (selected: DropDownListType[]) => void;
+  onChange?: (selected: DropDownListType[]) => void;
   dropDownList: DropDownListType[];
   disabled?: boolean;
   isMultiSelect?: boolean;

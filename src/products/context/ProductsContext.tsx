@@ -27,8 +27,8 @@ interface State {
   itemName: string;
   itemPrice: string;
   itemTax: string;
-  itemBrand: string;
-  // itemOptionSets => multi select dropdown
+  itemBrandId: string;
+  itemOptionSets: any;
   itemToGroup: string;
   itemSpecialNote: string;
   itemAvailability: string;
@@ -63,8 +63,8 @@ const initialState: State = {
   itemName: "",
   itemPrice: "",
   itemTax: "",
-  itemBrand: "",
-  // itemOptionSets => multi select dropdown
+  itemBrandId: "",
+  itemOptionSets: "",
   itemToGroup: "",
   itemSpecialNote: "",
   itemAvailability: "0", // 1 and 0 => item not available and available respectively

@@ -109,12 +109,58 @@ const AddEditItem = ({
     richEditor && splitShortLongDescription();
   }, []);
 
-  const handleChange = (
+  const handleCategorySelection = (
     event: React.ChangeEvent<{}>,
     value: any,
     name: string
   ) => {
-    setSelectedCategory(value.value);
+    // console.log("category value  = ", value);
+    // setSelectedCategory(value.value);
+    // dispatch({type:''})
+
+    dispatch({
+      type: "dropDown",
+      payload: {
+        name: "itemCategoryId",
+        value: value.value,
+      },
+    });
+  };
+
+  const handleBrandSelection = (
+    event: React.ChangeEvent<{}>,
+    value: any,
+    name: string
+  ) => {
+    // console.log("category value  = ", value);
+    // setSelectedCategory(value.value);
+    // dispatch({type:''})
+
+    dispatch({
+      type: "dropDown",
+      payload: {
+        name: "itemBrandId",
+        value: value.value,
+      },
+    });
+  };
+
+  const handleOptionSetsSelection = (
+    event: React.ChangeEvent<{}>,
+    value: any,
+    name: string
+  ) => {
+    console.log("category value  = ", value);
+    // setSelectedCategory(value.value);
+    // dispatch({type:''})
+
+    // dispatch({
+    //   type: "dropDown",
+    //   payload: {
+    //     name: "itemBrandId",
+    //     value: value.value,
+    //   },
+    // });
   };
 
   const toggleCategoryModal = () => {
@@ -186,7 +232,7 @@ const AddEditItem = ({
     const addItemPayloadKeys = {
       item_id: "",
       eatout_id: getLocalStorage().eatout_id,
-      category_id: selectedCategory ? selectedCategory : "",
+      category_id: state.itemCategoryId,
       name: toCapitalizeFirstLetter(state.itemName).trim(),
       description: richEditor
         ? addShortLongTags().split('"').join("'").replace(/\n/g, "")
@@ -206,7 +252,7 @@ const AddEditItem = ({
       carton_price: "", // required in api
       pallet_size: "", // required in api
       pallet_price: state.itemPalletPrice,
-      brand_id: "",
+      brand_id: state.itemBrandId,
       option_sets: "[]",
       nutritions: state.itemNutritions,
       suggestions: "", // required in api
@@ -279,8 +325,8 @@ const AddEditItem = ({
             <DropDownSearch
               label="Category"
               dropDownList={state.allCategories}
-              onChange={setSelectedCategory}
-              handleChange={handleChange}
+              // onChange={setSelectedCategory}
+              handleChange={handleCategorySelection}
             />
           </Grid>
         </Grid>
@@ -350,7 +396,8 @@ const AddEditItem = ({
               <DropDownSearch
                 label="Brands"
                 dropDownList={state.allBrands}
-                onChange={setSelectedBrand}
+                // onChange={setSelectedBrand}
+                handleChange={handleBrandSelection}
               />
             </Grid>
           </Grid>
@@ -360,7 +407,8 @@ const AddEditItem = ({
             <DropDownSearch
               label="Option Sets"
               dropDownList={state.allOptionSets}
-              onChange={setSelectedOptionSet}
+              // onChange={setSelectedOptionSet}
+              handleChange={handleOptionSetsSelection}
               isMultiSelect={true}
             />
           </Grid>
@@ -370,7 +418,7 @@ const AddEditItem = ({
             <DropDownSearch
               label="Items to Group"
               dropDownList={state.allItemsForGrouping}
-              onChange={setSelectedGroupedItem}
+              // onChange={setSelectedGroupedItem}
               isMultiSelect={true}
             />
           </Grid>
