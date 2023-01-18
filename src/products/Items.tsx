@@ -28,9 +28,10 @@ import Loader from "components/Loader";
 
 import AddEditItem from "products/AddEditItem";
 import { gridIconsCss } from "./Styles";
-import { useSelector } from "store";
+import { useDispatch, useSelector } from "store";
 import { keysOfItems } from "../constants";
 import { ProductsProvider, ProductsContext } from "./context/ProductsContext";
+import {troggleDatePicker} from "../store/slices/Main"
 import { reorder, sortMenuItems } from "orders/HelperFunctions";
 import TdTextField from "components/TdTextField";
 import {
@@ -43,9 +44,15 @@ import file from "../assets/files/downloadSample.xlsx";
 let troggleSorting = true;
 
 const Items = () => {
+  const dispatch=useDispatch()
   const { eatout_id, user_id } = JSON.parse(
     localStorage.getItem("businessInfo")!
   );
+  useEffect(()=>{
+    dispatch(troggleDatePicker(false))
+  })
+
+
 
   const { selectedMenu, selectedBranch, selectedCategory, selectedBrand } =
     useSelector((state) => state.dropdown);
