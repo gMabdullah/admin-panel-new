@@ -53,8 +53,6 @@ const AddEditItem = ({
   >([]);
   const { state, dispatch } = useContext(ProductsContext);
 
-  // console.log("all grouping items 2 = ", state.allItemsForGrouping);
-
   // add item API call payload
   const addItemAPIPayload = (item: any) => {
     const formData = new FormData();
@@ -116,10 +114,6 @@ const AddEditItem = ({
     value: any,
     name: string
   ) => {
-    // console.log("category value  = ", value);
-    // setSelectedCategory(value.value);
-    // dispatch({type:''})
-
     dispatch({
       type: "dropDown",
       payload: {
@@ -134,10 +128,6 @@ const AddEditItem = ({
     value: any,
     name: string
   ) => {
-    // console.log("category value  = ", value);
-    // setSelectedCategory(value.value);
-    // dispatch({type:''})
-
     dispatch({
       type: "dropDown",
       payload: {
@@ -152,13 +142,6 @@ const AddEditItem = ({
     value: any,
     name: string
   ) => {
-    // console.log(
-    //   "option set value  = ",
-    //   value.map((option: any) => ({
-    //     id: option.value,
-    //   }))
-    // );
-
     dispatch({
       type: "dropDown",
       payload: {
@@ -175,15 +158,6 @@ const AddEditItem = ({
     value: any,
     name: string
   ) => {
-    // console.log(
-    //   "option set value  = ",
-    //   value.map((option: any) => ({
-    //     id: option.value,
-    //   }))
-    // );
-
-    // console.log("group item = ", value);
-
     dispatch({
       type: "dropDown",
       payload: {
@@ -195,8 +169,6 @@ const AddEditItem = ({
           .join(),
       },
     });
-
-    // console.log("group item 2 = ", state.itemToGroup);
   };
 
   const toggleCategoryModal = () => {
@@ -304,7 +276,6 @@ const AddEditItem = ({
       price_per: state.itemPricePer,
       min_qty: state.itemMinimumQuantity,
       images: "", // required in api
-      // item_weight_with_unit: "",
       item_weight_with_unit:
         `${state.itemWeight}${state.itemWeightUnit}`.trim(),
       discount_expiry: state.itemDiscountExpiry,

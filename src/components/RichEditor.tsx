@@ -172,6 +172,7 @@ const RichEditor = ({
         value={description}
         init={{
           height: 300,
+          width: "100%",
           plugins:
             "link image code lists fullscreen autolink table " +
             "preview autosave anchor media wordcount",
