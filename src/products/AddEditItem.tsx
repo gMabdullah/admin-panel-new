@@ -53,6 +53,8 @@ const AddEditItem = ({
   >([]);
   const { state, dispatch } = useContext(ProductsContext);
 
+  // console.log("all grouping items 2 = ", state.allItemsForGrouping);
+
   // add item API call payload
   const addItemAPIPayload = (item: any) => {
     const formData = new FormData();
@@ -150,17 +152,51 @@ const AddEditItem = ({
     value: any,
     name: string
   ) => {
-    console.log("category value  = ", value);
-    // setSelectedCategory(value.value);
-    // dispatch({type:''})
+    // console.log(
+    //   "option set value  = ",
+    //   value.map((option: any) => ({
+    //     id: option.value,
+    //   }))
+    // );
 
-    // dispatch({
-    //   type: "dropDown",
-    //   payload: {
-    //     name: "itemBrandId",
-    //     value: value.value,
-    //   },
-    // });
+    dispatch({
+      type: "dropDown",
+      payload: {
+        name: "itemOptionSets",
+        value: value.map((option: any) => ({
+          id: option.value,
+        })),
+      },
+    });
+  };
+
+  const handleItemsToGroupSelection = (
+    event: React.ChangeEvent<{}>,
+    value: any,
+    name: string
+  ) => {
+    // console.log(
+    //   "option set value  = ",
+    //   value.map((option: any) => ({
+    //     id: option.value,
+    //   }))
+    // );
+
+    // console.log("group item = ", value);
+
+    dispatch({
+      type: "dropDown",
+      payload: {
+        name: "itemToGroup",
+        value: value
+          .map((item: { value: string }) => {
+            return item.value;
+          })
+          .join(),
+      },
+    });
+
+    // console.log("group item 2 = ", state.itemToGroup);
   };
 
   const toggleCategoryModal = () => {
@@ -242,7 +278,7 @@ const AddEditItem = ({
       price: state.itemPrice,
       tax: state.itemTax,
       tags_ids: "",
-      discount: "0", // required in api
+      discount: state.itemDiscount,
       weight: state.itemWeight,
       sku: state.itemSku.trim(),
       product_code: state.itemProductCode.trim(),
@@ -253,8 +289,12 @@ const AddEditItem = ({
       pallet_size: "", // required in api
       pallet_price: state.itemPalletPrice,
       brand_id: state.itemBrandId,
-      option_sets: "[]",
-      nutritions: state.itemNutritions,
+      option_sets: state.itemOptionSets
+        ? JSON.stringify(state.itemOptionSets)
+        : JSON.stringify([]),
+      nutritions: state.itemNutritions
+        ? JSON.stringify(state.itemNutritions)
+        : "",
       suggestions: "", // required in api
       branches: "", // required in api
       status: state.itemAvailability,
@@ -264,14 +304,13 @@ const AddEditItem = ({
       price_per: state.itemPricePer,
       min_qty: state.itemMinimumQuantity,
       images: "", // required in api
-      item_weight_with_unit: "",
-      // item_weight_with_unit: `${itemWeight} ${
-      //   Object.keys(WeightUnit).length > 0 ? WeightUnit.value : ""
-      // }`.trim(),
-      discount_expiry: "",
-      discount_start_at: "",
+      // item_weight_with_unit: "",
+      item_weight_with_unit:
+        `${state.itemWeight}${state.itemWeightUnit}`.trim(),
+      discount_expiry: state.itemDiscountExpiry,
+      discount_start_at: state.itemDiscountStart,
       attribute_ids: "",
-      product_group_ids: "",
+      product_group_ids: state.itemToGroup,
       max_distance: "0",
       // max_distance: maxDistance ? maxDistance : "0",
     };
@@ -419,6 +458,7 @@ const AddEditItem = ({
               label="Items to Group"
               dropDownList={state.allItemsForGrouping}
               // onChange={setSelectedGroupedItem}
+              handleChange={handleItemsToGroupSelection}
               isMultiSelect={true}
             />
           </Grid>

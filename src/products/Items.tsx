@@ -103,15 +103,6 @@ const Items = () => {
       if (productResultApi.data && productResultApi.data.items.length > 0) {
         const { items } = productResultApi.data;
         setItems(items);
-
-        state.allItemsForGrouping = items.map((item: ProductResponseItem) => {
-          if (!item.is_grouped) {
-            return {
-              value: item.menu_item_id,
-              label: item.sku ? item.name + " (" + item.sku + ")" : item.name,
-            };
-          }
-        });
       } else {
         setPage(0);
       }
@@ -150,6 +141,32 @@ const Items = () => {
       if (applyFilters) {
         setApplyFilters(false);
       }
+
+      // state.allItemsForGrouping = productData.items.filter(
+      //   (item: ProductResponseItem) => {
+      //     if (!item.is_grouped) {
+      //       return {
+      //         value: item.menu_item_id,
+      //         label: item.sku ? item.name + " (" + item.sku + ")" : item.name,
+      //       };
+      //     }
+      //   }
+      // );
+
+      state.allItemsForGrouping = productData.items.reduce(
+        (items: DropdownValue[], item: ProductResponseItem) => {
+          if (!item.is_grouped) {
+            items.push({
+              value: item.menu_item_id,
+              label: item.sku ? item.name + " (" + item.sku + ")" : item.name,
+            });
+          }
+          return items;
+        },
+        []
+      );
+
+      // console.log("all grouping items 1 = ", state.allItemsForGrouping);
     }
   }, [productData]);
 

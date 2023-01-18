@@ -18,3 +18,8 @@ interface MenuTypeResult {
   image: string;
   image_thumbnail: string;
 }
+
+interface DropdownValue {
+  value: string;
+  label: string;
+}

@@ -13,11 +13,6 @@ interface Action {
   };
 }
 
-interface DropdownValue {
-  value: string;
-  label: string;
-}
-
 interface State {
   allCategories: DropdownValue[];
   allBrands: DropdownValue[];
@@ -34,14 +29,16 @@ interface State {
   itemAvailability: string;
   itemSpecialInstructions: string;
   itemDisplay: string;
-  // discountstate 1
-  // discountstate 2
-  // discountstate 3
+
+  itemDiscount: string;
+  itemDiscountStart: string;
+  itemDiscountExpiry: string;
+
   itemDescription: string;
   // itemShortDescription:string
   // itemLongDescription:string
   itemWeight: string;
-  // itemWeightUnit: { value: "", label: "" },  => single select dropdown
+  itemWeightUnit: string;
   itemPricePer: string;
   itemMinimumQuantity: string;
   itemCartons: string;
@@ -70,14 +67,18 @@ const initialState: State = {
   itemAvailability: "0", // 1 and 0 => item not available and available respectively
   itemSpecialInstructions: "0", // 1 and 0 => allow and don't allow special instruction respectively
   itemDisplay: "0", // 0, 1, 2, and 3 => display (all , none, web, and pos) respectively
-  // discountstate 1
-  // discountstate 2
-  // discountstate 3
+
+  itemDiscount: "",
+  itemDiscountStart: "",
+  itemDiscountExpiry: "",
+
   itemDescription: "",
   // itemShortDescription:'',
   // itemLongDescription:'',
+
   itemWeight: "",
-  // itemWeightUnit: { value: "", label: "" }, => single select dropdown
+  itemWeightUnit: "",
+
   itemPricePer: "",
   itemMinimumQuantity: "",
   itemCartons: "",

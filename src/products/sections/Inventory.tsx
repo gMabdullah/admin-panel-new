@@ -4,10 +4,33 @@ import { Grid, Stack } from "@mui/material";
 
 import ExpandablePanel from "components/ExpandablePanel";
 import TdTextField from "components/TdTextField";
+import DropDownSearch from "components/customDropDown/DropDownSearch";
 import { ProductsContext } from "../context/ProductsContext";
+import { weightUnits } from "../../constants";
 
 const Inventory = () => {
-  const { dispatch } = useContext(ProductsContext);
+  const { state, dispatch } = useContext(ProductsContext);
+
+  console.log("itemWeightUnit = ", state.itemWeightUnit);
+  console.log("state = ", state);
+
+  const handleWeightUnitSelection = (
+    event: React.ChangeEvent<{}>,
+    value: any,
+    name: string
+  ) => {
+    // console.log("category value  = ", value);
+    // setSelectedCategory(value.value);
+    // dispatch({type:''})
+
+    dispatch({
+      type: "dropDown",
+      payload: {
+        name: "itemWeightUnit",
+        value: value.value,
+      },
+    });
+  };
 
   return (
     <Stack>
@@ -32,7 +55,14 @@ const Inventory = () => {
               />
             </Grid>
             <Grid item xs={6} sx={{ ml: "8px" }}>
-              <TdTextField label="Weight Unit" />
+              {/* <TdTextField label="Weight Unit" /> */}
+              <DropDownSearch
+                label="Weight Unit"
+                // dropDownList={state.allBrands}
+                dropDownList={weightUnits}
+                // onChange={setSelectedBrand}
+                handleChange={handleWeightUnitSelection}
+              />
             </Grid>
           </Grid>
         </Grid>

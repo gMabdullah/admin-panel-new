@@ -63,4 +63,12 @@ export const IQBAL_BUSINESS_ID = 12092,
     { key: "tax", value: "Tax %", align: "right", width: "10%" },
     { key: "status", value: "Status", align: "center", width: "10%" },
     { key: "", value: "Actions", align: "center" },
+  ],
+  weightUnits = [
+    { label: "Gram (g)", value: "g" },
+    { label: "Kilogram (kg)", value: "kg" },
+    { label: "Litre (l)", value: "l" },
+    { label: "Milliliter (ml)", value: "ml" },
+    { label: "Milligram (mg)", value: "mg" },
+    { label: "Pound (lb)", value: "lb" },
   ];
