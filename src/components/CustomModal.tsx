@@ -39,6 +39,7 @@ const CustomModal = ({
   paperStyle?: object;
   scrollbarStyle?: object;
 }) => {
+  debugger;
   return (
     <Modal open={open} onClose={onClose}>
       <Paper sx={{ ...paperStyle }}>

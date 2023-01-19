@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext,lazy, Suspense } from "react";
 
 import {
   Typography,
@@ -31,15 +31,12 @@ import { gridIconsCss } from "./Styles";
 import { useSelector } from "store";
 import { keysOfItems } from "../constants";
 import { ProductsProvider, ProductsContext } from "./context/ProductsContext";
-import { reorder, sortMenuItems } from "orders/HelperFunctions";
+import { reorder } from "orders/HelperFunctions";
 import TdTextField from "components/TdTextField";
-import {
-  getLocalStorage,
-  toCapitalizeFirstLetter,
-} from "orders/HelperFunctions";
+
 import { searchFieldStyle } from "business/Styles";
-import file from "../assets/files/downloadSample.xlsx";
 import DropDown from "components/DropDown";
+const ImportMenuExcel = lazy(() => import('./sections/ImportMenuExcel'));
 
 let troggleSorting = true;
 const dropdownBulkAction =[{
@@ -70,6 +67,8 @@ const Items = () => {
   const [items, setItems] = useState<ProductResponse["items"]>([]);
   const [applyFilters, setApplyFilters] = React.useState(false);
   const [toggleDrawer, setToggleDrawer] = useState(false);
+  const [displayedComponent, setDisplayedComponent] = useState<string>("");
+  console.log("displayedComponent",displayedComponent)
   const [itemsCount, setItemsCount] = useState(100);
   const [importExportDropDownValue,setImportExportDropDownValue]=useState<string>("import_export")
   const [page, setPage] = useState(0);
@@ -221,7 +220,14 @@ const handleDropDownChange =(  event: SelectChangeEvent<typeof importExportDropD
   const {
     target: { value },
   } = event;
+  debugger
   setImportExportDropDownValue(value)
+
+  switch(value){
+    case "Import New Items":
+      setDisplayedComponent("importMenuExcel")
+      break
+  }
 }
   // Drag And Drop Shorting
   const shortDragDropItems = async (sortArray: any) => {
@@ -261,7 +267,10 @@ const handleDropDownChange =(  event: SelectChangeEvent<typeof importExportDropD
           getProductApi={getProductsAPI}
         />
       )}
-
+    
+       <Suspense fallback={<div><Loader /></div>}>
+        {displayedComponent === "importMenuExcel" && <ImportMenuExcel/>}
+      </Suspense>
       {(productLoading || sortLoading) && <Loader />}
 
       <MainCard
