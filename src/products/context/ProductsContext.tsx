@@ -41,7 +41,7 @@ interface State {
   itemWeightUnit: string;
   itemPricePer: string;
   itemMinimumQuantity: string;
-  itemCartons: string;
+
   itemCost: string;
   itemSku: string;
   itemUnitPrice: string;
@@ -49,6 +49,8 @@ interface State {
   itemUniversalProductCode: string;
   itemPallets: string;
   itemPalletPrice: string;
+  itemCartons: string;
+  itemMaximumDistance: string;
   itemNutritions: string | ItemDetailsResponseItemNutritions[];
 }
 
@@ -82,14 +84,17 @@ const initialState: State = {
 
   itemPricePer: "",
   itemMinimumQuantity: "",
-  itemCartons: "",
-  itemCost: "",
+
+  itemCost: "0",
+
   itemSku: "",
   itemUnitPrice: "",
   itemProductCode: "",
   itemUniversalProductCode: "",
   itemPallets: "",
   itemPalletPrice: "",
+  itemCartons: "",
+  itemMaximumDistance: "0",
   itemNutritions: "",
 };
 

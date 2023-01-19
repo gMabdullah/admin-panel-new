@@ -60,6 +60,7 @@ const Inventory = () => {
             </Grid>
           </Grid>
         </Grid>
+
         <Grid container>
           <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
             <Grid item xs={6}>
@@ -92,27 +93,15 @@ const Inventory = () => {
             </Grid>
           </Grid>
         </Grid>
+
         <Grid container>
           <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
             <Grid item xs={6}>
               <TdTextField
-                name="itemCartons"
-                type="number"
-                label="No. of Cartons"
-                value={state.itemCartons}
-                onChange={(e) =>
-                  dispatch({
-                    type: "textField",
-                    payload: { name: e.target.name, value: e.target.value },
-                  })
-                }
-              />
-            </Grid>
-            <Grid item xs={6} sx={{ ml: "8px" }}>
-              <TdTextField
                 name="itemCost"
                 type="number"
                 label="Item Cost"
+                value={state.itemCost}
                 onChange={(e) =>
                   dispatch({
                     type: "textField",
@@ -123,6 +112,7 @@ const Inventory = () => {
             </Grid>
           </Grid>
         </Grid>
+
         <Grid container>
           <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
             <Grid item xs={6}>
@@ -154,6 +144,7 @@ const Inventory = () => {
             </Grid>
           </Grid>
         </Grid>
+
         <Grid container>
           <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
             <Grid item xs={6}>
@@ -184,6 +175,7 @@ const Inventory = () => {
             </Grid>
           </Grid>
         </Grid>
+
         <Grid container>
           <Grid item xs={12} sx={{ display: "flex", mb: "22px" }}>
             <Grid item xs={6}>
@@ -206,6 +198,39 @@ const Inventory = () => {
                 type="number"
                 label="Pallet Price"
                 value={state.itemPalletPrice}
+                onChange={(e) =>
+                  dispatch({
+                    type: "textField",
+                    payload: { name: e.target.name, value: e.target.value },
+                  })
+                }
+              />
+            </Grid>
+          </Grid>
+        </Grid>
+
+        <Grid container>
+          <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
+            <Grid item xs={6}>
+              <TdTextField
+                name="itemCartons"
+                type="number"
+                label="No. of Cartons"
+                value={state.itemCartons}
+                onChange={(e) =>
+                  dispatch({
+                    type: "textField",
+                    payload: { name: e.target.name, value: e.target.value },
+                  })
+                }
+              />
+            </Grid>
+            <Grid item xs={6} sx={{ ml: "8px" }}>
+              <TdTextField
+                name="itemMaximumDistance"
+                type="number"
+                label="Maximum Distance"
+                value={state.itemMaximumDistance}
                 onChange={(e) =>
                   dispatch({
                     type: "textField",

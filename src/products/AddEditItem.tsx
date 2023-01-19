@@ -299,8 +299,8 @@ const AddEditItem = ({
       discount_start_at: state.itemDiscountStart,
       attribute_ids: "",
       product_group_ids: state.itemToGroup,
-      max_distance: "0",
-      // max_distance: maxDistance ? maxDistance : "0",
+      max_distance: state.itemMaximumDistance,
+      item_cost: state.itemCost,
     };
 
     await addItemAPICall({
