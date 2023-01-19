@@ -35,8 +35,8 @@ interface State {
   itemDiscountExpiry: string;
 
   itemDescription: string;
-  // itemShortDescription:string
-  // itemLongDescription:string
+  itemShortDescription: string;
+  itemLongDescription: string;
   itemWeight: string;
   itemWeightUnit: string;
   itemPricePer: string;
@@ -73,8 +73,8 @@ const initialState: State = {
   itemDiscountExpiry: "",
 
   itemDescription: "",
-  // itemShortDescription:'',
-  // itemLongDescription:'',
+  itemShortDescription: "",
+  itemLongDescription: "",
 
   itemWeight: "",
   itemWeightUnit: "",
@@ -102,6 +102,7 @@ const reducer = (state: State, action: Action) => {
     case "radioButton":
     case "switchComponent":
     case "dropDown":
+    case "editor":
       return { ...state, [action.payload.name]: action.payload.value };
     case "clearState":
       return { ...state, age: action.payload };

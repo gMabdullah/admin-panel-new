@@ -9,19 +9,7 @@ import RichEditor from "components/RichEditor";
 import { ProductsContext } from "../context/ProductsContext";
 import { useSelector } from "store";
 
-interface DescriptionProp {
-  shortDescription: string;
-  longDescription: string;
-  setShortDescription: React.Dispatch<React.SetStateAction<string>>;
-  setLongDescription: React.Dispatch<React.SetStateAction<string>>;
-}
-
-const Description = ({
-  shortDescription,
-  longDescription,
-  setShortDescription,
-  setLongDescription,
-}: DescriptionProp) => {
+const Description = () => {
   const { richEditor } = useSelector((state) => state.main),
     { state, dispatch } = useContext(ProductsContext);
 
@@ -37,27 +25,23 @@ const Description = ({
             <>
               <p>Short Description</p>
               <RichEditor
-                description={shortDescription}
-                setDescriptionFromItem={
-                  (e) => setShortDescription(e.target.value)
-                  // dispatch({
-                  //   type: "textField",
-                  //   payload: { name: e.target.name, value: e.target.value },
-                  // })
+                value={state.itemShortDescription}
+                onEditorChange={(event: string) =>
+                  dispatch({
+                    type: "editor",
+                    payload: { name: "itemShortDescription", value: event },
+                  })
                 }
-                itemEditor={true}
               />
               <p>Long Description</p>
               <RichEditor
-                description={longDescription}
-                setDescriptionFromItem={
-                  (e) => setLongDescription(e.target.value)
-                  // dispatch({
-                  //   type: "textField",
-                  //   payload: { name: e.target.name, value: e.target.value },
-                  // })
+                value={state.itemLongDescription}
+                onEditorChange={(event: string) =>
+                  dispatch({
+                    type: "editor",
+                    payload: { name: "itemLongDescription", value: event },
+                  })
                 }
-                itemEditor={true}
               />
             </>
           ) : (

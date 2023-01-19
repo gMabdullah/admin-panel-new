@@ -38,8 +38,6 @@ const AddEditItem = ({
   getProductApi,
 }: AddEditItemProps) => {
   const { richEditor } = useSelector((state) => state.main),
-    [shortDescription, setShortDescription] = useState(""),
-    [longDescription, setLongDescription] = useState(""),
     [addCategoryModal, setAddCategoryModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<DropDownListType[]>(
     []
@@ -184,7 +182,13 @@ const AddEditItem = ({
         itemDescription.indexOf("<short_desc>"),
         itemDescription.indexOf("</short_desc>")
       );
-      setShortDescription(shortDesc);
+      // setShortDescription(shortDesc);
+
+      // update description state of editor
+      dispatch({
+        type: "editor",
+        payload: { name: "itemShortDescription", value: shortDesc },
+      });
     }
     // check if long description tag exist
     if (itemDescription && itemDescription.includes("<long_desc>")) {
@@ -192,7 +196,13 @@ const AddEditItem = ({
         itemDescription.indexOf("<long_desc>"),
         itemDescription.indexOf("</long_desc>")
       );
-      setLongDescription(longDesc);
+      // setLongDescription(longDesc);
+
+      // update description state of editor
+      dispatch({
+        type: "editor",
+        payload: { name: "itemLongDescription", value: longDesc },
+      });
     }
     // if short and long description doesn't exist
     if (
@@ -200,7 +210,14 @@ const AddEditItem = ({
       !itemDescription.includes("<short_desc>") &&
       !itemDescription.includes("<long_desc>")
     ) {
-      setLongDescription(itemDescription);
+      // update description state of editor
+      dispatch({
+        type: "editor",
+        payload: { name: "itemLongDescription", value: itemDescription },
+      });
+
+      // setLongDescription(itemDescription);
+      alert("item description in case of no short long tags");
     }
   }
 
@@ -227,11 +244,11 @@ const AddEditItem = ({
 
   const addShortLongTags = () => {
     const checkShortDesc =
-        shortDescription &&
-        `<short_desc>${shortDescription}</short_desc>`.toString(),
+        state.itemShortDescription &&
+        `<short_desc>${state.itemShortDescription}</short_desc>`.toString(),
       checkLongDesc =
-        longDescription &&
-        `<long_desc>${longDescription}</long_desc>`.toString(),
+        state.itemLongDescription &&
+        `<long_desc>${state.itemLongDescription}</long_desc>`.toString(),
       combineIt = `${checkShortDesc}${checkLongDesc}`;
     return combineIt.replace(/\n|\t/g, " ");
   };
@@ -483,12 +500,7 @@ const AddEditItem = ({
         <Divider sx={{ mt: "16px" }} />
         <Discount />
         <Divider />
-        <Description
-          shortDescription={shortDescription}
-          longDescription={longDescription}
-          setShortDescription={setShortDescription}
-          setLongDescription={setLongDescription}
-        />
+        <Description />
         <Divider />
         <Inventory />
         <Divider />

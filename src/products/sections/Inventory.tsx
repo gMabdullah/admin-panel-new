@@ -9,20 +9,13 @@ import { ProductsContext } from "../context/ProductsContext";
 import { weightUnits } from "../../constants";
 
 const Inventory = () => {
-  const { state, dispatch } = useContext(ProductsContext);
-
-  console.log("itemWeightUnit = ", state.itemWeightUnit);
-  console.log("state = ", state);
+  const { dispatch } = useContext(ProductsContext);
 
   const handleWeightUnitSelection = (
     event: React.ChangeEvent<{}>,
     value: any,
     name: string
   ) => {
-    // console.log("category value  = ", value);
-    // setSelectedCategory(value.value);
-    // dispatch({type:''})
-
     dispatch({
       type: "dropDown",
       payload: {

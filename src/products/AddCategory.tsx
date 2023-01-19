@@ -219,10 +219,11 @@ const AddCategory = ({ toggleCategoryModal }: addEditCategoryProps) => {
             />
           </Grid>
           {richEditor ? (
-            <RichEditor
-              description={description}
-              setDescription={setDescription}
-            />
+            // <RichEditor
+            // description={description}
+            // setDescription={setDescription}
+            // />
+            <></>
           ) : (
             <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
               <TdTextField
