@@ -343,10 +343,12 @@ const AddEditItem = ({
           }}
         />
       )}
+
       <Stack sx={{ p: "32px 25px 0px" }}>
         <Typography variant="h5" sx={{ mb: "24px" }}>
           Item Category
         </Typography>
+
         <Grid container>
           <Grid item xs={12} sx={{ display: "flex", mb: "12px" }}>
             <DropDownSearch
@@ -357,6 +359,7 @@ const AddEditItem = ({
             />
           </Grid>
         </Grid>
+
         <Grid container>
           <Grid item xs={12}>
             <CustomButton
@@ -372,12 +375,15 @@ const AddEditItem = ({
             </CustomButton>
           </Grid>
         </Grid>
+
         <Divider sx={{ m: "24px 0 31px" }} />
+
         <Grid container>
           <Grid item xs={12} sx={{ mb: "24px" }}>
             <TdTextField
               name="itemName"
               label="Item Name"
+              value={state.itemName}
               onChange={(e) =>
                 dispatch({
                   type: "textField",
@@ -387,6 +393,7 @@ const AddEditItem = ({
             />
           </Grid>
         </Grid>
+
         <Grid container>
           <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
             <Grid item xs={6}>
@@ -394,6 +401,7 @@ const AddEditItem = ({
                 name="itemPrice"
                 type="number"
                 label="Item Price"
+                value={state.itemPrice}
                 onChange={(e) =>
                   dispatch({
                     type: "textField",
@@ -407,6 +415,7 @@ const AddEditItem = ({
                 name="itemTax"
                 type="number"
                 label="Tax %"
+                value={state.itemTax}
                 onChange={(e) =>
                   dispatch({
                     type: "textField",
@@ -417,6 +426,7 @@ const AddEditItem = ({
             </Grid>
           </Grid>
         </Grid>
+
         <Grid container>
           <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
             <Grid item xs={6}>
@@ -429,6 +439,7 @@ const AddEditItem = ({
             </Grid>
           </Grid>
         </Grid>
+
         <Grid container>
           <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
             <DropDownSearch
@@ -440,6 +451,7 @@ const AddEditItem = ({
             />
           </Grid>
         </Grid>
+
         <Grid container>
           <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
             <DropDownSearch
@@ -451,10 +463,12 @@ const AddEditItem = ({
             />
           </Grid>
         </Grid>
+
         <Grid container>
           <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
             <TdTextField
               name="itemSpecialNote"
+              value={state.itemSpecialNote}
               rows={2}
               multiline={true}
               type="text"
@@ -468,13 +482,14 @@ const AddEditItem = ({
             />
           </Grid>
         </Grid>
+
         <Divider sx={{ mb: "15px" }} />
+
         <Grid container>
           <Grid item xs={12} sx={{ display: "flex", mb: "15px" }}>
             {/* 1 and 0 => item not available and available respectively */}
             <CustomizedSwitch
               checked={state.itemAvailability === "0"}
-              // value={state.itemAvailability}
               name="itemAvailability"
               label="Availability"
               sx={{
@@ -488,13 +503,13 @@ const AddEditItem = ({
             {/* 1 and 0 => allow and don't allow special instruction respectively */}
             <CustomizedSwitch
               checked={state.itemSpecialInstructions === "1"}
-              // value={state.itemSpecialInstructions}
               name="itemSpecialInstructions"
               label="Special Instructions"
               onChange={handleSwitchChange}
             />
           </Grid>
         </Grid>
+
         <Divider sx={{ mb: "24px" }} />
         <Display />
         <Divider sx={{ mt: "16px" }} />

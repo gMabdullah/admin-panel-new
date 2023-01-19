@@ -1,6 +1,6 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 
-import { Grid, Stack } from "@mui/material";
+import { Grid, Stack, Typography } from "@mui/material";
 
 import ExpandablePanel from "components/ExpandablePanel";
 import TdTextField from "components/TdTextField";
@@ -23,7 +23,9 @@ const Description = () => {
         <Grid container>
           {richEditor ? (
             <>
-              <p>Short Description</p>
+              <Typography variant="h5" sx={{ mb: "18px" }}>
+                Short Description
+              </Typography>
               <RichEditor
                 value={state.itemShortDescription}
                 onEditorChange={(event: string) =>
@@ -33,7 +35,9 @@ const Description = () => {
                   })
                 }
               />
-              <p>Long Description</p>
+              <Typography variant="h5" sx={{ mb: "18px" }}>
+                Long Description
+              </Typography>
               <RichEditor
                 value={state.itemLongDescription}
                 onEditorChange={(event: string) =>

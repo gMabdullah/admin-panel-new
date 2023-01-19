@@ -28,6 +28,7 @@ const Discount = () => {
                 name="itemDiscount"
                 type="number"
                 label="Discount Value %"
+                value={state.itemDiscount}
                 onChange={(e) =>
                   dispatch({
                     type: "textField",
@@ -46,10 +47,11 @@ const Discount = () => {
                 name="itemDiscountStart"
                 type="date"
                 label="Discount Start"
+                value={state.itemDiscountStart}
+                disablePrevDates={true}
                 InputLabelProps={{
                   shrink: true,
                 }}
-                disablePrevDates={true}
                 onChange={(e) =>
                   dispatch({
                     type: "textField",
@@ -63,10 +65,11 @@ const Discount = () => {
                 name="itemDiscountExpiry"
                 type="date"
                 label="Discount Expiry"
+                value={state.itemDiscountExpiry}
+                disablePrevDates={true}
                 InputLabelProps={{
                   shrink: true,
                 }}
-                disablePrevDates={true}
                 onChange={(e) =>
                   dispatch({
                     type: "textField",

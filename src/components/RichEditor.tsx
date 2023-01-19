@@ -15,6 +15,7 @@ interface EditorProps {
   value: string;
   onEditorChange: any;
   initials?: object;
+  sx?: object;
 }
 
 interface imageAPIProps {
@@ -25,7 +26,7 @@ interface imageAPIProps {
   im_date: string;
 }
 
-const RichEditor = ({ value, onEditorChange, initials }: EditorProps) => {
+const RichEditor = ({ value, onEditorChange, initials, sx }: EditorProps) => {
   const { eatout_id, user_id } = getLocalStorage();
 
   const payload = ({
@@ -158,7 +159,7 @@ const RichEditor = ({ value, onEditorChange, initials }: EditorProps) => {
   if (imageUploadError) return <span>Image Uploading Failed</span>;
 
   return (
-    <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
+    <Grid item xs={12} sx={{ display: "flex", mb: "24px", ...sx }}>
       <Editor
         apiKey={TINY_EDITOR_API_KEY}
         value={value}

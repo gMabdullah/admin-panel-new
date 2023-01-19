@@ -142,17 +142,6 @@ const Items = () => {
         setApplyFilters(false);
       }
 
-      // state.allItemsForGrouping = productData.items.filter(
-      //   (item: ProductResponseItem) => {
-      //     if (!item.is_grouped) {
-      //       return {
-      //         value: item.menu_item_id,
-      //         label: item.sku ? item.name + " (" + item.sku + ")" : item.name,
-      //       };
-      //     }
-      //   }
-      // );
-
       state.allItemsForGrouping = productData.items.reduce(
         (items: DropdownValue[], item: ProductResponseItem) => {
           if (!item.is_grouped) {
@@ -165,8 +154,6 @@ const Items = () => {
         },
         []
       );
-
-      // console.log("all grouping items 1 = ", state.allItemsForGrouping);
     }
   }, [productData]);
 
