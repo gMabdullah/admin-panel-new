@@ -108,6 +108,19 @@ const Inventory = () => {
                 }
               />
             </Grid>
+            <Grid item xs={6} sx={{ ml: "8px" }}>
+              <TdTextField
+                name="itemCost"
+                type="number"
+                label="Item Cost"
+                onChange={(e) =>
+                  dispatch({
+                    type: "textField",
+                    payload: { name: e.target.name, value: e.target.value },
+                  })
+                }
+              />
+            </Grid>
           </Grid>
         </Grid>
         <Grid container>

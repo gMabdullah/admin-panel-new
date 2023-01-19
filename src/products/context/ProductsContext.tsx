@@ -42,6 +42,7 @@ interface State {
   itemPricePer: string;
   itemMinimumQuantity: string;
   itemCartons: string;
+  itemCost: string;
   itemSku: string;
   itemUnitPrice: string;
   itemProductCode: string;
@@ -82,6 +83,7 @@ const initialState: State = {
   itemPricePer: "",
   itemMinimumQuantity: "",
   itemCartons: "",
+  itemCost: "",
   itemSku: "",
   itemUnitPrice: "",
   itemProductCode: "",
