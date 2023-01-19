@@ -12,8 +12,9 @@ type DropDownType<T extends React.ElementType> = {
   defaultValue?: string;
   label?: string;
   name?: string;
-  value: string;
+  value?: string;
   error?: boolean;
+  isStaticDropDown?:boolean;
   helperText?: React.ReactNode;
   handleChange: (event: SelectChangeEvent) => void;
 } & React.ComponentPropsWithoutRef<T>;
@@ -44,8 +45,7 @@ const useStyles = makeStyles((theme) => ({
     width: "160px",
     borderRadius: "58px",
     marginRight: "8px",
-    marginBottom: "24px",
-    marginTop: "24px",
+    
 
     "& .MuiOutlinedInput": {
       border: "58px",
@@ -75,9 +75,53 @@ const useStyles = makeStyles((theme) => ({
       border: "20px solid #484850",
     },
   },
+  staticDropDownRoot: {
+    fontSize: "14px",
+    // color: "#212121",
+
+    fontFamily: `Roboto`,
+    fontWeight: 400,
+    lineHeight: "1.334em",
+    color: "#F5F5F !important",
+    backgroundColor: "#F5F5F5 !important",
+   // width: "160px",
+    borderRadius: "8px !important",
+    marginRight: "8px",
+    height: "44px",
+    width: "146px",
+
+    "& .MuiOutlinedInput": {
+      border: "58px !important",
+    },
+    "& .MuiOutlinedInput-root": {
+      borderRadius: "8px !important",
+    },
+    "& .MuiList-root": {
+      paddind: "14px !important",
+    },
+   // height: "fit-content",
+    "& .MuiOutlinedInput-input": {
+      background: "none",
+      p: "11px 67.9px 11px 14.88px",
+    },
+    "& .MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input ": {
+      borderRadius: "58px !important",
+    },
+    "& .MuiOutlinedInput-notchedOutline": {
+      border: "none",
+    },
+    "& .Mui-disabled": {
+      color: "#FFFFFF",
+      opacity: 0.6,
+    },
+    "& .Mui-disabled .MuiOutlinedInput-notchedOutline": {
+      border: "20px solid #484850",
+    },
+  },
   selectRoot: {
     color: "#FFFFFF",
   },
+  
   icon: {
     color: "#212121",
     Width: "6.67px",
@@ -119,6 +163,7 @@ const DropDown = <T extends React.ElementType = "select">({
   value,
   name,
   error,
+  isStaticDropDown,
   helperText,
   handleChange,
   ...rest
@@ -130,7 +175,7 @@ const DropDown = <T extends React.ElementType = "select">({
       <FormControl
         variant="outlined"
         classes={{
-          root: classes.quantityRoot,
+          root: isStaticDropDown ? classes.staticDropDownRoot : classes.quantityRoot,
         }}
       >
         <Select
@@ -140,8 +185,17 @@ const DropDown = <T extends React.ElementType = "select">({
             icon: classes.icon,
           }}
           name={name}
+          sx={{
+            borderRadius: isStaticDropDown ? "8px !important" : "58px !important",
+            "& .MuiOutlinedInput-root": {
+              borderRadius: isStaticDropDown ? "8px !important" : "58px !important",
+            },
+            "& .MuiOutlinedInput": {
+              border: "58px",
+            },
+          }}
           defaultValue={defaultValue}
-          value={value ? value : ""}
+          value={isStaticDropDown ? defaultValue : (value ? value : "")}
           onChange={handleChange}
           MenuProps={MenuProps}
         >
