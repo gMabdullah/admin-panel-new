@@ -9,7 +9,7 @@ interface Action {
   type: string;
   payload: {
     name: string;
-    value: any;
+    value?: any;
   };
 }
 
@@ -52,6 +52,7 @@ interface State {
   itemCartons: string;
   itemMaximumDistance: string;
   itemNutritions: string | ItemDetailsResponseItemNutritions[];
+  fieldError: FieldErrors;
 }
 
 const initialState: State = {
@@ -96,6 +97,13 @@ const initialState: State = {
   itemCartons: "",
   itemMaximumDistance: "0",
   itemNutritions: "",
+  fieldError: {
+    itemCategoryField: "",
+    itemNameField: "",
+    itemPriceField: "",
+    itemDiscountDateField: "",
+    itemMaximumDistanceField: "",
+  },
 };
 
 export const ProductsContext = createContext<ProductsContextInterface>({
@@ -111,6 +119,19 @@ const reducer = (state: State, action: Action) => {
     case "dropDown":
     case "editor":
       return { ...state, [action.payload.name]: action.payload.value };
+    case "fieldError":
+      // const { fieldError } = state;
+      // fieldError = {
+      //   ...fieldError,
+      //   [action.payload.name]: action.payload.value,
+      // };
+      return {
+        ...state,
+        [action.type]: {
+          ...state.fieldError,
+          [action.payload.name]: "Required*",
+        },
+      };
     case "clearState":
       return { ...state, age: action.payload };
     default:

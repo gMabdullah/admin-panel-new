@@ -71,4 +71,5 @@ export const IQBAL_BUSINESS_ID = 12092,
     { label: "Milliliter (ml)", value: "ml" },
     { label: "Milligram (mg)", value: "mg" },
     { label: "Pound (lb)", value: "lb" },
-  ];
+  ],
+  canadaPostMaximumDistance = 10000;

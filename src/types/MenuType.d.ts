@@ -23,3 +23,11 @@ interface DropdownValue {
   value: string;
   label: string;
 }
+
+interface FieldErrors {
+  itemCategoryField: string;
+  itemNameField: string;
+  itemPriceField: string;
+  itemDiscountDateField: string;
+  itemMaximumDistanceField: string;
+}

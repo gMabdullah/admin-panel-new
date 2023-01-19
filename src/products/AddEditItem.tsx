@@ -24,6 +24,7 @@ import {
   getLocalStorage,
   toCapitalizeFirstLetter,
 } from "orders/HelperFunctions";
+import { canadaPostMaximumDistance } from "../constants";
 import { useSelector } from "store";
 
 interface AddEditItemProps {
@@ -42,13 +43,6 @@ const AddEditItem = ({
   const [selectedCategory, setSelectedCategory] = useState<DropDownListType[]>(
     []
   );
-  const [selectedBrand, setSelectedBrand] = useState<DropDownListType[]>([]);
-  const [selectedOptionSet, setSelectedOptionSet] = useState<
-    DropDownListType[]
-  >([]);
-  const [selectedGroupedItem, setSelectedGroupedItem] = useState<
-    DropDownListType[]
-  >([]);
   const { state, dispatch } = useContext(ProductsContext);
 
   // add item API call payload
@@ -254,6 +248,48 @@ const AddEditItem = ({
   };
 
   const addItemCallback = async () => {
+    if (!state.itemName) {
+      dispatch({
+        type: "fieldError",
+        payload: { name: "itemNameField" },
+      });
+
+      return;
+    }
+
+    // if (canadaPostMaximumDistance) {
+    // }
+
+    //========================================================================================
+
+    // if (selectedCategory === null) {
+    //   this.setState({ selectedCategoryError: "Category can't be empty" });
+    //   return false;
+    // } else if (itemName === "") {
+    //   this.setState({ itemNameError: "Item Name can't be empty" });
+    //   return false;
+    // } else if (itemPrice === "") {
+    //   this.setState({ itemPriceError: "Item Price can't be empty" });
+    //   return false;
+    // } else if (!/^\d+(\.\d{1,2})?$/.test(itemPrice)) {
+    //   this.setState({
+    //     itemPriceError: "Invalid Item Price Should be (xx.xx)",
+    //   });
+    //   return false;
+    // } else if (maxDistance >= maximumCandaPostDistance) {
+    //   this.setState({
+    //     maxDistanceError: "Maximum Distance is out of the range",
+    //   });
+    //   return false;
+    // } else if ((discountStart ? 1 : 0) ^ (discountExpiry ? 1 : 0)) {
+    //   this.setState({ discountDatesError: "Discount Dates are Must" });
+    //   return false;
+    // }
+
+    // return true;
+
+    //========================================================================================
+
     const addItemPayloadKeys = {
       item_id: "",
       eatout_id: getLocalStorage().eatout_id,
@@ -307,8 +343,8 @@ const AddEditItem = ({
       data: addItemAPIPayload({ items: [addItemPayloadKeys] }),
     });
 
-    getProductApi();
     handleDrawerToggle();
+    getProductApi();
   };
 
   return (
@@ -384,6 +420,8 @@ const AddEditItem = ({
               name="itemName"
               label="Item Name"
               value={state.itemName}
+              error={state.fieldError.itemNameField === "" ? false : true}
+              helperText={state.fieldError.itemNameField}
               onChange={(e) =>
                 dispatch({
                   type: "textField",
