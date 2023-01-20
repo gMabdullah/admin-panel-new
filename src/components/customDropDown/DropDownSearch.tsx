@@ -17,7 +17,7 @@ interface DropDownListTypeSearchType {
   value?: DropDownListType[];
   helperText?: string;
   onChange?: (selected: DropDownListType[]) => void;
-  dropDownList: DropDownListType[];
+  options: DropDownListType[];
   disabled?: boolean;
   isMultiSelect?: boolean;
   name?: string;
@@ -35,7 +35,7 @@ const DropDownSearch = ({
   value,
   onChange,
   helperText,
-  dropDownList,
+  options,
   handleChange,
   disabled,
   name,
@@ -59,7 +59,10 @@ const DropDownSearch = ({
         disabled={disabled}
         multiple={isMultiSelect}
         id="checkboxes-tags-demo"
-        options={dropDownList}
+        options={options}
+        value={value}
+        // defaultValue={value}
+        filterSelectedOptions
         disableCloseOnSelect
         onChange={handleChange}
         clearOnBlur={true}

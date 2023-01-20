@@ -65,7 +65,13 @@ const initialState: State = {
   itemPrice: "",
   itemTax: "",
   itemBrandId: "",
-  itemOptionSets: "",
+  itemOptionSets: [
+    {
+      value: "2123",
+      label: "Cutting Instructions B",
+    },
+  ],
+
   itemToGroup: "",
   itemSpecialNote: "",
   itemAvailability: "0", // 1 and 0 => item not available and available respectively

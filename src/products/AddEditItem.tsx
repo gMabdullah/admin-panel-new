@@ -134,13 +134,16 @@ const AddEditItem = ({
     value: any,
     name: string
   ) => {
+    console.log("dropdown event = ", event);
+
     dispatch({
       type: "dropDown",
       payload: {
         name: "itemOptionSets",
-        value: value.map((option: any) => ({
-          id: option.value,
-        })),
+        value: value,
+        // value: value.map((option: any) => ({
+        //   id: option.value,
+        // })),
       },
     });
   };
@@ -387,12 +390,12 @@ const AddEditItem = ({
 
         <Grid container>
           <Grid item xs={12} sx={{ display: "flex", mb: "12px" }}>
-            <DropDownSearch
+            {/* <DropDownSearch
               label="Category"
-              dropDownList={state.allCategories}
+              options={state.allCategories}
               // onChange={setSelectedCategory}
               handleChange={handleCategorySelection}
-            />
+            /> */}
           </Grid>
         </Grid>
 
@@ -468,12 +471,12 @@ const AddEditItem = ({
         <Grid container>
           <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
             <Grid item xs={6}>
-              <DropDownSearch
+              {/* <DropDownSearch
                 label="Brands"
-                dropDownList={state.allBrands}
-                // onChange={setSelectedBrand}
+                value={{ label: "Pound (lb)", value: "lb" }}
+                options={state.allBrands}
                 handleChange={handleBrandSelection}
-              />
+              /> */}
             </Grid>
           </Grid>
         </Grid>
@@ -482,8 +485,8 @@ const AddEditItem = ({
           <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
             <DropDownSearch
               label="Option Sets"
-              dropDownList={state.allOptionSets}
-              // onChange={setSelectedOptionSet}
+              value={state.itemOptionSets}
+              options={state.allOptionSets}
               handleChange={handleOptionSetsSelection}
               isMultiSelect={true}
             />
@@ -492,13 +495,13 @@ const AddEditItem = ({
 
         <Grid container>
           <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
-            <DropDownSearch
+            {/* <DropDownSearch
               label="Items to Group"
-              dropDownList={state.allItemsForGrouping}
+              options={state.allItemsForGrouping}
               // onChange={setSelectedGroupedItem}
               handleChange={handleItemsToGroupSelection}
               isMultiSelect={true}
-            />
+            /> */}
           </Grid>
         </Grid>
 

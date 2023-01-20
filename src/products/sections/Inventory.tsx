@@ -16,6 +16,8 @@ const Inventory = () => {
     value: any,
     name: string
   ) => {
+    // console.log("dropdown value = ", value);
+
     dispatch({
       type: "dropDown",
       payload: {
@@ -49,14 +51,12 @@ const Inventory = () => {
               />
             </Grid>
             <Grid item xs={6} sx={{ ml: "8px" }}>
-              {/* <TdTextField label="Weight Unit" /> */}
-              <DropDownSearch
+              {/* <DropDownSearch
                 label="Weight Unit"
-                // dropDownList={state.allBrands}
-                dropDownList={weightUnits}
-                // onChange={setSelectedBrand}
+                value={{ label: "Pound (lb)", value: "lb" }}
+                options={weightUnits}
                 handleChange={handleWeightUnitSelection}
-              />
+              /> */}
             </Grid>
           </Grid>
         </Grid>
