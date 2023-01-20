@@ -31,7 +31,7 @@ type TableData = {
 
 type ExcelExportPropsType = {
   tableData: TableData[];
-  orderListData?: OrderListingResponseResult[];
+  listingData?: OrderListingResponseResult[];
   orderDetailData?: OrderListingResponseOrderDetail[];
   OrderDetailStatic?: any;
   exportType: string;
@@ -39,7 +39,7 @@ type ExcelExportPropsType = {
 
 const ExcelExport = ({
   tableData,
-  orderListData,
+  listingData,
   orderDetailData,
   exportType,
   OrderDetailStatic,
@@ -67,7 +67,7 @@ const ExcelExport = ({
         });
 
         // loop through data and add each one to worksheet
-        orderListData?.forEach((singleData) => {
+        listingData?.forEach((singleData) => {
           workSheet.addRow(singleData);
         });
 
