@@ -351,11 +351,13 @@ const Items = () => {
           )}
         </Grid>
         <Box sx={{ width: "100%", overflow: "hidden" }}>
-          {productData === undefined ? (
+          {productData === undefined || productLoading || sortLoading ? (
             <OrderListingSkeleton />
           ) : (
             <>
               <DraggableTable
+                getProductsAPI={getProductsAPI}
+                productLoading={productLoading}
                 items={items}
                 keysOfItems={keysOfItems}
                 setSequenceItem={setSequenceItem}

@@ -12,28 +12,35 @@ import {
   TableRow,
   TableContainer,
 } from "@mui/material";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 import { useSelector } from "store";
 import TableChip from "./TableChip";
+import TableActionsButton from "./TableActionsButton";
+import { AxiosPromise, AxiosRequestConfig } from "axios";
+import { RefetchOptions } from "axios-hooks";
 
 interface TablePropsType {
   items?: ProductResponse["items"];
   keysOfItems: TypeKeyOfItem["keysOfItems"];
   setSequenceItem?: any;
   shortDragDropItems?: any;
+  getProductsAPI: (
+    config?: AxiosRequestConfig<any> | undefined,
+    options?: RefetchOptions | undefined
+  ) => AxiosPromise<any>;
+  productLoading?: boolean;
 }
 
 const DraggableTable = ({
   items,
   keysOfItems,
-  setSequenceItem,
   shortDragDropItems,
+  getProductsAPI,
+  productLoading,
 }: TablePropsType) => {
   const { decimalPlaces } = useSelector((state) => state.main);
-  const [linearLoader, setLinearLoader] = useState<boolean>(true);
 
   const handleDragEnd = (result: any) => {
     const sortArray = [
@@ -42,7 +49,6 @@ const DraggableTable = ({
         destination: result.destination.index,
       },
     ];
-    //setSequenceItem(sortArray)
     shortDragDropItems(sortArray);
     // handle the end of a drag and drop event here
   };
@@ -159,7 +165,11 @@ const DraggableTable = ({
                                   ) : column.key === "status" ? (
                                     <TableChip statusValue={row[column.key]} />
                                   ) : column.value === "Actions" ? (
-                                    <MoreVertIcon />
+                                    <TableActionsButton
+                                      row={row}
+                                      getProductsAPI={getProductsAPI}
+                                      productLoading={productLoading}
+                                    />
                                   ) : (
                                     <Typography className="tableColumnCss">
                                       {row[column.key]}
