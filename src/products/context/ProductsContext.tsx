@@ -70,6 +70,10 @@ const initialState: State = {
       value: "2123",
       label: "Cutting Instructions B",
     },
+    {
+      value: "3020",
+      label: "Beef Suqaar Cutting Instructions",
+    },
   ],
 
   itemToGroup: "",

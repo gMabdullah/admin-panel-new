@@ -134,7 +134,9 @@ const AddEditItem = ({
     value: any,
     name: string
   ) => {
-    console.log("dropdown event = ", event);
+    // console.log("dropdown event = ", event);
+    console.log("value = ", value);
+    console.log("state = ", state);
 
     dispatch({
       type: "dropDown",
