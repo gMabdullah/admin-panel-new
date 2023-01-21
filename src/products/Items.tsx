@@ -274,7 +274,7 @@ const Items = () => {
                 <ExcelExport
                   tableData={itemExportColumns}
                   listingData={productData.items}
-                  exportType={"OrdersList"}
+                  exportType={"ProductListing"}
                 />
               )}
               <CustomButton
