@@ -37,30 +37,23 @@ const Nutrition = () => {
     nutrition: { name: "", value: "", id: "" },
   });
 
+  // for edit item
   useEffect(() => {
     // if it is not array & not empty string
     if (
       state.editItem.editItemFlag &&
-      !Array.isArray(state.itemNutritions)
-      // &&      state.itemNutritions
+      Array.isArray(state.itemNutritions)
+      // &&
+      // !Array.isArray(state.itemNutritions) &&
+      // state.itemNutritions
       // state.itemNutritions.length > 0
     ) {
-      alert("nutrition component did mount");
-
-      console.log("stateeeee = ", state);
-
-      // parsing the stringified array coming from API
-      const nutritions = state.itemNutritions;
-      // const nutritions = JSON.parse(state.itemNutritions);
-
-      console.log("parsed nutritions = ", nutritions);
-
-      // setNutritionRows(
-      //   nutritions.map((item: any, index: any) => ({
-      //     ...item,
-      //     id: index + 1,
-      //   }))
-      // );
+      setNutritionRows(
+        state.itemNutritions.map((item: any, index: any) => ({
+          ...item,
+          id: index + 1,
+        }))
+      );
     }
   }, []);
 
@@ -112,7 +105,7 @@ const Nutrition = () => {
   const deleteNutrition = (itemId: number) => {
     if (!editNutrition.editFlag) {
       const nutritionArray = nutritionRows.filter((item, index) => {
-        if (item.id !== String(itemId)) {
+        if (String(item.id) !== String(itemId)) {
           return item;
         } else {
           // update state in useReducer hook

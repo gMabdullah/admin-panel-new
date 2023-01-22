@@ -8,6 +8,7 @@ import useAxios, { RefetchOptions } from "axios-hooks";
 import { AxiosPromise, AxiosRequestConfig } from "axios";
 
 import { ProductsContext } from "products/context/ProductsContext";
+import { getLocalStorage } from "orders/HelperFunctions";
 
 interface itemProps {
   row: any;
@@ -52,6 +53,14 @@ const TableActionsButton = ({
       { manual: true }
     );
 
+  // get single item API call (for edit item)
+  const [{}, singleItemAPICall] = useAxios(
+    {
+      method: "get",
+    },
+    { manual: true }
+  );
+
   const handleClick = (event: React.MouseEvent<HTMLElement>) =>
     setAnchorEl(event.currentTarget);
 
@@ -64,16 +73,102 @@ const TableActionsButton = ({
   };
 
   const editProduct = async () => {
+    // if (state.editItem.editItemFlag && state.editItem.editItemId) {
+    // debugger;
+
+    // get single item API call (for edit item)
+    const {
+      // data,
+      data: { items },
+    } = await singleItemAPICall({
+      url: `/product_details?business_id=${
+        getLocalStorage().eatout_id
+      }&item_id=${row.menu_item_id}&admin_id=${
+        getLocalStorage().user_id
+      }&source=biz`,
+    });
+
+    // console.log("editItemId = ", state.editItem.editItemId);
+    console.log("data = ", items);
+
     dispatch({
-      type: "editItem",
+      type: "populateEditItemValues",
       payload: {
-        name: "editItem",
+        // name: "itemCategoryId",
         value: {
-          editItemFlag: true,
-          editItemId: row.menu_item_id,
+          // allCategories: [],
+          // allBrands: [],
+          // allItemsForGrouping: [],
+          // allOptionSets: [],
+          // itemCategoryId: "", /////////////////////////////////////////////////////////////////////////////
+
+          itemName: items[0].name,
+          itemPrice: items[0].price,
+          itemTax: items[0].tax,
+          // itemBrandId: "", ///////////////////////////////////////////////////////////////////////////
+          // itemOptionSets: "", ///////////////////////////////////////////////////////////////////////////
+
+          // itemToGroup: "", ////////////////////////////////////////////////////////////////////////////
+          itemSpecialNote: items[0].note,
+          itemAvailability: items[0].status, // 1 and 0 => item not available and available respectively
+          itemSpecialInstructions: items[0].allow_note, // 1 and 0 => allow and don't allow special instruction respectively
+          itemDisplay: items[0].display_source, // 0, 1, 2, and 3 => display (all , none, web, and pos) respectively
+
+          itemDiscount: items[0].discount_display,
+          itemDiscountStart: items[0].discount_start_at,
+          itemDiscountExpiry: items[0].discount_expiry,
+
+          itemDescription: items[0].desc, //////////////////having desc for editor also => check with editor
+          itemShortDescription: "",
+          itemLongDescription: "",
+
+          itemWeight: items[0].weight_value,
+          itemWeightUnit: items[0].weight_unit,
+
+          itemPricePer: items[0].price_per,
+          itemMinimumQuantity: items[0].min_qty,
+
+          itemCost: items[0].item_cost,
+
+          itemSku: items[0].sku,
+          itemUnitPrice: items[0].unit_price,
+          itemProductCode: items[0].product_code,
+          itemUniversalProductCode: items[0].upc,
+          itemPallets: items[0].pallet,
+          itemPalletPrice: items[0].pallet_price,
+          itemCartons: items[0].carton,
+          itemMaximumDistance: items[0].max_distance,
+          itemNutritions:
+            items[0].nutritions.length > 0
+              ? JSON.parse(items[0].nutritions)
+              : "", /////////////////////////////////////////
+          // fieldError: {
+          //   itemCategoryField: "",
+          //   itemNameField: "",
+          //   itemPriceField: "",
+          //   itemDiscountDateField: "",
+          //   itemMaximumDistanceField: "",
+          // },
+          editItem: {
+            editItemFlag: true,
+            editItemId: items[0].menu_item_id,
+          },
         },
       },
     });
+
+    // }
+
+    // dispatch({
+    //   type: "editItem",
+    //   payload: {
+    //     name: "editItem",
+    //     value: {
+    //       editItemFlag: true,
+    //       editItemId: row.menu_item_id,
+    //     },
+    //   },
+    // });
 
     // close the action buttons popup
     handleClose();
