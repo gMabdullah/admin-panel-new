@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import { DeleteTwoTone, EditTwoTone } from "@mui/icons-material";
 import { Grid, Stack, Box } from "@mui/material";
@@ -36,6 +36,33 @@ const Nutrition = () => {
     editFlag: false,
     nutrition: { name: "", value: "", id: "" },
   });
+
+  useEffect(() => {
+    // if it is not array & not empty string
+    if (
+      state.editItem.editItemFlag &&
+      !Array.isArray(state.itemNutritions)
+      // &&      state.itemNutritions
+      // state.itemNutritions.length > 0
+    ) {
+      alert("nutrition component did mount");
+
+      console.log("stateeeee = ", state);
+
+      // parsing the stringified array coming from API
+      const nutritions = state.itemNutritions;
+      // const nutritions = JSON.parse(state.itemNutritions);
+
+      console.log("parsed nutritions = ", nutritions);
+
+      // setNutritionRows(
+      //   nutritions.map((item: any, index: any) => ({
+      //     ...item,
+      //     id: index + 1,
+      //   }))
+      // );
+    }
+  }, []);
 
   const handleChange = (e: { target: { value: string; name: string } }) => {
     setNutrition({ ...nutrition, [e.target.name]: e.target.value });

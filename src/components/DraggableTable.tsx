@@ -31,6 +31,7 @@ interface TablePropsType {
     options?: RefetchOptions | undefined
   ) => AxiosPromise<any>;
   productLoading?: boolean;
+  handleDrawerToggle: () => void;
 }
 
 const DraggableTable = ({
@@ -39,6 +40,7 @@ const DraggableTable = ({
   shortDragDropItems,
   getProductsAPI,
   productLoading,
+  handleDrawerToggle,
 }: TablePropsType) => {
   const { decimalPlaces } = useSelector((state) => state.main);
 
@@ -169,6 +171,7 @@ const DraggableTable = ({
                                       row={row}
                                       getProductsAPI={getProductsAPI}
                                       productLoading={productLoading}
+                                      handleDrawerToggle={handleDrawerToggle}
                                     />
                                   ) : (
                                     <Typography className="tableColumnCss">

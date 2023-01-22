@@ -45,6 +45,15 @@ const AddEditItem = ({
   );
   const { state, dispatch } = useContext(ProductsContext);
 
+  // option sets API call payload
+  const optionSetsAPIPayload = () => {
+    const formData = new FormData();
+    formData.append("eatout_id", getLocalStorage().eatout_id);
+    formData.append("admin_id", getLocalStorage().user_id);
+    formData.append("source", "biz");
+    return formData;
+  };
+
   // add item API call payload
   const addItemAPIPayload = (item: any) => {
     const formData = new FormData();
@@ -64,14 +73,13 @@ const AddEditItem = ({
     { manual: true }
   );
 
-  // option sets API call payload
-  const optionSetsAPIPayload = () => {
-    const formData = new FormData();
-    formData.append("eatout_id", getLocalStorage().eatout_id);
-    formData.append("admin_id", getLocalStorage().user_id);
-    formData.append("source", "biz");
-    return formData;
-  };
+  // get single item API call (for edit item)
+  const [{}, singleItemAPICall] = useAxios(
+    {
+      method: "get",
+    },
+    { manual: true }
+  );
 
   // option sets API call
   const [{ data: allOptionSets }, optionSetsAPICall] = useAxios({
@@ -98,8 +106,93 @@ const AddEditItem = ({
   }, [allOptionSets]);
 
   useEffect(() => {
-    richEditor && splitShortLongDescription();
-  }, []);
+    (async () => {
+      if (state.editItem.editItemFlag && state.editItem.editItemId) {
+        // debugger;
+
+        // get single item API call (for edit item)
+        const {
+          // data,
+          data: { items },
+        } = await singleItemAPICall({
+          url: `/product_details?business_id=${
+            getLocalStorage().eatout_id
+          }&item_id=${state.editItem.editItemId}&admin_id=${
+            getLocalStorage().user_id
+          }&source=biz`,
+        });
+
+        console.log("editItemId = ", state.editItem.editItemId);
+        console.log("data = ", items);
+
+        dispatch({
+          type: "populateEditItemValues",
+          payload: {
+            // name: "itemCategoryId",
+            value: {
+              // allCategories: [],
+              // allBrands: [],
+              // allItemsForGrouping: [],
+              // allOptionSets: [],
+              // itemCategoryId: "", /////////////////////////////////////////////////////////////////////////////
+
+              itemName: items[0].name,
+              itemPrice: items[0].price,
+              itemTax: items[0].tax,
+              // itemBrandId: "", ///////////////////////////////////////////////////////////////////////////
+              // itemOptionSets: "", ///////////////////////////////////////////////////////////////////////////
+
+              // itemToGroup: "", ////////////////////////////////////////////////////////////////////////////
+              itemSpecialNote: items[0].note,
+              itemAvailability: items[0].status, // 1 and 0 => item not available and available respectively
+              itemSpecialInstructions: items[0].allow_note, // 1 and 0 => allow and don't allow special instruction respectively
+              itemDisplay: items[0].display_source, // 0, 1, 2, and 3 => display (all , none, web, and pos) respectively
+
+              itemDiscount: items[0].discount_display,
+              itemDiscountStart: items[0].discount_start_at,
+              itemDiscountExpiry: items[0].discount_expiry,
+
+              itemDescription: items[0].desc, //////////////////having desc for editor also => check with editor
+              itemShortDescription: "",
+              itemLongDescription: "",
+
+              itemWeight: items[0].weight_value,
+              itemWeightUnit: items[0].weight_unit,
+
+              itemPricePer: items[0].price_per,
+              itemMinimumQuantity: items[0].min_qty,
+
+              itemCost: items[0].item_cost,
+
+              itemSku: items[0].sku,
+              itemUnitPrice: items[0].unit_price,
+              itemProductCode: items[0].product_code,
+              itemUniversalProductCode: items[0].upc,
+              itemPallets: items[0].pallet,
+              itemPalletPrice: items[0].pallet_price,
+              itemCartons: items[0].carton,
+              itemMaximumDistance: items[0].max_distance,
+              itemNutritions: items[0].nutritions, //////////////////////////////////////////////////////
+              // fieldError: {
+              //   itemCategoryField: "",
+              //   itemNameField: "",
+              //   itemPriceField: "",
+              //   itemDiscountDateField: "",
+              //   itemMaximumDistanceField: "",
+              // },
+              editItem: {
+                editItemFlag: true,
+                editItemId: items[0].menu_item_id,
+              },
+            },
+          },
+        });
+
+        // console.log("edit stateeeeeeeee = ", state);
+        richEditor && splitShortLongDescription();
+      }
+    })();
+  }, [state.editItem]);
 
   const handleCategorySelection = (
     event: React.ChangeEvent<{}>,
@@ -252,8 +345,18 @@ const AddEditItem = ({
     return combineIt.replace(/\n|\t/g, " ");
   };
 
-  const addItemCallback = async () => {
+  const handleDrawerClose = () => {
+    handleDrawerToggle();
+
+    dispatch({
+      type: "clearState",
+      payload: {},
+    });
+  };
+
+  const handleAddEditItem = async () => {
     if (!state.itemName) {
+      // also add check for min quantity >0 1 ====================++++++++++++++++++++++++++++++++++++++++++++++++++++++++
       dispatch({
         type: "fieldError",
         payload: { name: "itemNameField" },
@@ -262,6 +365,7 @@ const AddEditItem = ({
       return;
     }
 
+    // <>
     // if (canadaPostMaximumDistance) {
     // }
 
@@ -295,8 +399,11 @@ const AddEditItem = ({
 
     //========================================================================================
 
+    // </>
+
     const addItemPayloadKeys = {
-      item_id: "",
+      // id for edit item otherwise it is empty string
+      item_id: state.editItem.editItemId,
       eatout_id: getLocalStorage().eatout_id,
       category_id: state.itemCategoryId,
       name: toCapitalizeFirstLetter(state.itemName).trim(),
@@ -307,7 +414,6 @@ const AddEditItem = ({
       special_note: state.itemSpecialNote,
       price: state.itemPrice,
       tax: state.itemTax,
-      tags_ids: "",
       discount: state.itemDiscount,
       weight: state.itemWeight,
       sku: state.itemSku.trim(),
@@ -350,17 +456,30 @@ const AddEditItem = ({
 
     handleDrawerToggle();
     getProductApi();
+
+    if (state.editItem.editItemFlag) {
+      dispatch({
+        type: "clearState",
+        payload: {
+          //   name: "editItem",
+          //   value: {
+          //     editItemFlag: false,
+          //     editItemId: "",
+          //   },
+        },
+      });
+    }
   };
 
   return (
     <CustomDrawer
-      title="Add Item"
-      buttonText="Save"
+      title={state.editItem.editItemFlag ? "Edit Item" : "Add Item"}
+      buttonText={state.editItem.editItemFlag ? "Update" : "Add"}
       anchor="right"
       open={toggleDrawer}
-      onClose={handleDrawerToggle}
-      handleCancelClick={handleDrawerToggle}
-      onClick={addItemCallback}
+      onClose={handleDrawerClose}
+      handleCancelClick={handleDrawerClose}
+      onClick={handleAddEditItem}
     >
       {addCategoryModal && (
         <CustomModal
@@ -485,13 +604,13 @@ const AddEditItem = ({
 
         <Grid container>
           <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
-            <DropDownSearch
+            {/* <DropDownSearch
               label="Option Sets"
               value={state.itemOptionSets}
               options={state.allOptionSets}
               handleChange={handleOptionSetsSelection}
               isMultiSelect={true}
-            />
+            /> */}
           </Grid>
         </Grid>
 

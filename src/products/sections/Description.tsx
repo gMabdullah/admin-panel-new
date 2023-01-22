@@ -13,6 +13,8 @@ const Description = () => {
   const { richEditor } = useSelector((state) => state.main),
     { state, dispatch } = useContext(ProductsContext);
 
+  console.log("description state = ", state);
+
   return (
     <Stack>
       <ExpandablePanel

@@ -362,6 +362,7 @@ const Items = () => {
                 keysOfItems={keysOfItems}
                 setSequenceItem={setSequenceItem}
                 shortDragDropItems={shortDragDropItems}
+                handleDrawerToggle={handleDrawerToggle}
               />
               <TablePagination
                 component="div"

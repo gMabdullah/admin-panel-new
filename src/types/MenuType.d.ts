@@ -31,3 +31,8 @@ interface FieldErrors {
   itemDiscountDateField: string;
   itemMaximumDistanceField: string;
 }
+
+interface EditItem {
+  editItemFlag: boolean;
+  editItemId: string;
+}

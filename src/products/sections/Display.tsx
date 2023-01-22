@@ -11,6 +11,8 @@ const Display = () => {
     dispatch,
   } = useContext(ProductsContext);
 
+  console.log("display component");
+
   const displayChangeHandler = (event: {
     target: { name: string; value: string };
   }) => {

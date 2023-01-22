@@ -1,10 +1,13 @@
-import { EditTwoTone, DeleteTwoTone } from "@mui/icons-material";
-import useAxios from "axios-hooks";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+
 import { IconButton, Menu, MenuItem, Typography } from "@mui/material";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { EditTwoTone, DeleteTwoTone, MoreVert } from "@mui/icons-material";
+
+import useAxios, { RefetchOptions } from "axios-hooks";
+// import { RefetchOptions } from "axios-hooks";
 import { AxiosPromise, AxiosRequestConfig } from "axios";
-import { RefetchOptions } from "axios-hooks";
+
+import { ProductsContext } from "products/context/ProductsContext";
 
 interface itemProps {
   row: any;
@@ -13,12 +16,14 @@ interface itemProps {
     options?: RefetchOptions | undefined
   ) => AxiosPromise<any>;
   productLoading?: boolean;
+  handleDrawerToggle: () => void;
 }
 
 const TableActionsButton = ({
   row,
   getProductsAPI,
   productLoading,
+  handleDrawerToggle,
 }: itemProps) => {
   const { eatout_id, user_id } = JSON.parse(
     localStorage.getItem("businessInfo")!
@@ -26,6 +31,8 @@ const TableActionsButton = ({
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const ITEM_HEIGHT = 37;
+
+  const { state, dispatch } = useContext(ProductsContext);
 
   const payload = () => {
     const formData = new FormData();
@@ -44,6 +51,7 @@ const TableActionsButton = ({
       },
       { manual: true }
     );
+
   const handleClick = (event: React.MouseEvent<HTMLElement>) =>
     setAnchorEl(event.currentTarget);
 
@@ -53,6 +61,27 @@ const TableActionsButton = ({
     });
     await getProductsAPI();
     handleClose();
+  };
+
+  const editProduct = async () => {
+    dispatch({
+      type: "editItem",
+      payload: {
+        name: "editItem",
+        value: {
+          editItemFlag: true,
+          editItemId: row.menu_item_id,
+        },
+      },
+    });
+
+    // close the action buttons popup
+    handleClose();
+
+    // open the add/edit item drawer
+    handleDrawerToggle();
+
+    console.log("edit product func = ", state.editItem);
   };
 
   const handleClose = () => setAnchorEl(null);
@@ -66,7 +95,7 @@ const TableActionsButton = ({
         aria-haspopup="true"
         onClick={handleClick}
       >
-        <MoreVertIcon />
+        <MoreVert />
       </IconButton>
       <Menu
         id="options-menu"
@@ -82,7 +111,7 @@ const TableActionsButton = ({
         }}
       >
         <MenuItem
-          onClick={handleClose}
+          onClick={editProduct}
           disabled={(productLoading || deleteLoading) && true}
         >
           <EditTwoTone sx={{ fontSize: "1.3rem" }} />

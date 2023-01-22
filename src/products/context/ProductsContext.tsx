@@ -8,7 +8,7 @@ interface ProductsContextInterface {
 interface Action {
   type: string;
   payload: {
-    name: string;
+    name?: string;
     value?: any;
   };
 }
@@ -53,6 +53,7 @@ interface State {
   itemMaximumDistance: string;
   itemNutritions: string | ItemDetailsResponseItemNutritions[];
   fieldError: FieldErrors;
+  editItem: EditItem;
 }
 
 const initialState: State = {
@@ -60,21 +61,22 @@ const initialState: State = {
   allBrands: [],
   allItemsForGrouping: [],
   allOptionSets: [],
-  itemCategoryId: "",
+  itemCategoryId: "14650",
   itemName: "",
   itemPrice: "",
   itemTax: "",
   itemBrandId: "",
-  itemOptionSets: [
-    {
-      value: "2123",
-      label: "Cutting Instructions B",
-    },
-    {
-      value: "3020",
-      label: "Beef Suqaar Cutting Instructions",
-    },
-  ],
+  itemOptionSets: "",
+  // itemOptionSets: [
+  //   {
+  //     value: "2123",
+  //     label: "Cutting Instructions B",
+  //   },
+  //   {
+  //     value: "3020",
+  //     label: "Beef Suqaar Cutting Instructions",
+  //   },
+  // ],
 
   itemToGroup: "",
   itemSpecialNote: "",
@@ -94,7 +96,7 @@ const initialState: State = {
   itemWeightUnit: "",
 
   itemPricePer: "",
-  itemMinimumQuantity: "",
+  itemMinimumQuantity: "1",
 
   itemCost: "0",
 
@@ -114,6 +116,10 @@ const initialState: State = {
     itemDiscountDateField: "",
     itemMaximumDistanceField: "",
   },
+  editItem: {
+    editItemFlag: false,
+    editItemId: "",
+  },
 };
 
 export const ProductsContext = createContext<ProductsContextInterface>({
@@ -128,7 +134,12 @@ const reducer = (state: State, action: Action) => {
     case "switchComponent":
     case "dropDown":
     case "editor":
-      return { ...state, [action.payload.name]: action.payload.value };
+    case "editItem":
+      return { ...state, [action.payload.name!]: action.payload.value };
+    case "populateEditItemValues":
+      console.log("payload .value = ", action.payload.value);
+
+      return { ...state, ...action.payload.value };
     case "fieldError":
       // const { fieldError } = state;
       // fieldError = {
@@ -139,11 +150,83 @@ const reducer = (state: State, action: Action) => {
         ...state,
         [action.type]: {
           ...state.fieldError,
-          [action.payload.name]: "Required*",
+          [action.payload.name!]: "Required*",
         },
       };
+    // case "editItem":
+    //   return {
+    //     ...state,
+    //     [action.type]: {
+    //       ...state.editItem,
+    //       [action.payload.name]: action.payload.value,
+    //     },
+    //   };
     case "clearState":
-      return { ...state, age: action.payload };
+      return {
+        allCategories: [],
+        allBrands: [],
+        allItemsForGrouping: [],
+        allOptionSets: [],
+        itemCategoryId: "14650",
+        itemName: "",
+        itemPrice: "",
+        itemTax: "",
+        itemBrandId: "",
+        itemOptionSets: "",
+        // itemOptionSets: [
+        //   {
+        //     value: "2123",
+        //     label: "Cutting Instructions B",
+        //   },
+        //   {
+        //     value: "3020",
+        //     label: "Beef Suqaar Cutting Instructions",
+        //   },
+        // ],
+
+        itemToGroup: "",
+        itemSpecialNote: "",
+        itemAvailability: "0", // 1 and 0 => item not available and available respectively
+        itemSpecialInstructions: "0", // 1 and 0 => allow and don't allow special instruction respectively
+        itemDisplay: "0", // 0, 1, 2, and 3 => display (all , none, web, and pos) respectively
+
+        itemDiscount: "",
+        itemDiscountStart: "",
+        itemDiscountExpiry: "",
+
+        itemDescription: "",
+        itemShortDescription: "",
+        itemLongDescription: "",
+
+        itemWeight: "",
+        itemWeightUnit: "",
+
+        itemPricePer: "",
+        itemMinimumQuantity: "1",
+
+        itemCost: "0",
+
+        itemSku: "",
+        itemUnitPrice: "",
+        itemProductCode: "",
+        itemUniversalProductCode: "",
+        itemPallets: "",
+        itemPalletPrice: "",
+        itemCartons: "",
+        itemMaximumDistance: "0",
+        itemNutritions: "",
+        fieldError: {
+          itemCategoryField: "",
+          itemNameField: "",
+          itemPriceField: "",
+          itemDiscountDateField: "",
+          itemMaximumDistanceField: "",
+        },
+        editItem: {
+          editItemFlag: false,
+          editItemId: "",
+        },
+      };
     default:
       return state;
   }

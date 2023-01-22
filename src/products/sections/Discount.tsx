@@ -10,6 +10,8 @@ import { ProductsContext } from "../context/ProductsContext";
 const Discount = () => {
   const { state, dispatch } = useContext(ProductsContext);
 
+  console.log("discount state = ", state);
+
   // console.log("discount = ", state.itemDiscount);
   // console.log("discount start  = ", state.itemDiscountStart);
   // console.log("discount expire = ", state.itemDiscountExpiry);
