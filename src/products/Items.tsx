@@ -29,7 +29,7 @@ import Loader from "components/Loader";
 import AddEditItem from "products/AddEditItem";
 import { gridIconsCss } from "./Styles";
 import { useSelector } from "store";
-import { keysOfItems } from "../constants";
+import { itemExportColumns, keysOfItems } from "../constants";
 import { ProductsProvider, ProductsContext } from "./context/ProductsContext";
 import { reorder, sortMenuItems } from "orders/HelperFunctions";
 import TdTextField from "components/TdTextField";
@@ -39,6 +39,7 @@ import {
 } from "orders/HelperFunctions";
 import { searchFieldStyle } from "business/Styles";
 import file from "../assets/files/downloadSample.xlsx";
+import ExcelExport from "components/ExcelExport";
 
 let troggleSorting = true;
 
@@ -242,7 +243,6 @@ const Items = () => {
           getProductApi={getProductsAPI}
         />
       )}
-
       {(productLoading || sortLoading) && <Loader />}
 
       <MainCard
@@ -274,6 +274,13 @@ const Items = () => {
                 alignItems: "center",
               }}
             >
+              {productData && (
+                <ExcelExport
+                  tableData={itemExportColumns}
+                  listingData={productData.items}
+                  exportType={"ProductListing"}
+                />
+              )}
               <CustomButton
                 variant={"contained"}
                 color={"secondary"}
@@ -284,6 +291,7 @@ const Items = () => {
                   width: "138px",
                 }}
                 onClick={handleDrawerToggle}
+
                 // onClick={() => {
                 //   let link = document.createElement("a");
                 //   link.setAttribute("download", "Menu-Sample.xlsx");

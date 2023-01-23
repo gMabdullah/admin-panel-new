@@ -31,7 +31,7 @@ type TableData = {
 
 type ExcelExportPropsType = {
   tableData: TableData[];
-  orderListData?: OrderListingResponseResult[];
+  listingData?: OrderListingResponseResult[];
   orderDetailData?: OrderListingResponseOrderDetail[];
   OrderDetailStatic?: any;
   exportType: string;
@@ -39,7 +39,7 @@ type ExcelExportPropsType = {
 
 const ExcelExport = ({
   tableData,
-  orderListData,
+  listingData,
   orderDetailData,
   exportType,
   OrderDetailStatic,
@@ -67,13 +67,44 @@ const ExcelExport = ({
         });
 
         // loop through data and add each one to worksheet
-        orderListData?.forEach((singleData) => {
+        listingData?.forEach((singleData) => {
           workSheet.addRow(singleData);
         });
 
         break;
       }
+      case "ProductListing": {
+        // workSheet.mergeCells("A1:M1");
+        // workSheet
+        //   .getRow(1)
+        //   .getCell(
+        //     1
+        //   ).value = `Please follow the exact format MM/DD/YYYY for Discount Start and Discount Expiry & Do not update the category`;
+        // workSheet.getRow(1).getCell(1).font = {
+        //   bold: true,
+        //   color: { argb: "DB154D" },
+        //   size: 18,
+        // };
+        // workSheet.getRow(1).getCell(1).alignment = {
+        //   vertical: "middle",
+        //   horizontal: "center",
+        // };
 
+        workSheet.columns = tableData;
+        workSheet.getRow(1).font = { bold: true };
+        // loop through all of the columns and set the alignment with width.
+        workSheet.columns.forEach((column) => {
+          column.width = column.header!.length + 10;
+          column.alignment = { horizontal: "center" };
+        });
+
+        // loop through data and add each one to worksheet
+        listingData?.forEach((singleData) => {
+          workSheet.addRow(singleData);
+        });
+
+        break;
+      }
       case "OrderDetail": {
         workSheet.mergeCells("A1:M1");
         workSheet.mergeCells("A2:M2");
@@ -364,6 +395,20 @@ const ExcelExport = ({
           onClick={fileExport}
         >
           Export Orders
+        </CustomButton>
+      ) : exportType === "ProductListing" ? (
+        <CustomButton
+          variant={"contained"}
+          color={"secondary"}
+          sx={{
+            p: "12px 32px",
+            ml: "13px",
+            height: "44px",
+            width: "200px",
+          }}
+          onClick={fileExport}
+        >
+          Export Items Excel
         </CustomButton>
       ) : (
         <Stack
