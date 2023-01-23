@@ -77,14 +77,6 @@ const AddEditItem = ({
     { manual: true }
   );
 
-  // get single item API call (for edit item)
-  const [{}, singleItemAPICall] = useAxios(
-    {
-      method: "get",
-    },
-    { manual: true }
-  );
-
   // option sets API call
   const [{ data: allOptionSets }, optionSetsAPICall] = useAxios({
     url: "/get_option_sets",
@@ -263,51 +255,61 @@ const AddEditItem = ({
   };
 
   const handleAddEditItem = async () => {
-    if (!state.itemName) {
-      // also add check for min quantity >0 1 ====================++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    if (!state.itemCategory.label) {
+      dispatch({
+        type: "fieldError",
+        payload: { name: "itemCategoryField" },
+      });
+
+      return;
+    } else if (!state.itemName) {
       dispatch({
         type: "fieldError",
         payload: { name: "itemNameField" },
       });
 
       return;
+    } else if (!state.itemPrice) {
+      dispatch({
+        type: "fieldError",
+        payload: { name: "itemPriceField" },
+      });
+
+      return;
+    } else if (
+      state.itemMaximumDistance > canadaPostMaximumDistance.toString()
+    ) {
+      dispatch({
+        type: "fieldError",
+        payload: {
+          name: "itemMaximumDistanceField",
+          value: "Max distance: 10000",
+        },
+      });
+
+      return;
+    } else if (Number(state.itemMinimumQuantity) < 1) {
+      dispatch({
+        type: "fieldError",
+        payload: {
+          name: "itemMinimumQuantityField",
+          value: "Min quantity: 1",
+        },
+      });
+
+      return;
+    } else if (
+      (state.itemDiscountStart ? 1 : 0) ^ (state.itemDiscountExpiry ? 1 : 0)
+    ) {
+      dispatch({
+        type: "fieldError",
+        payload: {
+          name: "itemDiscountDateField",
+        },
+      });
+
+      return;
     }
-
-    // <>
-    // if (canadaPostMaximumDistance) {
-    // }
-
-    //========================================================================================
-
-    // if (selectedCategory === null) {
-    //   this.setState({ selectedCategoryError: "Category can't be empty" });
-    //   return false;
-    // } else if (itemName === "") {
-    //   this.setState({ itemNameError: "Item Name can't be empty" });
-    //   return false;
-    // } else if (itemPrice === "") {
-    //   this.setState({ itemPriceError: "Item Price can't be empty" });
-    //   return false;
-    // } else if (!/^\d+(\.\d{1,2})?$/.test(itemPrice)) {
-    //   this.setState({
-    //     itemPriceError: "Invalid Item Price Should be (xx.xx)",
-    //   });
-    //   return false;
-    // } else if (maxDistance >= maximumCandaPostDistance) {
-    //   this.setState({
-    //     maxDistanceError: "Maximum Distance is out of the range",
-    //   });
-    //   return false;
-    // } else if ((discountStart ? 1 : 0) ^ (discountExpiry ? 1 : 0)) {
-    //   this.setState({ discountDatesError: "Discount Dates are Must" });
-    //   return false;
-    // }
-
-    // return true;
-
-    //========================================================================================
-
-    // </>
 
     const addItemPayloadKeys = {
       // id for edit item otherwise it is empty string
@@ -328,9 +330,9 @@ const AddEditItem = ({
       product_code: state.itemProductCode.trim(),
       universal_product_code: state.itemUniversalProductCode.trim(),
       unit_price: state.itemUnitPrice,
-      carton_size: "", // required in api
+      carton_size: state.itemCartons,
       carton_price: "", // required in api
-      pallet_size: "", // required in api
+      pallet_size: state.itemPallets,
       pallet_price: state.itemPalletPrice,
       brand_id: state.itemBrand.value,
       option_sets: state.itemOptionSets
@@ -353,7 +355,7 @@ const AddEditItem = ({
       min_qty: state.itemMinimumQuantity,
       images: "", // required in api
       item_weight_with_unit:
-        `${state.itemWeight}${state.itemWeightUnit}`.trim(),
+        `${state.itemWeight}${state.itemWeightUnit.value}`.trim(),
       discount_expiry: state.itemDiscountExpiry,
       discount_start_at: state.itemDiscountStart,
       attribute_ids: "",
@@ -371,12 +373,12 @@ const AddEditItem = ({
     handleDrawerToggle();
     getProductApi();
 
-    if (state.editItem.editItemFlag) {
-      dispatch({
-        type: "clearState",
-        payload: {},
-      });
-    }
+    // if (state.editItem.editItemFlag) {
+    dispatch({
+      type: "clearState",
+      payload: {},
+    });
+    // }
   };
 
   return (
@@ -424,6 +426,8 @@ const AddEditItem = ({
               value={state.itemCategory}
               options={state.allCategories}
               handleChange={handleCategorySelection}
+              isError={state.fieldError.itemCategoryField === "" ? false : true}
+              helperText={state.fieldError.itemCategoryField}
             />
           </Grid>
         </Grid>
@@ -472,6 +476,8 @@ const AddEditItem = ({
                 type="number"
                 label="Item Price"
                 value={state.itemPrice}
+                error={state.fieldError.itemPriceField === "" ? false : true}
+                helperText={state.fieldError.itemPriceField}
                 onChange={(e) =>
                   dispatch({
                     type: "textField",

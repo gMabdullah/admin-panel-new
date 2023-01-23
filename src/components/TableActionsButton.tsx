@@ -106,24 +106,9 @@ const TableActionsButton = ({
     );
 
     // set value for weight unit dropdown
-    const selectedItemWeightUnit = weightUnits.forEach(
-      (unit: { value: string; label: string }) => {
-        if (
-          unit.value ===
-          (items[0].weight_unit.trim().length > 0 &&
-            items[0].weight_unit.trim().toLowerCase())
-        ) {
-          return {
-            value: unit.value,
-            label: unit.label,
-          };
-        } else {
-          return {
-            value: "",
-            label: "",
-          };
-        }
-      }
+    const selectedItemWeightUnit = weightUnits.filter(
+      (unit) =>
+        unit.value === items[0] && items[0].weight_unit.trim().toLowerCase()
     );
 
     dispatch({
@@ -183,7 +168,7 @@ const TableActionsButton = ({
           itemLongDescription: "",
 
           itemWeight: items[0].weight_value,
-          itemWeightUnit: selectedItemWeightUnit,
+          itemWeightUnit: selectedItemWeightUnit[0],
 
           itemPricePer: items[0].price_per,
           itemMinimumQuantity: items[0].min_qty,
