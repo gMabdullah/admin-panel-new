@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import { Autocomplete, Chip, TextField } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
@@ -42,19 +42,6 @@ const DropDownSearch = ({
   isMultiSelect,
 }: DropDownListTypeSearchType) => {
   const classes = useStyles();
-  // const [filteredOptions, setFilteredOptions] = useState<
-  //   DropDownListType[] | []
-  // >([]);
-
-  // useEffect(() => {
-  //   if (value.length > 0) {
-  //     const remainingOptions = value.forEach((item) => {
-  //       options.filter((option) => option.value !== item.value);
-  //     });
-
-  //     setFilteredOptions(remainingOptions);
-  //   }
-  // }, [value]);
 
   const renderTags = (tagValue: any, getTagProps: any) =>
     tagValue.map((option: DropDownListType, index: number) => (
@@ -75,13 +62,9 @@ const DropDownSearch = ({
         id="checkbox"
         value={value}
         options={options}
-        // isOptionEqualToValue={(option, value) => option.label === value.label}
+        isOptionEqualToValue={(option, value) => option.label === value.label}
         getOptionLabel={(option) => (option.label ? option.label : "")}
-        // inputValue={value}
-        // value={filteredOptions}
-        // defaultValue={[value[0]]}
-        // filterSelectedOptions
-        // getOptionSelected={(option, value) => option.label === value.label}
+        filterSelectedOptions
         disableCloseOnSelect={isMultiSelect ? true : false}
         onChange={handleChange}
         clearOnBlur={true}
