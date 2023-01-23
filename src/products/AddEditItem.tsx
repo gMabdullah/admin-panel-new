@@ -1,6 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
 
-import { Stack, Typography, Grid, Divider } from "@mui/material";
+import {
+  Stack,
+  Typography,
+  Grid,
+  Divider,
+  Autocomplete,
+  TextField,
+} from "@mui/material";
 
 import useAxios from "axios-hooks";
 
@@ -110,105 +117,19 @@ const AddEditItem = ({
     richEditor && splitShortLongDescription();
   }, []);
 
-  // useEffect(() => {
-  //   (async () => {
-  //     if (state.editItem.editItemFlag && state.editItem.editItemId) {
-  //       // debugger;
-
-  //       // get single item API call (for edit item)
-  //       const {
-  //         // data,
-  //         data: { items },
-  //       } = await singleItemAPICall({
-  //         url: `/product_details?business_id=${
-  //           getLocalStorage().eatout_id
-  //         }&item_id=${state.editItem.editItemId}&admin_id=${
-  //           getLocalStorage().user_id
-  //         }&source=biz`,
-  //       });
-
-  //       console.log("editItemId = ", state.editItem.editItemId);
-  //       console.log("data = ", items);
-
-  //       dispatch({
-  //         type: "populateEditItemValues",
-  //         payload: {
-  //           // name: "itemCategoryId",
-  //           value: {
-  //             // allCategories: [],
-  //             // allBrands: [],
-  //             // allItemsForGrouping: [],
-  //             // allOptionSets: [],
-  //             // itemCategoryId: "", /////////////////////////////////////////////////////////////////////////////
-
-  //             itemName: items[0].name,
-  //             itemPrice: items[0].price,
-  //             itemTax: items[0].tax,
-  //             // itemBrandId: "", ///////////////////////////////////////////////////////////////////////////
-  //             // itemOptionSets: "", ///////////////////////////////////////////////////////////////////////////
-
-  //             // itemToGroup: "", ////////////////////////////////////////////////////////////////////////////
-  //             itemSpecialNote: items[0].note,
-  //             itemAvailability: items[0].status, // 1 and 0 => item not available and available respectively
-  //             itemSpecialInstructions: items[0].allow_note, // 1 and 0 => allow and don't allow special instruction respectively
-  //             itemDisplay: items[0].display_source, // 0, 1, 2, and 3 => display (all , none, web, and pos) respectively
-
-  //             itemDiscount: items[0].discount_display,
-  //             itemDiscountStart: items[0].discount_start_at,
-  //             itemDiscountExpiry: items[0].discount_expiry,
-
-  //             itemDescription: items[0].desc, //////////////////having desc for editor also => check with editor
-  //             itemShortDescription: "",
-  //             itemLongDescription: "",
-
-  //             itemWeight: items[0].weight_value,
-  //             itemWeightUnit: items[0].weight_unit,
-
-  //             itemPricePer: items[0].price_per,
-  //             itemMinimumQuantity: items[0].min_qty,
-
-  //             itemCost: items[0].item_cost,
-
-  //             itemSku: items[0].sku,
-  //             itemUnitPrice: items[0].unit_price,
-  //             itemProductCode: items[0].product_code,
-  //             itemUniversalProductCode: items[0].upc,
-  //             itemPallets: items[0].pallet,
-  //             itemPalletPrice: items[0].pallet_price,
-  //             itemCartons: items[0].carton,
-  //             itemMaximumDistance: items[0].max_distance,
-  //             itemNutritions: items[0].nutritions, //////////////////////////////////////////////////////
-  //             // fieldError: {
-  //             //   itemCategoryField: "",
-  //             //   itemNameField: "",
-  //             //   itemPriceField: "",
-  //             //   itemDiscountDateField: "",
-  //             //   itemMaximumDistanceField: "",
-  //             // },
-  //             editItem: {
-  //               editItemFlag: true,
-  //               editItemId: items[0].menu_item_id,
-  //             },
-  //           },
-  //         },
-  //       });
-
-  //       // console.log("edit stateeeeeeeee = ", state);
-  //       richEditor && splitShortLongDescription();
-  //     }
-  //   })();
-  // }, [state.editItem]);
+  console.log("state = ", state);
 
   const handleCategorySelection = (
     event: React.ChangeEvent<{}>,
     value: any,
     name: string
   ) => {
+    console.log("category = ", value);
     dispatch({
       type: "dropDown",
       payload: {
-        name: "itemCategoryId",
-        value: value.value,
+        name: "itemCategory",
+        value: value,
       },
     });
   };
@@ -218,11 +139,13 @@ const AddEditItem = ({
     value: any,
     name: string
   ) => {
+    console.log("brand = ", value);
+
     dispatch({
       type: "dropDown",
       payload: {
-        name: "itemBrandId",
-        value: value.value,
+        name: "itemBrand",
+        value: value,
       },
     });
   };
@@ -233,8 +156,8 @@ const AddEditItem = ({
     name: string
   ) => {
     // console.log("dropdown event = ", event);
-    console.log("value = ", value);
-    console.log("state = ", state);
+    console.log("option sets = ", value);
+    // console.log("state = ", state);
 
     dispatch({
       type: "dropDown",
@@ -253,15 +176,18 @@ const AddEditItem = ({
     value: any,
     name: string
   ) => {
+    console.log("item To Group = ", value);
+
     dispatch({
       type: "dropDown",
       payload: {
         name: "itemToGroup",
-        value: value
-          .map((item: { value: string }) => {
-            return item.value;
-          })
-          .join(),
+        value: value,
+        // value: value
+        //   .map((item: { value: string }) => {
+        //     return item.value;
+        //   })
+        //   .join(),
       },
     });
   };
@@ -410,7 +336,7 @@ const AddEditItem = ({
       // id for edit item otherwise it is empty string
       item_id: state.editItem.editItemId,
       eatout_id: getLocalStorage().eatout_id,
-      category_id: state.itemCategoryId,
+      category_id: state.itemCategory.value,
       name: toCapitalizeFirstLetter(state.itemName).trim(),
       description: richEditor
         ? addShortLongTags().split('"').join("'").replace(/\n/g, "")
@@ -429,9 +355,13 @@ const AddEditItem = ({
       carton_price: "", // required in api
       pallet_size: "", // required in api
       pallet_price: state.itemPalletPrice,
-      brand_id: state.itemBrandId,
+      brand_id: state.itemBrand.value,
       option_sets: state.itemOptionSets
-        ? JSON.stringify(state.itemOptionSets)
+        ? JSON.stringify(
+            state.itemOptionSets.map((option: any) => ({
+              id: option.value,
+            }))
+          )
         : JSON.stringify([]),
       nutritions: state.itemNutritions
         ? JSON.stringify(state.itemNutritions)
@@ -450,7 +380,9 @@ const AddEditItem = ({
       discount_expiry: state.itemDiscountExpiry,
       discount_start_at: state.itemDiscountStart,
       attribute_ids: "",
-      product_group_ids: state.itemToGroup,
+      product_group_ids: state.itemToGroup
+        .map((item: { value: string }) => item.value)
+        .join(),
       max_distance: state.itemMaximumDistance,
       item_cost: state.itemCost,
     };
@@ -516,12 +448,12 @@ const AddEditItem = ({
 
         <Grid container>
           <Grid item xs={12} sx={{ display: "flex", mb: "12px" }}>
-            {/* <DropDownSearch
+            <DropDownSearch
               label="Category"
+              value={state.itemCategory}
               options={state.allCategories}
-              // onChange={setSelectedCategory}
               handleChange={handleCategorySelection}
-            /> */}
+            />
           </Grid>
         </Grid>
 
@@ -597,37 +529,55 @@ const AddEditItem = ({
         <Grid container>
           <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
             <Grid item xs={6}>
-              {/* <DropDownSearch
+              <DropDownSearch
                 label="Brands"
-                value={{ label: "Pound (lb)", value: "lb" }}
+                value={state.itemBrand}
                 options={state.allBrands}
                 handleChange={handleBrandSelection}
-              /> */}
+              />
             </Grid>
           </Grid>
         </Grid>
 
         <Grid container>
           <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
-            {/* <DropDownSearch
+            <DropDownSearch
               label="Option Sets"
               value={state.itemOptionSets}
               options={state.allOptionSets}
               handleChange={handleOptionSetsSelection}
               isMultiSelect={true}
+            />
+
+            {/* <Autocomplete
+              multiple
+              id="tags-standard"
+              options={state.allOptionSets}
+              getOptionLabel={(option) => option.label}
+              defaultValue={state.itemOptionSets}
+              // filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="standard"
+                  label="Multiple values"
+                  placeholder="Favorites"
+                />
+              )}
             /> */}
           </Grid>
         </Grid>
 
         <Grid container>
           <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
-            {/* <DropDownSearch
+            <DropDownSearch
               label="Items to Group"
+              value={state.itemToGroup}
               options={state.allItemsForGrouping}
-              // onChange={setSelectedGroupedItem}
               handleChange={handleItemsToGroupSelection}
               isMultiSelect={true}
-            /> */}
+              disabled={state.allowItemsGrouping}
+            />
           </Grid>
         </Grid>
 

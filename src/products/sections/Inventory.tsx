@@ -11,7 +11,7 @@ import { weightUnits } from "../../constants";
 const Inventory = () => {
   const { state, dispatch } = useContext(ProductsContext);
 
-  console.log("inventory state = ", state);
+  // console.log("inventory state = ", state);
 
   const handleWeightUnitSelection = (
     event: React.ChangeEvent<{}>,

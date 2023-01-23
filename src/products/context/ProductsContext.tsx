@@ -18,13 +18,13 @@ interface State {
   allBrands: DropdownValue[];
   allItemsForGrouping: DropdownValue[];
   allOptionSets: DropdownValue[];
-  itemCategoryId: string;
+  itemCategory: DropdownValue;
   itemName: string;
   itemPrice: string;
   itemTax: string;
-  itemBrandId: string;
-  itemOptionSets: any;
-  itemToGroup: string;
+  itemBrand: DropdownValue;
+  itemOptionSets: DropdownValue[];
+  itemToGroup: DropdownValue[];
   itemSpecialNote: string;
   itemAvailability: string;
   itemSpecialInstructions: string;
@@ -54,6 +54,7 @@ interface State {
   itemNutritions: string | ItemDetailsResponseItemNutritions[];
   fieldError: FieldErrors;
   editItem: EditItem;
+  allowItemsGrouping: boolean;
 }
 
 const initialState: State = {
@@ -61,24 +62,21 @@ const initialState: State = {
   allBrands: [],
   allItemsForGrouping: [],
   allOptionSets: [],
-  itemCategoryId: "14650",
+  itemCategory: {
+    value: "",
+    label: "",
+  },
   itemName: "",
   itemPrice: "",
   itemTax: "",
-  itemBrandId: "",
-  itemOptionSets: "",
-  // itemOptionSets: [
-  //   {
-  //     value: "2123",
-  //     label: "Cutting Instructions B",
-  //   },
-  //   {
-  //     value: "3020",
-  //     label: "Beef Suqaar Cutting Instructions",
-  //   },
-  // ],
+  itemBrand: {
+    value: "",
+    label: "",
+  },
+  // itemOptionSets: "",
+  itemOptionSets: [],
 
-  itemToGroup: "",
+  itemToGroup: [],
   itemSpecialNote: "",
   itemAvailability: "0", // 1 and 0 => item not available and available respectively
   itemSpecialInstructions: "0", // 1 and 0 => allow and don't allow special instruction respectively
@@ -120,6 +118,7 @@ const initialState: State = {
     editItemFlag: false,
     editItemId: "",
   },
+  allowItemsGrouping: false,
 };
 
 export const ProductsContext = createContext<ProductsContextInterface>({
@@ -137,7 +136,7 @@ const reducer = (state: State, action: Action) => {
     case "editItem":
       return { ...state, [action.payload.name!]: action.payload.value };
     case "populateEditItemValues":
-      console.log("payload .value = ", action.payload.value);
+      // console.log("payload .value = ", action.payload.value);
 
       return { ...state, ...action.payload.value };
     case "fieldError":
@@ -163,16 +162,23 @@ const reducer = (state: State, action: Action) => {
     //   };
     case "clearState":
       return {
-        allCategories: [],
-        allBrands: [],
-        allItemsForGrouping: [],
-        allOptionSets: [],
-        itemCategoryId: "14650",
+        ...state,
+        // allCategories: [],
+        // allBrands: [],
+        // allItemsForGrouping: [],
+        // allOptionSets: [],
+        itemCategory: {
+          value: "",
+          label: "",
+        },
         itemName: "",
         itemPrice: "",
         itemTax: "",
-        itemBrandId: "",
-        itemOptionSets: "",
+        itemBrand: {
+          value: "",
+          label: "",
+        },
+        itemOptionSets: [],
         // itemOptionSets: [
         //   {
         //     value: "2123",
@@ -184,7 +190,7 @@ const reducer = (state: State, action: Action) => {
         //   },
         // ],
 
-        itemToGroup: "",
+        itemToGroup: [],
         itemSpecialNote: "",
         itemAvailability: "0", // 1 and 0 => item not available and available respectively
         itemSpecialInstructions: "0", // 1 and 0 => allow and don't allow special instruction respectively
@@ -226,6 +232,7 @@ const reducer = (state: State, action: Action) => {
           editItemFlag: false,
           editItemId: "",
         },
+        allowItemsGrouping: false,
       };
     default:
       return state;

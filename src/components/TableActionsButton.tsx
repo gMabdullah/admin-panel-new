@@ -88,8 +88,26 @@ const TableActionsButton = ({
       }&source=biz`,
     });
 
+    //removed the selected item from available options for product grouping
+    const availableProductsToGroup = state.allItemsForGrouping.filter(
+      (item) => item.value !== items[0].menu_item_id
+    );
+
+    // check item can either be grouped or not
+    if (items[0].is_grouped === true && items[0].is_parent === false) {
+      dispatch({
+        type: "editItem",
+        payload: { name: "allowItemsGrouping", value: true },
+      });
+    }
+
+    // filter the selected category
+    const selectedCategory = state.allCategories.filter(
+      (category) => category.value === items[0].menu_cat_id
+    );
+
     // console.log("editItemId = ", state.editItem.editItemId);
-    console.log("data = ", items);
+    // console.log("data = ", items);
 
     dispatch({
       type: "populateEditItemValues",
@@ -98,17 +116,46 @@ const TableActionsButton = ({
         value: {
           // allCategories: [],
           // allBrands: [],
-          // allItemsForGrouping: [],
+          allItemsForGrouping: availableProductsToGroup,
           // allOptionSets: [],
-          // itemCategoryId: "", /////////////////////////////////////////////////////////////////////////////
+          itemCategory:
+            selectedCategory.length === 0
+              ? {
+                  value: "",
+                  label: "",
+                }
+              : selectedCategory[0], /////////////////////////////////////////////////////////////////////////////
 
           itemName: items[0].name,
           itemPrice: items[0].price,
           itemTax: items[0].tax,
-          // itemBrandId: "", ///////////////////////////////////////////////////////////////////////////
-          // itemOptionSets: "", ///////////////////////////////////////////////////////////////////////////
 
-          // itemToGroup: "", ////////////////////////////////////////////////////////////////////////////
+          itemBrand: items[0].item_brand[0].brand_name
+            ? {
+                value: items[0].item_brand[0].brand_id,
+                label: items[0].item_brand[0].brand_name,
+              }
+            : {
+                value: "",
+                label: "",
+              }, ///////////////////////////////////////////////////////////////////////////
+
+          itemOptionSets: items[0].options.map(
+            (option: { id: string; name: string }) => ({
+              value: option.id,
+              label: option.name,
+            })
+          ), ////////////////////////////////////////
+
+          itemToGroup: items[0].grouped_products.map(
+            (product: { product_id: string; sku: string; name: string }) => ({
+              value: product.product_id,
+              label: product.sku
+                ? product.name + " (" + product.sku + ")"
+                : product.name,
+            })
+          ), //////////////////////////////////////////////////////////////////////////
+
           itemSpecialNote: items[0].note,
           itemAvailability: items[0].status, // 1 and 0 => item not available and available respectively
           itemSpecialInstructions: items[0].allow_note, // 1 and 0 => allow and don't allow special instruction respectively
@@ -176,7 +223,7 @@ const TableActionsButton = ({
     // open the add/edit item drawer
     handleDrawerToggle();
 
-    console.log("edit product func = ", state.editItem);
+    // console.log("edit product func = ", state.editItem);
   };
 
   const handleClose = () => setAnchorEl(null);
