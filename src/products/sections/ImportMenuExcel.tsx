@@ -5,7 +5,8 @@ import { makeStyles } from "@mui/styles";
 import CustomButton from 'components/CustomButton';
 
 import * as XLSX from 'xlsx';
-import { capitalizeFLetter } from 'orders/HelperFunctions';
+import { capitalizeFLetter, getLocalStorage } from 'orders/HelperFunctions';
+import useAxios from 'axios-hooks';
 
 
 const useStyles = makeStyles({
@@ -52,112 +53,195 @@ const ImportMenuExcel=()=> {
   const [items, setItems] = useState([]);
   const [validationError, setValidationError] = useState(false);
   const [rowData,setRowData] =useState(null)
-  const handleUpload = (e:any) => {
-    debugger;
-    setItems([]);
-    setValidationError(false);
-    let list=[];
- 
+  const [bulkUploadModal,setBulkUploadModal]=useState<boolean>(true)
+  const { eatout_id, user_id } = getLocalStorage();
+  const toggleBulkUploadModal = () => {
+    setBulkUploadModal((prevState) => !prevState);
+};
+
+  const payload = () => {
+    const formData = new FormData();
+
+    formData.append("eatout_id", eatout_id);
+    formData.append("admin_id", user_id);
+    formData.append("menu", JSON.stringify(rowData));
+    formData.append("source", `biz`);
+    return formData;
+  };
+  const [{ data, loading, error }, addProductBulk] = useAxios(
+    { url: `/bulk_upload_menu`, method: "post" },
+    { manual: true }
+  );
+     const callBulkApi =()=>{
+      addProductBulk({
+        data:payload()
+      })
+     }
+    const handleUpload = async (e:any) => {
       debugger;
-      let reader=new FileReader();
-    //  reader.readAsArrayBuffer(e.target.files[0]);
-debugger;
-      reader.onload = (e:any) => {
-        debugger
-        let data = e.target.result;
-        debugger
-        let readedData = XLSX.read(data, { type: "binary" });
-        debugger;
-        const wsname = readedData.SheetNames[0];
-        const wb = readedData.Sheets[wsname];
-        // /* Convert array to json*/
-        let rows:any = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {
-          header: 1,
-        });
-        rows = rows.filter(
-          (row:any) => row.length > 0 && row && row[0] !== undefined
-        );
-        debugger;
-        const headerIndex = 1;
-        for (let i = headerIndex; i < rows.length; i++) {
-          for (let j = 0; j < rows[headerIndex].length; j++) {
-            if (rows[i][j] === null) rows[i][j] = "";
+      setItems([]);
+      setValidationError(false);
+      let list=[];
   
-            if(j === 0 && i >= 2) {
-              rows[i][j] = capitalizeFLetter(rows[i][j]);
-            }
-  
-            if(j === 1 && i >= 2) {
-              rows[i][j] = capitalizeFLetter(rows[i][j]);
-            }
-            
-            if (j == 2) {
-              if (isFloat(rows[i][j]) == true) {
-                rows[i][j] = parseFloat(rows[i][j]).toFixed(2);
+        debugger;
+        let reader=new FileReader();
+        if(!reader) return
+    reader.readAsArrayBuffer(e.target.files[0]);
+  debugger;
+  console.log(" reader.onload", reader.onload)
+
+
+
+        reader.onload = async (e:any) => {
+          debugger
+         
+          if(reader.result instanceof ArrayBuffer){
+            const data = new Uint8Array(reader.result as ArrayBuffer);
+             let wb = XLSX.read(data, { type: "array" });
+             let rows:any = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {
+              header: 1,
+            });
+            rows = rows.filter(
+              (row:any) => row.length > 0 && row && row[0] !== undefined
+            );
+            debugger;
+            const headerIndex = 1;
+            for (let i = headerIndex; i < rows.length; i++) {
+              for (let j = 0; j < rows[headerIndex].length; j++) {
+                if (rows[i][j] === null) rows[i][j] = "";
+      
+                if(j === 0 && i >= 2) {
+                  rows[i][j] = capitalizeFLetter(rows[i][j]);
+                }
+      
+                if(j === 1 && i >= 2) {
+                  rows[i][j] = capitalizeFLetter(rows[i][j]);
+                }
+                
+                if (j == 2) {
+                  if (isFloat(rows[i][j]) == true) {
+                    rows[i][j] = parseFloat(rows[i][j]).toFixed(2);
+                  }
+                }
+                if (rows[i][j] === undefined) {
+                  rows[i][j] = "";
+                }
               }
+            }        
+              // SWAPPING - swap Discount Start to end of the row and their content in all rows accordingly 
+          let setIndex=true;
+          for(let k = 1; k < rows.length; k++){
+            for(let l = 0; l < rows[k].length; l++){
+              // swap column headings
+              if(rows[k][l]==="Discount Start" && setIndex ){
+                rows[k].splice( [rows[k].length-1], 0, rows[k][l]); // swapping discount start index
+                rows[k].splice(l, 1);
+                setIndex=false
+              }
+              // swap column content
+              if(k >= 2 && l===7){
+                rows[k].splice( [rows[k].length-1], 0, rows[k][l])
+                rows[k].splice(l, 1);
+              }
+  
             }
-            if (rows[i][j] === undefined) {
-              rows[i][j] = "";
-            }
           }
-        }        
-           // SWAPPING - swap Discount Start to end of the row and their content in all rows accordingly 
-      let setIndex=true;
-      for(let k = 1; k < rows.length; k++){
-        for(let l = 0; l < rows[k].length; l++){
-          // swap column headings
-          if(rows[k][l]==="Discount Start" && setIndex ){
-            rows[k].splice( [rows[k].length-1], 0, rows[k][l]); // swapping discount start index
-            rows[k].splice(l, 1);
-            setIndex=false
+        if(rows.length > 0){
+          debugger;
+         setRowData(rows)
+       const response= await  addProductBulk()
+       console.log("response",response)
+            }    
+          }else{
+            console.log("The reader.result is not a valid ArrayBuffer")
           }
-          // swap column content
-          if(k >= 2 && l===7){
-            rows[k].splice( [rows[k].length-1], 0, rows[k][l])
-            rows[k].splice(l, 1);
-          }
+            
+  //     rows.map((item: string[], index: number) => {
+  //       let errorCount = 0;
+  //       if (index === 0 || index === 1) return true;
+  //       errorCount = item[0] === "" || item[2] === ""
+  //         ? errorCount + 1
+  //         : errorCount + 0;
+  // //      errorCount += this.isString(item[6]);
 
-        }
-      }
-    if(rows.length > 0){
-      debugger;
-      // setRowData(rows)
-         }    
-    console.log("rows",rows)
-          // check Discount Start and End Date
-          // if (discountExpiryDate && discountStart) {
-          //   if(discountExpiryDate >= discountStart){
-          //     errorCount += 0
-          //   }else {
-          //     errorCount += 1; 
-          //     toast.error("Discount Expiry should greater than Discount Start", toastOptions)
+  //       item[7] = getFormatTime(item[7]);
+  //       item[19] = getFormatTime(item[19]);
+
+  //     //  errorCount += this.isString(item[8]);
+        
+       
+  //       // 20       "Max Distance"
+  //       item[20] = item[20];
+  //       let discountExpiryDate = item[7];
+  //       let discountStart = item[19];
+  //       // check Discount Start and End Date
+  //       if (discountExpiryDate && discountStart) {
+  //         if(discountExpiryDate >= discountStart){
+  //           errorCount += 0
+  //         }else {
+  //           errorCount += 1; 
+
+  //         }
+  //       }
+  //       if ((!discountExpiryDate && discountStart) || (discountExpiryDate && !discountStart)) {
+  //         errorCount += 1;
+        
+  //       }
+  //       let price = item[3];
+  //       // Price validation
+  //       // check for price only if category and product name exist
+  //       if(
+  //         ((item[0] !== "") && (item[2] !== "")) && priceValidation(price))
+  //       {
+  //         errorCount += 1;
+         
+  //       }
+  //       if (errorCount === 0) return true;
+       
+  //     });
+        // const data = new Uint8Array(reader.result as ArrayBuffer).subarray(0, 4);
+
+
+        //   debugger
+        //  let wb = XLSX.read(data, { type: "array" });
+        //   debugger;
+        
+          // /* Convert array to json*/
+       
+            // check Discount Start and End Date
+            // if (discountExpiryDate && discountStart) {
+            //   if(discountExpiryDate >= discountStart){
+            //     errorCount += 0
+            //   }else {
+            //     errorCount += 1; 
+            //     toast.error("Discount Expiry should greater than Discount Start", toastOptions)
+            //   }
+            // }
+            // if ((!discountExpiryDate && discountStart) || (discountExpiryDate && !discountStart)) {
+            //   errorCount += 1;
+            //   toast.error("Discount Start and Expiry are Must", toastOptions);
+            // }
+            // Price validation
+            // check for price only if category and product name exist
+          //   if(
+          //     ((item[0] !== "") && (item[2] !== "")) && this.priceValidation(price))
+          //   {
+          //     errorCount += 1;
+          //     toast.error("Please enter a valid Price", toastOptions);
           //   }
-          // }
-          // if ((!discountExpiryDate && discountStart) || (discountExpiryDate && !discountStart)) {
-          //   errorCount += 1;
-          //   toast.error("Discount Start and Expiry are Must", toastOptions);
-          // }
-          // Price validation
-          // check for price only if category and product name exist
-        //   if(
-        //     ((item[0] !== "") && (item[2] !== "")) && this.priceValidation(price))
-        //   {
-        //     errorCount += 1;
-        //     toast.error("Please enter a valid Price", toastOptions);
-        //   }
-        //   if (errorCount === 0) return true;
-        //   document.getElementById("input").value = "";
-        //   this.setState({
-        //     data: [],
-        //     disabled: true,
-        //     validationError: true,
-        //   });
-        // });
-      };
+          //   if (errorCount === 0) return true;
+          //   document.getElementById("input").value = "";
+          //   this.setState({
+          //     data: [],
+          //     disabled: true,
+          //     validationError: true,
+          //   });
+          // });
+        };
 
-    
-    // perform the actual file upload logic here
-  }
+      
+      // perform the actual file upload logic here
+    }
 
     const classes = useStyles()
 
@@ -166,7 +250,8 @@ debugger;
     <CustomModal title={<Typography variant="h3">
           Import Menu Items(Excel File)
       </Typography>}
-      open={true}
+      open={bulkUploadModal}
+      onClose={toggleBulkUploadModal}
       paperStyle={{
           position: 'absolute',
           width: 745,
@@ -194,8 +279,7 @@ debugger;
           accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
           id="input"
           onChange={ (e) => {
-            
-            handleUpload(e.target.files)
+            handleUpload(e)
           }}
         />
                     
@@ -229,7 +313,7 @@ debugger;
                   backgroundColor: "#F5F5F5",
                 },
               }}
-           //   onClick={toggleCategoryModal}
+            onClick={toggleBulkUploadModal}
             >
               Cancel
             </CustomButton>
@@ -241,7 +325,7 @@ debugger;
                 ml: "12px",
               }}
               color={"secondary"}
-            //  onClick={addEditCategory}
+              onClick={callBulkApi}
               // disabled={
               //   errors.categoryError === "" && errors.slugError === ""
               //     ? false
