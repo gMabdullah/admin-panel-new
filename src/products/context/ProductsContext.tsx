@@ -38,7 +38,7 @@ interface State {
   itemShortDescription: string;
   itemLongDescription: string;
   itemWeight: string;
-  itemWeightUnit: string;
+  itemWeightUnit: DropdownValue;
   itemPricePer: string;
   itemMinimumQuantity: string;
 
@@ -73,7 +73,6 @@ const initialState: State = {
     value: "",
     label: "",
   },
-  // itemOptionSets: "",
   itemOptionSets: [],
 
   itemToGroup: [],
@@ -91,7 +90,10 @@ const initialState: State = {
   itemLongDescription: "",
 
   itemWeight: "",
-  itemWeightUnit: "",
+  itemWeightUnit: {
+    value: "",
+    label: "",
+  },
 
   itemPricePer: "",
   itemMinimumQuantity: "1",
@@ -136,15 +138,8 @@ const reducer = (state: State, action: Action) => {
     case "editItem":
       return { ...state, [action.payload.name!]: action.payload.value };
     case "populateEditItemValues":
-      // console.log("payload .value = ", action.payload.value);
-
       return { ...state, ...action.payload.value };
     case "fieldError":
-      // const { fieldError } = state;
-      // fieldError = {
-      //   ...fieldError,
-      //   [action.payload.name]: action.payload.value,
-      // };
       return {
         ...state,
         [action.type]: {
@@ -152,21 +147,9 @@ const reducer = (state: State, action: Action) => {
           [action.payload.name!]: "Required*",
         },
       };
-    // case "editItem":
-    //   return {
-    //     ...state,
-    //     [action.type]: {
-    //       ...state.editItem,
-    //       [action.payload.name]: action.payload.value,
-    //     },
-    //   };
     case "clearState":
       return {
         ...state,
-        // allCategories: [],
-        // allBrands: [],
-        // allItemsForGrouping: [],
-        // allOptionSets: [],
         itemCategory: {
           value: "",
           label: "",
@@ -179,17 +162,6 @@ const reducer = (state: State, action: Action) => {
           label: "",
         },
         itemOptionSets: [],
-        // itemOptionSets: [
-        //   {
-        //     value: "2123",
-        //     label: "Cutting Instructions B",
-        //   },
-        //   {
-        //     value: "3020",
-        //     label: "Beef Suqaar Cutting Instructions",
-        //   },
-        // ],
-
         itemToGroup: [],
         itemSpecialNote: "",
         itemAvailability: "0", // 1 and 0 => item not available and available respectively
@@ -205,7 +177,10 @@ const reducer = (state: State, action: Action) => {
         itemLongDescription: "",
 
         itemWeight: "",
-        itemWeightUnit: "",
+        itemWeightUnit: {
+          value: "",
+          label: "",
+        },
 
         itemPricePer: "",
         itemMinimumQuantity: "1",

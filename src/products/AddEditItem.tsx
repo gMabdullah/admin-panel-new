@@ -47,9 +47,6 @@ const AddEditItem = ({
 }: AddEditItemProps) => {
   const { richEditor } = useSelector((state) => state.main),
     [addCategoryModal, setAddCategoryModal] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<DropDownListType[]>(
-    []
-  );
   const { state, dispatch } = useContext(ProductsContext);
 
   // option sets API call payload
@@ -113,18 +110,14 @@ const AddEditItem = ({
   }, [allOptionSets]);
 
   useEffect(() => {
-    // console.log("edit stateeeeeeeee = ", state);
     richEditor && splitShortLongDescription();
   }, []);
-
-  console.log("state = ", state);
 
   const handleCategorySelection = (
     event: React.ChangeEvent<{}>,
     value: any,
     name: string
   ) => {
-    console.log("category = ", value);
     dispatch({
       type: "dropDown",
       payload: {
@@ -139,8 +132,6 @@ const AddEditItem = ({
     value: any,
     name: string
   ) => {
-    console.log("brand = ", value);
-
     dispatch({
       type: "dropDown",
       payload: {
@@ -155,18 +146,11 @@ const AddEditItem = ({
     value: any,
     name: string
   ) => {
-    // console.log("dropdown event = ", event);
-    console.log("option sets = ", value);
-    // console.log("state = ", state);
-
     dispatch({
       type: "dropDown",
       payload: {
         name: "itemOptionSets",
         value: value,
-        // value: value.map((option: any) => ({
-        //   id: option.value,
-        // })),
       },
     });
   };
@@ -176,18 +160,11 @@ const AddEditItem = ({
     value: any,
     name: string
   ) => {
-    console.log("item To Group = ", value);
-
     dispatch({
       type: "dropDown",
       payload: {
         name: "itemToGroup",
         value: value,
-        // value: value
-        //   .map((item: { value: string }) => {
-        //     return item.value;
-        //   })
-        //   .join(),
       },
     });
   };
@@ -397,13 +374,7 @@ const AddEditItem = ({
     if (state.editItem.editItemFlag) {
       dispatch({
         type: "clearState",
-        payload: {
-          //   name: "editItem",
-          //   value: {
-          //     editItemFlag: false,
-          //     editItemId: "",
-          //   },
-        },
+        payload: {},
       });
     }
   };
@@ -548,23 +519,6 @@ const AddEditItem = ({
               handleChange={handleOptionSetsSelection}
               isMultiSelect={true}
             />
-
-            {/* <Autocomplete
-              multiple
-              id="tags-standard"
-              options={state.allOptionSets}
-              getOptionLabel={(option) => option.label}
-              defaultValue={state.itemOptionSets}
-              // filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant="standard"
-                  label="Multiple values"
-                  placeholder="Favorites"
-                />
-              )}
-            /> */}
           </Grid>
         </Grid>
 

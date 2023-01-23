@@ -18,13 +18,13 @@ const Inventory = () => {
     value: any,
     name: string
   ) => {
-    // console.log("dropdown value = ", value);
+    console.log("weight unit value = ", value);
 
     dispatch({
       type: "dropDown",
       payload: {
         name: "itemWeightUnit",
-        value: value.value,
+        value: value,
       },
     });
   };
@@ -53,12 +53,12 @@ const Inventory = () => {
               />
             </Grid>
             <Grid item xs={6} sx={{ ml: "8px" }}>
-              {/* <DropDownSearch
+              <DropDownSearch
                 label="Weight Unit"
-                value={{ label: "Pound (lb)", value: "lb" }}
+                value={state.itemWeightUnit}
                 options={weightUnits}
                 handleChange={handleWeightUnitSelection}
-              /> */}
+              />
             </Grid>
           </Grid>
         </Grid>

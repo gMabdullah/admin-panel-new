@@ -9,6 +9,7 @@ import { AxiosPromise, AxiosRequestConfig } from "axios";
 
 import { ProductsContext } from "products/context/ProductsContext";
 import { getLocalStorage } from "orders/HelperFunctions";
+import { weightUnits } from "../constants";
 
 interface itemProps {
   row: any;
@@ -43,6 +44,7 @@ const TableActionsButton = ({
     formData.append("source", "biz");
     return formData;
   };
+
   // delete_menu_item
   const [{ error: deleteError, loading: deleteLoading }, productDeleteAPI] =
     useAxios(
@@ -73,9 +75,6 @@ const TableActionsButton = ({
   };
 
   const editProduct = async () => {
-    // if (state.editItem.editItemFlag && state.editItem.editItemId) {
-    // debugger;
-
     // get single item API call (for edit item)
     const {
       // data,
@@ -106,25 +105,39 @@ const TableActionsButton = ({
       (category) => category.value === items[0].menu_cat_id
     );
 
-    // console.log("editItemId = ", state.editItem.editItemId);
-    // console.log("data = ", items);
+    // set value for weight unit dropdown
+    const selectedItemWeightUnit = weightUnits.forEach(
+      (unit: { value: string; label: string }) => {
+        if (
+          unit.value ===
+          (items[0].weight_unit.trim().length > 0 &&
+            items[0].weight_unit.trim().toLowerCase())
+        ) {
+          return {
+            value: unit.value,
+            label: unit.label,
+          };
+        } else {
+          return {
+            value: "",
+            label: "",
+          };
+        }
+      }
+    );
 
     dispatch({
       type: "populateEditItemValues",
       payload: {
-        // name: "itemCategoryId",
         value: {
-          // allCategories: [],
-          // allBrands: [],
           allItemsForGrouping: availableProductsToGroup,
-          // allOptionSets: [],
           itemCategory:
             selectedCategory.length === 0
               ? {
                   value: "",
                   label: "",
                 }
-              : selectedCategory[0], /////////////////////////////////////////////////////////////////////////////
+              : selectedCategory[0],
 
           itemName: items[0].name,
           itemPrice: items[0].price,
@@ -138,14 +151,14 @@ const TableActionsButton = ({
             : {
                 value: "",
                 label: "",
-              }, ///////////////////////////////////////////////////////////////////////////
+              },
 
           itemOptionSets: items[0].options.map(
             (option: { id: string; name: string }) => ({
               value: option.id,
               label: option.name,
             })
-          ), ////////////////////////////////////////
+          ),
 
           itemToGroup: items[0].grouped_products.map(
             (product: { product_id: string; sku: string; name: string }) => ({
@@ -154,7 +167,7 @@ const TableActionsButton = ({
                 ? product.name + " (" + product.sku + ")"
                 : product.name,
             })
-          ), //////////////////////////////////////////////////////////////////////////
+          ),
 
           itemSpecialNote: items[0].note,
           itemAvailability: items[0].status, // 1 and 0 => item not available and available respectively
@@ -170,7 +183,7 @@ const TableActionsButton = ({
           itemLongDescription: "",
 
           itemWeight: items[0].weight_value,
-          itemWeightUnit: items[0].weight_unit,
+          itemWeightUnit: selectedItemWeightUnit,
 
           itemPricePer: items[0].price_per,
           itemMinimumQuantity: items[0].min_qty,
@@ -188,14 +201,8 @@ const TableActionsButton = ({
           itemNutritions:
             items[0].nutritions.length > 0
               ? JSON.parse(items[0].nutritions)
-              : "", /////////////////////////////////////////
-          // fieldError: {
-          //   itemCategoryField: "",
-          //   itemNameField: "",
-          //   itemPriceField: "",
-          //   itemDiscountDateField: "",
-          //   itemMaximumDistanceField: "",
-          // },
+              : "",
+
           editItem: {
             editItemFlag: true,
             editItemId: items[0].menu_item_id,
@@ -204,26 +211,11 @@ const TableActionsButton = ({
       },
     });
 
-    // }
-
-    // dispatch({
-    //   type: "editItem",
-    //   payload: {
-    //     name: "editItem",
-    //     value: {
-    //       editItemFlag: true,
-    //       editItemId: row.menu_item_id,
-    //     },
-    //   },
-    // });
-
     // close the action buttons popup
     handleClose();
 
     // open the add/edit item drawer
     handleDrawerToggle();
-
-    // console.log("edit product func = ", state.editItem);
   };
 
   const handleClose = () => setAnchorEl(null);
