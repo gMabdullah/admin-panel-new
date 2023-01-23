@@ -17,9 +17,9 @@ const CustomModal = ({
   buttonText,
   header,
   children,
-  footer,
   sx,
   onClose,
+  footer,
   open,
   onClick,
   handleCancelClick,
@@ -39,8 +39,9 @@ const CustomModal = ({
   paperStyle?: object;
   scrollbarStyle?: object;
 }) => {
+  debugger;
   return (
-    <Modal open={open} onClose={onClose}>
+    <Modal open={open} onClose={onClose} >
       <Paper sx={{ ...paperStyle }}>
         <Grid container>
           <Grid
@@ -67,6 +68,7 @@ const CustomModal = ({
         <PerfectScrollbar style={{ ...scrollbarStyle }}>
           {children}
         </PerfectScrollbar>
+      
       </Paper>
     </Modal>
   );

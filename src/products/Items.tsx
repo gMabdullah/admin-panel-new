@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, lazy, Suspense } from "react";
 
 import {
   Typography,
@@ -31,16 +31,18 @@ import { gridIconsCss } from "./Styles";
 import { useSelector } from "store";
 import { itemExportColumns, keysOfItems } from "../constants";
 import { ProductsProvider, ProductsContext } from "./context/ProductsContext";
-import { reorder, sortMenuItems } from "orders/HelperFunctions";
-import TdTextField from "components/TdTextField";
 import {
+  reorder,
   getLocalStorage,
   toCapitalizeFirstLetter,
 } from "orders/HelperFunctions";
+import TdTextField from "components/TdTextField";
+
 import { searchFieldStyle } from "business/Styles";
-import file from "../assets/files/downloadSample.xlsx";
 import DropDown from "components/DropDown";
+import file from "../assets/files/downloadSample.xlsx";
 import ExcelExport from "components/ExcelExport";
+import ImportMenuExcel from "./sections/ImportMenuExcel";
 
 let troggleSorting = true;
 const dropdownBulkAction = [
@@ -285,6 +287,18 @@ const Items = () => {
           getProductApi={getProductsAPI}
         />
       )}
+
+      <Suspense
+        fallback={
+          <div>
+            <Loader />
+          </div>
+        }
+      >
+        {importExportDropDownValue === "Import New Items" && (
+          <ImportMenuExcel />
+        )}
+      </Suspense>
       {(productLoading || sortLoading) && <Loader />}
 
       {importExportDropDownValue == "Export Items (.xlsx)" && (
