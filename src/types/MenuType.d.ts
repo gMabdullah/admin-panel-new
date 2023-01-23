@@ -30,6 +30,7 @@ interface FieldErrors {
   itemPriceField: string;
   itemDiscountDateField: string;
   itemMaximumDistanceField: string;
+  itemMinimumQuantityField: string;
 }
 
 interface EditItem {

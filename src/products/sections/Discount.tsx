@@ -50,6 +50,10 @@ const Discount = () => {
                 type="date"
                 label="Discount Start"
                 value={state.itemDiscountStart}
+                error={
+                  state.fieldError.itemDiscountDateField === "" ? false : true
+                }
+                helperText={state.fieldError.itemDiscountDateField}
                 disablePrevDates={true}
                 InputLabelProps={{
                   shrink: true,
@@ -68,6 +72,10 @@ const Discount = () => {
                 type="date"
                 label="Discount Expiry"
                 value={state.itemDiscountExpiry}
+                error={
+                  state.fieldError.itemDiscountDateField === "" ? false : true
+                }
+                helperText={state.fieldError.itemDiscountDateField}
                 disablePrevDates={true}
                 InputLabelProps={{
                   shrink: true,

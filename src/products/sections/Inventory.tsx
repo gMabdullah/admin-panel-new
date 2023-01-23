@@ -85,6 +85,12 @@ const Inventory = () => {
                 type="number"
                 label="Minimum Quantity"
                 value={state.itemMinimumQuantity}
+                error={
+                  state.fieldError.itemMinimumQuantityField === ""
+                    ? false
+                    : true
+                }
+                helperText={state.fieldError.itemMinimumQuantityField}
                 onChange={(e) =>
                   dispatch({
                     type: "textField",
@@ -233,6 +239,12 @@ const Inventory = () => {
                 type="number"
                 label="Maximum Distance"
                 value={state.itemMaximumDistance}
+                error={
+                  state.fieldError.itemMaximumDistanceField === ""
+                    ? false
+                    : true
+                }
+                helperText={state.fieldError.itemMaximumDistanceField}
                 onChange={(e) =>
                   dispatch({
                     type: "textField",

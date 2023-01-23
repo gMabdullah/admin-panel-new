@@ -115,6 +115,7 @@ const initialState: State = {
     itemPriceField: "",
     itemDiscountDateField: "",
     itemMaximumDistanceField: "",
+    itemMinimumQuantityField: "",
   },
   editItem: {
     editItemFlag: false,
@@ -136,7 +137,18 @@ const reducer = (state: State, action: Action) => {
     case "dropDown":
     case "editor":
     case "editItem":
-      return { ...state, [action.payload.name!]: action.payload.value };
+      return {
+        ...state,
+        fieldError: {
+          itemCategoryField: "",
+          itemNameField: "",
+          itemPriceField: "",
+          itemDiscountDateField: "",
+          itemMaximumDistanceField: "",
+          itemMinimumQuantityField: "",
+        },
+        [action.payload.name!]: action.payload.value,
+      };
     case "populateEditItemValues":
       return { ...state, ...action.payload.value };
     case "fieldError":
@@ -144,7 +156,9 @@ const reducer = (state: State, action: Action) => {
         ...state,
         [action.type]: {
           ...state.fieldError,
-          [action.payload.name!]: "Required*",
+          [action.payload.name!]: action.payload.value
+            ? action.payload.value
+            : "Required*",
         },
       };
     case "clearState":
@@ -202,6 +216,7 @@ const reducer = (state: State, action: Action) => {
           itemPriceField: "",
           itemDiscountDateField: "",
           itemMaximumDistanceField: "",
+          itemMinimumQuantityField: "",
         },
         editItem: {
           editItemFlag: false,
