@@ -77,14 +77,6 @@ const AddEditItem = ({
     { manual: true }
   );
 
-  // get single item API call (for edit item)
-  const [{}, singleItemAPICall] = useAxios(
-    {
-      method: "get",
-    },
-    { manual: true }
-  );
-
   // option sets API call
   const [{ data: allOptionSets }, optionSetsAPICall] = useAxios({
     url: "/get_option_sets",
@@ -263,18 +255,17 @@ const AddEditItem = ({
   };
 
   const handleAddEditItem = async () => {
-    if (!state.itemName) {
-      // also add check for min quantity >0 1 ====================++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-      dispatch({
-        type: "fieldError",
-        payload: { name: "itemNameField" },
-      });
-
-      return;
-    } else if (!state.itemCategory.label) {
+    if (!state.itemCategory.label) {
       dispatch({
         type: "fieldError",
         payload: { name: "itemCategoryField" },
+      });
+
+      return;
+    } else if (!state.itemName) {
+      dispatch({
+        type: "fieldError",
+        payload: { name: "itemNameField" },
       });
 
       return;
@@ -435,6 +426,8 @@ const AddEditItem = ({
               value={state.itemCategory}
               options={state.allCategories}
               handleChange={handleCategorySelection}
+              isError={state.fieldError.itemCategoryField === "" ? false : true}
+              helperText={state.fieldError.itemCategoryField}
             />
           </Grid>
         </Grid>

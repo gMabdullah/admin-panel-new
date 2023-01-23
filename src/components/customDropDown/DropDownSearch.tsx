@@ -16,7 +16,6 @@ interface DropDownListTypeSearchType {
   placeholder?: string;
   value: DropDownListType | DropDownListType[] | [];
   helperText?: string;
-  onChange?: (selected: DropDownListType[]) => void;
   options: DropDownListType[];
   disabled?: boolean;
   isMultiSelect?: boolean;
@@ -33,12 +32,10 @@ const DropDownSearch = ({
   label,
   placeholder,
   value,
-  onChange,
   helperText,
   options,
   handleChange,
   disabled,
-  name,
   isMultiSelect,
 }: DropDownListTypeSearchType) => {
   const classes = useStyles();
@@ -59,7 +56,7 @@ const DropDownSearch = ({
       <Autocomplete
         disabled={disabled}
         multiple={isMultiSelect}
-        id="checkbox"
+        id="dropdown-search"
         value={value}
         options={options}
         isOptionEqualToValue={(option, value) => option.label === value.label}
@@ -67,7 +64,6 @@ const DropDownSearch = ({
         filterSelectedOptions
         disableCloseOnSelect={isMultiSelect ? true : false}
         onChange={handleChange}
-        clearOnBlur={true}
         renderInput={(params) => (
           <TextField
             {...params}
