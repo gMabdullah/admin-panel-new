@@ -13,7 +13,7 @@ import {
 import AddTwoToneIcon from "@mui/icons-material/AddTwoTone";
 import SortByAlphaIcon from "@mui/icons-material/SortByAlpha";
 import FilterListIcon from "@mui/icons-material/FilterList";
-
+import { SelectChangeEvent } from "@mui/material/Select";
 import useAxios from "axios-hooks";
 import { debounce } from "lodash";
 import MainCard from "components/cards/MainCard";
@@ -39,10 +39,36 @@ import {
 } from "orders/HelperFunctions";
 import { searchFieldStyle } from "business/Styles";
 import file from "../assets/files/downloadSample.xlsx";
+import DropDown from "components/DropDown";
 import ExcelExport from "components/ExcelExport";
 
 let troggleSorting = true;
-
+const dropdownBulkAction = [
+  {
+    label: "Import/Export",
+    value: "import_export",
+  },
+  {
+    label: "Import New Items",
+    value: "Import New Items",
+  },
+  {
+    label: "Update Existing Item",
+    value: "Update Existing Item",
+  },
+  {
+    label: "Export items(.pdf)",
+    value: "Export items(.pdf)",
+  },
+  {
+    label: "Export Items (.xlsx)",
+    value: "Export Items (.xlsx)",
+  },
+  {
+    label: "Download Sample",
+    value: "Download Sample",
+  },
+];
 const Items = () => {
   const { eatout_id, user_id } = JSON.parse(
     localStorage.getItem("businessInfo")!
@@ -54,7 +80,8 @@ const Items = () => {
   const [applyFilters, setApplyFilters] = React.useState(false);
   const [toggleDrawer, setToggleDrawer] = useState(false);
   const [itemsCount, setItemsCount] = useState(100);
-
+  const [importExportDropDownValue, setImportExportDropDownValue] =
+    useState<string>("import_export");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(100);
   const [apiCallFlag, setApiCallFlag] = React.useState("");
@@ -204,7 +231,22 @@ const Items = () => {
   const handleDrawerToggle = () => {
     setToggleDrawer((state) => !state);
   };
-
+  const handleDropDownChange = (
+    event: SelectChangeEvent<typeof importExportDropDownValue>
+  ) => {
+    const {
+      target: { value },
+    } = event;
+    if (value == "Download Sample") {
+      let link = document.createElement("a");
+      link.setAttribute("download", "Menu-Sample.xlsx");
+      link.href = file;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    }
+    setImportExportDropDownValue(value);
+  };
   // Drag And Drop Shorting
   const shortDragDropItems = async (sortArray: any) => {
     // setLinearLoader(true);
@@ -245,6 +287,14 @@ const Items = () => {
       )}
       {(productLoading || sortLoading) && <Loader />}
 
+      {importExportDropDownValue == "Export Items (.xlsx)" && (
+        <ExcelExport
+          tableData={itemExportColumns}
+          listingData={productData.items}
+          exportType={"ProductListing"}
+        />
+      )}
+
       <MainCard
         title={
           <Grid container spacing={2}>
@@ -274,37 +324,28 @@ const Items = () => {
                 alignItems: "center",
               }}
             >
-              {productData && (
-                <ExcelExport
-                  tableData={itemExportColumns}
-                  listingData={productData.items}
-                  exportType={"ProductListing"}
+              <Stack direction={"row"} spacing={"1"} justifyContent={"center"}>
+                <DropDown
+                  options={dropdownBulkAction}
+                  value={importExportDropDownValue}
+                  handleChange={handleDropDownChange}
+                  defaultValue="import_export"
+                  isStaticDropDown={true}
                 />
-              )}
-              <CustomButton
-                variant={"contained"}
-                color={"secondary"}
-                startIcon={<AddTwoToneIcon />}
-                sx={{
-                  p: "12px 22px",
-                  height: "44px",
-                  width: "138px",
-                }}
-                onClick={handleDrawerToggle}
-
-                // onClick={() => {
-                //   let link = document.createElement("a");
-                //   link.setAttribute("download", "Menu-Sample.xlsx");
-                //   debugger;
-                //   link.href = file;
-                //   // require("../../src/assets/files/download-sample.xlsx");
-                //   document.body.appendChild(link);
-                //   link.click();
-                //   link.remove();
-                // }}
-              >
-                Add Item
-              </CustomButton>
+                <CustomButton
+                  variant={"contained"}
+                  color={"secondary"}
+                  startIcon={<AddTwoToneIcon />}
+                  sx={{
+                    p: "12px 22px",
+                    height: "44px",
+                    width: "138px",
+                  }}
+                  onClick={handleDrawerToggle}
+                >
+                  Add Item
+                </CustomButton>
+              </Stack>
             </Grid>
           </Grid>
         } // MainCard opening tag closed here
@@ -353,13 +394,13 @@ const Items = () => {
                   color: "#212121",
                 }}
               >
-                {`${rowsPerPage} Item(s)`}
+                {`${itemsCount} Item(s)`}
               </Typography>
             </Grid>
           )}
         </Grid>
         <Box sx={{ width: "100%", overflow: "hidden" }}>
-          {productData === undefined || productLoading || sortLoading ? (
+          {productData === undefined || productLoading ? (
             <OrderListingSkeleton />
           ) : (
             <>

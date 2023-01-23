@@ -8,6 +8,7 @@ import LibraryBooksTwoToneIcon from "@mui/icons-material/LibraryBooksTwoTone";
 import CustomButton from "components/CustomButton";
 
 import { AnyObject } from "immer/dist/internal";
+import { useEffect } from "react";
 
 const useStyles = makeStyles(() => ({
   libraryBookIcon: {
@@ -45,6 +46,12 @@ const ExcelExport = ({
   OrderDetailStatic,
 }: ExcelExportPropsType) => {
   const classes = useStyles();
+
+  useEffect(() => {
+    if (exportType == "ProductListing") {
+      fileExport();
+    }
+  }, [exportType]);
 
   const fileExport = async () => {
     const { eatout_name } = JSON.parse(localStorage.getItem("businessInfo")!);
@@ -382,7 +389,8 @@ const ExcelExport = ({
 
   return (
     <>
-      {exportType === "OrdersList" ? (
+      {/* Return orders Listing export Button  UI */}
+      {exportType === "OrdersList" && (
         <CustomButton
           variant={"contained"}
           color={"secondary"}
@@ -396,21 +404,10 @@ const ExcelExport = ({
         >
           Export Orders
         </CustomButton>
-      ) : exportType === "ProductListing" ? (
-        <CustomButton
-          variant={"contained"}
-          color={"secondary"}
-          sx={{
-            p: "12px 32px",
-            ml: "13px",
-            height: "44px",
-            width: "200px",
-          }}
-          onClick={fileExport}
-        >
-          Export Items Excel
-        </CustomButton>
-      ) : (
+      )}
+
+      {/* Return order details icon button UI */}
+      {exportType === "OrderDetail" && (
         <Stack
           direction="row"
           spacing={1}
