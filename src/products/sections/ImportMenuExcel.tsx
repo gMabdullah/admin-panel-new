@@ -3,9 +3,10 @@ import {  Box, Grid, Typography } from '@mui/material'
 import CustomModal from 'components/CustomModal'
 import { makeStyles } from "@mui/styles";
 import CustomButton from 'components/CustomButton';
+import Notify from "components/Notify";
 
 import * as XLSX from 'xlsx';
-import { capitalizeFLetter, getLocalStorage } from 'orders/HelperFunctions';
+import { capitalizeFLetter, getFormatTime, getLocalStorage, isString, priceValidation } from 'orders/HelperFunctions';
 import useAxios from 'axios-hooks';
 
 
@@ -51,15 +52,23 @@ const isFloat=(n: number)=> {
 
 const ImportMenuExcel=()=> {
   const [items, setItems] = useState([]);
-  const [validationError, setValidationError] = useState(false);
   const [rowData,setRowData] =useState(null)
   const [bulkUploadModal,setBulkUploadModal]=useState<boolean>(true)
   const { eatout_id, user_id } = getLocalStorage();
+  const [notify, setNotify] = useState<boolean>(false);
+  const [itemMessage, setItemMessage] = useState("");
+  const [itemNotifyType, setItemNotifyType] = useState<
+    "success" | "info" | "warning" | "error"
+  >("info");
+
   const toggleBulkUploadModal = () => {
     setBulkUploadModal((prevState) => !prevState);
 };
+const closeNotify = () => setNotify(false);
 
   const payload = () => {
+    debugger;   
+
     const formData = new FormData();
 
     formData.append("eatout_id", eatout_id);
@@ -73,14 +82,17 @@ const ImportMenuExcel=()=> {
     { manual: true }
   );
      const callBulkApi =()=>{
+      debugger;
       addProductBulk({
         data:payload()
       })
      }
+ 
+
     const handleUpload = async (e:any) => {
       debugger;
       setItems([]);
-      setValidationError(false);
+      setNotify(false);
       let list=[];
   
         debugger;
@@ -100,7 +112,7 @@ const ImportMenuExcel=()=> {
              let wb = XLSX.read(data, { type: "array" });
              let rows:any = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {
               header: 1,
-            });
+            }); 
             rows = rows.filter(
               (row:any) => row.length > 0 && row && row[0] !== undefined
             );
@@ -146,6 +158,54 @@ const ImportMenuExcel=()=> {
   
             }
           }
+          rows.map((item: string[], index: number) => {
+            let errorCount = 0;
+            if (index === 0 || index === 1) return true;
+            errorCount = item[0] === "" || item[2] === ""
+              ? errorCount + 1
+              : errorCount + 0;
+            errorCount += isString(item[6]);
+    
+            item[7] = getFormatTime(item[7]);
+            item[19] = getFormatTime(item[19]);
+    
+            errorCount += isString(item[8]);
+            
+           
+            // 20       "Max Distance"
+            item[20] = item[20];
+            let discountExpiryDate = item[7];
+            let discountStart = item[19];
+            // check Discount Start and End Date
+            if (discountExpiryDate && discountStart) {
+              if(discountExpiryDate <= discountStart){
+                setItemMessage("Discount Expiry should greater than Discount Start");
+                setItemNotifyType("error");
+                setNotify(true);
+              }
+            }
+            if ((!discountExpiryDate && discountStart) || (discountExpiryDate && !discountStart)) {
+              setItemMessage("Discount Start and Expiry are Must");
+              setItemNotifyType("error");
+              setNotify(true);            }
+            let price = item[3];
+            // Price validation
+            // check for price only if category and product name exist
+            if(
+              ((item[0] !== "") && (item[2] !== "")) && (price))
+            {
+              setItemMessage("Please enter a valid Price");
+              setItemNotifyType("error");
+              setNotify(true);         
+            }
+         
+            // document.getElementById("input").value = "";
+            // this.setState({
+            //   data: [],
+            //   disabled: true,
+            //   validationError: true,
+            // });
+          });
         if(rows.length > 0){
           debugger;
          setRowData(rows)
@@ -156,87 +216,8 @@ const ImportMenuExcel=()=> {
             console.log("The reader.result is not a valid ArrayBuffer")
           }
             
-  //     rows.map((item: string[], index: number) => {
-  //       let errorCount = 0;
-  //       if (index === 0 || index === 1) return true;
-  //       errorCount = item[0] === "" || item[2] === ""
-  //         ? errorCount + 1
-  //         : errorCount + 0;
-  // //      errorCount += this.isString(item[6]);
-
-  //       item[7] = getFormatTime(item[7]);
-  //       item[19] = getFormatTime(item[19]);
-
-  //     //  errorCount += this.isString(item[8]);
-        
-       
-  //       // 20       "Max Distance"
-  //       item[20] = item[20];
-  //       let discountExpiryDate = item[7];
-  //       let discountStart = item[19];
-  //       // check Discount Start and End Date
-  //       if (discountExpiryDate && discountStart) {
-  //         if(discountExpiryDate >= discountStart){
-  //           errorCount += 0
-  //         }else {
-  //           errorCount += 1; 
-
-  //         }
-  //       }
-  //       if ((!discountExpiryDate && discountStart) || (discountExpiryDate && !discountStart)) {
-  //         errorCount += 1;
-        
-  //       }
-  //       let price = item[3];
-  //       // Price validation
-  //       // check for price only if category and product name exist
-  //       if(
-  //         ((item[0] !== "") && (item[2] !== "")) && priceValidation(price))
-  //       {
-  //         errorCount += 1;
-         
-  //       }
-  //       if (errorCount === 0) return true;
-       
-  //     });
-        // const data = new Uint8Array(reader.result as ArrayBuffer).subarray(0, 4);
-
-
-        //   debugger
-        //  let wb = XLSX.read(data, { type: "array" });
-        //   debugger;
-        
-          // /* Convert array to json*/
-       
-            // check Discount Start and End Date
-            // if (discountExpiryDate && discountStart) {
-            //   if(discountExpiryDate >= discountStart){
-            //     errorCount += 0
-            //   }else {
-            //     errorCount += 1; 
-            //     toast.error("Discount Expiry should greater than Discount Start", toastOptions)
-            //   }
-            // }
-            // if ((!discountExpiryDate && discountStart) || (discountExpiryDate && !discountStart)) {
-            //   errorCount += 1;
-            //   toast.error("Discount Start and Expiry are Must", toastOptions);
-            // }
-            // Price validation
-            // check for price only if category and product name exist
-          //   if(
-          //     ((item[0] !== "") && (item[2] !== "")) && this.priceValidation(price))
-          //   {
-          //     errorCount += 1;
-          //     toast.error("Please enter a valid Price", toastOptions);
-          //   }
-          //   if (errorCount === 0) return true;
-          //   document.getElementById("input").value = "";
-          //   this.setState({
-          //     data: [],
-          //     disabled: true,
-          //     validationError: true,
-          //   });
-          // });
+     
+  
         };
 
       
@@ -247,6 +228,14 @@ const ImportMenuExcel=()=> {
 
     debugger;
   return (
+    <> {notify && (
+      <Notify
+        message={itemMessage}
+        type={itemNotifyType}
+        notify={notify}
+        closeNotify={closeNotify}
+      />
+    )}
     <CustomModal title={<Typography variant="h3">
           Import Menu Items(Excel File)
       </Typography>}
@@ -337,8 +326,9 @@ const ImportMenuExcel=()=> {
           </Grid>
         </Grid>
           </CustomModal>
-
+          </>
   )
+
 }
 
 export default ImportMenuExcel

@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
       borderRadius: "58px !important",
     },
     "& .MuiList-root": {
-      paddind: "14px !important",
+      padding: "14px !important",
     },
     height: "fit-content",
     "& .MuiOutlinedInput-input": {
@@ -97,12 +97,12 @@ const useStyles = makeStyles((theme) => ({
       borderRadius: "8px !important",
     },
     "& .MuiList-root": {
-      paddind: "14px !important",
+      padding: "14px !important",
     },
    // height: "fit-content",
     "& .MuiOutlinedInput-input": {
       background: "none",
-      p: "11px 67.9px 11px 14.88px",
+      p: "11px 67.9px 11px 14.88px !important",
     },
     "& .MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input ": {
       borderRadius: "58px !important",
