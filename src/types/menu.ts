@@ -1,8 +1,6 @@
 // ==============================|| MENU TYPES  ||============================== //
 
 export type MenuProps = {
-    selectedItem: string[];
-    drawerOpen: boolean;
-    hideDatePicker:false
+  selectedItem: string[];
+  drawerOpen: boolean;
 };
-
