@@ -207,9 +207,6 @@ const AddEditItem = ({
         type: "editor",
         payload: { name: "itemLongDescription", value: itemDescription },
       });
-
-      // setLongDescription(itemDescription);
-      alert("item description in case of no short long tags");
     }
   }
 
