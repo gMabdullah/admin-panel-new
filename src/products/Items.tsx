@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext,lazy, Suspense } from "react";
+import React, { useState, useEffect, useContext, lazy, Suspense } from "react";
 
 import {
   Typography,
@@ -36,27 +36,35 @@ import TdTextField from "components/TdTextField";
 
 import { searchFieldStyle } from "business/Styles";
 import DropDown from "components/DropDown";
-const ImportMenuExcel = lazy(() => import('./sections/ImportMenuExcel'));
+const ImportMenuExcel = lazy(() => import("./sections/ImportMenuExcel"));
 
 let troggleSorting = true;
-const dropdownBulkAction =[{
-  label:"Import/Export",value:"import_export"
-},
-{
-  label:"Import New Items",value:"Import New Items"
-},
-{
-  label:"Update Existing Item",value:"Update Existing Item"
-},
-{
-label:"Export items(.pdf)",value:"Export items(.pdf)"
-},
-{
-label:"Export Items (.xlsx)" , value:"Export Items (.xlsx)"
-},
-{
-  label:"Download Sample",value:"Download Sample"
-}]
+const dropdownBulkAction = [
+  {
+    label: "Import/Export",
+    value: "import_export",
+  },
+  {
+    label: "Import New Items",
+    value: "Import New Items",
+  },
+  {
+    label: "Update Existing Item",
+    value: "Update Existing Item",
+  },
+  {
+    label: "Export items(.pdf)",
+    value: "Export items(.pdf)",
+  },
+  {
+    label: "Export Items (.xlsx)",
+    value: "Export Items (.xlsx)",
+  },
+  {
+    label: "Download Sample",
+    value: "Download Sample",
+  },
+];
 const Items = () => {
   const { eatout_id, user_id } = JSON.parse(
     localStorage.getItem("businessInfo")!
@@ -68,9 +76,10 @@ const Items = () => {
   const [applyFilters, setApplyFilters] = React.useState(false);
   const [toggleDrawer, setToggleDrawer] = useState(false);
   const [displayedComponent, setDisplayedComponent] = useState<string>("");
-  console.log("displayedComponent",displayedComponent)
+  console.log("displayedComponent", displayedComponent);
   const [itemsCount, setItemsCount] = useState(100);
-  const [importExportDropDownValue,setImportExportDropDownValue]=useState<string>("import_export")
+  const [importExportDropDownValue, setImportExportDropDownValue] =
+    useState<string>("import_export");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(100);
   const [apiCallFlag, setApiCallFlag] = React.useState("");
@@ -216,19 +225,20 @@ const Items = () => {
   const handleDrawerToggle = () => {
     setToggleDrawer((state) => !state);
   };
-const handleDropDownChange =(  event: SelectChangeEvent<typeof importExportDropDownValue>)=>{
-  const {
-    target: { value },
-  } = event;
-  debugger
-  setImportExportDropDownValue(value)
+  const handleDropDownChange = (
+    event: SelectChangeEvent<typeof importExportDropDownValue>
+  ) => {
+    const {
+      target: { value },
+    } = event;
+    setImportExportDropDownValue(value);
 
-  switch(value){
-    case "Import New Items":
-      setDisplayedComponent("importMenuExcel")
-      break
-  }
-}
+    switch (value) {
+      case "Import New Items":
+        setDisplayedComponent("importMenuExcel");
+        break;
+    }
+  };
   // Drag And Drop Shorting
   const shortDragDropItems = async (sortArray: any) => {
     // setLinearLoader(true);
@@ -267,9 +277,15 @@ const handleDropDownChange =(  event: SelectChangeEvent<typeof importExportDropD
           getProductApi={getProductsAPI}
         />
       )}
-    
-       <Suspense fallback={<div><Loader /></div>}>
-        {displayedComponent === "importMenuExcel" && <ImportMenuExcel/>}
+
+      <Suspense
+        fallback={
+          <div>
+            <Loader />
+          </div>
+        }
+      >
+        {displayedComponent === "importMenuExcel" && <ImportMenuExcel />}
       </Suspense>
       {(productLoading || sortLoading) && <Loader />}
 
@@ -303,34 +319,37 @@ const handleDropDownChange =(  event: SelectChangeEvent<typeof importExportDropD
               }}
             >
               <Stack direction={"row"} spacing={"1"} justifyContent={"center"}>
-
-                <DropDown      options={dropdownBulkAction} value={importExportDropDownValue} handleChange={handleDropDownChange}  defaultValue="import_export" isStaticDropDown={true}/>
-              <CustomButton
-                variant={"contained"}
-                color={"secondary"}
-                startIcon={<AddTwoToneIcon />}
-                sx={{
-                  p: "12px 22px",
-                  height: "44px",
-                  width: "138px",
-                }}
-                onClick={handleDrawerToggle}
-                // onClick={() => {
-                //   let link = document.createElement("a");
-                //   link.setAttribute("download", "Menu-Sample.xlsx");
-                //   debugger;
-                //   link.href = file;
-                //   // require("../../src/assets/files/download-sample.xlsx");
-                //   document.body.appendChild(link);
-                //   link.click();
-                //   link.remove();
-                // }}
-              >
-                Add Item
-              </CustomButton>
+                <DropDown
+                  options={dropdownBulkAction}
+                  value={importExportDropDownValue}
+                  handleChange={handleDropDownChange}
+                  defaultValue="import_export"
+                  isStaticDropDown={true}
+                />
+                <CustomButton
+                  variant={"contained"}
+                  color={"secondary"}
+                  startIcon={<AddTwoToneIcon />}
+                  sx={{
+                    p: "12px 22px",
+                    height: "44px",
+                    width: "138px",
+                  }}
+                  onClick={handleDrawerToggle}
+                  // onClick={() => {
+                  //   let link = document.createElement("a");
+                  //   link.setAttribute("download", "Menu-Sample.xlsx");
+                  //   debugger;
+                  //   link.href = file;
+                  //   // require("../../src/assets/files/download-sample.xlsx");
+                  //   document.body.appendChild(link);
+                  //   link.click();
+                  //   link.remove();
+                  // }}
+                >
+                  Add Item
+                </CustomButton>
               </Stack>
-
-             
             </Grid>
           </Grid>
         } // MainCard opening tag closed here

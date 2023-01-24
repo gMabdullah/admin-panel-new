@@ -70,8 +70,6 @@ const ImportMenuExcel = () => {
   const closeNotify = () => setNotify(false);
 
   const payload = () => {
-    debugger;
-
     const formData = new FormData();
 
     formData.append("eatout_id", eatout_id);
@@ -85,7 +83,6 @@ const ImportMenuExcel = () => {
     { manual: true }
   );
   const callBulkApi = () => {
-    debugger;
     addProductBulk({
       data: payload(),
     });
@@ -99,7 +96,6 @@ const ImportMenuExcel = () => {
     let reader = new FileReader();
     if (!reader) return;
     reader.readAsArrayBuffer(e.target.files[0]);
-    console.log(" reader.onload", reader.onload);
 
     reader.onload = async (e: any) => {
       if (reader.result instanceof ArrayBuffer) {
@@ -111,7 +107,6 @@ const ImportMenuExcel = () => {
         rows = rows.filter(
           (row: any) => row.length > 0 && row && row[0] !== undefined
         );
-        debugger;
         const headerIndex = 1;
         for (let i = headerIndex; i < rows.length; i++) {
           for (let j = 0; j < rows[headerIndex].length; j++) {
@@ -160,9 +155,7 @@ const ImportMenuExcel = () => {
           errorCount += isString(item[6]);
 
           item[7] = getFormatTime(item[7]);
-          debugger;
           item[19] = getFormatTime(item[19]);
-          debugger;
           errorCount += isString(item[8]);
 
           // 20       "Max Distance"
@@ -172,9 +165,7 @@ const ImportMenuExcel = () => {
           let discountStart = item[19];
           // check Discount Start and End Date
           if (discountExpiryDate && discountStart) {
-            debugger;
             if (discountExpiryDate <= discountStart) {
-              debugger;
               setItemMessage(
                 "Discount Expiry should greater than Discount Start"
               );
@@ -207,10 +198,8 @@ const ImportMenuExcel = () => {
           // });
         });
         if (rows.length > 0) {
-          debugger;
           setRowData(rows);
           const response = await addProductBulk();
-          console.log("response", response);
         }
       } else {
         console.log("The reader.result is not a valid ArrayBuffer");
@@ -222,7 +211,6 @@ const ImportMenuExcel = () => {
 
   const classes = useStyles();
 
-  debugger;
   return (
     <>
       {" "}
