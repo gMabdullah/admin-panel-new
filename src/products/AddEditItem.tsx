@@ -351,8 +351,9 @@ const AddEditItem = ({
       price_per: state.itemPricePer,
       min_qty: state.itemMinimumQuantity,
       images: "", // required in api
-      item_weight_with_unit:
-        `${state.itemWeight}${state.itemWeightUnit.value}`.trim(),
+      item_weight_with_unit: `${state.itemWeight}${
+        state.itemWeightUnit && state.itemWeightUnit.value
+      }`,
       discount_expiry: state.itemDiscountExpiry,
       discount_start_at: state.itemDiscountStart,
       attribute_ids: "",

@@ -415,7 +415,7 @@ const Items = () => {
           )}
         </Grid>
         <Box sx={{ width: "100%", overflow: "hidden" }}>
-          {productData === undefined || productLoading ? (
+          {productData === undefined ? (
             <OrderListingSkeleton />
           ) : (
             <>

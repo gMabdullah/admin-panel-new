@@ -1,27 +1,28 @@
 // types
-import { MenuProps } from 'types/menu';
-import { createSlice } from '@reduxjs/toolkit';
+import { MenuProps } from "types/menu";
+import { createSlice } from "@reduxjs/toolkit";
 
 // initial state
 const initialState: MenuProps = {
-    selectedItem: ['dashboard'],
-    drawerOpen: false
+  selectedItem: ["dashboard"],
+  drawerOpen: false,
+  hideDatePicker: false,
 };
 
 // ==============================|| SLICE - MENU ||============================== //
 
 const menu = createSlice({
-    name: 'menu',
-    initialState,
-    reducers: {
-        activeItem(state, action) {
-            state.selectedItem = action.payload;
-        },
+  name: "menu",
+  initialState,
+  reducers: {
+    activeItem(state, action) {
+      state.selectedItem = action.payload;
+    },
 
-        openDrawer(state, action) {
-            state.drawerOpen = action.payload;
-        }
-    }
+    openDrawer(state, action) {
+      state.drawerOpen = action.payload;
+    },
+  },
 });
 
 export default menu.reducer;
