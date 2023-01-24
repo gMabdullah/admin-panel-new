@@ -24,6 +24,8 @@ const Header = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const { drawerOpen } = useSelector((state) => state.menu);
+  const { showDatePicker } = useSelector((state) => state.main);  // Enable and Disable Date Picker
+
   const onChange = (date: any) => {
     const startDate = date[0];
     const endDate = date[1];
@@ -87,8 +89,11 @@ const Header = () => {
       </Box>
 
       <Box sx={{ flexGrow: 0.1 }} />
-      <CustomDateRangePicker onChange={onChange} />
+      {
+        showDatePicker && <CustomDateRangePicker onChange={onChange} />
 
+      }
+      
       <Box sx={{ flexGrow: 1 }} />
       {/* notification & profile */}
       <NotificationSection />

@@ -47,7 +47,11 @@ import {
   ordersType,
   TEZMART_BUSINESS_ID,
 } from "../../constants";
-import { setDate, setGlobalSettings } from "store/slices/Main";
+import {
+  setDate,
+  setGlobalSettings,
+  toggleDatePicker,
+} from "store/slices/Main";
 import OrderDetail from "./OrderDetail";
 import { useDispatch, useSelector } from "store";
 
@@ -76,6 +80,9 @@ const Orders = () => {
   let timeOut: NodeJS.Timeout;
   const classes = useStyles();
   const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(toggleDatePicker(true)); // To Show the Date Picker on the order
+  });
   const { eatout_id, user_id } = JSON.parse(
     localStorage.getItem("businessInfo")!
   );

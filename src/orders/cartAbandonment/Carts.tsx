@@ -24,7 +24,7 @@ import {
   cartListingHeaderStyle,
   cartListingTableStyle,
 } from "./Styles";
-import { setDate } from "store/slices/Main";
+import { setDate, toggleDatePicker } from "store/slices/Main";
 import { useDispatch, useSelector } from "store";
 import { GATEWAY_API_URL } from "config";
 
@@ -63,9 +63,12 @@ const useStyles = makeStyles(() => ({
 
 const Carts = () => {
   const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(toggleDatePicker(true)); // enable date picker
+  });
   const classes = useStyles();
   const { eatout_id } = JSON.parse(localStorage.getItem("businessInfo")!);
-  const { startDate, endDate, decimalPlaces, currency } = useSelector(
+  const { startDate, endDate, decimalPlaces } = useSelector(
     (state) => state.main
   );
 

@@ -28,9 +28,10 @@ import Loader from "components/Loader";
 
 import AddEditItem from "products/AddEditItem";
 import { gridIconsCss } from "./Styles";
-import { useSelector } from "store";
+import { useDispatch, useSelector } from "store";
 import { keysOfItems } from "../constants";
 import { ProductsProvider, ProductsContext } from "./context/ProductsContext";
+import { toggleDatePicker } from "../store/slices/Main";
 import { reorder, sortMenuItems } from "orders/HelperFunctions";
 import TdTextField from "components/TdTextField";
 import {
@@ -40,12 +41,16 @@ import {
 import { searchFieldStyle } from "business/Styles";
 import file from "../assets/files/downloadSample.xlsx";
 
-let troggleSorting = true;
+let toggleSorting = true;
 
 const Items = () => {
+  const dispatch = useDispatch();
   const { eatout_id, user_id } = JSON.parse(
     localStorage.getItem("businessInfo")!
   );
+  useEffect(() => {
+    dispatch(toggleDatePicker(false));
+  });
 
   const { selectedMenu, selectedBranch, selectedCategory, selectedBrand } =
     useSelector((state) => state.dropdown);
@@ -166,8 +171,8 @@ const Items = () => {
 
   const sortingItems = async () => {
     let sortItems;
-    if (troggleSorting) {
-      troggleSorting = false;
+    if (toggleSorting) {
+      toggleSorting = false;
       sortItems = items?.sort((a: any, b: any) => {
         if (a.name < b.name) return -1;
         if (b.name < a.name) return 1;
@@ -175,7 +180,7 @@ const Items = () => {
         return 0;
       });
     } else {
-      troggleSorting = true;
+      toggleSorting = true;
       sortItems = items?.sort((a, b) => {
         if (a.name > b.name) return -1;
         if (b.name > a.name) return 1;
@@ -280,16 +285,6 @@ const Items = () => {
                   width: "138px",
                 }}
                 onClick={handleDrawerToggle}
-                // onClick={() => {
-                //   let link = document.createElement("a");
-                //   link.setAttribute("download", "Menu-Sample.xlsx");
-                //   debugger;
-                //   link.href = file;
-                //   // require("../../src/assets/files/download-sample.xlsx");
-                //   document.body.appendChild(link);
-                //   link.click();
-                //   link.remove();
-                // }}
               >
                 Add Item
               </CustomButton>
