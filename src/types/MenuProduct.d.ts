@@ -33,6 +33,7 @@ interface TypeKeyOfItem {
   keysOfItems: {
     key: string;
     value: string;
+    selected: boolean;
     align?: "left" | "center" | "right" | "justify" | "inherit" | undefined;
     width?: string;
   }[];

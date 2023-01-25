@@ -40,6 +40,7 @@ import DropDown from "components/DropDown";
 import file from "../assets/files/downloadSample.xlsx";
 import ExcelExport from "components/ExcelExport";
 import ImportMenuExcel from "./sections/ImportMenuExcel";
+import Filters from "components/Filters";
 
 let toggleSorting = true;
 const dropdownBulkAction = [
@@ -92,6 +93,8 @@ const Items = () => {
   const [searchQueryItems, setSearchQueryItems] = useState<string>("");
   const [linearLoader, setLinearLoader] = useState<boolean>(false);
   const { state } = useContext(ProductsContext);
+  // const [filter, setFilter] = useState<SVGSVGElement | null>(null);
+  // const [filterToggle, setFitlerToggle] = useState(false);
 
   // API Call For Product //
   const [{ data: productData, loading: productLoading }, getProductsAPI] =
@@ -279,6 +282,12 @@ const Items = () => {
     setPage(0);
   };
 
+  // const openFilter = (event: React.MouseEvent<SVGSVGElement>) => {
+  //   // debugger;
+  //   // setFilter(event.currentTarget);
+  //   setFitlerToggle((prevState) => !prevState);
+  // };
+
   return (
     <ProductsProvider>
       {toggleDrawer && (
@@ -288,7 +297,13 @@ const Items = () => {
           getProductApi={getProductsAPI}
         />
       )}
-
+      {/* {filterToggle && (
+        <Filters
+          // filter={filter}
+          // filterToggle={filterToggle}
+          // setFitlerToggle={setFitlerToggle}
+        />
+      )} */}
       <Suspense
         fallback={
           <div>
@@ -390,11 +405,12 @@ const Items = () => {
                     <SortByAlphaIcon />
                   </IconButton>
                 </Stack>
-                <IconButton>
+                {/* <IconButton>
                   <Stack>
-                    <FilterListIcon />
+                    <FilterListIcon onClick={(event) => openFilter(event)} />
                   </Stack>
-                </IconButton>
+                </IconButton> */}
+                <Filters />
               </Stack>
             </Grid>
           </Grid>

@@ -55,14 +55,168 @@ export const IQBAL_BUSINESS_ID = 12092,
     { value: "1", label: "Canada Post" },
   ],
   keysOfItems: TypeKeyOfItem["keysOfItems"] = [
-    { key: "image", value: "Image", align: "left", width: "10%" },
-    { key: "name", value: "Item Name", align: "left", width: "30%" },
-    { key: "category", value: "Category", align: "left", width: "15%" },
-    { key: "price", value: "Price", align: "left", width: "10%" },
-    { key: "discount", value: "Discount", align: "right", width: "10%" },
-    { key: "tax", value: "Tax %", align: "right", width: "10%" },
-    { key: "status", value: "Status", align: "center", width: "10%" },
-    { key: "", value: "Actions", align: "center" },
+    {
+      key: "image",
+      value: "Image",
+      align: "left",
+      selected: true,
+      width: "10%",
+    },
+    {
+      key: "name",
+      value: "Item Name",
+      align: "left",
+      selected: true,
+      width: "30%",
+    },
+    {
+      key: "category",
+      value: "Category",
+      align: "left",
+      selected: true,
+      width: "15%",
+    },
+    {
+      key: "price",
+      value: "Price",
+      align: "left",
+      selected: true,
+      // width: "10%",
+    },
+    {
+      key: "discount",
+      value: "Discount",
+      align: "right",
+      selected: true,
+      // width: "10%",
+    },
+    {
+      key: "tax",
+      value: "Tax %",
+      align: "right",
+      selected: true,
+      // width: "10%",
+    },
+    {
+      key: "status",
+      value: "Status",
+      align: "center",
+      selected: true,
+      width: "10%",
+    },
+    {
+      key: "",
+      value: "Actions",
+      align: "center",
+      selected: true,
+      width: "10%",
+    },
+    {
+      key: "carton",
+      value: "Carton Size",
+      selected: false,
+      align: "right",
+    },
+    {
+      key: "pallet",
+      value: "Pallet Size",
+      selected: false,
+      align: "right",
+    },
+    {
+      key: "carton_price",
+      value: "Carton Price",
+      selected: false,
+      align: "right",
+    },
+    {
+      key: "pallet_price",
+      value: "Pallet Price",
+      selected: false,
+      align: "right",
+    },
+    {
+      key: "product_code",
+      value: "Product Code",
+      selected: false,
+      align: "right",
+    },
+    {
+      key: "upc",
+      value: "Universal Product Code",
+      selected: false,
+      align: "right",
+    },
+    {
+      key: "suggestions",
+      value: "Suggestions",
+      selected: false,
+      align: "left",
+    },
+    {
+      key: "unit_price",
+      value: "Unit price",
+      selected: false,
+      align: "right",
+    },
+    {
+      key: "item_weight",
+      value: "Item Weight",
+      selected: false,
+      align: "right",
+    },
+    {
+      key: "order_limit",
+      value: "Order Limit",
+      selected: false,
+      align: "right",
+    },
+    {
+      key: "inv_limit",
+      value: "Inventory Limit",
+      selected: false,
+      align: "right",
+    },
+    {
+      key: "price_per",
+      value: "Price Per",
+      selected: false,
+      align: "right",
+    },
+  ],
+  filtersMap = [
+    // Items radio button
+    {
+      key: "Items",
+      value: [
+        { label: "All", value: "0" },
+        { label: "With Images()", value: "1" },
+        { label: "Without Images()", value: "2" },
+      ],
+    },
+    // in stock
+    {
+      key: "Items Stock",
+      value:
+        // "Items Stock",
+        [
+          { label: "All", value: "0" },
+          { label: "In Stock()", value: "1" },
+          { label: "Out of Stock()", value: "2" },
+        ],
+    },
+    // visibility
+    {
+      key: "Visibility on Plateform",
+      value:
+        // "Visibility on Plateform",
+        [
+          { label: "All", value: "0" },
+          { label: "None ()", value: "1" },
+          { label: "Web ()", value: "2" },
+          { label: "Pos()", value: "2" },
+        ],
+    },
   ],
   // Product Export Columns
   itemExportColumns = [
