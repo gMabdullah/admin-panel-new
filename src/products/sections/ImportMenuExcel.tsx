@@ -55,7 +55,7 @@ const isFloat = (n: number) => {
 
 const ImportMenuExcel = () => {
   const [items, setItems] = useState([]);
-  const [rowData, setRowData] = useState(null);
+  const [rowData, setRowData] = useState([]);
   const [bulkUploadModal, setBulkUploadModal] = useState<boolean>(true);
   const { eatout_id, user_id } = getLocalStorage();
   const [notify, setNotify] = useState<boolean>(false);
@@ -150,6 +150,14 @@ const ImportMenuExcel = () => {
         rows.map((item: string[], index: number) => {
           let errorCount = 0;
           if (index === 0 || index === 1) return true;
+          if (item[0] === "" || item[2] === "") {
+            setItemMessage(`Data is missing on that line ${index + 3}`);
+            setItemNotifyType("error");
+            setNotify(true);
+            setRowData([]);
+            return;
+          }
+
           errorCount =
             item[0] === "" || item[2] === "" ? errorCount + 1 : errorCount + 0;
           errorCount += isString(item[6]);
@@ -171,6 +179,9 @@ const ImportMenuExcel = () => {
               );
               setItemNotifyType("error");
               setNotify(true);
+              setRowData([]);
+              rows = [];
+              return;
             }
           }
           if (
@@ -180,6 +191,9 @@ const ImportMenuExcel = () => {
             setItemMessage("Discount Start and Expiry are Must");
             setItemNotifyType("error");
             setNotify(true);
+            setRowData([]);
+            rows = [];
+            return false;
           }
           let price = item[3];
           // Price validation
@@ -188,21 +202,14 @@ const ImportMenuExcel = () => {
             setItemMessage("Please enter a valid Price");
             setItemNotifyType("error");
             setNotify(true);
+            setRowData([]);
+            return false;
           }
-
-          // document.getElementById("input").value = "";
-          // this.setState({
-          //   data: [],
-          //   disabled: true,
-          //   validationError: true,
-          // });
         });
         if (rows.length > 0) {
           setRowData(rows);
-          const response = await addProductBulk();
+          // const response = await addProductBulk();
         }
-      } else {
-        console.log("The reader.result is not a valid ArrayBuffer");
       }
     };
 
@@ -239,14 +246,6 @@ const ImportMenuExcel = () => {
         }}
       >
         <Box className={classes.box}>
-          {/* <Button  variant={"outlined"} color={"secondary"} startIcon={<CloudUploadIcon sx={{marginBottom:"2px"}}/>}
->
-                    <Typography>
-
-                    Choose Filess
-                    </Typography>  */}
-
-          {/* <input   type="file"  accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" onChange={handleUpload}/> */}
           <input
             type="file"
             accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
