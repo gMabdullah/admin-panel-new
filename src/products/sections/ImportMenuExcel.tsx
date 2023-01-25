@@ -3,9 +3,16 @@ import { Box, Grid, Typography } from "@mui/material";
 import CustomModal from "components/CustomModal";
 import { makeStyles } from "@mui/styles";
 import CustomButton from "components/CustomButton";
+import Notify from "components/Notify";
 
 import * as XLSX from "xlsx";
-import { capitalizeFLetter, getLocalStorage } from "orders/HelperFunctions";
+import {
+  capitalizeFLetter,
+  getFormatTime,
+  getLocalStorage,
+  isString,
+  priceValidation,
+} from "orders/HelperFunctions";
 import useAxios from "axios-hooks";
 
 const useStyles = makeStyles({
@@ -45,17 +52,28 @@ const useStyles = makeStyles({
 const isFloat = (n: number) => {
   return Number(n) === n && n % 1 !== 0;
 };
-
-const ImportMenuExcel = () => {
+interface menuExcelPropsType {
+  importType: string;
+  setImportExportDropDownValue: React.Dispatch<React.SetStateAction<string>>;
+}
+const ImportMenuExcel = ({
+  importType,
+  setImportExportDropDownValue,
+}: menuExcelPropsType) => {
   const [items, setItems] = useState([]);
   const [validationError, setValidationError] = useState(false);
-  const [rowData, setRowData] = useState(null);
+  const [rowData, setRowData] = useState([]);
   const [bulkUploadModal, setBulkUploadModal] = useState<boolean>(true);
   const { eatout_id, user_id } = getLocalStorage();
   const toggleBulkUploadModal = () => {
     setBulkUploadModal((prevState) => !prevState);
+    setImportExportDropDownValue("");
   };
-
+  const [notify, setNotify] = useState<boolean>(false);
+  const [itemMessage, setItemMessage] = useState("");
+  const [itemNotifyType, setItemNotifyType] = useState<
+    "success" | "info" | "warning" | "error"
+  >("info");
   const payload = () => {
     const formData = new FormData();
 
@@ -74,9 +92,11 @@ const ImportMenuExcel = () => {
       data: payload(),
     });
   };
-  const handleUpload = async (e: any) => {
+  ////////////// Import Menu Sheet /////////////
+  const handleImportUpload = async (e: any) => {
+    debugger;
     setItems([]);
-    setValidationError(false);
+    setNotify(false);
     let list = [];
 
     let reader = new FileReader();
@@ -133,189 +153,348 @@ const ImportMenuExcel = () => {
             }
           }
         }
+        rows.map((item: string[], index: number) => {
+          debugger;
+          let errorCount = 0;
+          if (index === 0 || index === 1) return true;
+          if (item[0] === "" || item[2] === "") {
+            debugger;
+            setItemMessage(`Data is missing on that line ${index + 3}`);
+            setItemNotifyType("error");
+            setNotify(true);
+            setRowData([]);
+            return;
+          }
+
+          errorCount =
+            item[0] === "" || item[2] === "" ? errorCount + 1 : errorCount + 0;
+          errorCount += isString(item[6]);
+
+          item[7] = getFormatTime(item[7]);
+          item[19] = getFormatTime(item[19]);
+          errorCount += isString(item[8]);
+
+          // 20       "Max Distance"
+          item[20] = item[20];
+          let discountExpiryDate = item[7];
+
+          let discountStart = item[19];
+          // check Discount Start and End Date
+          if (discountExpiryDate && discountStart) {
+            // debugger;
+            if (discountExpiryDate <= discountStart) {
+              setItemMessage(
+                "Discount Expiry should greater than Discount Start"
+              );
+              setItemNotifyType("error");
+              setNotify(true);
+              setRowData([]);
+              rows = [];
+              return;
+            }
+          }
+          if (
+            (!discountExpiryDate && discountStart) ||
+            (discountExpiryDate && !discountStart)
+          ) {
+            //debugger;
+            setItemMessage("Discount Start and Expiry are Must");
+            setItemNotifyType("error");
+            setNotify(true);
+            setRowData([]);
+            rows = [];
+            return false;
+          }
+          let price = item[3];
+          // Price validation
+          // check for price only if category and product name exist
+          if (item[0] !== "" && item[2] !== "" && priceValidation(price)) {
+            setItemMessage("Please enter a valid Price");
+            setItemNotifyType("error");
+            setNotify(true);
+            setRowData([]);
+            return false;
+          }
+
+          // document.getElementById("input").value = "";
+          // this.setState({
+          //   data: [],
+          //   disabled: true,
+          //   validationError: true,
+          // });
+        });
         if (rows.length > 0) {
           setRowData(rows);
-          const response = await addProductBulk();
+          // const response = await addProductBulk();
         }
       } else {
         console.log("The reader.result is not a valid ArrayBuffer");
       }
-
-      //     rows.map((item: string[], index: number) => {
-      //       let errorCount = 0;
-      //       if (index === 0 || index === 1) return true;
-      //       errorCount = item[0] === "" || item[2] === ""
-      //         ? errorCount + 1
-      //         : errorCount + 0;
-      // //      errorCount += this.isString(item[6]);
-
-      //       item[7] = getFormatTime(item[7]);
-      //       item[19] = getFormatTime(item[19]);
-
-      //     //  errorCount += this.isString(item[8]);
-
-      //       // 20       "Max Distance"
-      //       item[20] = item[20];
-      //       let discountExpiryDate = item[7];
-      //       let discountStart = item[19];
-      //       // check Discount Start and End Date
-      //       if (discountExpiryDate && discountStart) {
-      //         if(discountExpiryDate >= discountStart){
-      //           errorCount += 0
-      //         }else {
-      //           errorCount += 1;
-
-      //         }
-      //       }
-      //       if ((!discountExpiryDate && discountStart) || (discountExpiryDate && !discountStart)) {
-      //         errorCount += 1;
-
-      //       }
-      //       let price = item[3];
-      //       // Price validation
-      //       // check for price only if category and product name exist
-      //       if(
-      //         ((item[0] !== "") && (item[2] !== "")) && priceValidation(price))
-      //       {
-      //         errorCount += 1;
-
-      //       }
-      //       if (errorCount === 0) return true;
-
-      //     });
-      // const data = new Uint8Array(reader.result as ArrayBuffer).subarray(0, 4);
-
-      //   debugger
-      //  let wb = XLSX.read(data, { type: "array" });
-      //   debugger;
-
-      // /* Convert array to json*/
-
-      // check Discount Start and End Date
-      // if (discountExpiryDate && discountStart) {
-      //   if(discountExpiryDate >= discountStart){
-      //     errorCount += 0
-      //   }else {
-      //     errorCount += 1;
-      //     toast.error("Discount Expiry should greater than Discount Start", toastOptions)
-      //   }
-      // }
-      // if ((!discountExpiryDate && discountStart) || (discountExpiryDate && !discountStart)) {
-      //   errorCount += 1;
-      //   toast.error("Discount Start and Expiry are Must", toastOptions);
-      // }
-      // Price validation
-      // check for price only if category and product name exist
-      //   if(
-      //     ((item[0] !== "") && (item[2] !== "")) && this.priceValidation(price))
-      //   {
-      //     errorCount += 1;
-      //     toast.error("Please enter a valid Price", toastOptions);
-      //   }
-      //   if (errorCount === 0) return true;
-      //   document.getElementById("input").value = "";
-      //   this.setState({
-      //     data: [],
-      //     disabled: true,
-      //     validationError: true,
-      //   });
-      // });
     };
 
     // perform the actual file upload logic here
   };
+  ////////////// Update Menu Sheet ///////////////
+  const handleUpdateImport = (files: any) => {
+    debugger;
+    let list: any[] = [];
+    if (files.length === 1) {
+      debugger;
+      var reader = new FileReader();
+      reader.readAsBinaryString(files[0]);
+
+      reader.onload = (e) => {
+        debugger;
+        const data = e.target && e.target.result && e.target.result;
+        let readedData = XLSX.read(data, { type: "binary" });
+        const wsname = readedData.SheetNames[0];
+        const ws = readedData.Sheets[wsname];
+        const dataParse: (string | number)[][] = XLSX.utils.sheet_to_json(ws, {
+          header: 1,
+        });
+        let i = 3;
+        const headerIndex = 2;
+        dataParse.map((data, index) => {
+          debugger;
+          dataParse[headerIndex].map((column: any, index2: any) => {
+            debugger;
+            if (typeof dataParse[index][index2] === "undefined")
+              dataParse[index][index2] = "";
+          });
+          let itemsUpdateObject: any = {};
+          if (dataParse.length > 3) {
+            // if (
+            //   dataParse[headerIndex][0] !== "Product ID" ||
+            //   dataParse[headerIndex][1] !== "Category ID"
+            // ) {
+            //   setItemMessage("Product ID and Category ID are Required");
+            //   setItemNotifyType("error");
+            //   setNotify(true);
+            // }
+            while (i < dataParse.length) {
+              debugger;
+              itemsUpdateObject = {};
+              itemsUpdateObject.product_id = dataParse[i][0];
+              itemsUpdateObject.cat_id = dataParse[i][1];
+              dataParse[i].map((row, index) => {
+                dataParse[headerIndex][index] === "Brand"
+                  ? (itemsUpdateObject.item_brand = dataParse[i][index])
+                  : dataParse[headerIndex][index] === "Name"
+                  ? (itemsUpdateObject.name = dataParse[i][index])
+                  : dataParse[headerIndex][index] === "Description"
+                  ? (itemsUpdateObject.desc = dataParse[i][index])
+                  : dataParse[headerIndex][index] === "Price"
+                  ? (itemsUpdateObject.price = dataParse[i][index])
+                  : dataParse[headerIndex][index] === "Discount"
+                  ? (itemsUpdateObject.discount = dataParse[i][index])
+                  : dataParse[headerIndex][index] === "Discount Start"
+                  ? (itemsUpdateObject.discount_start_at = getFormatTime(
+                      dataParse[i][index]
+                    ))
+                  : dataParse[headerIndex][index] === "Discount Expiry"
+                  ? (itemsUpdateObject.discount_expiry = getFormatTime(
+                      dataParse[i][index]
+                    ))
+                  : dataParse[headerIndex][index] === "Tax%"
+                  ? (itemsUpdateObject.tax = dataParse[i][index])
+                  : dataParse[headerIndex][index] === "Weight"
+                  ? (itemsUpdateObject.weight = dataParse[i][index])
+                  : dataParse[headerIndex][index] === "SKU"
+                  ? (itemsUpdateObject.sku = dataParse[i][index])
+                  : dataParse[headerIndex][index] === "Status"
+                  ? (itemsUpdateObject.status = dataParse[i][index])
+                  : dataParse[headerIndex][index] === "Carton Size"
+                  ? (itemsUpdateObject.carton_size = dataParse[i][index])
+                  : dataParse[headerIndex][index] === "Pallet Size"
+                  ? (itemsUpdateObject.pallet_size = dataParse[i][index])
+                  : dataParse[headerIndex][index] === "Carton Price"
+                  ? (itemsUpdateObject.carton_price = dataParse[i][index])
+                  : dataParse[headerIndex][index] === "Pallet Price"
+                  ? (itemsUpdateObject.pallet_price = dataParse[i][index])
+                  : dataParse[headerIndex][index] === "Product Code"
+                  ? (itemsUpdateObject.product_code = dataParse[i][index])
+                  : dataParse[headerIndex][index] === "Universal Product Code"
+                  ? (itemsUpdateObject.upc = dataParse[i][index])
+                  : dataParse[headerIndex][index] === "Unit Price"
+                  ? (itemsUpdateObject.unit_price = dataParse[i][index])
+                  : dataParse[headerIndex][index] === "Order Limit"
+                  ? (itemsUpdateObject.order_limit = dataParse[i][index])
+                  : dataParse[headerIndex][index] === "Inventory Limit"
+                  ? (itemsUpdateObject.inv_limit = dataParse[i][index])
+                  : dataParse[headerIndex][index] === "Price Per"
+                  ? (itemsUpdateObject.price_per = dataParse[i][index])
+                  : dataParse[headerIndex][index] === "Minimum Quantity"
+                  ? (itemsUpdateObject.min_qty = dataParse[i][index])
+                  : dataParse[headerIndex][index] === "Maximum Distance" &&
+                    (itemsUpdateObject.max_distance =
+                      dataParse[i][index] === "" ? 0 : dataParse[i][index]);
+              });
+              if (/[a-zA-Z]/.test(itemsUpdateObject.tax)) {
+                itemsUpdateObject.tax = "";
+              }
+              // if (
+              //   itemsUpdateObject.product_id !== "" &&
+              //   itemsUpdateObject.cat_id !== ""
+              // ) {
+              //   setItemMessage("Product ID and Category ID are Required");
+              //   setItemNotifyType("error");
+              //   setNotify(true);
+              //   return false;
+              // }
+              // if (priceValidation(itemsUpdateObject.price)) {
+              //   setItemMessage("Please Enter Valid Price");
+              //   setItemNotifyType("error");
+              //   setNotify(true);
+              //   return false;
+              // }
+              // if (
+              //   itemsUpdateObject.discount_expiry &&
+              //   itemsUpdateObject.discount_start_at
+              // ) {
+              //   if (
+              //     getFormatTime(itemsUpdateObject.discount_expiry) >=
+              //     getFormatTime(itemsUpdateObject.discount_start_at)
+              //   ) {
+              //     setItemMessage(
+              //       "Discount Expiry should greater than Discount Start"
+              //     );
+              //     setItemNotifyType("error");
+              //     setNotify(true);
+              //     return false;
+              //   }
+              // }
+              // if (
+              //   (!itemsUpdateObject.discount_expiry &&
+              //     itemsUpdateObject.discount_start_at) ||
+              //   (itemsUpdateObject.discount_expiry &&
+              //     !itemsUpdateObject.discount_start_at)
+              // ) {
+              //   setItemMessage("Discount Start and Expiry are Must");
+              //   setItemNotifyType("error");
+              //   setNotify(true);
+              //   return false;
+              // }
+              list.push({ ...itemsUpdateObject });
+              debugger;
+              i++;
+            }
+            console.log("list", list);
+            debugger;
+          }
+        });
+      };
+    }
+  };
+
+  const closeNotify = () => setNotify(false);
 
   const classes = useStyles();
 
   return (
-    <CustomModal
-      title={
-        <Typography variant="h3">Import Menu Items(Excel File)</Typography>
-      }
-      open={bulkUploadModal}
-      onClose={toggleBulkUploadModal}
-      paperStyle={{
-        position: "absolute",
-        width: 745,
-        height: 350,
-        left: "calc(50% - 372.5px)",
-        top: "calc(50% - 175px)",
-        background: "#FFFFFF",
-        boxShadow: "0px 0px 36px rgba(0, 0, 0, 0.13)",
-      }}
-    >
-      <Box className={classes.box}>
-        {/* <Button  variant={"outlined"} color={"secondary"} startIcon={<CloudUploadIcon sx={{marginBottom:"2px"}}/>}
+    <>
+      {notify && (
+        <Notify
+          message={itemMessage}
+          type={itemNotifyType}
+          notify={notify}
+          closeNotify={closeNotify}
+        />
+      )}
+      <CustomModal
+        title={
+          <Typography variant="h3">
+            {importType === "Import New Items"
+              ? "Import Menu from Excel"
+              : "Import Bulk Update"}
+          </Typography>
+        }
+        open={bulkUploadModal}
+        onClose={toggleBulkUploadModal}
+        paperStyle={{
+          position: "absolute",
+          width: 745,
+          height: 350,
+          left: "calc(50% - 372.5px)",
+          top: "calc(50% - 175px)",
+          background: "#FFFFFF",
+          boxShadow: "0px 0px 36px rgba(0, 0, 0, 0.13)",
+        }}
+      >
+        <Box className={classes.box}>
+          {/* <Button  variant={"outlined"} color={"secondary"} startIcon={<CloudUploadIcon sx={{marginBottom:"2px"}}/>}
 >
                     <Typography>
 
                     Choose Filess
                     </Typography>  */}
 
-        {/* <input   type="file"  accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" onChange={handleUpload}/> */}
-        <input
-          type="file"
-          accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-          id="input"
-          onChange={(e) => {
-            handleUpload(e);
-          }}
-        />
+          {/* <input   type="file"  accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" onChange={handleUpload}/> */}
+          <input
+            type="file"
+            accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+            id="input"
+            onChange={(e) => {
+              importType === "Update Existing Item"
+                ? handleUpdateImport(e.target.files)
+                : handleImportUpload(e);
+            }}
+          />
 
-        {/* </Button> */}
-        {/* <Button variant="contained" component="label">
+          {/* </Button> */}
+          {/* <Button variant="contained" component="label">
         Upload
      
       </Button> */}
-        {/* <UploadFileButton onUpload={function (file: File): void {
+          {/* <UploadFileButton onUpload={function (file: File): void {
           throw new Error('Function not implemented.');
         } } /> */}
-      </Box>
-      <Grid container>
-        <Grid
-          item
-          xs={12}
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "end",
-            p: "30px !important",
-          }}
-        >
-          <CustomButton
-            variant={"contained"}
+        </Box>
+        <Grid container>
+          <Grid
+            item
+            xs={12}
             sx={{
-              p: "12px 44.5px",
-              background: "#F5F5F5",
-              color: "#212121",
-              "&:hover": {
-                backgroundColor: "#F5F5F5",
-              },
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "end",
+              p: "30px !important",
             }}
-            onClick={toggleBulkUploadModal}
           >
-            Cancel
-          </CustomButton>
+            <CustomButton
+              variant={"contained"}
+              sx={{
+                p: "12px 44.5px",
+                background: "#F5F5F5",
+                color: "#212121",
+                "&:hover": {
+                  backgroundColor: "#F5F5F5",
+                },
+              }}
+              onClick={toggleBulkUploadModal}
+            >
+              Cancel
+            </CustomButton>
 
-          <CustomButton
-            variant={"contained"}
-            sx={{
-              p: "12px 26px",
-              ml: "12px",
-            }}
-            color={"secondary"}
-            onClick={callBulkApi}
-            // disabled={
-            //   errors.categoryError === "" && errors.slugError === ""
-            //     ? false
-            //     : true
-            // }
-          >
-            Import Menu
-          </CustomButton>
+            <CustomButton
+              variant={"contained"}
+              sx={{
+                p: "12px 26px",
+                ml: "12px",
+              }}
+              color={"secondary"}
+              onClick={callBulkApi}
+              // disabled={
+              //   errors.categoryError === "" && errors.slugError === ""
+              //     ? false
+              //     : true
+              // }
+            >
+              Import Menu
+            </CustomButton>
+          </Grid>
         </Grid>
-      </Grid>
-    </CustomModal>
+      </CustomModal>
+    </>
   );
 };
 

@@ -85,6 +85,7 @@ const Items = () => {
   const [itemsCount, setItemsCount] = useState(100);
   const [importExportDropDownValue, setImportExportDropDownValue] =
     useState<string>("import_export");
+  console.log("importExportDropDownValue", importExportDropDownValue);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(100);
   const [apiCallFlag, setApiCallFlag] = React.useState("");
@@ -296,8 +297,12 @@ const Items = () => {
           </div>
         }
       >
-        {importExportDropDownValue === "Import New Items" && (
-          <ImportMenuExcel />
+        {(importExportDropDownValue === "Import New Items" ||
+          importExportDropDownValue === "Update Existing Item") && (
+          <ImportMenuExcel
+            importType={importExportDropDownValue}
+            setImportExportDropDownValue={setImportExportDropDownValue}
+          />
         )}
       </Suspense>
       {(productLoading || sortLoading) && <Loader />}

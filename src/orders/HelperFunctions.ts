@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export const convertMinutesInToHours = (mins: number) => {
   if (mins === 0) return;
 
@@ -224,4 +226,22 @@ export const sortMenuItems = (
       }
     });
   }
+};
+export const getFormatTime = (date: any) => {
+  return date !== "" && typeof date !== "string"
+    ? moment(new Date(Math.round((date - 25569) * 86400 * 1000))).format(
+        "YYYY-MM-DD"
+      )
+    : date !== "" && typeof date === "string"
+    ? moment(date).format("YYYY-MM-DD")
+    : "";
+};
+//if inputSring is not empty and typeof inputString is string than function return 1 else return 0
+export const isString = (inputString: string) => {
+  return inputString !== "" && typeof inputString === "string" ? 1 : 0;
+};
+export const priceValidation = (price: string) => {
+  return (
+    !/^[0-9.|()&^]*$/.test(price) || typeof price === "string" || price === ""
+  );
 };
