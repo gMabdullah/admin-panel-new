@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import moment from "moment";
 
-interface dateProps {
+export interface dateProps {
   startDate: string | null;
   endDate: string | null;
   globalSettings: null;
@@ -14,6 +14,7 @@ interface dateProps {
   richEditor: string;
   paymentSettings: StripeSettings;
   delivery_services: DeliveryServices;
+  productColumns: TypeKeyOfItem["keysOfItems"];
 }
 
 // initial state
@@ -40,6 +41,7 @@ const initialState: dateProps = {
     service_action: "",
     order_status: "",
   },
+  productColumns: [],
 };
 
 // ==============================|| SLICE - Date Picker ||============================== //
@@ -70,10 +72,30 @@ const main = createSlice({
       state.paymentSettings = payload.payment_settings.stripe_settings;
       state.delivery_services = payload.delivery_services;
     },
+    // product columns
+    setProductColumn(state, action) {
+      state.productColumns = action.payload;
+    },
+    toggleColumn(state, action) {
+      const key = action.payload.key;
+      const value = action.payload.value;
+
+      state.productColumns.forEach((column: any) => {
+        if (key == column.key) {
+          column.selected = value;
+        }
+      });
+    },
   },
 });
 
 export default main.reducer;
 
-export const { setDate, resetDates, setGlobalSettings, toggleDatePicker } =
-  main.actions;
+export const {
+  setDate,
+  resetDates,
+  setGlobalSettings,
+  toggleDatePicker,
+  setProductColumn,
+  toggleColumn,
+} = main.actions;

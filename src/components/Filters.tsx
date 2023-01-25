@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Popover from "@mui/material/Popover";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
@@ -9,6 +9,8 @@ import Divider from "@mui/material/Divider/Divider";
 import Grid from "@mui/material/Grid";
 import CustomizedSwitch from "./CustomSwitch";
 import { keysOfItems as columns, filtersMap } from "../constants";
+import { useDispatch, useSelector } from "store";
+import { setProductColumn, toggleColumn } from "store/slices/Main";
 // import { keysOfItems } from "constants";
 interface filtersProps {
   // filter: SVGSVGElement | undefined;
@@ -21,19 +23,30 @@ const Filters = ({}: // filter,
 filtersProps) => {
   const [filter, setFilter] = useState<SVGSVGElement | null>(null);
   const [selectedValue, setSelectedValue] = useState("0");
-
+  const dispatch = useDispatch();
+  const { productColumns } = useSelector((state) => state.main);
   const open = Boolean(filter);
   const id = open ? "simple-popover" : undefined;
 
-  const handleClick = (event: React.MouseEvent<SVGSVGElement>) => {
+  // useEffect(() => {
+  //   // send object to reducer
+  //   dispatch(setProductColumn(columns));
+  // }, []);
+
+  const handleClick = (event: React.MouseEvent<SVGSVGElement>) =>
     setFilter(event.currentTarget);
-    // setFitlerToggle((prevState) => !prevState);
-  };
-  const onChange = (event: { target: { name: string; value: string } }) => {
-    debugger;
+
+  const onChange = (event: { target: { name: string; value: string } }) =>
     setSelectedValue(event.target.value);
+
+  const handleSwitchChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    { key }: FiltersProps
+  ) => {
+    const value = event.target.checked;
+
+    dispatch(toggleColumn({ key, value }));
   };
-  console.log("filtersMap", filtersMap);
   return (
     <>
       <IconButton>
@@ -54,10 +67,18 @@ filtersProps) => {
           vertical: "bottom",
           horizontal: "left",
         }}
+        // sx={{
+        //   width: "70%",
+        // }}
       >
-        <Stack spacing={2} padding={4}>
-          {/* items */}
-          {filtersMap.map((item: any, index: number) => (
+        <Stack
+          spacing={2}
+          padding={4}
+          // sx={{
+          //   width: "50%",
+          // }}
+        >
+          {filtersMap.map((item: any) => (
             <>
               <Stack
                 display="flex"
@@ -68,13 +89,13 @@ filtersProps) => {
                 width="100%"
               >
                 <Typography width="25%" variant="body1">
-                  {item.key}
+                  {item.name}
                 </Typography>
                 <Stack width="75%">
                   <CustomRadioButton
-                    name="itemDisplay"
+                    name={item.key}
                     row={true}
-                    options={item.value}
+                    options={item.options}
                     value={selectedValue}
                     onChange={onChange}
                   />
@@ -86,8 +107,8 @@ filtersProps) => {
 
           <Typography variant="h3">Custom Columns</Typography>
           <Grid container>
-            {columns?.map((column: any, index: number) => (
-              <Grid item xs={4} sx={{ display: "flex" }}>
+            <Grid item xs={12}>
+              {productColumns?.map((column: any) => (
                 <CustomizedSwitch
                   checked={column.selected}
                   name={column.key}
@@ -98,10 +119,12 @@ filtersProps) => {
                       ml: "-6px",
                     },
                   }}
-                  // onChange={handleSwitchChange}
+                  onChange={(event) => handleSwitchChange(event, column)}
                 />
-              </Grid>
-            ))}
+              ))}
+            </Grid>
+            {/* <Grid item xs={4}></Grid>
+            <Grid item xs={4}></Grid> */}
           </Grid>
         </Stack>
       </Popover>

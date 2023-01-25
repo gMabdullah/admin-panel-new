@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Typography,
@@ -42,8 +42,10 @@ const DraggableTable = ({
   productLoading,
   handleDrawerToggle,
 }: TablePropsType) => {
-  const { decimalPlaces } = useSelector((state) => state.main);
-
+  debugger;
+  const { decimalPlaces, productColumns } = useSelector((state) => state.main);
+  console.log("drag and drop productColumns", productColumns);
+  // useEffect(() => {}, [productColumns]);
   const handleDragEnd = (result: any) => {
     const sortArray = [
       {
@@ -94,7 +96,7 @@ const DraggableTable = ({
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
-                {keysOfItems?.map((column: any) => (
+                {productColumns?.map((column: any) => (
                   <TableCell
                     key={column.key}
                     align={column.align}
@@ -124,7 +126,7 @@ const DraggableTable = ({
                               {...provided.dragHandleProps}
                               isDragging={snapshot.isDragging}
                             >
-                              {keysOfItems?.map((column) => (
+                              {productColumns?.map((column) => (
                                 <TableCell
                                   key={column.key}
                                   align={column.align}

@@ -38,6 +38,16 @@ interface TypeKeyOfItem {
     width?: string;
   }[];
 }
+interface FiltersProps {
+  name: string;
+  key: string;
+  options: Options[];
+}
+
+interface Options {
+  label: string;
+  value: string;
+}
 
 interface ProductResponseInfo {
   tax: string;

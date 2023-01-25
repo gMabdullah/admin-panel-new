@@ -64,7 +64,7 @@ export const IQBAL_BUSINESS_ID = 12092,
     },
     {
       key: "name",
-      value: "Item Name",
+      value: "Name",
       align: "left",
       selected: true,
       width: "30%",
@@ -86,7 +86,7 @@ export const IQBAL_BUSINESS_ID = 12092,
     {
       key: "discount",
       value: "Discount",
-      align: "right",
+      align: "center",
       selected: true,
       // width: "10%",
     },
@@ -184,38 +184,34 @@ export const IQBAL_BUSINESS_ID = 12092,
       align: "right",
     },
   ],
-  filtersMap = [
-    // Items radio button
+  filtersMap: FiltersProps[] = [
     {
-      key: "Items",
-      value: [
+      name: "Items",
+      key: "items",
+      options: [
         { label: "All", value: "0" },
         { label: "With Images()", value: "1" },
         { label: "Without Images()", value: "2" },
       ],
     },
-    // in stock
     {
-      key: "Items Stock",
-      value:
-        // "Items Stock",
-        [
-          { label: "All", value: "0" },
-          { label: "In Stock()", value: "1" },
-          { label: "Out of Stock()", value: "2" },
-        ],
+      name: "Items Stock",
+      key: "items_stock",
+      options: [
+        { label: "All", value: "0" },
+        { label: "In Stock()", value: "1" },
+        { label: "Out of Stock()", value: "2" },
+      ],
     },
-    // visibility
     {
-      key: "Visibility on Plateform",
-      value:
-        // "Visibility on Plateform",
-        [
-          { label: "All", value: "0" },
-          { label: "None ()", value: "1" },
-          { label: "Web ()", value: "2" },
-          { label: "Pos()", value: "2" },
-        ],
+      name: "Visibility on Plateform",
+      key: "visibility_on_plateform",
+      options: [
+        { label: "All", value: "0" },
+        { label: "None()", value: "1" },
+        { label: "Web()", value: "2" },
+        { label: "POS()", value: "3" },
+      ],
     },
   ],
   // Product Export Columns

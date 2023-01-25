@@ -31,7 +31,7 @@ import { gridIconsCss } from "./Styles";
 import { useDispatch, useSelector } from "store";
 import { itemExportColumns, keysOfItems } from "../constants";
 import { ProductsProvider, ProductsContext } from "./context/ProductsContext";
-import { toggleDatePicker } from "../store/slices/Main";
+import { setProductColumn, toggleDatePicker } from "../store/slices/Main";
 import { reorder, sortMenuItems } from "orders/HelperFunctions";
 import TdTextField from "components/TdTextField";
 
@@ -76,6 +76,7 @@ const Items = () => {
   );
   useEffect(() => {
     dispatch(toggleDatePicker(false));
+    dispatch(setProductColumn(keysOfItems));
   });
 
   const { selectedMenu, selectedBranch, selectedCategory, selectedBrand } =
