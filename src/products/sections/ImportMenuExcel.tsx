@@ -60,7 +60,7 @@ const ImportMenuExcel = ({
   importType,
   setImportExportDropDownValue,
 }: menuExcelPropsType) => {
-  const [items, setItems] = useState([]);
+  const [itemsUpdated, setUpdatedItems] = useState([]);
   const [validationError, setValidationError] = useState(false);
   const [rowData, setRowData] = useState([]);
   const [bulkUploadModal, setBulkUploadModal] = useState<boolean>(true);
@@ -87,15 +87,32 @@ const ImportMenuExcel = ({
     { url: `/bulk_upload_menu`, method: "post" },
     { manual: true }
   );
+  const UpdateItempayload = () => {
+    const formData = new FormData();
+
+    formData.append("admin_id", user_id);
+    formData.append("business_id", eatout_id);
+    formData.append("menu", JSON.stringify(itemsUpdated));
+    formData.append("source", `biz`);
+    return formData;
+  };
+  const [{}, updateProductBulk] = useAxios(
+    { url: `/products_bulk_edit`, method: "post" },
+    { manual: true }
+  );
   const callBulkApi = () => {
     addProductBulk({
       data: payload(),
     });
   };
+  const callUpdateDataApi = () => {
+    updateProductBulk({
+      data: UpdateItempayload(),
+    });
+  };
   ////////////// Import Menu Sheet /////////////
   const handleImportUpload = async (e: any) => {
     debugger;
-    setItems([]);
     setNotify(false);
     let list = [];
 
@@ -237,7 +254,7 @@ const ImportMenuExcel = ({
   ////////////// Update Menu Sheet ///////////////
   const handleUpdateImport = (files: any) => {
     debugger;
-    let list: any[] = [];
+    let list: any = [];
     if (files.length === 1) {
       debugger;
       var reader = new FileReader();
@@ -332,52 +349,53 @@ const ImportMenuExcel = ({
               if (/[a-zA-Z]/.test(itemsUpdateObject.tax)) {
                 itemsUpdateObject.tax = "";
               }
-              // if (
-              //   itemsUpdateObject.product_id !== "" &&
-              //   itemsUpdateObject.cat_id !== ""
-              // ) {
-              //   setItemMessage("Product ID and Category ID are Required");
-              //   setItemNotifyType("error");
-              //   setNotify(true);
-              //   return false;
-              // }
-              // if (priceValidation(itemsUpdateObject.price)) {
-              //   setItemMessage("Please Enter Valid Price");
-              //   setItemNotifyType("error");
-              //   setNotify(true);
-              //   return false;
-              // }
-              // if (
-              //   itemsUpdateObject.discount_expiry &&
-              //   itemsUpdateObject.discount_start_at
-              // ) {
-              //   if (
-              //     getFormatTime(itemsUpdateObject.discount_expiry) >=
-              //     getFormatTime(itemsUpdateObject.discount_start_at)
-              //   ) {
-              //     setItemMessage(
-              //       "Discount Expiry should greater than Discount Start"
-              //     );
-              //     setItemNotifyType("error");
-              //     setNotify(true);
-              //     return false;
-              //   }
-              // }
-              // if (
-              //   (!itemsUpdateObject.discount_expiry &&
-              //     itemsUpdateObject.discount_start_at) ||
-              //   (itemsUpdateObject.discount_expiry &&
-              //     !itemsUpdateObject.discount_start_at)
-              // ) {
-              //   setItemMessage("Discount Start and Expiry are Must");
-              //   setItemNotifyType("error");
-              //   setNotify(true);
-              //   return false;
-              // }
+              if (
+                itemsUpdateObject.product_id !== "" &&
+                itemsUpdateObject.cat_id !== ""
+              ) {
+                setItemMessage("Product ID and Category ID are Required");
+                setItemNotifyType("error");
+                setNotify(true);
+                return false;
+              }
+              if (priceValidation(itemsUpdateObject.price)) {
+                setItemMessage("Please Enter Valid Price");
+                setItemNotifyType("error");
+                setNotify(true);
+                return false;
+              }
+              if (
+                itemsUpdateObject.discount_expiry &&
+                itemsUpdateObject.discount_start_at
+              ) {
+                if (
+                  getFormatTime(itemsUpdateObject.discount_expiry) >=
+                  getFormatTime(itemsUpdateObject.discount_start_at)
+                ) {
+                  setItemMessage(
+                    "Discount Expiry should greater than Discount Start"
+                  );
+                  setItemNotifyType("error");
+                  setNotify(true);
+                  return false;
+                }
+              }
+              if (
+                (!itemsUpdateObject.discount_expiry &&
+                  itemsUpdateObject.discount_start_at) ||
+                (itemsUpdateObject.discount_expiry &&
+                  !itemsUpdateObject.discount_start_at)
+              ) {
+                setItemMessage("Discount Start and Expiry are Must");
+                setItemNotifyType("error");
+                setNotify(true);
+                return false;
+              }
               list.push({ ...itemsUpdateObject });
               debugger;
               i++;
             }
+            setUpdatedItems(list);
             console.log("list", list);
             debugger;
           }
@@ -482,7 +500,11 @@ const ImportMenuExcel = ({
                 ml: "12px",
               }}
               color={"secondary"}
-              onClick={callBulkApi}
+              onClick={
+                importType === "Import New Items"
+                  ? callBulkApi
+                  : callUpdateDataApi
+              }
               // disabled={
               //   errors.categoryError === "" && errors.slugError === ""
               //     ? false
