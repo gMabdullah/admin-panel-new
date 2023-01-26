@@ -68,7 +68,7 @@ export const IQBAL_BUSINESS_ID = 12092,
   itemExportColumns = [
     { header: "Product ID", key: "menu_item_id" },
     { header: "Category ID", key: "menu_cat_id" },
-    { header: "Brand", key: "item_brand[0].brand_name" },
+    { header: "Brand", key: "item_brand" },
     { header: "Name", key: "name" },
     { header: "Description", key: "desc" },
     { header: "Price", key: "price" },

@@ -273,9 +273,7 @@ const AddEditItem = ({
       });
 
       return;
-    } else if (
-      state.itemMaximumDistance > canadaPostMaximumDistance.toString()
-    ) {
+    } else if (Number(state.itemMaximumDistance) > canadaPostMaximumDistance) {
       dispatch({
         type: "fieldError",
         payload: {

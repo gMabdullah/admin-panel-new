@@ -32,7 +32,8 @@ type TableData = {
 
 type ExcelExportPropsType = {
   tableData: TableData[];
-  listingData?: OrderListingResponseResult[];
+  // listingData?: any;
+  listingData?: OrderListingResponseResult[] | ProductResponseItem[];
   orderDetailData?: OrderListingResponseOrderDetail[];
   OrderDetailStatic?: any;
   exportType: string;
@@ -61,6 +62,9 @@ const ExcelExport = ({
     const workBook = new Excel.Workbook();
     const workSheet = workBook.addWorksheet(workSheetName);
 
+    console.log("table data = ", tableData);
+    console.log("listingData data = ", listingData);
+
     switch (exportType) {
       case "OrdersList": {
         workSheet.columns = tableData;
@@ -81,34 +85,137 @@ const ExcelExport = ({
         break;
       }
       case "ProductListing": {
-        // workSheet.mergeCells("A1:M1");
-        // workSheet
-        //   .getRow(1)
-        //   .getCell(
-        //     1
-        //   ).value = `Please follow the exact format MM/DD/YYYY for Discount Start and Discount Expiry & Do not update the category`;
-        // workSheet.getRow(1).getCell(1).font = {
-        //   bold: true,
-        //   color: { argb: "DB154D" },
-        //   size: 18,
-        // };
-        // workSheet.getRow(1).getCell(1).alignment = {
-        //   vertical: "middle",
-        //   horizontal: "center",
-        // };
+        workSheet.mergeCells("A1:R1");
+        workSheet.mergeCells("A2:R2");
 
-        workSheet.columns = tableData;
-        workSheet.getRow(1).font = { bold: true };
-        // loop through all of the columns and set the alignment with width.
-        workSheet.columns.forEach((column) => {
-          column.width = column.header!.length + 10;
-          column.alignment = { horizontal: "center" };
+        workSheet.getRow(1).getCell(1).value =
+          "Follow the date format MM/DD/YYYY   &   Do not update category column";
+
+        workSheet.getRow(1).getCell(1).font = {
+          bold: true,
+          color: { argb: "DB154D" },
+          size: 14,
+        };
+
+        workSheet.getRow(1).getCell(1).alignment = {
+          vertical: "middle",
+          horizontal: "center",
+        };
+
+        workSheet.getRow(1).getCell(1).border = {
+          top: { style: "thick" },
+          left: { style: "thick" },
+          bottom: { style: "thick" },
+          right: { style: "thick" },
+        };
+
+        // adding column keys to add data
+        workSheet.columns = tableData.map((obj) => ({
+          key: obj.key,
+        }));
+
+        // adding table column heads
+        workSheet.getRow(workSheet.rowCount + 1).values = tableData.map(
+          (obj) => obj.header
+        );
+
+        // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+        // // populating data in table rows
+
+        // // let row: { [x: string]: any } = {};
+        // let row: { [x: string]: string } = {};
+        // // let row: { [x: string]: string | number | object } = {};
+        // listingData?.forEach((item: { [x: string]: any }) => {
+        //   tableData.forEach((obj) => {
+        //     return (row[obj.key] = item[obj.key]);
+        //   });
+
+        //   workSheet.addRow(row);
+        // });
+        // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+        // populating data in table rows
+
+        // let row: { [x: string]: any } = {};
+        // let row = {};
+        let row: { [x: string]: string | number } = {};
+        // let row: { [x: string]: string | number | object } = {};
+
+        listingData?.forEach((item: any) => {
+          console.log("item) = ", item);
+
+          tableData.forEach((obj) => {
+            // console.log("Array.isArray(item[obj.key]) = ", item);
+            console.log("(item[obj.key]) = ", item[obj.key]);
+
+            // brand name column values
+            if (Array.isArray(item[obj.key]) && obj.key === "item_brand") {
+              return (row[obj.key] = item.item_brand[0].brand_name);
+            }
+
+            // description column values
+            if (obj.key === "desc") {
+              let description = "";
+
+              if (item.desc.includes("<short_desc>")) {
+                description = item.desc.slice(
+                  item.desc.indexOf("<short_desc>"),
+                  item.desc.indexOf("</short_desc>")
+                );
+              }
+
+
+
+
+              // /<\/?([a-zA-Z]+?)>/g;
+
+              if (item.desc.includes("<long_desc>")) {
+                description = description
+                  ? description +
+                  item.desc.slice(
+                    item.desc.indexOf("<long_desc>"),
+                    item.desc.indexOf("</long_desc>")
+                  )
+                  : item.desc.slice(
+                    item.desc.indexOf("<long_desc>"),
+                    item.desc.indexOf("</long_desc>")
+                  );
+              }
+
+              return (row[obj.key] = description);
+            }
+
+            // all other column values
+            return (row[obj.key] = item[obj.key]);
+          });
+
+          workSheet.addRow(row);
         });
 
-        // loop through data and add each one to worksheet
-        listingData?.forEach((singleData) => {
-          workSheet.addRow(singleData);
-        });
+        //================================
+
+        // typeof data.item_brand !== "string" &&
+        //       (data.item_brand = data.item_brand[0].brand_name);
+        //     data.desc = data.desc.replace(
+        //       /[^A-Za-z 0-9 \.,\?""!@#\$%\*\(\)-_=\+;:<>\/\\\|\}\{\[\]`~]*/g,
+        //       ""
+        //     );
+
+        //================================
+
+        //================================================================================
+        // workSheet.columns = tableData;
+        // workSheet.getRow(1).font = { bold: true };
+        // // loop through all of the columns and set the alignment with width.
+        // workSheet.columns.forEach((column) => {
+        //   column.width = column.header!.length + 10;
+        //   column.alignment = { horizontal: "center" };
+        // });
+
+        // // loop through data and add each one to worksheet
+        // listingData?.forEach((singleData) => {
+        //   workSheet.addRow(singleData);
+        // });
 
         break;
       }
@@ -199,6 +306,7 @@ const ExcelExport = ({
           .getRow(14)
           .getCell(2).value = `${OrderDetailStatic?.mobile_number}`;
 
+        // adding styles to order details information rows
         let headerRows = 3;
         while (headerRows < 15) {
           workSheet.getRow(headerRows).getCell(1).font = {
@@ -213,13 +321,16 @@ const ExcelExport = ({
           headerRows++;
         }
 
+        // adding column keys to add data
         workSheet.columns = tableData.map((obj) => ({
           key: obj.key,
         }));
 
+        // adding table column heads
         workSheet.getRow(workSheet.rowCount + 2).values = tableData.map(
           (obj) => obj.header
         );
+
         // format option sets into comma separated string
         const formatOptionSet = () => {
           let optionSetArr = "";
@@ -256,7 +367,7 @@ const ExcelExport = ({
                 optionSets.map((f: any, j: number) =>
                   innerOptions.length > 0
                     ? (optionSetArr =
-                        optionSetArr + `${f}( ${innerOptions.join()} ),`)
+                      optionSetArr + `${f}( ${innerOptions.join()} ),`)
                     : (optionSetArr = optionSetArr + `${f},`)
                 );
               }
@@ -264,6 +375,7 @@ const ExcelExport = ({
           return optionSetArr;
         };
 
+        // populating data in table rows
         let row: { [x: string]: string | any } = {};
         let setOptionSet = "";
         orderDetailData?.forEach(
