@@ -1,14 +1,16 @@
-import Excel from "exceljs";
-import { saveAs } from "file-saver";
+import { useEffect } from "react";
 
 import { Stack, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import LibraryBooksTwoToneIcon from "@mui/icons-material/LibraryBooksTwoTone";
 
+import Excel from "exceljs";
+import { saveAs } from "file-saver";
+import moment from "moment";
+
 import CustomButton from "components/CustomButton";
 
 import { AnyObject } from "immer/dist/internal";
-import { useEffect } from "react";
 
 const useStyles = makeStyles(() => ({
   libraryBookIcon: {
@@ -85,8 +87,8 @@ const ExcelExport = ({
         break;
       }
       case "ProductListing": {
-        workSheet.mergeCells("A1:R1");
-        workSheet.mergeCells("A2:R2");
+        workSheet.mergeCells("A1:W1");
+        workSheet.mergeCells("A2:W2");
 
         workSheet.getRow(1).getCell(1).value =
           "Follow the date format MM/DD/YYYY   &   Do not update category column";
@@ -119,103 +121,44 @@ const ExcelExport = ({
           (obj) => obj.header
         );
 
-        // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-        // // populating data in table rows
-
-        // // let row: { [x: string]: any } = {};
-        // let row: { [x: string]: string } = {};
-        // // let row: { [x: string]: string | number | object } = {};
-        // listingData?.forEach((item: { [x: string]: any }) => {
-        //   tableData.forEach((obj) => {
-        //     return (row[obj.key] = item[obj.key]);
-        //   });
-
-        //   workSheet.addRow(row);
-        // });
-        // xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-        // populating data in table rows
-
-        // let row: { [x: string]: any } = {};
-        // let row = {};
         let row: { [x: string]: string | number } = {};
-        // let row: { [x: string]: string | number | object } = {};
 
         listingData?.forEach((item: any) => {
-          console.log("item) = ", item);
-
           tableData.forEach((obj) => {
-            // console.log("Array.isArray(item[obj.key]) = ", item);
-            console.log("(item[obj.key]) = ", item[obj.key]);
-
             // brand name column values
-            if (Array.isArray(item[obj.key]) && obj.key === "item_brand") {
+            if (obj.key === "item_brand" && Array.isArray(item[obj.key])) {
               return (row[obj.key] = item.item_brand[0].brand_name);
             }
 
+            // discount_start date column values
+            if (obj.key === "discount_start_at" && item.discount_start_at) {
+              return (row[obj.key] = moment(item.discount_start_at).format(
+                "MM/DD/YYYY"
+              ));
+            }
+
+            // discount_expiry date column values
+            if (obj.key === "discount_expiry" && item.discount_expiry) {
+              return (row[obj.key] = moment(item.discount_expiry).format(
+                "MM/DD/YYYY"
+              ));
+            }
+
             // description column values
-            if (obj.key === "desc") {
-              let description = "";
-
-              if (item.desc.includes("<short_desc>")) {
-                description = item.desc.slice(
-                  item.desc.indexOf("<short_desc>"),
-                  item.desc.indexOf("</short_desc>")
-                );
-              }
-
-
-
-
-              // /<\/?([a-zA-Z]+?)>/g;
-
-              if (item.desc.includes("<long_desc>")) {
-                description = description
-                  ? description +
-                  item.desc.slice(
-                    item.desc.indexOf("<long_desc>"),
-                    item.desc.indexOf("</long_desc>")
-                  )
-                  : item.desc.slice(
-                    item.desc.indexOf("<long_desc>"),
-                    item.desc.indexOf("</long_desc>")
-                  );
-              }
-
-              return (row[obj.key] = description);
+            if (obj.key === "desc" && item.desc) {
+              return (row[obj.key] = item.desc.replace(
+                /<\/?([a-zA-Z_]+?)>/g,
+                ""
+              ));
             }
 
             // all other column values
             return (row[obj.key] = item[obj.key]);
           });
 
+          // add the computed single row to the table
           workSheet.addRow(row);
         });
-
-        //================================
-
-        // typeof data.item_brand !== "string" &&
-        //       (data.item_brand = data.item_brand[0].brand_name);
-        //     data.desc = data.desc.replace(
-        //       /[^A-Za-z 0-9 \.,\?""!@#\$%\*\(\)-_=\+;:<>\/\\\|\}\{\[\]`~]*/g,
-        //       ""
-        //     );
-
-        //================================
-
-        //================================================================================
-        // workSheet.columns = tableData;
-        // workSheet.getRow(1).font = { bold: true };
-        // // loop through all of the columns and set the alignment with width.
-        // workSheet.columns.forEach((column) => {
-        //   column.width = column.header!.length + 10;
-        //   column.alignment = { horizontal: "center" };
-        // });
-
-        // // loop through data and add each one to worksheet
-        // listingData?.forEach((singleData) => {
-        //   workSheet.addRow(singleData);
-        // });
 
         break;
       }
@@ -367,7 +310,7 @@ const ExcelExport = ({
                 optionSets.map((f: any, j: number) =>
                   innerOptions.length > 0
                     ? (optionSetArr =
-                      optionSetArr + `${f}( ${innerOptions.join()} ),`)
+                        optionSetArr + `${f}( ${innerOptions.join()} ),`)
                     : (optionSetArr = optionSetArr + `${f},`)
                 );
               }
@@ -398,6 +341,7 @@ const ExcelExport = ({
               return (row[obj.key] = item[obj.key]);
             });
 
+            // add the computed single row to the table
             workSheet.addRow(row);
           }
         );
