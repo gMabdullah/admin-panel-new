@@ -34,7 +34,6 @@ type TableData = {
 
 type ExcelExportPropsType = {
   tableData: TableData[];
-  // listingData?: any;
   listingData?: OrderListingResponseResult[] | ProductResponseItem[];
   orderDetailData?: OrderListingResponseOrderDetail[];
   OrderDetailStatic?: any;
@@ -64,8 +63,8 @@ const ExcelExport = ({
     const workBook = new Excel.Workbook();
     const workSheet = workBook.addWorksheet(workSheetName);
 
-    console.log("table data = ", tableData);
-    console.log("listingData data = ", listingData);
+    console.log("orderDetailData = ", orderDetailData);
+    console.log("OrderDetailStatic = ", OrderDetailStatic);
 
     switch (exportType) {
       case "OrdersList": {
