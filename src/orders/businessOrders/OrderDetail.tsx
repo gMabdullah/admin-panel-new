@@ -1713,12 +1713,7 @@ const OrderDetail = ({
                         <ExcelExport
                           tableData={OrderDetailColumns}
                           orderDetailData={(() => {
-                            if (!orderFromAPI[0]) return [];
-                            return orderFromAPI[0].order_detail;
-                          })()}
-                          OrderDetailStatic={(() => {
-                            if (!orderFromAPI[0]) return [];
-                            return orderFromAPI[0];
+                            if (orderFromAPI.length > 0) return orderFromAPI[0];
                           })()}
                           exportType={"OrderDetail"}
                         />

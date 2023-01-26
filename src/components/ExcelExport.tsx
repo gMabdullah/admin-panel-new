@@ -35,8 +35,7 @@ type TableData = {
 type ExcelExportPropsType = {
   tableData: TableData[];
   listingData?: OrderListingResponseResult[] | ProductResponseItem[];
-  orderDetailData?: OrderListingResponseOrderDetail[];
-  OrderDetailStatic?: any;
+  orderDetailData?: OrderListingResponseResult;
   exportType: string;
 };
 
@@ -45,7 +44,6 @@ const ExcelExport = ({
   listingData,
   orderDetailData,
   exportType,
-  OrderDetailStatic,
 }: ExcelExportPropsType) => {
   const classes = useStyles();
 
@@ -62,9 +60,6 @@ const ExcelExport = ({
 
     const workBook = new Excel.Workbook();
     const workSheet = workBook.addWorksheet(workSheetName);
-
-    console.log("orderDetailData = ", orderDetailData);
-    console.log("OrderDetailStatic = ", OrderDetailStatic);
 
     switch (exportType) {
       case "OrdersList": {
@@ -199,54 +194,50 @@ const ExcelExport = ({
 
         // starting order details information rows
         workSheet.getRow(3).getCell(1).value = "Order #";
-        workSheet.getRow(3).getCell(2).value = `${OrderDetailStatic?.order_id}`;
+        workSheet.getRow(3).getCell(2).value = `${orderDetailData?.order_id}`;
 
         workSheet.getRow(4).getCell(1).value = "Payment Type";
         workSheet
           .getRow(4)
-          .getCell(2).value = `${OrderDetailStatic?.payment_type}`;
+          .getCell(2).value = `${orderDetailData?.payment_type}`;
 
         workSheet.getRow(5).getCell(1).value = "Order Type";
-        workSheet
-          .getRow(5)
-          .getCell(2).value = `${OrderDetailStatic?.order_type}`;
+        workSheet.getRow(5).getCell(2).value = `${orderDetailData?.order_type}`;
 
         workSheet.getRow(6).getCell(1).value = "Status";
-        workSheet.getRow(6).getCell(2).value = `${OrderDetailStatic?.status}`;
+        workSheet.getRow(6).getCell(2).value = `${orderDetailData?.status}`;
 
         workSheet.getRow(7).getCell(1).value = "Receipt #";
-        workSheet
-          .getRow(7)
-          .getCell(2).value = `${OrderDetailStatic?.receipt_no}`;
+        workSheet.getRow(7).getCell(2).value = `${orderDetailData?.receipt_no}`;
 
         workSheet.getRow(8).getCell(1).value = "Date";
-        workSheet.getRow(8).getCell(2).value = `${OrderDetailStatic?.date}`;
-        // `${OrderDetailStatic?.date}` ?
+        workSheet.getRow(8).getCell(2).value = `${orderDetailData?.date}`;
+        // `${orderDetailData?.date}` ?
         workSheet.getRow(9).getCell(1).value = "Pickup Time";
         workSheet
           .getRow(9)
-          .getCell(2).value = `${OrderDetailStatic?.pickup_time}`;
+          .getCell(2).value = `${orderDetailData?.pickup_time}`;
 
         workSheet.getRow(10).getCell(1).value = "Name";
-        workSheet.getRow(10).getCell(2).value = `${OrderDetailStatic?.name}`;
+        workSheet.getRow(10).getCell(2).value = `${orderDetailData?.name}`;
 
         workSheet.getRow(11).getCell(1).value = "Address";
-        workSheet.getRow(11).getCell(2).value = `${OrderDetailStatic?.address}`;
+        workSheet.getRow(11).getCell(2).value = `${orderDetailData?.address}`;
 
         workSheet.getRow(12).getCell(1).value = "Email";
         workSheet
           .getRow(12)
-          .getCell(2).value = `${OrderDetailStatic?.user_email}`;
+          .getCell(2).value = `${orderDetailData?.user_email}`;
 
         workSheet.getRow(13).getCell(1).value = "Landline";
         workSheet
           .getRow(13)
-          .getCell(2).value = `${OrderDetailStatic?.landline_number}`;
+          .getCell(2).value = `${orderDetailData?.landline_number}`;
 
         workSheet.getRow(14).getCell(1).value = "Phone";
         workSheet
           .getRow(14)
-          .getCell(2).value = `${OrderDetailStatic?.mobile_number}`;
+          .getCell(2).value = `${orderDetailData?.mobile_number}`;
 
         // adding styles to order details information rows
         let headerRows = 3;
@@ -276,8 +267,8 @@ const ExcelExport = ({
         // format option sets into comma separated string
         const formatOptionSet = () => {
           let optionSetArr = "";
-          OrderDetailStatic &&
-            OrderDetailStatic.order_detail.map(
+          orderDetailData &&
+            orderDetailData.order_detail.map(
               (item: OrderListingResponseOrderDetail) => {
                 let row = item;
                 let textToShow = "";
@@ -320,7 +311,8 @@ const ExcelExport = ({
         // populating data in table rows
         let row: { [x: string]: string | any } = {};
         let setOptionSet = "";
-        orderDetailData?.forEach(
+        orderDetailData?.order_detail?.forEach(
+          // orderDetailData?.forEach(
           (item: { [x: string]: string | number | any }) => {
             tableData.forEach((obj) => {
               if (obj.key == "options") {
@@ -357,22 +349,22 @@ const ExcelExport = ({
         workSheet.getRow(footerRows).getCell(1).value = "Total Items";
         workSheet
           .getRow(footerRows)
-          .getCell(2).value = `${OrderDetailStatic?.order_detail.length}`;
+          .getCell(2).value = `${orderDetailData?.order_detail.length}`;
 
         workSheet.getRow(footerRows + 1).getCell(1).value = "Total Price";
         workSheet
           .getRow(footerRows + 1)
-          .getCell(2).value = `${OrderDetailStatic?.total}`;
+          .getCell(2).value = `${orderDetailData?.total}`;
 
         workSheet.getRow(footerRows + 3).getCell(1).value = "Tax";
         workSheet
           .getRow(footerRows + 3)
-          .getCell(2).value = `${OrderDetailStatic?.tax}`;
+          .getCell(2).value = `${orderDetailData?.tax}`;
 
         workSheet.getRow(footerRows + 4).getCell(1).value = "Grand Total";
         workSheet
           .getRow(footerRows + 4)
-          .getCell(2).value = `${OrderDetailStatic?.grand_total}`;
+          .getCell(2).value = `${orderDetailData?.grand_total}`;
 
         workSheet.getRow(footerRows + 4).getCell(2).border = {
           top: { style: "thin" },
