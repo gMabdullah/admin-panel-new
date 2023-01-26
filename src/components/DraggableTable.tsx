@@ -23,7 +23,7 @@ import { RefetchOptions } from "axios-hooks";
 
 interface TablePropsType {
   items?: ProductResponse["items"];
-  keysOfItems: TypeKeyOfItem["keysOfItems"];
+  // keysOfItems: TypeKeyOfItem["keysOfItems"];
   setSequenceItem?: any;
   shortDragDropItems?: any;
   getProductsAPI: (
@@ -36,13 +36,12 @@ interface TablePropsType {
 
 const DraggableTable = ({
   items,
-  keysOfItems,
+  // keysOfItems,
   shortDragDropItems,
   getProductsAPI,
   productLoading,
   handleDrawerToggle,
 }: TablePropsType) => {
-  debugger;
   const { decimalPlaces, productColumns } = useSelector((state) => state.main);
   console.log("drag and drop productColumns", productColumns);
   // useEffect(() => {}, [productColumns]);
@@ -96,15 +95,19 @@ const DraggableTable = ({
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
-                {productColumns?.map((column: any) => (
-                  <TableCell
-                    key={column.key}
-                    align={column.align}
-                    style={{ width: column?.width }}
-                  >
-                    {column.value}
-                  </TableCell>
-                ))}
+                {productColumns?.map((column: any) =>
+                  column.selected ? (
+                    <TableCell
+                      key={column.key}
+                      align={column.align}
+                      style={{ width: column?.width }}
+                    >
+                      {column.value}
+                    </TableCell>
+                  ) : (
+                    ""
+                  )
+                )}
               </TableRow>
             </TableHead>
             <Droppable droppableId="table">
@@ -126,62 +129,68 @@ const DraggableTable = ({
                               {...provided.dragHandleProps}
                               isDragging={snapshot.isDragging}
                             >
-                              {productColumns?.map((column) => (
-                                <TableCell
-                                  key={column.key}
-                                  align={column.align}
-                                  style={{ width: column?.width }}
-                                >
-                                  {column.key === "image" ? (
-                                    <CardMedia
-                                      component="img"
-                                      image={row[column.key]}
-                                      alt="Burger"
-                                      sx={{
-                                        height: "52px",
-                                        width: "52px",
-                                        display: "flex",
-                                        justifyContent: "center",
-                                        alignItems: "center",
-                                      }}
-                                    />
-                                  ) : column.key === "name" ? (
-                                    <>
-                                      <Typography variant="h5">
+                              {productColumns?.map((column) =>
+                                column.selected ? (
+                                  <TableCell
+                                    key={column.key}
+                                    align={column.align}
+                                    style={{ width: column?.width }}
+                                  >
+                                    {column.key === "image" ? (
+                                      <CardMedia
+                                        component="img"
+                                        image={row[column.key]}
+                                        alt="Burger"
+                                        sx={{
+                                          height: "52px",
+                                          width: "52px",
+                                          display: "flex",
+                                          justifyContent: "center",
+                                          alignItems: "center",
+                                        }}
+                                      />
+                                    ) : column.key === "name" ? (
+                                      <>
+                                        <Typography variant="h5">
+                                          {row[column.key]}
+                                        </Typography>
+                                        <Tooltip
+                                          placement="top-start"
+                                          title={row.desc}
+                                        >
+                                          <div
+                                            className="menu-description-css"
+                                            style={{ fontSize: "10px" }}
+                                          >
+                                            {row.desc}
+                                          </div>
+                                        </Tooltip>
+                                      </>
+                                    ) : column.key === "price" ? (
+                                      addCurrency(row[column.key], row.currency)
+                                    ) : column.key === "discount" ? (
+                                      addCurrency(row[column.key], "")
+                                    ) : column.key === "status" ? (
+                                      <TableChip
+                                        statusValue={row[column.key]}
+                                      />
+                                    ) : column.value === "Actions" ? (
+                                      <TableActionsButton
+                                        row={row}
+                                        getProductsAPI={getProductsAPI}
+                                        productLoading={productLoading}
+                                        handleDrawerToggle={handleDrawerToggle}
+                                      />
+                                    ) : (
+                                      <Typography className="tableColumnCss">
                                         {row[column.key]}
                                       </Typography>
-                                      <Tooltip
-                                        placement="top-start"
-                                        title={row.desc}
-                                      >
-                                        <div
-                                          className="menu-description-css"
-                                          style={{ fontSize: "10px" }}
-                                        >
-                                          {row.desc}
-                                        </div>
-                                      </Tooltip>
-                                    </>
-                                  ) : column.key === "price" ? (
-                                    addCurrency(row[column.key], row.currency)
-                                  ) : column.key === "discount" ? (
-                                    addCurrency(row[column.key], "")
-                                  ) : column.key === "status" ? (
-                                    <TableChip statusValue={row[column.key]} />
-                                  ) : column.value === "Actions" ? (
-                                    <TableActionsButton
-                                      row={row}
-                                      getProductsAPI={getProductsAPI}
-                                      productLoading={productLoading}
-                                      handleDrawerToggle={handleDrawerToggle}
-                                    />
-                                  ) : (
-                                    <Typography className="tableColumnCss">
-                                      {row[column.key]}
-                                    </Typography>
-                                  )}
-                                </TableCell>
-                              ))}
+                                    )}
+                                  </TableCell>
+                                ) : (
+                                  ""
+                                )
+                              )}
                             </TableRow>
                           );
                         }}

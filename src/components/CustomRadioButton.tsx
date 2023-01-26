@@ -10,8 +10,7 @@ import {
 type radioButtonTypes<T extends React.ElementType> = {
   renderAs?: T;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  value: string | SVGSVGElement | null;
-  // value: any;
+  value: string | SVGSVGElement;
   label?: string;
   options?: { value: string; label: string }[];
   sx?: object;

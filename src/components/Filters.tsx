@@ -10,7 +10,11 @@ import Grid from "@mui/material/Grid";
 import CustomizedSwitch from "./CustomSwitch";
 import { keysOfItems as columns, filtersMap } from "../constants";
 import { useDispatch, useSelector } from "store";
-import { setProductColumn, toggleColumn } from "store/slices/Main";
+import {
+  selectedFilter,
+  setProductColumn,
+  toggleColumn,
+} from "store/slices/Main";
 // import { keysOfItems } from "constants";
 interface filtersProps {
   // filter: SVGSVGElement | undefined;
@@ -24,27 +28,30 @@ filtersProps) => {
   const [filter, setFilter] = useState<SVGSVGElement | null>(null);
   const [selectedValue, setSelectedValue] = useState("0");
   const dispatch = useDispatch();
-  const { productColumns } = useSelector((state) => state.main);
+  const {
+    productColumns,
+    CountError,
+    showImagesItem,
+    availableItems,
+    displayType,
+  } = useSelector((state) => state.main);
   const open = Boolean(filter);
   const id = open ? "simple-popover" : undefined;
-
-  // useEffect(() => {
-  //   // send object to reducer
-  //   dispatch(setProductColumn(columns));
-  // }, []);
 
   const handleClick = (event: React.MouseEvent<SVGSVGElement>) =>
     setFilter(event.currentTarget);
 
-  const onChange = (event: { target: { name: string; value: string } }) =>
-    setSelectedValue(event.target.value);
+  const onRadioChange = (event: { target: { name: string; value: any } }) => {
+    const name = event.target.name;
+    const value = event.target.value;
+    dispatch(selectedFilter({ name, value }));
+  };
 
   const handleSwitchChange = (
     event: React.ChangeEvent<HTMLInputElement>,
     { key }: FiltersProps
   ) => {
     const value = event.target.checked;
-
     dispatch(toggleColumn({ key, value }));
   };
   return (
@@ -96,8 +103,16 @@ filtersProps) => {
                     name={item.key}
                     row={true}
                     options={item.options}
-                    value={selectedValue}
-                    onChange={onChange}
+                    value={
+                      item.key == "items"
+                        ? showImagesItem
+                        : item.key == "items_stock"
+                        ? availableItems
+                        : item.key == "visibility_on_platform"
+                        ? displayType
+                        : ""
+                    }
+                    onChange={onRadioChange}
                   />
                 </Stack>
               </Stack>
@@ -106,6 +121,7 @@ filtersProps) => {
           ))}
 
           <Typography variant="h3">Custom Columns</Typography>
+          {/* {CountError} */}
           <Grid container>
             <Grid item xs={12}>
               {productColumns?.map((column: any) => (

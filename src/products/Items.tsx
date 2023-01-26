@@ -440,7 +440,7 @@ const Items = () => {
                 getProductsAPI={getProductsAPI}
                 productLoading={productLoading}
                 items={items}
-                keysOfItems={keysOfItems}
+                // keysOfItems={keysOfItems}
                 setSequenceItem={setSequenceItem}
                 shortDragDropItems={shortDragDropItems}
                 handleDrawerToggle={handleDrawerToggle}
