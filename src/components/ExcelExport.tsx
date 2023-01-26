@@ -48,7 +48,7 @@ const ExcelExport = ({
   const classes = useStyles();
 
   useEffect(() => {
-    if (exportType == "ProductListing") {
+    if (exportType === "ProductListing") {
       fileExport();
     }
   }, [exportType]);
