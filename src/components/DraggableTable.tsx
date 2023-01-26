@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React from "react";
 
 import {
   Typography,
@@ -20,7 +20,7 @@ import TableChip from "./TableChip";
 import TableActionsButton from "./TableActionsButton";
 import { AxiosPromise, AxiosRequestConfig } from "axios";
 import { RefetchOptions } from "axios-hooks";
-
+const AddMenuImages = React.lazy(() => import("imagesection/AddMenuImages"));
 interface TablePropsType {
   items?: ProductResponse["items"];
   keysOfItems: TypeKeyOfItem["keysOfItems"];
@@ -54,7 +54,7 @@ const DraggableTable = ({
     shortDragDropItems(sortArray);
     // handle the end of a drag and drop event here
   };
-
+  const openImageModal = () => {};
   const addCurrency = (value: any, currency: any) => {
     return (
       <Stack direction="row" spacing={0.25} sx={{ alignItems: "center" }}>
@@ -131,18 +131,7 @@ const DraggableTable = ({
                                   style={{ width: column?.width }}
                                 >
                                   {column.key === "image" ? (
-                                    <CardMedia
-                                      component="img"
-                                      image={row[column.key]}
-                                      alt="Burger"
-                                      sx={{
-                                        height: "52px",
-                                        width: "52px",
-                                        display: "flex",
-                                        justifyContent: "center",
-                                        alignItems: "center",
-                                      }}
-                                    />
+                                    <AddMenuImages imageUrl={row[column.key]} />
                                   ) : column.key === "name" ? (
                                     <>
                                       <Typography variant="h5">
