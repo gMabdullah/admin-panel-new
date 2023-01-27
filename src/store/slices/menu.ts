@@ -6,7 +6,6 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState: MenuProps = {
   selectedItem: ["dashboard"],
   drawerOpen: false,
-  hideDatePicker: false,
 };
 
 // ==============================|| SLICE - MENU ||============================== //
