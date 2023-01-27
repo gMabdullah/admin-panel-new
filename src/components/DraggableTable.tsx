@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 
 import {
   Typography,
@@ -20,7 +20,8 @@ import TableChip from "./TableChip";
 import TableActionsButton from "./TableActionsButton";
 import { AxiosPromise, AxiosRequestConfig } from "axios";
 import { RefetchOptions } from "axios-hooks";
-const AddMenuImages = React.lazy(() => import("imagesection/AddMenuImages"));
+import Loader from "./Loader";
+const AddMenuImages = React.lazy(() => import("imageSection/AddMenuImages"));
 interface TablePropsType {
   items?: ProductResponse["items"];
   keysOfItems: TypeKeyOfItem["keysOfItems"];
@@ -131,7 +132,11 @@ const DraggableTable = ({
                                   style={{ width: column?.width }}
                                 >
                                   {column.key === "image" ? (
-                                    <AddMenuImages imageUrl={row[column.key]} />
+                                    <Suspense fallback={<Loader />}>
+                                      <AddMenuImages
+                                        imageUrl={row[column.key]}
+                                      />
+                                    </Suspense>
                                   ) : column.key === "name" ? (
                                     <>
                                       <Typography variant="h5">
