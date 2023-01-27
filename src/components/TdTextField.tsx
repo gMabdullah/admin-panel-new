@@ -91,6 +91,8 @@ const CssTextField = withStyles({
       borderBottomColor: "green",
     },
     "& .MuiOutlinedInput-root": {
+      height: "48px",
+
       "& fieldset": {
         borderColor: "#bababa",
         borderWidth: 0.8,

@@ -14,7 +14,7 @@ type DropDownType<T extends React.ElementType> = {
   name?: string;
   value?: string;
   error?: boolean;
-  isStaticDropDown?:boolean;
+  isStaticDropDown?: boolean;
   helperText?: React.ReactNode;
   handleChange: (event: SelectChangeEvent) => void;
 } & React.ComponentPropsWithoutRef<T>;
@@ -35,7 +35,6 @@ const theme = createTheme({
 const useStyles = makeStyles((theme) => ({
   quantityRoot: {
     fontSize: "14px",
-    // color: "#212121",
 
     fontFamily: `Roboto`,
     fontWeight: 400,
@@ -45,7 +44,6 @@ const useStyles = makeStyles((theme) => ({
     width: "160px",
     borderRadius: "58px",
     marginRight: "8px",
-    
 
     "& .MuiOutlinedInput": {
       border: "58px",
@@ -77,14 +75,12 @@ const useStyles = makeStyles((theme) => ({
   },
   staticDropDownRoot: {
     fontSize: "14px",
-    // color: "#212121",
 
     fontFamily: `Roboto`,
     fontWeight: 400,
     lineHeight: "1.334em",
     color: "#F5F5F !important",
     backgroundColor: "#F5F5F5 !important",
-   // width: "160px",
     borderRadius: "8px !important",
     marginRight: "8px",
     height: "44px",
@@ -99,7 +95,6 @@ const useStyles = makeStyles((theme) => ({
     "& .MuiList-root": {
       paddind: "14px !important",
     },
-   // height: "fit-content",
     "& .MuiOutlinedInput-input": {
       background: "none",
       p: "11px 67.9px 11px 14.88px",
@@ -121,7 +116,7 @@ const useStyles = makeStyles((theme) => ({
   selectRoot: {
     color: "#FFFFFF",
   },
-  
+
   icon: {
     color: "#212121",
     Width: "6.67px",
@@ -175,27 +170,32 @@ const DropDown = <T extends React.ElementType = "select">({
       <FormControl
         variant="outlined"
         classes={{
-          root: isStaticDropDown ? classes.staticDropDownRoot : classes.quantityRoot,
+          root: isStaticDropDown
+            ? classes.staticDropDownRoot
+            : classes.quantityRoot,
         }}
       >
         <Select
           error={error}
-          // helperText={helperText}
           classes={{
             icon: classes.icon,
           }}
           name={name}
           sx={{
-            borderRadius: isStaticDropDown ? "8px !important" : "58px !important",
+            borderRadius: isStaticDropDown
+              ? "8px !important"
+              : "58px !important",
             "& .MuiOutlinedInput-root": {
-              borderRadius: isStaticDropDown ? "8px !important" : "58px !important",
+              borderRadius: isStaticDropDown
+                ? "8px !important"
+                : "58px !important",
             },
             "& .MuiOutlinedInput": {
               border: "58px",
             },
           }}
           defaultValue={defaultValue}
-          value={isStaticDropDown ? defaultValue : (value ? value : "")}
+          value={isStaticDropDown ? defaultValue : value ? value : ""}
           onChange={handleChange}
           MenuProps={MenuProps}
         >

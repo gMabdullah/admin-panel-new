@@ -3,6 +3,24 @@ import { makeStyles } from "@mui/styles";
 export const useStyles: any = makeStyles((theme) => ({
   root: {
     width: "100%",
+
+    // height of single select
+    "& .MuiAutocomplete-hasPopupIcon.MuiAutocomplete-hasClearIcon.css-5cam8j-MuiAutocomplete-root .MuiOutlinedInput-root":
+      {
+        height: "48px",
+      },
+
+    // height of multi select
+    "& .MuiAutocomplete-hasPopupIcon.css-5cam8j-MuiAutocomplete-root .MuiOutlinedInput-root, .MuiAutocomplete-hasClearIcon.css-5cam8j-MuiAutocomplete-root .MuiOutlinedInput-root":
+      {
+        height: "48px",
+      },
+
+    // "& .MuiAutocomplete-listbox": {
+    //   backgroundColor: "red",
+    //   color: "white",
+    // },
+
     "& div.MuiOutlinedInput-multiline": {
       fontSize: 13,
     },

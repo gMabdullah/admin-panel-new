@@ -1,7 +1,7 @@
 import React from "react";
 
 import { Autocomplete, Chip, TextField } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import { Close, ExpandMore } from "@mui/icons-material";
 
 import { useStyles } from "./DropDownStyles";
 
@@ -25,6 +25,7 @@ interface DropDownListTypeSearchType {
     value: any,
     name: string
   ) => void;
+  popupIcon?: React.ReactNode;
 }
 
 const DropDownSearch = ({
@@ -37,6 +38,7 @@ const DropDownSearch = ({
   handleChange,
   disabled,
   isMultiSelect,
+  popupIcon,
 }: DropDownListTypeSearchType) => {
   const classes = useStyles();
 
@@ -47,7 +49,7 @@ const DropDownSearch = ({
         label={option.label}
         {...getTagProps({ index })}
         className={classes.chip}
-        deleteIcon={<CloseIcon />}
+        deleteIcon={<Close />}
       />
     ));
 
@@ -64,6 +66,7 @@ const DropDownSearch = ({
         filterSelectedOptions
         disableCloseOnSelect={isMultiSelect ? true : false}
         onChange={handleChange}
+        popupIcon={popupIcon ? popupIcon : <ExpandMore />}
         renderInput={(params) => (
           <TextField
             {...params}
