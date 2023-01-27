@@ -11,6 +11,7 @@ import {
   TableHead,
   TableRow,
   TableContainer,
+  Checkbox,
 } from "@mui/material";
 
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
@@ -32,6 +33,7 @@ interface TablePropsType {
   ) => AxiosPromise<any>;
   productLoading?: boolean;
   handleDrawerToggle: () => void;
+  checkBox?: boolean;
 }
 
 const DraggableTable = ({
@@ -41,6 +43,7 @@ const DraggableTable = ({
   getProductsAPI,
   productLoading,
   handleDrawerToggle,
+  checkBox = false,
 }: TablePropsType) => {
   const { decimalPlaces } = useSelector((state) => state.main);
 
@@ -94,6 +97,12 @@ const DraggableTable = ({
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
+                {checkBox && (
+                  <TableCell>
+                    <Checkbox sx={{ p: "unset" }} />
+                  </TableCell>
+                )}
+
                 {keysOfItems?.map((column: any) => (
                   <TableCell
                     key={column.key}
@@ -124,6 +133,11 @@ const DraggableTable = ({
                               {...provided.dragHandleProps}
                               isDragging={snapshot.isDragging}
                             >
+                              {checkBox && (
+                                <TableCell>
+                                  <Checkbox sx={{ p: "unset" }} />
+                                </TableCell>
+                              )}
                               {keysOfItems?.map((column) => (
                                 <TableCell
                                   key={column.key}

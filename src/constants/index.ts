@@ -101,4 +101,31 @@ export const IQBAL_BUSINESS_ID = 12092,
     { label: "Milligram (mg)", value: "mg" },
     { label: "Pound (lb)", value: "lb" },
   ],
-  canadaPostMaximumDistance = 10000;
+  canadaPostMaximumDistance = 10000,
+  // Bulk Actions dropdown in items
+  bulkActions = [
+    {
+      label: "Bulk Actions",
+      value: "bulkActions",
+    },
+    {
+      label: "Item Available",
+      value: "itemAvailable",
+    },
+    {
+      label: "Item Un-Available",
+      value: "itemUnAvailable",
+    },
+    {
+      label: "Brand Association",
+      value: "brandAssociation",
+    },
+    {
+      label: "Brand Dis-Association",
+      value: "brandDisAssociation",
+    },
+    {
+      label: "Category Association",
+      value: "categoryAssociation",
+    },
+  ];

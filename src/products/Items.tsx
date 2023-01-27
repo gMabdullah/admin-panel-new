@@ -29,7 +29,7 @@ import Loader from "components/Loader";
 import AddEditItem from "products/AddEditItem";
 import { gridIconsCss } from "./Styles";
 import { useDispatch, useSelector } from "store";
-import { itemExportColumns, keysOfItems } from "../constants";
+import { bulkActions, itemExportColumns, keysOfItems } from "../constants";
 import { ProductsProvider, ProductsContext } from "./context/ProductsContext";
 import { toggleDatePicker } from "../store/slices/Main";
 import { reorder, sortMenuItems } from "orders/HelperFunctions";
@@ -85,6 +85,8 @@ const Items = () => {
   const [itemsCount, setItemsCount] = useState(100);
   const [importExportDropDownValue, setImportExportDropDownValue] =
     useState<string>("import_export");
+  const [bulkActionsValue, setBulkActionsValue] =
+    useState<string>("bulkActions");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(100);
   const [apiCallFlag, setApiCallFlag] = React.useState("");
@@ -234,6 +236,17 @@ const Items = () => {
   const handleDrawerToggle = () => {
     setToggleDrawer((state) => !state);
   };
+
+  const handleBulkActionsChange = (
+    event: SelectChangeEvent<typeof bulkActionsValue>
+  ) => {
+    const {
+      target: { value },
+    } = event;
+
+    setBulkActionsValue(value);
+  };
+
   const handleDropDownChange = (
     event: SelectChangeEvent<typeof importExportDropDownValue>
   ) => {
@@ -250,6 +263,7 @@ const Items = () => {
     }
     setImportExportDropDownValue(value);
   };
+
   // Drag And Drop Shorting
   const shortDragDropItems = async (sortArray: any) => {
     // setLinearLoader(true);
@@ -319,6 +333,7 @@ const Items = () => {
               sx={{
                 display: "flex",
                 alignItems: "center",
+                background: "yellow",
               }}
             >
               <Typography variant="h3">Menu Items</Typography>
@@ -337,9 +352,18 @@ const Items = () => {
                 display: "flex",
                 justifyContent: "flex-end",
                 alignItems: "center",
+                background: "red",
               }}
             >
               <Stack direction={"row"} spacing={"1"} justifyContent={"center"}>
+                <DropDown
+                  options={bulkActions}
+                  value={bulkActionsValue}
+                  handleChange={handleBulkActionsChange}
+                  defaultValue="bulkActions"
+                  isStaticDropDown={true}
+                />
+
                 <DropDown
                   options={dropdownBulkAction}
                   value={importExportDropDownValue}
@@ -347,6 +371,7 @@ const Items = () => {
                   defaultValue="import_export"
                   isStaticDropDown={true}
                 />
+
                 <CustomButton
                   variant={"contained"}
                   color={"secondary"}
@@ -411,6 +436,13 @@ const Items = () => {
               >
                 {`${itemsCount} Item(s)`}
               </Typography>
+              {bulkActionsValue !== "bulkActions" && (
+                <CustomButton
+                  onClick={() => setBulkActionsValue("bulkActions")}
+                >
+                  Cancel
+                </CustomButton>
+              )}
             </Grid>
           )}
         </Grid>
@@ -427,6 +459,7 @@ const Items = () => {
                 setSequenceItem={setSequenceItem}
                 shortDragDropItems={shortDragDropItems}
                 handleDrawerToggle={handleDrawerToggle}
+                checkBox={bulkActionsValue !== "bulkActions"}
               />
               <TablePagination
                 component="div"
