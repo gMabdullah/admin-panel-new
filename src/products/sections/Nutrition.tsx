@@ -25,6 +25,7 @@ const useStyles = makeStyles(() => ({
 const Nutrition = () => {
   const classes = useStyles();
   const { state } = useContext(ProductsContext);
+  const [fieldError, setFieldError] = useState("");
   const [nutritionRows, setNutritionRows] = useState<
     ItemDetailsResponseItemNutritionsTable[] | []
   >([]);
@@ -40,14 +41,7 @@ const Nutrition = () => {
   // for edit item
   useEffect(() => {
     // if it is not array & not empty string
-    if (
-      state.editItem.editItemFlag &&
-      Array.isArray(state.itemNutritions)
-      // &&
-      // !Array.isArray(state.itemNutritions) &&
-      // state.itemNutritions
-      // state.itemNutritions.length > 0
-    ) {
+    if (state.editItem.editItemFlag && Array.isArray(state.itemNutritions)) {
       setNutritionRows(
         state.itemNutritions.map((item: any, index: any) => ({
           ...item,
@@ -63,6 +57,8 @@ const Nutrition = () => {
 
   const addEditNutrition = () => {
     if (nutrition.name && nutrition.value) {
+      setFieldError("");
+
       if (editNutrition.editFlag) {
         const updatedNutrition = nutritionRows.map((item, index) => {
           if (item.id === editNutrition.nutrition.id) {
@@ -98,7 +94,7 @@ const Nutrition = () => {
         value: "",
       });
     } else {
-      // set field error;
+      setFieldError("Required*");
     }
   };
 
@@ -203,8 +199,8 @@ const Nutrition = () => {
               label="Nutrition Name"
               value={nutrition.name}
               onChange={handleChange}
-              // error={fieldError.address === "" ? false : true}
-              // helperText={fieldError.address}
+              error={fieldError === "" ? false : true}
+              helperText={fieldError}
             />
             <TdTextField
               name="value"
@@ -212,8 +208,8 @@ const Nutrition = () => {
               value={nutrition.value}
               onChange={handleChange}
               sx={{ ml: "7px" }}
-              // error={fieldError.address === "" ? false : true}
-              // helperText={fieldError.address}
+              error={fieldError === "" ? false : true}
+              helperText={fieldError}
             />
             <IconButton
               onClick={addEditNutrition}
