@@ -107,8 +107,7 @@ const TableActionsButton = ({
 
     // set value for weight unit dropdown
     const selectedItemWeightUnit = weightUnits.filter(
-      (unit) =>
-        unit.value === items[0] && items[0].weight_unit.trim().toLowerCase()
+      (unit) => unit.value === items[0].weight_unit.trim().toLowerCase()
     );
 
     dispatch({

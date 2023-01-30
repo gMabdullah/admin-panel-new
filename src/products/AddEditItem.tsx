@@ -546,6 +546,11 @@ const AddEditItem = ({
               multiline={true}
               type="text"
               label="Special Note"
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  height: "unset !important",
+                },
+              }}
               onChange={(e) =>
                 dispatch({
                   type: "textField",

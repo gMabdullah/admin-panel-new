@@ -333,7 +333,6 @@ const Items = () => {
               sx={{
                 display: "flex",
                 alignItems: "center",
-                background: "yellow",
               }}
             >
               <Typography variant="h3">Menu Items</Typography>
@@ -352,16 +351,16 @@ const Items = () => {
                 display: "flex",
                 justifyContent: "flex-end",
                 alignItems: "center",
-                background: "red",
               }}
             >
-              <Stack direction={"row"} spacing={"1"} justifyContent={"center"}>
+              <Stack direction={"row"} justifyContent={"center"}>
                 <DropDown
                   options={bulkActions}
                   value={bulkActionsValue}
                   handleChange={handleBulkActionsChange}
                   defaultValue="bulkActions"
                   isStaticDropDown={true}
+                  sx={{ mr: "11px" }}
                 />
 
                 <DropDown
@@ -370,17 +369,14 @@ const Items = () => {
                   handleChange={handleDropDownChange}
                   defaultValue="import_export"
                   isStaticDropDown={true}
+                  sx={{ mr: "11px" }}
                 />
 
                 <CustomButton
                   variant={"contained"}
                   color={"secondary"}
                   startIcon={<AddTwoToneIcon />}
-                  sx={{
-                    p: "12px 22px",
-                    height: "44px",
-                    width: "138px",
-                  }}
+                  sx={{ p: "12px 32px" }}
                   onClick={handleDrawerToggle}
                 >
                   Add Item

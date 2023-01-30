@@ -117,7 +117,7 @@ const CssTextField = withStyles({
         fontWeight: "200",
       },
       "& .MuiOutlinedInput-input": {
-        padding: props.size === "small" ? 11 : "",
+        padding: props.size === "small" ? 11 : "12.5px",
         color: "#545454",
         fontSize: props.size === "small" ? 13 : 15,
         fontWeight: "200",
