@@ -1,10 +1,19 @@
-const IQBAL_BUSINESS_ID = 12092,
+// Business ID
+export const IQBAL_BUSINESS_ID = 12092,
   TEZMART_BUSINESS_ID = 12154,
   APNA_FORM_BUSINESS_ID = 12185,
   DWP_BUSINESS_ID = 12230,
   DWP_STAGING_BUSINESS_ID = 12180,
   AMANAT_STAGING_BUSINESS_ID = 12208,
   AMANAT_BUSINESS_ID = 12257,
+  // Regex
+  // -------
+  // - small and capital alphabates
+  // - positive numbers
+  // - not more than one hypen or Minus sign
+  alphaNumericRegex = /^[a-zA-Z0-9 &-]*$/,
+  TINY_EDITOR_API_KEY = "00f31vkt0j9pkd1pt5g9vqgfdfog3kvmzjtsfsyfi5mcbit0",
+  // Static Array and Objects
   OrderDetailColumns = [
     { header: "Item #", key: "item_no" },
     { header: "Category", key: "category" },
@@ -44,15 +53,14 @@ const IQBAL_BUSINESS_ID = 12092,
     { value: "1", label: "Pick Up" },
     { value: "0", label: "Delivery" },
     { value: "1", label: "Canada Post" },
+  ],
+  keysOfItems: TypeKeyOfItem["keysOfItems"] = [
+    { key: "image", value: "Image", align: "left", width: "10%" },
+    { key: "name", value: "Item Name", align: "left", width: "30%" },
+    { key: "category", value: "Category", align: "left", width: "15%" },
+    { key: "price", value: "Price", align: "left", width: "10%" },
+    { key: "discount", value: "Discount", align: "right", width: "10%" },
+    { key: "tax", value: "Tax %", align: "right", width: "10%" },
+    { key: "status", value: "Status", align: "center", width: "10%" },
+    { key: "", value: "Actions", align: "center" },
   ];
-export {
-  DWP_BUSINESS_ID,
-  DWP_STAGING_BUSINESS_ID,
-  AMANAT_BUSINESS_ID,
-  AMANAT_STAGING_BUSINESS_ID,
-  IQBAL_BUSINESS_ID,
-  TEZMART_BUSINESS_ID,
-  OrderDetailColumns,
-  orderListingColumns,
-  ordersType,
-};

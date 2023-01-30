@@ -115,6 +115,7 @@ const CustomDateRangePicker = <T extends React.ElementType = "input">({
 
   return (
     <CSSDateRangePicker
+      character=" - "
       ranges={predefinedRanges}
       defaultValue={predefinedRanges[0].value}
       className={classes.rootClasses}

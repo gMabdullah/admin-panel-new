@@ -29,6 +29,15 @@ interface ProductResponse {
   menu_items: any[];
 }
 
+interface TypeKeyOfItem {
+  keysOfItems: {
+    key: string;
+    value: string;
+    align?: "left" | "center" | "right" | "justify" | "inherit" | undefined;
+    width?: string;
+  }[];
+}
+
 interface ProductResponseInfo {
   tax: string;
   discount: string;

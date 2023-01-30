@@ -24,7 +24,7 @@ import {
   cartListingHeaderStyle,
   cartListingTableStyle,
 } from "./Styles";
-import { setDate } from "store/slices/Main";
+import { setDate, toggleDatePicker } from "store/slices/Main";
 import { useDispatch, useSelector } from "store";
 import { GATEWAY_API_URL } from "config";
 
@@ -63,9 +63,12 @@ const useStyles = makeStyles(() => ({
 
 const Carts = () => {
   const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(toggleDatePicker(true)); // enable date picker
+  });
   const classes = useStyles();
   const { eatout_id } = JSON.parse(localStorage.getItem("businessInfo")!);
-  const { startDate, endDate, decimalPlaces, currency } = useSelector(
+  const { startDate, endDate, decimalPlaces } = useSelector(
     (state) => state.main
   );
 
@@ -187,8 +190,8 @@ const Carts = () => {
 
   const addCurrency = (params: GridRenderCellParams) => {
     return (
-      <Stack direction="row" spacing={0.25} sx={{ alignItems: "center" }}>
-        <Typography sx={currencyStyle}>{currency}</Typography>
+      <Stack direction="row" spacing={0.25} sx={{ alignItems: "end" }}>
+        <Typography sx={currencyStyle}>{params.row.currency}</Typography>
         <Typography variant="subtitle1" sx={{ color: "#212121" }}>
           {parseFloat(params.value).toFixed(decimalPlaces)}
         </Typography>
@@ -249,7 +252,7 @@ const Carts = () => {
       renderCell: formatString,
     },
     {
-      field: "total",
+      field: "gtotal",
       headerName: "Total",
       headerClassName: classes.headerStyles,
       flex: 0.6,

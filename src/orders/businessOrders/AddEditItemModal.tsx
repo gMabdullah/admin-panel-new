@@ -8,7 +8,6 @@ import {
   CardActionArea,
   CardMedia,
   Card,
-  Chip,
   Paper,
 } from "@mui/material";
 import {
@@ -25,6 +24,7 @@ import TdTextField from "components/TdTextField";
 import CustomButton from "components/CustomButton";
 import Progress from "components/Progress";
 import Notify from "components/Notify";
+import TableChip from "components/TableChip";
 
 import { OptionSetContext } from "orders/context/OptionSetContext";
 import SelectOptionSet from "./SelectOptionSet";
@@ -424,7 +424,7 @@ const AddEditItemModal = ({
                         onClick={closeAddEditModal}
                         sx={{ p: "unset" }}
                       >
-                        <CloseIcon htmlColor="#616161" fontSize="large" />
+                        <CloseIcon htmlColor="#D84315" fontSize="large" />
                       </IconButton>
                     </Grid>
                   </Grid>
@@ -550,38 +550,7 @@ const AddEditItemModal = ({
                                 </Grid>
 
                                 <Grid item>
-                                  <Chip
-                                    label={`${
-                                      item.status === "0"
-                                        ? "Available"
-                                        : "Out of Stock"
-                                    }`}
-                                    sx={{
-                                      color: `${
-                                        item.status === "0"
-                                          ? "#00C853"
-                                          : "#D84315"
-                                      }`,
-                                      background: `${
-                                        item.status === "0"
-                                          ? "#C7FFD6"
-                                          : "#FBE9E7"
-                                      }`,
-                                      p: `${
-                                        item.status === "0"
-                                          ? "8px 17.5px"
-                                          : "8px"
-                                      }`,
-
-                                      alignItems: "center",
-                                      mr: "16px",
-                                      ml: "10px",
-
-                                      "& .MuiChip-label": {
-                                        p: "unset",
-                                      },
-                                    }}
-                                  />
+                                  <TableChip statusValue={item.status} />
                                 </Grid>
                               </Grid>
                             </CardActionArea>
@@ -703,4 +672,5 @@ const AddEditItemModal = ({
     </>
   );
 };
+
 export default AddEditItemModal;

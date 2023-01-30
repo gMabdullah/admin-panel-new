@@ -3,7 +3,7 @@ const currencyStyle = {
   fontStyle: "normal",
   fontWeight: "400",
   fontSize: "10px",
-  lineHeight: "12px",
+  mb: "2.1px",
   color: "#757575",
 };
 

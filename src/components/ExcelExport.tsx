@@ -147,7 +147,9 @@ const ExcelExport = ({
         workSheet.getRow(11).getCell(2).value = `${OrderDetailStatic?.address}`;
 
         workSheet.getRow(12).getCell(1).value = "Email";
-        workSheet.getRow(12).getCell(2).value = `${OrderDetailStatic?.email}`;
+        workSheet
+          .getRow(12)
+          .getCell(2).value = `${OrderDetailStatic?.user_email}`;
 
         workSheet.getRow(13).getCell(1).value = "Landline";
         workSheet

@@ -7,8 +7,11 @@ interface dateProps {
   globalSettings: null;
   decimalPlaces: number;
   minimumSpend: number;
+  showDatePicker: boolean;
+
   currency: string;
   label: string;
+  richEditor: string;
   paymentSettings: StripeSettings;
   delivery_services: DeliveryServices;
 }
@@ -22,6 +25,8 @@ const initialState: dateProps = {
   minimumSpend: 0,
   currency: "",
   label: "",
+  showDatePicker: true,
+  richEditor: "",
   paymentSettings: {
     account_id: "",
     active: false,
@@ -51,9 +56,13 @@ const main = createSlice({
       state.startDate = null;
       state.endDate = null;
     },
+    toggleDatePicker(state, action) {
+      state.showDatePicker = action.payload;
+    },
     setGlobalSettings(state, action) {
       const payload = action.payload;
       state.globalSettings = payload;
+      state.richEditor = payload.settings.editor;
       state.decimalPlaces = payload.decimal_places;
       state.minimumSpend = payload.minimum_spend;
       state.currency = payload.currency;
@@ -66,4 +75,5 @@ const main = createSlice({
 
 export default main.reducer;
 
-export const { setDate, resetDates, setGlobalSettings } = main.actions;
+export const { setDate, resetDates, setGlobalSettings, toggleDatePicker } =
+  main.actions;

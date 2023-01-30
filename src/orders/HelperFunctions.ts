@@ -121,10 +121,107 @@ export const getMinMaxAndRequired = (optionHead: any) => {
 
   return objToReturn;
 };
-
+export const getLocalStorage = () => {
+  const { eatout_id, user_id } = JSON.parse(
+    localStorage.getItem("businessInfo")!
+  );
+  return { eatout_id, user_id };
+};
 // clear local storage on logout
 export const clearStorage = () => {
   localStorage.removeItem("allBusinessesInfo");
   localStorage.removeItem("businessInfo");
   localStorage.removeItem("tdLogin");
+};
+
+export const compareItem = (
+  a: { label: string; value: string },
+  b: { label: string; value: string }
+) => {
+  // a should come before b in the sorted order
+  if (a.label.toLowerCase() < b.label.toLowerCase()) {
+    return -1;
+    // a should come after b in the sorted order
+  } else if (a.label.toLowerCase() > b.label.toLowerCase()) {
+    return 1;
+    // and and b are the same
+  } else {
+    return 0;
+  }
+};
+
+export const slugify = (slug: string) => {
+  return (
+    slug
+      .toString()
+      .trim()
+      .toLowerCase()
+      // remove any special character with spaces
+      .replace(/[\W_]+/g, " ")
+      // remove more than one spaces and dashes
+      .replace(/\s+|-+/g, "-")
+      // remove -dashes from start of string
+      .replace(/^\-/i, " ")
+  );
+};
+
+export const capitalizeFLetter = (value: string) => {
+  // handle null, undefined etc
+  if (!value) return;
+
+  let splitStr = value.toLowerCase().split(" ");
+  for (let i = 0; i < splitStr.length; i++) {
+    splitStr[i] =
+      splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
+  }
+  // Directly return the joined string
+  return splitStr.join(" ");
+};
+const handleLeadingZero = (n: number) => (n < 10 ? "0" + n : n);
+// Format time
+export const formatDate = (date: any) => {
+  return (
+    date.getFullYear() +
+    "-" +
+    handleLeadingZero(date.getMonth() + 1) +
+    "-" +
+    handleLeadingZero(date.getDate()) +
+    " " +
+    handleLeadingZero(date.getHours()) +
+    ":" +
+    handleLeadingZero(date.getMinutes()) +
+    ":00"
+  );
+};
+
+// Drag And drop For Product listing Reorder Function
+export const reorder = (list: any, sequence: any) => {
+  const result = Array.from(list);
+  const [removed] = result.splice(sequence[0].source, 1);
+  result.splice(sequence[0].destination, 0, removed);
+
+  return result;
+};
+export const sortMenuItems = (
+  shortValues: any,
+  type: string,
+  shortType: string
+) => {
+  if (shortType === "itemShort") {
+    shortValues.map((Items: any) => {
+      if (type === "0") {
+        Items.menu_item = Items.menu_item.sort((a: any, b: any) => {
+          if (a.name < b.name) return -1;
+          if (b.name < a.name) return 1;
+          return 0;
+        });
+      } else {
+        Items.menu_item = Items.menu_item.sort((a: any, b: any) => {
+          if (a.name > b.name) return -1;
+          if (b.name > a.name) return 1;
+          return 0;
+        });
+      }
+    });
+  }
 };

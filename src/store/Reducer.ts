@@ -1,44 +1,53 @@
 // third-party
-import { combineReducers } from 'redux';
-import { persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
+import { combineReducers } from "redux";
+import { persistReducer } from "redux-persist";
+import storage from "redux-persist/lib/storage";
 
 // project imports
-import snackbarReducer from './slices/snackbar';
-import customerReducer from './slices/customer';
-import contactReducer from './slices/contact';
-import productReducer from './slices/product';
-import chatReducer from './slices/chat';
-import calendarReducer from './slices/calendar';
-import mailReducer from './slices/mail';
-import userReducer from './slices/user';
-import cartReducer from './slices/cart';
-import kanbanReducer from './slices/kanban';
-import menuReducer from './slices/menu';
-import mainReducer from './slices/Main';
-
+import snackbarReducer from "./slices/snackbar";
+import customerReducer from "./slices/customer";
+import contactReducer from "./slices/contact";
+import productReducer from "./slices/product";
+import chatReducer from "./slices/chat";
+import calendarReducer from "./slices/calendar";
+import mailReducer from "./slices/mail";
+import userReducer from "./slices/user";
+import cartReducer from "./slices/cart";
+import kanbanReducer from "./slices/kanban";
+import menuReducer from "./slices/menu";
+import mainReducer from "./slices/Main";
+import dropdownReducer from "./slices/Dropdown";
 // ==============================|| COMBINE REDUCER ||============================== //
 
 const reducer = combineReducers({
-    main: mainReducer,
-    snackbar: snackbarReducer,
-    cart: persistReducer(
-        {
-            key: 'cart',
-            storage,
-            keyPrefix: 'berry-'
-        },
-        cartReducer
-    ),
-    kanban: kanbanReducer,
-    customer: customerReducer,
-    contact: contactReducer,
-    product: productReducer,
-    chat: chatReducer,
-    calendar: calendarReducer,
-    mail: mailReducer,
-    user: userReducer,
-    menu: menuReducer
+  dropdown: dropdownReducer,
+  // main: mainReducer,
+  main: persistReducer(
+    {
+      key: "global",
+      storage,
+      keyPrefix: "ts-",
+    },
+    mainReducer
+  ),
+  snackbar: snackbarReducer,
+  cart: persistReducer(
+    {
+      key: "cart",
+      storage,
+      keyPrefix: "berry-",
+    },
+    cartReducer
+  ),
+  kanban: kanbanReducer,
+  customer: customerReducer,
+  contact: contactReducer,
+  product: productReducer,
+  chat: chatReducer,
+  calendar: calendarReducer,
+  mail: mailReducer,
+  user: userReducer,
+  menu: menuReducer,
 });
 
 export default reducer;

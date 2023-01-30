@@ -4,11 +4,12 @@ import { FormGroup, FormControlLabel, Switch } from "@mui/material";
 import { withStyles } from "@mui/styles";
 
 type switchType<T extends React.ElementType> = {
-  onChange?: (event?: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   label?: string;
   checked?: boolean;
   value?: string;
   name?: string;
+  sx?: object;
 };
 
 const PurpleSwitch = withStyles({
@@ -31,11 +32,12 @@ const CustomizedSwitch = <T extends React.ElementType = "button">({
   value,
   label,
   name,
+  sx,
   ...rest
 }: switchType<T>): JSX.Element => {
   return (
     <>
-      <FormGroup>
+      <FormGroup sx={sx}>
         <FormControlLabel
           control={
             <PurpleSwitch

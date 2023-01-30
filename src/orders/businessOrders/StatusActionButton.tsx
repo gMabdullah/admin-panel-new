@@ -15,7 +15,7 @@ import CustomButton from "components/CustomButton";
 
 import { OrderTimelineProp } from "./OrderStatusAction";
 import { useSelector } from "store";
-import { IQBAL_BUSINESS_ID } from "constants/BusinessIds";
+import { IQBAL_BUSINESS_ID } from "../../constants";
 import { PRE_AUTH_CONFIRM_PAYMENT, TOSSDOWN_SITE } from "config";
 
 interface errorProps {
@@ -49,7 +49,7 @@ const StatusActionButton = ({
   >("info");
 
   // Global States
-  const { selectedOrderContext, setSelectedOrderContext } =
+  const { selectedOrderContext, setPreventOrderUpdate } =
     useContext(OptionSetContext);
   const { paymentSettings, delivery_services: deliveryServices } = useSelector(
     (state) => state.main
@@ -217,6 +217,14 @@ const StatusActionButton = ({
           setNotifyType("error");
           setNotify(true);
         } else if (status && (status === 200 || status == 1)) {
+          // setting setPreventOrderUpdate to true so that we can hide the actions in order detail if the updating status is other than pending & viewed
+          if (
+            currentStatus.toLowerCase() !== "pending" &&
+            currentStatus.toLowerCase() !== "viewed"
+          ) {
+            setPreventOrderUpdate(true);
+          }
+
           setNotifyMessage(message);
           setNotifyType("success");
           setNotify(true);
