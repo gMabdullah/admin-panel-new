@@ -456,7 +456,7 @@ const Items = () => {
               />
               <TablePagination
                 component="div"
-                count={itemsCount}
+                count={items.length}
                 page={page}
                 onPageChange={handleChangePage}
                 rowsPerPage={rowsPerPage}

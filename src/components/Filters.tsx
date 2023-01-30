@@ -16,7 +16,7 @@ import {
   toggleColumn,
 } from "store/slices/Main";
 import CustomButton from "./CustomButton";
-// import { keysOfItems } from "constants";
+
 interface filtersProps {
   items?: ProductResponse["items"];
   setItems: React.Dispatch<React.SetStateAction<ProductResponseItem[]>>;
