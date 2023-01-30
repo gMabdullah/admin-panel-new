@@ -79,6 +79,7 @@ const useStyles = makeStyles((theme) => ({
     "& .MuiOutlinedInput-input": {
       background: "#F5F5F5",
       padding: "14px 40px 14px 24px !important",
+      fontSize: "13px",
     },
     "& .MuiOutlinedInput-root": {
       background: "#F5F5F5",
@@ -107,13 +108,10 @@ const MenuProps = {
     sx: {
       width: "224px",
       marginTop: "6px",
-      // maxHeight: "206px",
       boxShadow: "0px 1px 14px rgba(0, 0, 0, 0.1)",
       background: "#FFFFFF",
       borderRadius: "8px",
       p: "unset",
-
-      // marginLeft: "22px",
 
       "& .MuiList-root": {
         padding: "unset",
@@ -121,14 +119,6 @@ const MenuProps = {
       "& .MuiMenuItem-root": {
         p: "16px",
       },
-
-      // "& .MuiOutlinedInput-input": {
-      //   background: "none",
-      //   p: "11px 67.9px 11px 14.88px",
-      // },
-      // "& .Mui-checked": {
-      //   color: "#2196F3",
-      // },
     },
   },
 };
