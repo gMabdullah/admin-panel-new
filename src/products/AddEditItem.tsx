@@ -7,7 +7,9 @@ import {
   Divider,
   Autocomplete,
   TextField,
+  IconButton,
 } from "@mui/material";
+import { Add } from "@mui/icons-material";
 
 import useAxios from "axios-hooks";
 
@@ -416,7 +418,7 @@ const AddEditItem = ({
         </Typography>
 
         <Grid container>
-          <Grid item xs={12} sx={{ display: "flex", mb: "12px" }}>
+          <Grid item xs={12} sx={{ display: "flex" }}>
             <DropDownSearch
               label="Category"
               value={state.itemCategory}
@@ -425,10 +427,26 @@ const AddEditItem = ({
               isError={state.fieldError.itemCategoryField === "" ? false : true}
               helperText={state.fieldError.itemCategoryField}
             />
+
+            <IconButton
+              onClick={toggleCategoryModal}
+              sx={{
+                background: "#24335E",
+                borderRadius: "8px",
+                height: "48px",
+                width: "48px",
+                ml: "7px",
+                "&:hover": {
+                  backgroundColor: "#24335E",
+                },
+              }}
+            >
+              <Add htmlColor="#FFFFFF" fontSize="medium" />
+            </IconButton>
           </Grid>
         </Grid>
 
-        <Grid container>
+        {/* <Grid container>
           <Grid item xs={12}>
             <CustomButton
               onClick={toggleCategoryModal}
@@ -442,9 +460,9 @@ const AddEditItem = ({
               Add New Category
             </CustomButton>
           </Grid>
-        </Grid>
+        </Grid> */}
 
-        <Divider sx={{ m: "24px 0 31px" }} />
+        <Divider sx={{ m: "31px 0" }} />
 
         <Grid container>
           <Grid item xs={12} sx={{ mb: "24px" }}>

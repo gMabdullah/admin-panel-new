@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 
-import { DeleteTwoTone, EditTwoTone } from "@mui/icons-material";
-import { Grid, Stack, Box } from "@mui/material";
+import { DeleteTwoTone, EditTwoTone, Add } from "@mui/icons-material";
+import { Grid, Stack, Box, IconButton } from "@mui/material";
 import {
   DataGrid,
   GridActionsCellItem,
@@ -197,30 +197,43 @@ const Nutrition = () => {
         }}
       >
         <Grid container>
-          <Grid item xs={12} sx={{ display: "flex", mb: "12px", mt: "24px" }}>
-            <Grid item xs={6}>
-              <TdTextField
-                name="name"
-                label="Nutrition Name"
-                value={nutrition.name}
-                onChange={handleChange}
-                // error={fieldError.address === "" ? false : true}
-                // helperText={fieldError.address}
-              />
-            </Grid>
-            <Grid item xs={6} sx={{ ml: "8px" }}>
-              <TdTextField
-                name="value"
-                label="Nutrition Value"
-                value={nutrition.value}
-                onChange={handleChange}
-                // error={fieldError.address === "" ? false : true}
-                // helperText={fieldError.address}
-              />
-            </Grid>
+          <Grid item xs={12} sx={{ display: "flex", mb: "25px", mt: "24px" }}>
+            <TdTextField
+              name="name"
+              label="Nutrition Name"
+              value={nutrition.name}
+              onChange={handleChange}
+              // error={fieldError.address === "" ? false : true}
+              // helperText={fieldError.address}
+            />
+            <TdTextField
+              name="value"
+              label="Nutrition Value"
+              value={nutrition.value}
+              onChange={handleChange}
+              sx={{ ml: "7px" }}
+              // error={fieldError.address === "" ? false : true}
+              // helperText={fieldError.address}
+            />
+            <IconButton
+              onClick={addEditNutrition}
+              sx={{
+                background: "#24335E",
+                borderRadius: "8px",
+                height: "48px",
+                width: "48px",
+                ml: "7px",
+                "&:hover": {
+                  backgroundColor: "#24335E",
+                },
+              }}
+            >
+              <Add htmlColor="#FFFFFF" fontSize="medium" />
+            </IconButton>
           </Grid>
         </Grid>
-        <CustomButton
+
+        {/* <CustomButton
           sx={{
             color: "#DB154D",
             fontSize: "13px",
@@ -230,7 +243,8 @@ const Nutrition = () => {
           onClick={addEditNutrition}
         >
           {editNutrition.editFlag ? "Update Nutrition" : " Add Nutrition"}
-        </CustomButton>
+        </CustomButton> */}
+
         {nutritionRows.length > 0 && (
           <Box
             sx={{
