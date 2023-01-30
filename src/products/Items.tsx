@@ -15,7 +15,7 @@ import SortByAlphaIcon from "@mui/icons-material/SortByAlpha";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { SelectChangeEvent } from "@mui/material/Select";
 import useAxios from "axios-hooks";
-import { debounce } from "lodash";
+import { debounce, filter } from "lodash";
 import MainCard from "components/cards/MainCard";
 import DraggableTable from "components/DraggableTable";
 import CustomButton from "components/CustomButton";
@@ -69,6 +69,19 @@ const dropdownBulkAction = [
     value: "Download Sample",
   },
 ];
+let countObj = {
+  withImages: 0,
+  withNoImages: 0,
+  available: 0,
+  unAvailable: 0,
+  availableWithImg: 0,
+  unAvailableWithImg: 0,
+  availableWithNoImg: 0,
+  unAvailableWithNoImg: 0,
+  displayNone: 0,
+  displayWeb: 0,
+  displayPOS: 0,
+};
 const Items = () => {
   const dispatch = useDispatch();
   const { eatout_id, user_id } = JSON.parse(
@@ -81,7 +94,7 @@ const Items = () => {
 
   const { selectedMenu, selectedBranch, selectedCategory, selectedBrand } =
     useSelector((state) => state.dropdown);
-  const [items, setItems] = useState<ProductResponse["items"]>([]);
+  const [items, setItems] = useState<ProductResponse["items"] | []>([]);
   const [applyFilters, setApplyFilters] = React.useState(false);
   const [toggleDrawer, setToggleDrawer] = useState(false);
   const [itemsCount, setItemsCount] = useState(100);
@@ -94,8 +107,21 @@ const Items = () => {
   const [searchQueryItems, setSearchQueryItems] = useState<string>("");
   const [linearLoader, setLinearLoader] = useState<boolean>(false);
   const { state } = useContext(ProductsContext);
-  // const [filter, setFilter] = useState<SVGSVGElement | null>(null);
-  // const [filterToggle, setFitlerToggle] = useState(false);
+  const [count, setCount] = useState(countObj);
+  // const [menuItem, setMenuItem] = useState<any>([]);
+  //   {
+  //   withImages: [],
+  //   withNoImages: [],
+  //   available: [],
+  //   unAvailable: [],
+  //   availableWithImg: [],
+  //   unAvailableWithImg: [],
+  //   availableWithNoImg: [],
+  //   unAvailableWithNoImg: [],
+  //   displayNone: [],
+  //   displayWeb: [],
+  //   displayPOS: [],
+  // }
 
   // API Call For Product //
   const [{ data: productData, loading: productLoading }, getProductsAPI] =
@@ -176,7 +202,8 @@ const Items = () => {
       if (applyFilters) {
         setApplyFilters(false);
       }
-
+      // return ungroup items in an array
+      // combination of filter and map functions
       state.allItemsForGrouping = productData.items.reduce(
         (items: DropdownValue[], item: ProductResponseItem) => {
           if (!item.is_grouped) {
@@ -189,6 +216,10 @@ const Items = () => {
         },
         []
       );
+      // // Group data
+      // if (productData.items && productData.items.length > 0) {
+      //   groupData(productData.items);
+      // }
     }
   }, [productData]);
 
@@ -198,6 +229,112 @@ const Items = () => {
     // setLinearLoader(false);
   }, [page, rowsPerPage]);
 
+  // // Group  the data
+  // const groupData = (items: ProductResponse["items"]) => {
+  //   debugger;
+  //   let result = [];
+  //   let array = [];
+  //   if (
+  //     items !== null &&
+  //     items.length > 0
+  //     // && items[0] !== ""
+  //   ) {
+  //     result = items.reduce((r, a) => {
+  //       r[a.category] = r[a.category] || [];
+  //       r[a.category].push(a);
+  //       return r;
+  //     }, Object.create(null));
+
+  //     let categoryWiseItems: any = Object.entries(result);
+  //     let withNoImages: any = [],
+  //       withImages: any = [],
+  //       available: any = [],
+  //       unAvailable: any = [],
+  //       availableWithImg: any = [],
+  //       unAvailableWithImg: any = [],
+  //       availableWithNoImg: any = [],
+  //       unAvailableWithNoImg: any = [],
+  //       displayNone: any = [],
+  //       displayWeb: any = [],
+  //       displayPOS: any = [];
+  //     for (let i = 0; i < categoryWiseItems.length; i++) {
+  //       categoryWiseItems[i][1].map((e: ProductResponseItem) => {
+  //         // items with no image
+  //         e.image.includes("no_image") && withNoImages.push(e);
+  //         // items with image
+  //         !e.image.includes("no_image") && withImages.push(e);
+  //         // items available
+  //         e.status === "0" && available.push(e);
+  //         // items unavailable
+  //         e.status === "1" && unAvailable.push(e);
+  //         // items with images and avialable
+  //         e.status === "0" &&
+  //           !e.image.includes("no_image") &&
+  //           availableWithImg.push(e);
+  //         // items with images but unavialable
+  //         e.status === "1" &&
+  //           !e.image.includes("no_image") &&
+  //           unAvailableWithImg.push(e);
+  //         // items with no images and avialable
+  //         e.status === "0" &&
+  //           e.image.includes("no_image") &&
+  //           availableWithNoImg.push(e);
+  //         // items with no images and also unavialable
+  //         e.status === "1" &&
+  //           e.image.includes("no_image") &&
+  //           unAvailableWithNoImg.push(e);
+  //         // items not displaying at anywhere
+  //         e.display_source === "1" && displayNone.push(e);
+  //         // items only displaying on the web
+  //         e.display_source === "2" && displayWeb.push(e);
+  //         // items only displaying on the pos
+  //         e.display_source === "3" && displayPOS.push(e);
+  //       });
+
+  //       // set Data of all
+  //       // array.push(...categoryWiseItems[i][1]);
+  //       array.push({
+  //         menu_item: categoryWiseItems[i][1],
+  //         withImages,
+  //         withNoImages,
+
+  //         available,
+  //         unAvailable,
+  //         availableWithImg,
+  //         unAvailableWithImg,
+  //         availableWithNoImg,
+  //         unAvailableWithNoImg,
+
+  //         displayNone,
+  //         displayWeb,
+  //         displayPOS,
+  //       });
+  //     }
+  //     // set Count of all
+  //     setCount({
+  //       withImages: withImages.length,
+  //       withNoImages: withNoImages.length,
+
+  //       available: available.length,
+  //       unAvailable: unAvailable.length,
+  //       availableWithImg: availableWithImg.length,
+  //       unAvailableWithImg: unAvailableWithImg.length,
+  //       availableWithNoImg: availableWithNoImg.length,
+  //       unAvailableWithNoImg: unAvailableWithNoImg.length,
+
+  //       displayNone: displayNone.length,
+  //       displayWeb: displayWeb.length,
+  //       displayPOS: displayPOS.length,
+  //     });
+
+  //     // setItems(array == undefined ? [] : array);
+  //     // setGrouped(array);
+  //     console.log("array", array);
+  //     setMenuItem({
+  //       items: array,
+  //     });
+  //   }
+  // };
   const applyButtonFilter = () => {
     setApiCallFlag("");
     setApplyFilters(true);
@@ -282,13 +419,7 @@ const Items = () => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-
-  // const openFilter = (event: React.MouseEvent<SVGSVGElement>) => {
-  //   // debugger;
-  //   // setFilter(event.currentTarget);
-  //   setFitlerToggle((prevState) => !prevState);
-  // };
-
+  console.log("items", items);
   return (
     <ProductsProvider>
       {toggleDrawer && (
@@ -298,13 +429,6 @@ const Items = () => {
           getProductApi={getProductsAPI}
         />
       )}
-      {/* {filterToggle && (
-        <Filters
-          // filter={filter}
-          // filterToggle={filterToggle}
-          // setFitlerToggle={setFitlerToggle}
-        />
-      )} */}
       <Suspense
         fallback={
           <div>
@@ -411,13 +535,20 @@ const Items = () => {
                     <FilterListIcon onClick={(event) => openFilter(event)} />
                   </Stack>
                 </IconButton> */}
-                <Filters />
+                <Filters
+                  items={items}
+                  setItems={setItems}
+                  productLoading={productLoading}
+                  productData={productData}
+                  // count={count}
+                  // setCount={setCount}
+                />
               </Stack>
             </Grid>
           </Grid>
         </Grid>
         <Grid container>
-          {itemsCount && (
+          {items && (
             <Grid item xs={12}>
               <Typography
                 variant="h5"
@@ -426,7 +557,7 @@ const Items = () => {
                   color: "#212121",
                 }}
               >
-                {`${itemsCount} Item(s)`}
+                {`${items.length} Item(s)`}
               </Typography>
             </Grid>
           )}

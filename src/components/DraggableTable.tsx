@@ -43,7 +43,7 @@ const DraggableTable = ({
   handleDrawerToggle,
 }: TablePropsType) => {
   const { decimalPlaces, productColumns } = useSelector((state) => state.main);
-  console.log("drag and drop productColumns", productColumns);
+
   // useEffect(() => {}, [productColumns]);
   const handleDragEnd = (result: any) => {
     const sortArray = [
