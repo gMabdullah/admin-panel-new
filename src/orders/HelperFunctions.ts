@@ -1,5 +1,4 @@
-import moment from "moment";
-
+import axios from "axios";
 import moment from "moment";
 
 export const convertMinutesInToHours = (mins: number) => {
@@ -197,7 +196,13 @@ export const formatDate = (date: any) => {
     ":00"
   );
 };
-
+const getFormatedTodayDate = () => {
+  let date = new Date();
+  let today = `${handleLeadingZero(date.getDate())}-${handleLeadingZero(
+    date.getMonth() + 1
+  )}-${date.getFullYear()}`;
+  return today;
+};
 // Drag And drop For Product listing Reorder Function
 export const reorder = (list: any, sequence: any) => {
   const result = Array.from(list);
@@ -246,4 +251,56 @@ export const priceValidation = (price: string) => {
   return (
     !/^[0-9.|()&^]*$/.test(price) || typeof price === "string" || price === ""
   );
+};
+
+/* this method will upload images to AWS S3 Bucket */
+export const uploadImageAWS = (data: AwsDataType) => {
+  const { eatout_id, user_id } = JSON.parse(
+    localStorage.getItem("businessInfo")!
+  );
+  var formData = new FormData();
+  formData.append("dealid", data.dealId);
+  formData.append("menuid", data.menuId);
+  formData.append("menu_cat_id", data.categoryId);
+  formData.append("uid", user_id);
+  formData.append("r_id", eatout_id);
+  formData.append("reviewid", data.reviewId);
+  formData.append("option_cat_id", data.optionCatId);
+  formData.append("option_id", data.optionItemId);
+  formData.append("brand_id", data.Brandid);
+  formData.append("img_title", "");
+  formData.append("status", "Approved");
+  formData.append("im_title", "");
+  formData.append("image_position", data.imagePostion);
+  formData.append("im_description", "");
+  formData.append("im_type", data.imageTableType);
+  formData.append("created_at", getFormatedTodayDate());
+  formData.append("source", "biz");
+  formData.append("cover", "");
+  formData.append("featured_image", "0");
+  formData.append("foodtype", "");
+  formData.append("comment", "");
+  formData.append("image_type", data.imageType);
+  formData.append("resize", data.resize);
+  formData.append("height", data.height);
+  formData.append("width", data.width);
+  formData.append("aws_flag", "1");
+  let multipleFiles = data.files;
+  let n = multipleFiles.length;
+
+  if (data.imageTableType === "bulk") {
+    for (let index = 0; index < n; index++) {
+      const filterImagesFromData = multipleFiles[index];
+      formData.append("files", filterImagesFromData);
+    }
+  } else {
+    formData.append("files", multipleFiles);
+  }
+
+  return new Promise((resolve, reject) => {
+    axios
+      .post(`images/upload`, formData)
+      .then((response) => resolve(response)) // Successfull responce
+      .catch((err) => reject(err)); // Catch any error
+  });
 };

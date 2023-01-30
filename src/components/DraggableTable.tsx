@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { Suspense } from "react";
 
 import {
   Typography,
@@ -21,7 +21,8 @@ import TableChip from "./TableChip";
 import TableActionsButton from "./TableActionsButton";
 import { AxiosPromise, AxiosRequestConfig } from "axios";
 import { RefetchOptions } from "axios-hooks";
-
+import Loader from "./Loader";
+const AddMenuImages = React.lazy(() => import("imageSection/AddMenuImages"));
 interface TablePropsType {
   items?: ProductResponse["items"];
   keysOfItems: TypeKeyOfItem["keysOfItems"];
@@ -57,7 +58,7 @@ const DraggableTable = ({
     shortDragDropItems(sortArray);
     // handle the end of a drag and drop event here
   };
-
+  const openImageModal = () => {};
   const addCurrency = (value: any, currency: any) => {
     return (
       <Stack direction="row" spacing={0.25} sx={{ alignItems: "center" }}>
@@ -145,18 +146,12 @@ const DraggableTable = ({
                                   style={{ width: column?.width }}
                                 >
                                   {column.key === "image" ? (
-                                    <CardMedia
-                                      component="img"
-                                      image={row[column.key]}
-                                      alt="Burger"
-                                      sx={{
-                                        height: "52px",
-                                        width: "52px",
-                                        display: "flex",
-                                        justifyContent: "center",
-                                        alignItems: "center",
-                                      }}
-                                    />
+                                    <Suspense fallback={<Loader />}>
+                                      <AddMenuImages
+                                        imageUrl={row[column.key]}
+                                        itemId={row.menu_item_id}
+                                      />
+                                    </Suspense>
                                   ) : column.key === "name" ? (
                                     <>
                                       <Typography variant="h5">
