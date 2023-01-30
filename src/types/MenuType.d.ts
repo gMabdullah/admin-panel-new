@@ -37,3 +37,20 @@ interface EditItem {
   editItemFlag: boolean;
   editItemId: string;
 }
+//Aws Data Type
+interface AwsDataType {
+  dealId: string | Blob;
+  menuId: string | Blob;
+  categoryId: string | Blob;
+  reviewId: string | Blob;
+  optionCatId: string | Blob;
+  optionItemId: string | Blob;
+  Brandid: string | Blob;
+  imagePostion: string | Blob;
+  imageTableType: string | Blob;
+  imageType: string | Blob;
+  resize: string | Blob;
+  height: string | Blob;
+  width: string | Blob;
+  files: any;
+}

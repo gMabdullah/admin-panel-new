@@ -12,6 +12,9 @@ import {
   Card,
 } from "@mui/material";
 import BackupIcon from "@mui/icons-material/Backup";
+interface imageUploaderType {
+  handleChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+}
 export const useStyles = makeStyles(() => ({
   input: {
     display: "none",
@@ -38,33 +41,32 @@ export const useStyles = makeStyles(() => ({
   },
 }));
 
-const ImageUploader = () => {
+const ImageUploader = ({ handleChange }: imageUploaderType) => {
   const classes = useStyles();
-  const [selectedFile, setSelectedFile] = useState<any>();
-  console.log("selectedFile", selectedFile);
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    debugger;
-    const file = event.target.files?.[0];
-    if (!file) {
-      return;
-    }
-    const reader = new FileReader();
-    const imageUrl = reader.readAsDataURL(file);
-    reader.onloadend = () => {
-      if (reader.result instanceof ArrayBuffer) {
-        setSelectedFile([reader.result]);
-      }
-    };
-    console.log("imageUrl", imageUrl); // Would see a path?
-    setSelectedFile(file);
-    // if (beforeUpload(file)) {
-    //   setLoading(true);
-    //   getBase64(file, (url) => {
-    //     setLoading(false);
-    //     setImageUrl(url);
-    //   });
-    // }
-  };
+
+  //   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //     debugger;
+  //     const file = event.target.files?.[0];
+  //     if (!file) {
+  //       return;
+  //     }
+  //     const reader = new FileReader();
+  //     const imageUrl = reader.readAsDataURL(file);
+  //     reader.onloadend = () => {
+  //       if (reader.result instanceof ArrayBuffer) {
+  //         setSelectedFile([reader.result]);
+  //       }
+  //     };
+  //     console.log("imageUrl", imageUrl); // Would see a path?
+  //     setSelectedFile(file);
+  //     // if (beforeUpload(file)) {
+  //     //   setLoading(true);
+  //     //   getBase64(file, (url) => {
+  //     //     setLoading(false);
+  //     //     setImageUrl(url);
+  //     //   });
+  //     // }
+  //   };
   return (
     <>
       <Card className={classes.card}>

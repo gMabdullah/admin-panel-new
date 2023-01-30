@@ -135,6 +135,7 @@ const DraggableTable = ({
                                     <Suspense fallback={<Loader />}>
                                       <AddMenuImages
                                         imageUrl={row[column.key]}
+                                        itemId={row.menu_item_id}
                                       />
                                     </Suspense>
                                   ) : column.key === "name" ? (
