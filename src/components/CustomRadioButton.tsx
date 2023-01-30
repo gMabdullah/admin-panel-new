@@ -5,6 +5,8 @@ import {
   FormControlLabel,
   Radio,
   RadioGroup,
+  Stack,
+  Typography,
 } from "@mui/material";
 
 type radioButtonTypes<T extends React.ElementType> = {
@@ -37,6 +39,7 @@ const radioButtonStyle = {
   },
   "& .MuiTypography-root": {
     fontSize: "12px",
+    color: "#212121 !important",
   },
   "& .MuiRadio-root ": {
     p: "8px",
@@ -98,15 +101,19 @@ const CustomRadioButton = <T extends React.ElementType = "select">({
       >
         <RadioGroup row={row} onChange={onChange} value={value} {...rest}>
           {options?.map<object>((option, index) => (
-            <>
+            <Stack direction="row" alignItems="center" spacing={0.5}>
               <FormControlLabel
                 value={option.value}
                 key={index}
                 control={<Radio />}
                 label={option.label}
               />
-              {showCount && displayCount(option)}
-            </>
+              {showCount && (
+                <Typography sx={{ marginRight: "0" }} variant="body1">
+                  {displayCount(option)}
+                </Typography>
+              )}
+            </Stack>
           ))}
         </RadioGroup>
       </FormControl>

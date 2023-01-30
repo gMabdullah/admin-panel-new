@@ -216,125 +216,13 @@ const Items = () => {
         },
         []
       );
-      // // Group data
-      // if (productData.items && productData.items.length > 0) {
-      //   groupData(productData.items);
-      // }
     }
   }, [productData]);
 
   useEffect(() => {
-    // setLinearLoader(true);
     getProductsAPI();
-    // setLinearLoader(false);
   }, [page, rowsPerPage]);
 
-  // // Group  the data
-  // const groupData = (items: ProductResponse["items"]) => {
-  //   debugger;
-  //   let result = [];
-  //   let array = [];
-  //   if (
-  //     items !== null &&
-  //     items.length > 0
-  //     // && items[0] !== ""
-  //   ) {
-  //     result = items.reduce((r, a) => {
-  //       r[a.category] = r[a.category] || [];
-  //       r[a.category].push(a);
-  //       return r;
-  //     }, Object.create(null));
-
-  //     let categoryWiseItems: any = Object.entries(result);
-  //     let withNoImages: any = [],
-  //       withImages: any = [],
-  //       available: any = [],
-  //       unAvailable: any = [],
-  //       availableWithImg: any = [],
-  //       unAvailableWithImg: any = [],
-  //       availableWithNoImg: any = [],
-  //       unAvailableWithNoImg: any = [],
-  //       displayNone: any = [],
-  //       displayWeb: any = [],
-  //       displayPOS: any = [];
-  //     for (let i = 0; i < categoryWiseItems.length; i++) {
-  //       categoryWiseItems[i][1].map((e: ProductResponseItem) => {
-  //         // items with no image
-  //         e.image.includes("no_image") && withNoImages.push(e);
-  //         // items with image
-  //         !e.image.includes("no_image") && withImages.push(e);
-  //         // items available
-  //         e.status === "0" && available.push(e);
-  //         // items unavailable
-  //         e.status === "1" && unAvailable.push(e);
-  //         // items with images and avialable
-  //         e.status === "0" &&
-  //           !e.image.includes("no_image") &&
-  //           availableWithImg.push(e);
-  //         // items with images but unavialable
-  //         e.status === "1" &&
-  //           !e.image.includes("no_image") &&
-  //           unAvailableWithImg.push(e);
-  //         // items with no images and avialable
-  //         e.status === "0" &&
-  //           e.image.includes("no_image") &&
-  //           availableWithNoImg.push(e);
-  //         // items with no images and also unavialable
-  //         e.status === "1" &&
-  //           e.image.includes("no_image") &&
-  //           unAvailableWithNoImg.push(e);
-  //         // items not displaying at anywhere
-  //         e.display_source === "1" && displayNone.push(e);
-  //         // items only displaying on the web
-  //         e.display_source === "2" && displayWeb.push(e);
-  //         // items only displaying on the pos
-  //         e.display_source === "3" && displayPOS.push(e);
-  //       });
-
-  //       // set Data of all
-  //       // array.push(...categoryWiseItems[i][1]);
-  //       array.push({
-  //         menu_item: categoryWiseItems[i][1],
-  //         withImages,
-  //         withNoImages,
-
-  //         available,
-  //         unAvailable,
-  //         availableWithImg,
-  //         unAvailableWithImg,
-  //         availableWithNoImg,
-  //         unAvailableWithNoImg,
-
-  //         displayNone,
-  //         displayWeb,
-  //         displayPOS,
-  //       });
-  //     }
-  //     // set Count of all
-  //     setCount({
-  //       withImages: withImages.length,
-  //       withNoImages: withNoImages.length,
-
-  //       available: available.length,
-  //       unAvailable: unAvailable.length,
-  //       availableWithImg: availableWithImg.length,
-  //       unAvailableWithImg: unAvailableWithImg.length,
-  //       availableWithNoImg: availableWithNoImg.length,
-  //       unAvailableWithNoImg: unAvailableWithNoImg.length,
-
-  //       displayNone: displayNone.length,
-  //       displayWeb: displayWeb.length,
-  //       displayPOS: displayPOS.length,
-  //     });
-
-  //     // setItems(array == undefined ? [] : array);
-  //     // setGrouped(array);
-  //     console.log("array", array);
-  //     setMenuItem({
-  //       items: array,
-  //     });
-  //   }
-  // };
   const applyButtonFilter = () => {
     setApiCallFlag("");
     setApplyFilters(true);
@@ -393,7 +281,6 @@ const Items = () => {
   };
   // Drag And Drop Shorting
   const shortDragDropItems = async (sortArray: any) => {
-    // setLinearLoader(true);
     let shortItems: any = reorder(items, sortArray);
     setItems(shortItems);
     const formData = new FormData();
@@ -401,7 +288,6 @@ const Items = () => {
       formData.append("categoryArray[]", shortItems[index].menu_item_id);
     }
     const shortItemResponse = await shortItemId({ data: formData });
-    // setLinearLoader(false);
   };
 
   const handleChangePage = (
@@ -530,18 +416,11 @@ const Items = () => {
                     <SortByAlphaIcon />
                   </IconButton>
                 </Stack>
-                {/* <IconButton>
-                  <Stack>
-                    <FilterListIcon onClick={(event) => openFilter(event)} />
-                  </Stack>
-                </IconButton> */}
                 <Filters
                   items={items}
                   setItems={setItems}
                   productLoading={productLoading}
                   productData={productData}
-                  // count={count}
-                  // setCount={setCount}
                 />
               </Stack>
             </Grid>
@@ -571,7 +450,6 @@ const Items = () => {
                 getProductsAPI={getProductsAPI}
                 productLoading={productLoading}
                 items={items}
-                // keysOfItems={keysOfItems}
                 setSequenceItem={setSequenceItem}
                 shortDragDropItems={shortDragDropItems}
                 handleDrawerToggle={handleDrawerToggle}

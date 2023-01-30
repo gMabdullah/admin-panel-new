@@ -22,19 +22,6 @@ interface filtersProps {
   setItems: React.Dispatch<React.SetStateAction<ProductResponseItem[]>>;
   productLoading?: boolean;
   productData: any;
-  // count: {
-  //   withImages: number;
-  //   withNoImages: number;
-  //   available: number;
-  //   unAvailable: number;
-  //   availableWithImg: number;
-  //   unAvailableWithImg: number;
-  //   availableWithNoImg: number;
-  //   unAvailableWithNoImg: number;
-  //   displayNone: number;
-  //   displayWeb: number;
-  //   displayPOS: number;
-  // };
 }
 let countObj = {
   withImages: 0,
@@ -49,35 +36,7 @@ let countObj = {
   displayWeb: 0,
   displayPOS: 0,
 };
-let filteredObj = {
-  withImages: 0,
-  withNoImages: 0,
-  available: 0,
-  unAvailable: 0,
-  availableWithImg: 0,
-  unAvailableWithImg: 0,
-  availableWithNoImg: 0,
-  unAvailableWithNoImg: 0,
-  displayNone: 0,
-  displayWeb: 0,
-  displayPOS: 0,
-};
-let menuObj = {
-  menuItems: [],
-  withImages: [],
-  withNoImages: [],
-  available: [],
-  unAvailable: [],
-  availableWithImg: [],
-  unAvailableWithImg: [],
-  availableWithNoImg: [],
-  unAvailableWithNoImg: [],
-  displayNone: [],
-  displayWeb: [],
-  displayPOS: [],
-};
 interface menuItemProps {
-  menuItems: ProductResponseItem[];
   withImages: ProductResponseItem[];
   withNoImages: ProductResponseItem[];
   available: ProductResponseItem[];
@@ -98,27 +57,11 @@ const Filters = ({
 }: //  count
 filtersProps) => {
   const [toggleFilter, setToggleFilter] = useState<SVGSVGElement | null>(null);
-  const [grouped, setGrouped] = useState<ProductResponse["items"]>([]);
-  const [fitered, setFiltered] = useState(filteredObj);
   const [count, setCount] = useState(countObj);
   const open = Boolean(toggleFilter);
   const id = open ? "simple-popover" : undefined;
   const dispatch = useDispatch();
-  const [menuItem, setMenuItem] = useState<menuItemProps[] | []>([]);
-  //   {
-  //   menuItems: [],
-  //   withImages: [],
-  //   withNoImages: [],
-  //   available: [],
-  //   unAvailable: [],
-  //   availableWithImg: [],
-  //   unAvailableWithImg: [],
-  //   availableWithNoImg: [],
-  //   unAvailableWithNoImg: [],
-  //   displayNone: [],
-  //   displayWeb: [],
-  //   displayPOS: [],
-  // });
+  // const [menuItem, setMenuItem] = useState<menuItemProps[] | []>([]);
   const {
     productColumns,
     CountError,
@@ -135,7 +78,6 @@ filtersProps) => {
 
   // Group  the data
   const groupData = (items: ProductResponse["items"]) => {
-    // debugger;
     let result = [];
     let array: menuItemProps[] = [];
     if (
@@ -161,8 +103,10 @@ filtersProps) => {
         displayNone: any = [],
         displayWeb: any = [],
         displayPOS: any = [];
-      for (let i = 0; i < categoryWiseItems.length; i++) {
-        categoryWiseItems[i][1].map((e: ProductResponseItem) => {
+      // for (let i = 0; i < categoryWiseItems.length; i++) {
+      // categoryWiseItems[i][1]
+      productData.items &&
+        productData.items.map((e: ProductResponseItem) => {
           // items with no image
           e.image.includes("no_image") && withNoImages.push(e);
           // items with image
@@ -195,25 +139,24 @@ filtersProps) => {
           e.display_source === "3" && displayPOS.push(e);
         });
 
-        // set Data of all
-        // array.push(...categoryWiseItems[i][1]);
-        array.push({
-          menuItems: categoryWiseItems[i][1],
-          withImages,
-          withNoImages,
+      // set Data of all
+      array.push({
+        // menuItems: categoryWiseItems[i][1],
+        withImages,
+        withNoImages,
 
-          available,
-          unAvailable,
-          availableWithImg,
-          unAvailableWithImg,
-          availableWithNoImg,
-          unAvailableWithNoImg,
+        available,
+        unAvailable,
+        availableWithImg,
+        unAvailableWithImg,
+        availableWithNoImg,
+        unAvailableWithNoImg,
 
-          displayNone,
-          displayWeb,
-          displayPOS,
-        });
-      }
+        displayNone,
+        displayWeb,
+        displayPOS,
+      });
+      // }
       // set Count of all
       setCount({
         withImages: withImages.length,
@@ -231,9 +174,7 @@ filtersProps) => {
         displayPOS: displayPOS.length,
       });
 
-      // setItems(array == undefined ? [] : array);
-      // setGrouped(array);
-      setMenuItem(array);
+      // setMenuItem(array);
     }
   };
 
@@ -241,7 +182,6 @@ filtersProps) => {
     setToggleFilter(event.currentTarget);
 
   const onRadioChange = (event: { target: { name: string; value: any } }) => {
-    // debugger;
     const name = event.target.name;
     const value = event.target.value;
     dispatch(selectedFilter({ name, value }));
@@ -255,6 +195,7 @@ filtersProps) => {
     dispatch(toggleColumn({ key, value }));
   };
 
+  // Applying Filters of radio button and column switching
   const applyFilters = () => {
     // 1 - all cases of all filters
     if (
@@ -274,7 +215,6 @@ filtersProps) => {
         (item: ProductResponseItem) => !item.image.includes("no_image") && item
       );
       setItems(filtered == undefined ? [] : filtered);
-      // setItems([menuItem[0]?.withImages]);
     } else if (
       // without images
       showImagesItem == "without_images" &&
@@ -740,6 +680,8 @@ filtersProps) => {
       );
       setItems(filtered == undefined ? [] : filtered);
     }
+    // close filter modal
+    setToggleFilter(null);
   };
 
   return (
@@ -762,31 +704,22 @@ filtersProps) => {
           vertical: "bottom",
           horizontal: "left",
         }}
-        // sx={{
-        //   width: "70%",
-        // }}
       >
-        <Stack
-          spacing={2}
-          padding={4}
-          // sx={{
-          //   width: "50%",
-          // }}
-        >
+        <Stack spacing={2} padding={4}>
           {filtersMap.map((item: any) => (
             <>
               <Stack
                 display="flex"
-                spacing={4}
+                spacing={2}
                 direction="row"
                 alignItems="center"
                 justifyContent="space-between"
                 width="100%"
               >
-                <Typography width="25%" variant="body1">
+                <Typography width="20%" variant="h5">
                   {item.name}
                 </Typography>
-                <Stack width="75%">
+                <Stack width="80%">
                   <CustomRadioButton
                     name={item.key}
                     row={true}
@@ -810,9 +743,18 @@ filtersProps) => {
             </>
           ))}
 
-          {/* <Typography variant="h3">Custom Columns</Typography>
+          <Typography variant="h3">Custom Columns</Typography>
           <Grid container>
-            <Grid item xs={12}>
+            <Grid
+              item
+              xs={12}
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr 1fr",
+                rowGap: "2px",
+                columnGap: "16px",
+              }}
+            >
               {productColumns?.map((column: any) => (
                 <CustomizedSwitch
                   checked={column.selected}
@@ -829,7 +771,7 @@ filtersProps) => {
               ))}
             </Grid>
           </Grid>
-          <Divider /> */}
+          <Divider />
 
           <Grid container>
             <Grid
@@ -839,7 +781,7 @@ filtersProps) => {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "end",
-                p: "40px !important",
+                pt: "24px !important",
               }}
             >
               <CustomButton
@@ -860,7 +802,7 @@ filtersProps) => {
               <CustomButton
                 variant={"contained"}
                 sx={{
-                  p: "12px 26px",
+                  p: "12px 48px",
                   ml: "12px",
                 }}
                 color={"secondary"}
