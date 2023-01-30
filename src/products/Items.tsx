@@ -311,8 +311,12 @@ const Items = () => {
           </div>
         }
       >
-        {importExportDropDownValue === "Import New Items" && (
-          <ImportMenuExcel />
+        {(importExportDropDownValue === "Import New Items" ||
+          importExportDropDownValue === "Update Existing Item") && (
+          <ImportMenuExcel
+            importType={importExportDropDownValue}
+            setImportExportDropDownValue={setImportExportDropDownValue}
+          />
         )}
       </Suspense>
       {(productLoading || sortLoading) && <Loader />}
