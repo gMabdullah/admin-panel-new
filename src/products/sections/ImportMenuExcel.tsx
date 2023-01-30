@@ -112,7 +112,6 @@ const ImportMenuExcel = ({
   };
   ////////////// Import Menu Sheet /////////////
   const handleImportUpload = async (e: any) => {
-    debugger;
     setNotify(false);
     let list = [];
 
@@ -171,11 +170,9 @@ const ImportMenuExcel = ({
           }
         }
         rows.map((item: string[], index: number) => {
-          debugger;
           let errorCount = 0;
           if (index === 0 || index === 1) return true;
           if (item[0] === "" || item[2] === "") {
-            debugger;
             setItemMessage(`Data is missing on that line ${index + 3}`);
             setItemNotifyType("error");
             setNotify(true);
@@ -284,7 +281,6 @@ const ImportMenuExcel = ({
             //   setNotify(true);
             // }
             while (i < dataParse.length) {
-              debugger;
               itemsUpdateObject = {};
               itemsUpdateObject.product_id = dataParse[i][0];
               itemsUpdateObject.cat_id = dataParse[i][1];
@@ -387,12 +383,10 @@ const ImportMenuExcel = ({
               //   return false;
               // }
               list.push({ ...itemsUpdateObject });
-              debugger;
               i++;
             }
             setUpdatedItems(list);
             console.log("list", list);
-            debugger;
           }
         });
       };

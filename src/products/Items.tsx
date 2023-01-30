@@ -31,7 +31,7 @@ import { gridIconsCss } from "./Styles";
 import { useDispatch, useSelector } from "store";
 import { bulkActions, itemExportColumns, keysOfItems } from "../constants";
 import { ProductsProvider, ProductsContext } from "./context/ProductsContext";
-import { toggleDatePicker } from "../store/slices/Main";
+import { setProductColumn, toggleDatePicker } from "../store/slices/Main";
 import { reorder, sortMenuItems } from "orders/HelperFunctions";
 import TdTextField from "components/TdTextField";
 
@@ -39,6 +39,8 @@ import { searchFieldStyle } from "business/Styles";
 import DropDown from "components/DropDown";
 import file from "../assets/files/downloadSample.xlsx";
 import ExcelExport from "components/ExcelExport";
+import Filters from "components/Filters";
+
 const ImportMenuExcel = lazy(() => import("./sections/ImportMenuExcel"));
 
 let toggleSorting = true;
@@ -68,6 +70,19 @@ const dropdownBulkAction = [
     value: "Download Sample",
   },
 ];
+let countObj = {
+  withImages: 0,
+  withNoImages: 0,
+  available: 0,
+  unAvailable: 0,
+  availableWithImg: 0,
+  unAvailableWithImg: 0,
+  availableWithNoImg: 0,
+  unAvailableWithNoImg: 0,
+  displayNone: 0,
+  displayWeb: 0,
+  displayPOS: 0,
+};
 const Items = () => {
   const dispatch = useDispatch();
   const { eatout_id, user_id } = JSON.parse(
@@ -75,14 +90,14 @@ const Items = () => {
   );
   useEffect(() => {
     dispatch(toggleDatePicker(false));
+    dispatch(setProductColumn(keysOfItems));
   });
 
   const { selectedMenu, selectedBranch, selectedCategory, selectedBrand } =
     useSelector((state) => state.dropdown);
-  const [items, setItems] = useState<ProductResponse["items"]>([]);
+  const [items, setItems] = useState<ProductResponse["items"] | []>([]);
   const [applyFilters, setApplyFilters] = React.useState(false);
   const [toggleDrawer, setToggleDrawer] = useState(false);
-  const [displayedComponent, setDisplayedComponent] = useState<string>("");
   const [itemsCount, setItemsCount] = useState(100);
   const [importExportDropDownValue, setImportExportDropDownValue] =
     useState<string>("import_export");
@@ -95,6 +110,21 @@ const Items = () => {
   const [searchQueryItems, setSearchQueryItems] = useState<string>("");
   const [linearLoader, setLinearLoader] = useState<boolean>(false);
   const { state } = useContext(ProductsContext);
+  const [count, setCount] = useState(countObj);
+  // const [menuItem, setMenuItem] = useState<any>([]);
+  //   {
+  //   withImages: [],
+  //   withNoImages: [],
+  //   available: [],
+  //   unAvailable: [],
+  //   availableWithImg: [],
+  //   unAvailableWithImg: [],
+  //   availableWithNoImg: [],
+  //   unAvailableWithNoImg: [],
+  //   displayNone: [],
+  //   displayWeb: [],
+  //   displayPOS: [],
+  // }
 
   // API Call For Product //
   const [{ data: productData, loading: productLoading }, getProductsAPI] =
@@ -175,7 +205,8 @@ const Items = () => {
       if (applyFilters) {
         setApplyFilters(false);
       }
-
+      // return ungroup items in an array
+      // combination of filter and map functions
       state.allItemsForGrouping = productData.items.reduce(
         (items: DropdownValue[], item: ProductResponseItem) => {
           if (!item.is_grouped) {
@@ -192,9 +223,7 @@ const Items = () => {
   }, [productData]);
 
   useEffect(() => {
-    // setLinearLoader(true);
     getProductsAPI();
-    // setLinearLoader(false);
   }, [page, rowsPerPage]);
 
   const applyButtonFilter = () => {
@@ -267,7 +296,6 @@ const Items = () => {
 
   // Drag And Drop Shorting
   const shortDragDropItems = async (sortArray: any) => {
-    // setLinearLoader(true);
     let shortItems: any = reorder(items, sortArray);
     setItems(shortItems);
     const formData = new FormData();
@@ -275,7 +303,6 @@ const Items = () => {
       formData.append("categoryArray[]", shortItems[index].menu_item_id);
     }
     const shortItemResponse = await shortItemId({ data: formData });
-    // setLinearLoader(false);
   };
 
   const handleChangePage = (
@@ -303,7 +330,6 @@ const Items = () => {
           getProductApi={getProductsAPI}
         />
       )}
-
       <Suspense
         fallback={
           <div>
@@ -416,17 +442,18 @@ const Items = () => {
                     <SortByAlphaIcon />
                   </IconButton>
                 </Stack>
-                <IconButton>
-                  <Stack>
-                    <FilterListIcon />
-                  </Stack>
-                </IconButton>
+                <Filters
+                  items={items}
+                  setItems={setItems}
+                  productLoading={productLoading}
+                  productData={productData}
+                />
               </Stack>
             </Grid>
           </Grid>
         </Grid>
         <Grid container>
-          {itemsCount && (
+          {items && (
             <Grid item xs={12}>
               <Typography
                 variant="h5"
@@ -435,7 +462,7 @@ const Items = () => {
                   color: "#212121",
                 }}
               >
-                {`${itemsCount} Item(s)`}
+                {`${items.length} Item(s)`}
               </Typography>
               {bulkActionsValue !== "bulkActions" && (
                 <CustomButton
@@ -456,7 +483,6 @@ const Items = () => {
                 getProductsAPI={getProductsAPI}
                 productLoading={productLoading}
                 items={items}
-                keysOfItems={keysOfItems}
                 setSequenceItem={setSequenceItem}
                 shortDragDropItems={shortDragDropItems}
                 handleDrawerToggle={handleDrawerToggle}
@@ -464,7 +490,7 @@ const Items = () => {
               />
               <TablePagination
                 component="div"
-                count={itemsCount}
+                count={items.length}
                 page={page}
                 onPageChange={handleChangePage}
                 rowsPerPage={rowsPerPage}

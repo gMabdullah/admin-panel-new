@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 
 import {
   Typography,
@@ -25,7 +25,6 @@ import Loader from "./Loader";
 const AddMenuImages = React.lazy(() => import("imageSection/AddMenuImages"));
 interface TablePropsType {
   items?: ProductResponse["items"];
-  keysOfItems: TypeKeyOfItem["keysOfItems"];
   setSequenceItem?: any;
   shortDragDropItems?: any;
   getProductsAPI: (
@@ -39,14 +38,13 @@ interface TablePropsType {
 
 const DraggableTable = ({
   items,
-  keysOfItems,
   shortDragDropItems,
   getProductsAPI,
   productLoading,
   handleDrawerToggle,
   checkBox = false,
 }: TablePropsType) => {
-  const { decimalPlaces } = useSelector((state) => state.main);
+  const { decimalPlaces, productColumns } = useSelector((state) => state.main);
 
   const handleDragEnd = (result: any) => {
     const sortArray = [
@@ -58,7 +56,7 @@ const DraggableTable = ({
     shortDragDropItems(sortArray);
     // handle the end of a drag and drop event here
   };
-  const openImageModal = () => {};
+
   const addCurrency = (value: any, currency: any) => {
     return (
       <Stack direction="row" spacing={0.25} sx={{ alignItems: "center" }}>
@@ -104,15 +102,19 @@ const DraggableTable = ({
                   </TableCell>
                 )}
 
-                {keysOfItems?.map((column: any) => (
-                  <TableCell
-                    key={column.key}
-                    align={column.align}
-                    style={{ width: column?.width }}
-                  >
-                    {column.value}
-                  </TableCell>
-                ))}
+                {productColumns?.map((column: any) =>
+                  column.selected ? (
+                    <TableCell
+                      key={column.key}
+                      align={column.align}
+                      style={{ width: column?.width }}
+                    >
+                      {column.value}
+                    </TableCell>
+                  ) : (
+                    ""
+                  )
+                )}
               </TableRow>
             </TableHead>
             <Droppable droppableId="table">
@@ -139,56 +141,62 @@ const DraggableTable = ({
                                   <Checkbox sx={{ p: "unset" }} />
                                 </TableCell>
                               )}
-                              {keysOfItems?.map((column) => (
-                                <TableCell
-                                  key={column.key}
-                                  align={column.align}
-                                  style={{ width: column?.width }}
-                                >
-                                  {column.key === "image" ? (
-                                    <Suspense fallback={<Loader />}>
-                                      <AddMenuImages
-                                        imageUrl={row[column.key]}
-                                        itemId={row.menu_item_id}
+                              {productColumns?.map((column) =>
+                                column.selected ? (
+                                  <TableCell
+                                    key={column.key}
+                                    align={column.align}
+                                    style={{ width: column?.width }}
+                                  >
+                                    {column.key === "image" ? (
+                                      <Suspense fallback={<Loader />}>
+                                        <AddMenuImages
+                                          imageUrl={row[column.key]}
+                                          itemId={row.menu_item_id}
+                                        />
+                                      </Suspense>
+                                    ) : column.key === "name" ? (
+                                      <>
+                                        <Typography variant="h5">
+                                          {row[column.key]}
+                                        </Typography>
+                                        <Tooltip
+                                          placement="top-start"
+                                          title={row.desc}
+                                        >
+                                          <div
+                                            className="menu-description-css"
+                                            style={{ fontSize: "10px" }}
+                                          >
+                                            {row.desc}
+                                          </div>
+                                        </Tooltip>
+                                      </>
+                                    ) : column.key === "price" ? (
+                                      addCurrency(row[column.key], row.currency)
+                                    ) : column.key === "discount" ? (
+                                      addCurrency(row[column.key], "")
+                                    ) : column.key === "status" ? (
+                                      <TableChip
+                                        statusValue={row[column.key]}
                                       />
-                                    </Suspense>
-                                  ) : column.key === "name" ? (
-                                    <>
-                                      <Typography variant="h5">
+                                    ) : column.value === "Actions" ? (
+                                      <TableActionsButton
+                                        row={row}
+                                        getProductsAPI={getProductsAPI}
+                                        productLoading={productLoading}
+                                        handleDrawerToggle={handleDrawerToggle}
+                                      />
+                                    ) : (
+                                      <Typography className="tableColumnCss">
                                         {row[column.key]}
                                       </Typography>
-                                      <Tooltip
-                                        placement="top-start"
-                                        title={row.desc}
-                                      >
-                                        <div
-                                          className="menu-description-css"
-                                          style={{ fontSize: "10px" }}
-                                        >
-                                          {row.desc}
-                                        </div>
-                                      </Tooltip>
-                                    </>
-                                  ) : column.key === "price" ? (
-                                    addCurrency(row[column.key], row.currency)
-                                  ) : column.key === "discount" ? (
-                                    addCurrency(row[column.key], "")
-                                  ) : column.key === "status" ? (
-                                    <TableChip statusValue={row[column.key]} />
-                                  ) : column.value === "Actions" ? (
-                                    <TableActionsButton
-                                      row={row}
-                                      getProductsAPI={getProductsAPI}
-                                      productLoading={productLoading}
-                                      handleDrawerToggle={handleDrawerToggle}
-                                    />
-                                  ) : (
-                                    <Typography className="tableColumnCss">
-                                      {row[column.key]}
-                                    </Typography>
-                                  )}
-                                </TableCell>
-                              ))}
+                                    )}
+                                  </TableCell>
+                                ) : (
+                                  ""
+                                )
+                              )}
                             </TableRow>
                           );
                         }}
