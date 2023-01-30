@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
       borderRadius: "58px !important",
     },
     "& .MuiList-root": {
-      paddind: "14px !important",
+      padding: "14px !important",
     },
     height: "fit-content",
     "& .MuiOutlinedInput-input": {

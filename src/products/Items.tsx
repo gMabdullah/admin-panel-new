@@ -39,7 +39,7 @@ import { searchFieldStyle } from "business/Styles";
 import DropDown from "components/DropDown";
 import file from "../assets/files/downloadSample.xlsx";
 import ExcelExport from "components/ExcelExport";
-import ImportMenuExcel from "./sections/ImportMenuExcel";
+const ImportMenuExcel = lazy(() => import("./sections/ImportMenuExcel"));
 
 let toggleSorting = true;
 const dropdownBulkAction = [
@@ -82,6 +82,7 @@ const Items = () => {
   const [items, setItems] = useState<ProductResponse["items"]>([]);
   const [applyFilters, setApplyFilters] = React.useState(false);
   const [toggleDrawer, setToggleDrawer] = useState(false);
+  const [displayedComponent, setDisplayedComponent] = useState<string>("");
   const [itemsCount, setItemsCount] = useState(100);
   const [importExportDropDownValue, setImportExportDropDownValue] =
     useState<string>("import_export");

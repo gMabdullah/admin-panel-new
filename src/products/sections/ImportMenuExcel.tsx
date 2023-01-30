@@ -1,11 +1,21 @@
 import React, { useState } from "react";
 import { Box, Grid, Typography } from "@mui/material";
 import CustomModal from "components/CustomModal";
+import React, { useState } from "react";
+import { Box, Grid, Typography } from "@mui/material";
+import CustomModal from "components/CustomModal";
 import { makeStyles } from "@mui/styles";
 import CustomButton from "components/CustomButton";
+import Notify from "components/Notify";
 
 import * as XLSX from "xlsx";
-import { capitalizeFLetter, getLocalStorage } from "orders/HelperFunctions";
+import {
+  capitalizeFLetter,
+  getFormatTime,
+  getLocalStorage,
+  isString,
+  priceValidation,
+} from "orders/HelperFunctions";
 import useAxios from "axios-hooks";
 
 const useStyles = makeStyles({
@@ -49,12 +59,18 @@ const isFloat = (n: number) => {
 const ImportMenuExcel = () => {
   const [items, setItems] = useState([]);
   const [validationError, setValidationError] = useState(false);
-  const [rowData, setRowData] = useState(null);
-  const [bulkUploadModal, setBulkUploadModal] = useState<boolean>(true);
+  const [rowData,setRowData] =useState(null)
+  const [bulkUploadModal,setBulkUploadModal]=useState<boolean>(true)
   const { eatout_id, user_id } = getLocalStorage();
+  const [notify, setNotify] = useState<boolean>(false);
+  const [itemMessage, setItemMessage] = useState("");
+  const [itemNotifyType, setItemNotifyType] = useState<
+    "success" | "info" | "warning" | "error"
+  >("info");
+
   const toggleBulkUploadModal = () => {
     setBulkUploadModal((prevState) => !prevState);
-  };
+};
 
   const payload = () => {
     const formData = new FormData();
@@ -69,18 +85,20 @@ const ImportMenuExcel = () => {
     { url: `/bulk_upload_menu`, method: "post" },
     { manual: true }
   );
-  const callBulkApi = () => {
-    addProductBulk({
-      data: payload(),
-    });
-  };
-  const handleUpload = async (e: any) => {
-    setItems([]);
-    setValidationError(false);
-    let list = [];
-
-    let reader = new FileReader();
-    if (!reader) return;
+     const callBulkApi =()=>{
+      addProductBulk({
+        data:payload()
+      })
+     }
+    const handleUpload = async (e:any) => {
+      debugger;
+      setItems([]);
+      setValidationError(false);
+      let list=[];
+  
+        debugger;
+        let reader=new FileReader();
+        if(!reader) return
     reader.readAsArrayBuffer(e.target.files[0]);
 
     reader.onload = async (e: any) => {
@@ -132,191 +150,195 @@ const ImportMenuExcel = () => {
               rows[k].splice(l, 1);
             }
           }
-        }
-        if (rows.length > 0) {
-          setRowData(rows);
-          const response = await addProductBulk();
-        }
-      } else {
-        console.log("The reader.result is not a valid ArrayBuffer");
-      }
+        if(rows.length > 0){
+          debugger;
+         setRowData(rows)
+       const response= await  addProductBulk()
+       console.log("response",response)
+            }    
+          }else{
+            console.log("The reader.result is not a valid ArrayBuffer")
+          }
+            
+  //     rows.map((item: string[], index: number) => {
+  //       let errorCount = 0;
+  //       if (index === 0 || index === 1) return true;
+  //       errorCount = item[0] === "" || item[2] === ""
+  //         ? errorCount + 1
+  //         : errorCount + 0;
+  // //      errorCount += this.isString(item[6]);
 
-      //     rows.map((item: string[], index: number) => {
-      //       let errorCount = 0;
-      //       if (index === 0 || index === 1) return true;
-      //       errorCount = item[0] === "" || item[2] === ""
-      //         ? errorCount + 1
-      //         : errorCount + 0;
-      // //      errorCount += this.isString(item[6]);
+  //       item[7] = getFormatTime(item[7]);
+  //       item[19] = getFormatTime(item[19]);
 
-      //       item[7] = getFormatTime(item[7]);
-      //       item[19] = getFormatTime(item[19]);
+  //     //  errorCount += this.isString(item[8]);
+        
+       
+  //       // 20       "Max Distance"
+  //       item[20] = item[20];
+  //       let discountExpiryDate = item[7];
+  //       let discountStart = item[19];
+  //       // check Discount Start and End Date
+  //       if (discountExpiryDate && discountStart) {
+  //         if(discountExpiryDate >= discountStart){
+  //           errorCount += 0
+  //         }else {
+  //           errorCount += 1; 
 
-      //     //  errorCount += this.isString(item[8]);
+  //         }
+  //       }
+  //       if ((!discountExpiryDate && discountStart) || (discountExpiryDate && !discountStart)) {
+  //         errorCount += 1;
+        
+  //       }
+  //       let price = item[3];
+  //       // Price validation
+  //       // check for price only if category and product name exist
+  //       if(
+  //         ((item[0] !== "") && (item[2] !== "")) && priceValidation(price))
+  //       {
+  //         errorCount += 1;
+         
+  //       }
+  //       if (errorCount === 0) return true;
+       
+  //     });
+        // const data = new Uint8Array(reader.result as ArrayBuffer).subarray(0, 4);
 
-      //       // 20       "Max Distance"
-      //       item[20] = item[20];
-      //       let discountExpiryDate = item[7];
-      //       let discountStart = item[19];
-      //       // check Discount Start and End Date
-      //       if (discountExpiryDate && discountStart) {
-      //         if(discountExpiryDate >= discountStart){
-      //           errorCount += 0
-      //         }else {
-      //           errorCount += 1;
 
-      //         }
-      //       }
-      //       if ((!discountExpiryDate && discountStart) || (discountExpiryDate && !discountStart)) {
-      //         errorCount += 1;
+        //   debugger
+        //  let wb = XLSX.read(data, { type: "array" });
+        //   debugger;
+        
+          // /* Convert array to json*/
+       
+            // check Discount Start and End Date
+            // if (discountExpiryDate && discountStart) {
+            //   if(discountExpiryDate >= discountStart){
+            //     errorCount += 0
+            //   }else {
+            //     errorCount += 1; 
+            //     toast.error("Discount Expiry should greater than Discount Start", toastOptions)
+            //   }
+            // }
+            // if ((!discountExpiryDate && discountStart) || (discountExpiryDate && !discountStart)) {
+            //   errorCount += 1;
+            //   toast.error("Discount Start and Expiry are Must", toastOptions);
+            // }
+            // Price validation
+            // check for price only if category and product name exist
+          //   if(
+          //     ((item[0] !== "") && (item[2] !== "")) && this.priceValidation(price))
+          //   {
+          //     errorCount += 1;
+          //     toast.error("Please enter a valid Price", toastOptions);
+          //   }
+          //   if (errorCount === 0) return true;
+          //   document.getElementById("input").value = "";
+          //   this.setState({
+          //     data: [],
+          //     disabled: true,
+          //     validationError: true,
+          //   });
+          // });
+        };
 
-      //       }
-      //       let price = item[3];
-      //       // Price validation
-      //       // check for price only if category and product name exist
-      //       if(
-      //         ((item[0] !== "") && (item[2] !== "")) && priceValidation(price))
-      //       {
-      //         errorCount += 1;
-
-      //       }
-      //       if (errorCount === 0) return true;
-
-      //     });
-      // const data = new Uint8Array(reader.result as ArrayBuffer).subarray(0, 4);
-
-      //   debugger
-      //  let wb = XLSX.read(data, { type: "array" });
-      //   debugger;
-
-      // /* Convert array to json*/
-
-      // check Discount Start and End Date
-      // if (discountExpiryDate && discountStart) {
-      //   if(discountExpiryDate >= discountStart){
-      //     errorCount += 0
-      //   }else {
-      //     errorCount += 1;
-      //     toast.error("Discount Expiry should greater than Discount Start", toastOptions)
-      //   }
-      // }
-      // if ((!discountExpiryDate && discountStart) || (discountExpiryDate && !discountStart)) {
-      //   errorCount += 1;
-      //   toast.error("Discount Start and Expiry are Must", toastOptions);
-      // }
-      // Price validation
-      // check for price only if category and product name exist
-      //   if(
-      //     ((item[0] !== "") && (item[2] !== "")) && this.priceValidation(price))
-      //   {
-      //     errorCount += 1;
-      //     toast.error("Please enter a valid Price", toastOptions);
-      //   }
-      //   if (errorCount === 0) return true;
-      //   document.getElementById("input").value = "";
-      //   this.setState({
-      //     data: [],
-      //     disabled: true,
-      //     validationError: true,
-      //   });
-      // });
-    };
-
-    // perform the actual file upload logic here
-  };
+      
+      // perform the actual file upload logic here
+    }
 
   const classes = useStyles();
 
   return (
-    <CustomModal
-      title={
-        <Typography variant="h3">Import Menu Items(Excel File)</Typography>
-      }
+    <CustomModal title={<Typography variant="h3">
+          Import Menu Items(Excel File)
+      </Typography>}
       open={bulkUploadModal}
       onClose={toggleBulkUploadModal}
       paperStyle={{
-        position: "absolute",
-        width: 745,
-        height: 350,
-        left: "calc(50% - 372.5px)",
-        top: "calc(50% - 175px)",
-        background: "#FFFFFF",
-        boxShadow: "0px 0px 36px rgba(0, 0, 0, 0.13)",
-      }}
-    >
-      <Box className={classes.box}>
-        {/* <Button  variant={"outlined"} color={"secondary"} startIcon={<CloudUploadIcon sx={{marginBottom:"2px"}}/>}
+          position: 'absolute',
+          width: 745,
+          height: 350,
+          left: 'calc(50% - 372.5px)',
+          top: 'calc(50% - 175px)',
+          background: '#FFFFFF',
+          boxShadow: '0px 0px 36px rgba(0, 0, 0, 0.13)',
+      }} 
+   
+          >
+
+               <Box className={classes.box}>
+                {/* <Button  variant={"outlined"} color={"secondary"} startIcon={<CloudUploadIcon sx={{marginBottom:"2px"}}/>}
 >
                     <Typography>
 
                     Choose Filess
                     </Typography>  */}
-
-        {/* <input   type="file"  accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" onChange={handleUpload}/> */}
-        <input
+                    
+                   
+                    {/* <input   type="file"  accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" onChange={handleUpload}/> */}
+                    <input
           type="file"
           accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
           id="input"
-          onChange={(e) => {
-            handleUpload(e);
+          onChange={ (e) => {
+            handleUpload(e)
           }}
         />
-
-        {/* </Button> */}
-        {/* <Button variant="contained" component="label">
+                    
+                 {/* </Button> */}
+                {/* <Button variant="contained" component="label">
         Upload
      
       </Button> */}
-        {/* <UploadFileButton onUpload={function (file: File): void {
+                {/* <UploadFileButton onUpload={function (file: File): void {
           throw new Error('Function not implemented.');
         } } /> */}
-      </Box>
-      <Grid container>
-        <Grid
-          item
-          xs={12}
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "end",
-            p: "30px !important",
-          }}
-        >
-          <CustomButton
-            variant={"contained"}
+                </Box>
+                <Grid container>
+          <Grid
+            item
+            xs={12}
             sx={{
-              p: "12px 44.5px",
-              background: "#F5F5F5",
-              color: "#212121",
-              "&:hover": {
-                backgroundColor: "#F5F5F5",
-              },
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "end",
+              p: "30px !important",
             }}
+          >
+            <CustomButton
+              variant={"contained"}
+              sx={{
+                p: "12px 44.5px",
+                background: "#F5F5F5",
+                color: "#212121",
+                "&:hover": {
+                  backgroundColor: "#F5F5F5",
+                },
+              }}
             onClick={toggleBulkUploadModal}
-          >
-            Cancel
-          </CustomButton>
+            >
+              Cancel
+            </CustomButton>
 
-          <CustomButton
-            variant={"contained"}
-            sx={{
-              p: "12px 26px",
-              ml: "12px",
-            }}
-            color={"secondary"}
-            onClick={callBulkApi}
-            // disabled={
-            //   errors.categoryError === "" && errors.slugError === ""
-            //     ? false
-            //     : true
-            // }
-          >
-            Import Menu
-          </CustomButton>
+            <CustomButton
+              variant={"contained"}
+              sx={{
+                p: "12px 26px",
+                ml: "12px",
+              }}
+              color={"secondary"}
+              onClick={callBulkApi}
+              // disabled={
+              //   errors.categoryError === "" && errors.slugError === ""
+              //     ? false
+              //     : true
+              // }
+            >
+              Import Menu
+            </CustomButton>
+          </Grid>
         </Grid>
-      </Grid>
-    </CustomModal>
-  );
-};
+          </CustomModal>
 
 export default ImportMenuExcel;
