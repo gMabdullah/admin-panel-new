@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { Stack, Grid } from "@mui/material";
+import { Stack, Grid, Typography } from "@mui/material";
 
 import useAxios from "axios-hooks";
 
@@ -8,6 +8,7 @@ import CustomButton from "components/CustomButton";
 import TdTextField from "components/TdTextField";
 import RichEditor from "components/RichEditor";
 import Notify from "components/Notify";
+import CustomModal from "components/CustomModal";
 
 import {
   capitalizeFLetter,
@@ -21,12 +22,17 @@ import { useSelector } from "store";
 let typingTimer: any = "";
 const doneTypingInterval = 1000;
 
-interface addEditCategoryProps {
+interface AddEditCategoryProps {
+  addCategoryModal: boolean;
   toggleCategoryModal: () => void;
 }
+
 let errorMessage = { categoryError: "", slugError: "" };
 
-const AddCategory = ({ toggleCategoryModal }: addEditCategoryProps) => {
+const AddCategory = ({
+  addCategoryModal,
+  toggleCategoryModal,
+}: AddEditCategoryProps) => {
   const { richEditor } = useSelector((state) => state.main),
     [slug, setSlug] = useState(""),
     [categoryName, setCategoryName] = useState(""),
@@ -65,6 +71,7 @@ const AddCategory = ({ toggleCategoryModal }: addEditCategoryProps) => {
     formData.append("source", "biz");
     return formData;
   };
+
   const [
     { loading: addEditCategoryLoading, error: addEditCategoryError },
     addEditCategoryAPI,
@@ -116,7 +123,7 @@ const AddCategory = ({ toggleCategoryModal }: addEditCategoryProps) => {
   };
 
   // onKeyUp listener
-  const hanldeOnKeyUp = () => {
+  const handleOnKeyUp = () => {
     clearTimeout(typingTimer);
     typingTimer = setTimeout(validateSlug, doneTypingInterval);
   };
@@ -159,6 +166,7 @@ const AddCategory = ({ toggleCategoryModal }: addEditCategoryProps) => {
     }
     return true;
   };
+
   const handleChange = (e: { target: { value: string; name: string } }) => {
     const { name, value } = e.target;
 
@@ -192,97 +200,131 @@ const AddCategory = ({ toggleCategoryModal }: addEditCategoryProps) => {
           closeNotify={() => setNotify(false)}
         />
       )}
-      <Stack sx={{ p: "32px 40px 0px" }}>
-        <Grid container>
-          <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
-            <TdTextField
-              name="category"
-              label="Category Name"
-              value={categoryName}
-              onChange={handleChange}
-              onKeyUp={hanldeOnKeyUp}
-              onKeyDown={handleOnKeydown}
-              error={errors.categoryError === "" ? false : true}
-              helperText={errors.categoryError}
-            />
-          </Grid>
-          <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
-            <TdTextField
-              name="slug"
-              label="Category Slug"
-              value={slug}
-              onChange={handleChange}
-              onKeyUp={hanldeOnKeyUp}
-              onKeyDown={handleOnKeydown}
-              error={errors.slugError === "" ? false : true}
-              helperText={errors.slugError}
-            />
-          </Grid>
-          {richEditor ? (
-            // <RichEditor
-            // description={description}
-            // setDescription={setDescription}
-            // />
-            <></>
-          ) : (
-            <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
+
+      <CustomModal
+        title="Add Category"
+        buttonText="Add Category"
+        open={addCategoryModal}
+        onClose={toggleCategoryModal}
+        paperStyle={{
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: "45vw",
+          position: "absolute",
+        }}
+        scrollbarStyle={{
+          height: "100%",
+          maxHeight: "80vh",
+          overflowX: "hidden",
+          borderRadius: "8px",
+        }}
+      >
+        <Stack sx={{ p: "0 40px 40px" }}>
+          <Grid container>
+            <Grid item xs={12} sx={{ m: "24px 0" }}>
               <TdTextField
-                name="description"
-                label="Category description"
-                value={description}
+                name="category"
+                label="Category Name"
+                value={categoryName}
                 onChange={handleChange}
-                multiline={true}
-                rows={4}
+                onKeyUp={handleOnKeyUp}
+                onKeyDown={handleOnKeydown}
+                error={errors.categoryError === "" ? false : true}
+                helperText={errors.categoryError}
               />
             </Grid>
-          )}
-        </Grid>
-        <Display />
-        <Grid container>
-          <Grid
-            item
-            xs={12}
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "end",
-              p: "40px !important",
-            }}
-          >
-            <CustomButton
-              variant={"contained"}
-              sx={{
-                p: "12px 44.5px",
-                background: "#F5F5F5",
-                color: "#212121",
-                "&:hover": {
-                  backgroundColor: "#F5F5F5",
-                },
-              }}
-              onClick={toggleCategoryModal}
-            >
-              Cancel
-            </CustomButton>
-
-            <CustomButton
-              variant={"contained"}
-              sx={{
-                p: "12px 26px",
-                ml: "12px",
-              }}
-              color={"secondary"}
-              onClick={addEditCategory}
-              disabled={
-                errors.categoryError === "" && errors.slugError === ""
-                  ? false
-                  : true
-              }
-            >
-              Add Category
-            </CustomButton>
           </Grid>
-        </Grid>
-      </Stack>
+
+          <Grid container>
+            <Grid item xs={12} sx={{ display: "flex", mb: "18px" }}>
+              <TdTextField
+                name="slug"
+                label="Category Slug"
+                value={slug}
+                onChange={handleChange}
+                onKeyUp={handleOnKeyUp}
+                onKeyDown={handleOnKeydown}
+                error={errors.slugError === "" ? false : true}
+                helperText={errors.slugError}
+              />
+            </Grid>
+          </Grid>
+
+          <Grid container>
+            <Grid item xs={12} sx={{ mb: "18px" }}>
+              <Typography variant="h5">Description</Typography>
+            </Grid>
+          </Grid>
+
+          <Grid container>
+            <Grid item xs={12} sx={{ mb: "24px" }}>
+              {richEditor ? (
+                <RichEditor
+                  value={description}
+                  onEditorChange={(event: string) => setDescription(event)}
+                />
+              ) : (
+                <TdTextField
+                  name="description"
+                  label="Category description"
+                  value={description}
+                  onChange={handleChange}
+                  multiline={true}
+                  rows={4}
+                />
+              )}
+            </Grid>
+          </Grid>
+
+          <Display />
+
+          <Grid container>
+            <Grid
+              item
+              xs={12}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "end",
+                mt: "22px",
+              }}
+            >
+              <CustomButton
+                variant={"contained"}
+                sx={{
+                  p: "12px 44.5px",
+                  background: "#F5F5F5",
+                  color: "#212121",
+                  "&:hover": {
+                    backgroundColor: "#F5F5F5",
+                  },
+                }}
+                onClick={toggleCategoryModal}
+              >
+                Cancel
+              </CustomButton>
+
+              <CustomButton
+                variant={"contained"}
+                sx={{
+                  p: "12px 24px",
+                  ml: "12px",
+                }}
+                color={"secondary"}
+                onClick={addEditCategory}
+                disabled={
+                  errors.categoryError === "" && errors.slugError === ""
+                    ? false
+                    : true
+                }
+              >
+                Add Category
+              </CustomButton>
+            </Grid>
+          </Grid>
+        </Stack>
+      </CustomModal>
     </>
   );
 };

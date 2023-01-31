@@ -50,7 +50,7 @@ const CustomModal = ({
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
-              p: "32px 40px !important",
+              p: "40px 40px 0 !important",
             }}
           >
             <Typography variant="h2" sx={{ color: "#212121" }}>
@@ -63,7 +63,8 @@ const CustomModal = ({
           </Grid>
         </Grid>
 
-        <Divider />
+        <Divider sx={{ m: "16px 40px 0" }} />
+
         <PerfectScrollbar style={{ ...scrollbarStyle }}>
           {children}
         </PerfectScrollbar>

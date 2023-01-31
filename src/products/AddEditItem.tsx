@@ -380,73 +380,60 @@ const AddEditItem = ({
   };
 
   return (
-    <CustomDrawer
-      title={state.editItem.editItemFlag ? "Edit Item" : "Add Item"}
-      buttonText={state.editItem.editItemFlag ? "Update" : "Add"}
-      anchor="right"
-      open={toggleDrawer}
-      onClose={handleDrawerClose}
-      handleCancelClick={handleDrawerClose}
-      onClick={handleAddEditItem}
-    >
+    <>
       {addCategoryModal && (
-        <CustomModal
-          title="Add Category"
-          buttonText="Add Category"
-          open={addCategoryModal}
-          onClose={toggleCategoryModal}
-          children={<AddCategory toggleCategoryModal={toggleCategoryModal} />}
-          paperStyle={{
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: "45vw",
-            position: "absolute",
-          }}
-          scrollbarStyle={{
-            height: "100%",
-            maxHeight: "98vh",
-            overflowX: "hidden",
-            borderRadius: "8px",
-          }}
+        <AddCategory
+          addCategoryModal={addCategoryModal}
+          toggleCategoryModal={toggleCategoryModal}
         />
       )}
 
-      <Stack sx={{ p: "32px 25px 0px" }}>
-        <Typography variant="h5" sx={{ mb: "24px" }}>
-          Item Category
-        </Typography>
+      <CustomDrawer
+        title={state.editItem.editItemFlag ? "Edit Item" : "Add Item"}
+        buttonText={state.editItem.editItemFlag ? "Update" : "Add"}
+        anchor="right"
+        open={toggleDrawer}
+        onClose={handleDrawerClose}
+        handleCancelClick={handleDrawerClose}
+        onClick={handleAddEditItem}
+      >
+        <Stack sx={{ p: "32px 25px 0px" }}>
+          <Typography variant="h5" sx={{ mb: "24px" }}>
+            Item Category
+          </Typography>
 
-        <Grid container>
-          <Grid item xs={12} sx={{ display: "flex" }}>
-            <DropDownSearch
-              label="Category"
-              value={state.itemCategory}
-              options={state.allCategories}
-              handleChange={handleCategorySelection}
-              isError={state.fieldError.itemCategoryField === "" ? false : true}
-              helperText={state.fieldError.itemCategoryField}
-            />
+          <Grid container>
+            <Grid item xs={12} sx={{ display: "flex" }}>
+              <DropDownSearch
+                label="Category"
+                value={state.itemCategory}
+                options={state.allCategories}
+                handleChange={handleCategorySelection}
+                isError={
+                  state.fieldError.itemCategoryField === "" ? false : true
+                }
+                helperText={state.fieldError.itemCategoryField}
+              />
 
-            <IconButton
-              onClick={toggleCategoryModal}
-              sx={{
-                background: "#24335E",
-                borderRadius: "8px",
-                height: "48px",
-                width: "48px",
-                ml: "7px",
-                "&:hover": {
-                  backgroundColor: "#24335E",
-                },
-              }}
-            >
-              <Add htmlColor="#FFFFFF" fontSize="medium" />
-            </IconButton>
+              <IconButton
+                onClick={toggleCategoryModal}
+                sx={{
+                  background: "#24335E",
+                  borderRadius: "8px",
+                  height: "48px",
+                  width: "48px",
+                  ml: "7px",
+                  "&:hover": {
+                    backgroundColor: "#24335E",
+                  },
+                }}
+              >
+                <Add htmlColor="#FFFFFF" fontSize="medium" />
+              </IconButton>
+            </Grid>
           </Grid>
-        </Grid>
 
-        {/* <Grid container>
+          {/* <Grid container>
           <Grid item xs={12}>
             <CustomButton
               onClick={toggleCategoryModal}
@@ -462,50 +449,16 @@ const AddEditItem = ({
           </Grid>
         </Grid> */}
 
-        <Divider sx={{ m: "31px 0" }} />
+          <Divider sx={{ m: "31px 0" }} />
 
-        <Grid container>
-          <Grid item xs={12} sx={{ mb: "24px" }}>
-            <TdTextField
-              name="itemName"
-              label="Item Name"
-              value={state.itemName}
-              error={state.fieldError.itemNameField === "" ? false : true}
-              helperText={state.fieldError.itemNameField}
-              onChange={(e) =>
-                dispatch({
-                  type: "textField",
-                  payload: { name: e.target.name, value: e.target.value },
-                })
-              }
-            />
-          </Grid>
-        </Grid>
-
-        <Grid container>
-          <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
-            <Grid item xs={6}>
+          <Grid container>
+            <Grid item xs={12} sx={{ mb: "24px" }}>
               <TdTextField
-                name="itemPrice"
-                type="number"
-                label="Item Price"
-                value={state.itemPrice}
-                error={state.fieldError.itemPriceField === "" ? false : true}
-                helperText={state.fieldError.itemPriceField}
-                onChange={(e) =>
-                  dispatch({
-                    type: "textField",
-                    payload: { name: e.target.name, value: e.target.value },
-                  })
-                }
-              />
-            </Grid>
-            <Grid item xs={6} sx={{ ml: "8px" }}>
-              <TdTextField
-                name="itemTax"
-                type="number"
-                label="Tax %"
-                value={state.itemTax}
+                name="itemName"
+                label="Item Name"
+                value={state.itemName}
+                error={state.fieldError.itemNameField === "" ? false : true}
+                helperText={state.fieldError.itemNameField}
                 onChange={(e) =>
                   dispatch({
                     type: "textField",
@@ -515,109 +468,144 @@ const AddEditItem = ({
               />
             </Grid>
           </Grid>
-        </Grid>
 
-        <Grid container>
-          <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
-            <Grid item xs={6}>
+          <Grid container>
+            <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
+              <Grid item xs={6}>
+                <TdTextField
+                  name="itemPrice"
+                  type="number"
+                  label="Item Price"
+                  value={state.itemPrice}
+                  error={state.fieldError.itemPriceField === "" ? false : true}
+                  helperText={state.fieldError.itemPriceField}
+                  onChange={(e) =>
+                    dispatch({
+                      type: "textField",
+                      payload: { name: e.target.name, value: e.target.value },
+                    })
+                  }
+                />
+              </Grid>
+              <Grid item xs={6} sx={{ ml: "8px" }}>
+                <TdTextField
+                  name="itemTax"
+                  type="number"
+                  label="Tax %"
+                  value={state.itemTax}
+                  onChange={(e) =>
+                    dispatch({
+                      type: "textField",
+                      payload: { name: e.target.name, value: e.target.value },
+                    })
+                  }
+                />
+              </Grid>
+            </Grid>
+          </Grid>
+
+          <Grid container>
+            <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
+              <Grid item xs={6}>
+                <DropDownSearch
+                  label="Brands"
+                  value={state.itemBrand}
+                  options={state.allBrands}
+                  handleChange={handleBrandSelection}
+                />
+              </Grid>
+            </Grid>
+          </Grid>
+
+          <Grid container>
+            <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
               <DropDownSearch
-                label="Brands"
-                value={state.itemBrand}
-                options={state.allBrands}
-                handleChange={handleBrandSelection}
+                label="Option Sets"
+                value={state.itemOptionSets}
+                options={state.allOptionSets}
+                handleChange={handleOptionSetsSelection}
+                isMultiSelect={true}
               />
             </Grid>
           </Grid>
-        </Grid>
 
-        <Grid container>
-          <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
-            <DropDownSearch
-              label="Option Sets"
-              value={state.itemOptionSets}
-              options={state.allOptionSets}
-              handleChange={handleOptionSetsSelection}
-              isMultiSelect={true}
-            />
+          <Grid container>
+            <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
+              <DropDownSearch
+                label="Items to Group"
+                value={state.itemToGroup}
+                options={state.allItemsForGrouping}
+                handleChange={handleItemsToGroupSelection}
+                isMultiSelect={true}
+                disabled={state.allowItemsGrouping}
+              />
+            </Grid>
           </Grid>
-        </Grid>
 
-        <Grid container>
-          <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
-            <DropDownSearch
-              label="Items to Group"
-              value={state.itemToGroup}
-              options={state.allItemsForGrouping}
-              handleChange={handleItemsToGroupSelection}
-              isMultiSelect={true}
-              disabled={state.allowItemsGrouping}
-            />
+          <Grid container>
+            <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
+              <TdTextField
+                name="itemSpecialNote"
+                value={state.itemSpecialNote}
+                rows={2}
+                multiline={true}
+                type="text"
+                label="Special Note"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    height: "unset !important",
+                  },
+                }}
+                onChange={(e) =>
+                  dispatch({
+                    type: "textField",
+                    payload: { name: e.target.name, value: e.target.value },
+                  })
+                }
+              />
+            </Grid>
           </Grid>
-        </Grid>
 
-        <Grid container>
-          <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
-            <TdTextField
-              name="itemSpecialNote"
-              value={state.itemSpecialNote}
-              rows={2}
-              multiline={true}
-              type="text"
-              label="Special Note"
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  height: "unset !important",
-                },
-              }}
-              onChange={(e) =>
-                dispatch({
-                  type: "textField",
-                  payload: { name: e.target.name, value: e.target.value },
-                })
-              }
-            />
+          <Divider sx={{ mb: "15px" }} />
+
+          <Grid container>
+            <Grid item xs={12} sx={{ display: "flex", mb: "15px" }}>
+              {/* 1 and 0 => item not available and available respectively */}
+              <CustomizedSwitch
+                checked={state.itemAvailability === "0"}
+                name="itemAvailability"
+                label="Availability"
+                sx={{
+                  "& .MuiFormControlLabel-root": {
+                    mr: "28px",
+                    ml: "-6px",
+                  },
+                }}
+                onChange={handleSwitchChange}
+              />
+              {/* 1 and 0 => allow and don't allow special instruction respectively */}
+              <CustomizedSwitch
+                checked={state.itemSpecialInstructions === "1"}
+                name="itemSpecialInstructions"
+                label="Special Instructions"
+                onChange={handleSwitchChange}
+              />
+            </Grid>
           </Grid>
-        </Grid>
 
-        <Divider sx={{ mb: "15px" }} />
-
-        <Grid container>
-          <Grid item xs={12} sx={{ display: "flex", mb: "15px" }}>
-            {/* 1 and 0 => item not available and available respectively */}
-            <CustomizedSwitch
-              checked={state.itemAvailability === "0"}
-              name="itemAvailability"
-              label="Availability"
-              sx={{
-                "& .MuiFormControlLabel-root": {
-                  mr: "28px",
-                  ml: "-6px",
-                },
-              }}
-              onChange={handleSwitchChange}
-            />
-            {/* 1 and 0 => allow and don't allow special instruction respectively */}
-            <CustomizedSwitch
-              checked={state.itemSpecialInstructions === "1"}
-              name="itemSpecialInstructions"
-              label="Special Instructions"
-              onChange={handleSwitchChange}
-            />
-          </Grid>
-        </Grid>
-
-        <Divider sx={{ mb: "24px" }} />
-        <Display />
-        <Divider sx={{ mt: "16px" }} />
-        <Discount />
-        <Divider />
-        <Description />
-        <Divider />
-        <Inventory />
-        <Divider />
-        <Nutrition />
-      </Stack>
-    </CustomDrawer>
+          <Divider sx={{ mb: "24px" }} />
+          <Display />
+          <Divider sx={{ mt: "16px" }} />
+          <Discount />
+          <Divider />
+          <Description />
+          <Divider />
+          <Inventory />
+          <Divider />
+          <Nutrition />
+        </Stack>
+      </CustomDrawer>
+    </>
   );
 };
 export default AddEditItem;
