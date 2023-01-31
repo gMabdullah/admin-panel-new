@@ -1,73 +1,56 @@
 import React from "react";
 
-import {
-  Divider,
-  Grid,
-  IconButton,
-  Paper,
-  Typography,
-  Modal,
-} from "@mui/material";
-import { HighlightOffTwoTone as CloseIcon } from "@mui/icons-material";
+import { Paper, Modal } from "@mui/material";
 
 import PerfectScrollbar from "react-perfect-scrollbar";
 
 const CustomModal = ({
   title,
-  buttonText,
   header,
   children,
-  sx,
   onClose,
   footer,
   open,
-  onClick,
-  handleCancelClick,
   paperStyle,
   scrollbarStyle,
 }: {
   title?: React.ReactNode | string;
-  buttonText?: string;
   header?: React.ReactNode;
   children: React.ReactNode;
   footer?: React.ReactNode;
-  sx?: object;
   open: boolean;
   onClose?: (event: React.SyntheticEvent<{}>) => void;
-  onClick?: (event?: React.MouseEvent<HTMLButtonElement>) => void;
-  handleCancelClick?: (event?: React.MouseEvent<HTMLButtonElement>) => void;
   paperStyle?: object;
   scrollbarStyle?: object;
 }) => {
   return (
     <Modal open={open} onClose={onClose}>
-      <Paper sx={{ ...paperStyle }}>
-        <Grid container>
-          <Grid
-            item
-            xs={12}
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              p: "40px 40px 0 !important",
-            }}
-          >
-            <Typography variant="h2" sx={{ color: "#212121" }}>
-              {title}
-            </Typography>
+      <Paper
+        sx={{
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: "45vw",
+          position: "absolute",
+          ...paperStyle,
+        }}
+      >
+        {header}
 
-            <IconButton onClick={onClose} sx={{ p: "unset" }}>
-              <CloseIcon htmlColor="#D84315" fontSize="large" />
-            </IconButton>
-          </Grid>
-        </Grid>
+        <PerfectScrollbar
+          style={{
+            height: "100%",
+            maxHeight: "98vh",
+            overflowX: "hidden",
+            borderRadius: "8px",
 
-        <Divider sx={{ m: "16px 40px 0" }} />
-
-        <PerfectScrollbar style={{ ...scrollbarStyle }}>
+            ...scrollbarStyle,
+          }}
+        >
           {children}
         </PerfectScrollbar>
+
+        {footer}
       </Paper>
     </Modal>
   );
