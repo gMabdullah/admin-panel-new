@@ -15,6 +15,8 @@ import { ProductsContext } from "products/context/ProductsContext";
 // 1 - use this type "dropdownTypes"
 
 const BrandsDropdown = ({ applyFilter }: dropdownTypes) => {
+  console.log("BrandsDropdown component");
+
   const dispatch = useDispatch();
   const { state } = useContext(ProductsContext);
 

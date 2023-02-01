@@ -23,6 +23,8 @@ const useStyles = makeStyles(() => ({
 }));
 
 const Nutrition = () => {
+  console.log("Nutrition component");
+
   const classes = useStyles();
   const { state } = useContext(ProductsContext);
   const [fieldError, setFieldError] = useState("");

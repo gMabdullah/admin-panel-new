@@ -7,6 +7,7 @@ type switchType<T extends React.ElementType> = {
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   label?: string;
   checked?: boolean;
+  defaultChecked?: boolean;
   value?: string;
   name?: string;
   sx?: object;
@@ -28,6 +29,7 @@ const PurpleSwitch = withStyles({
 
 const CustomizedSwitch = <T extends React.ElementType = "button">({
   checked,
+  defaultChecked,
   onChange,
   value,
   label,
@@ -43,6 +45,7 @@ const CustomizedSwitch = <T extends React.ElementType = "button">({
             <PurpleSwitch
               {...rest}
               checked={checked}
+              defaultChecked={defaultChecked}
               onChange={onChange}
               value={value}
               name={name}

@@ -12,6 +12,7 @@ import {
 import { Add } from "@mui/icons-material";
 
 import useAxios from "axios-hooks";
+import { debounce } from "lodash";
 
 import TdTextField from "components/TdTextField";
 import CustomDrawer from "components/CustomDrawer";
@@ -212,26 +213,29 @@ const AddEditItem = ({
     }
   }
 
-  const handleSwitchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.name === "itemSpecialInstructions") {
-      dispatch({
-        type: "switchComponent",
-        payload: {
-          name: event.target.name,
-          value: event.target.checked ? "1" : "0",
-        },
-      });
-    }
-    if (event.target.name === "itemAvailability") {
-      dispatch({
-        type: "switchComponent",
-        payload: {
-          name: event.target.name,
-          value: event.target.checked ? "0" : "1",
-        },
-      });
-    }
-  };
+  const handleSwitchChange = debounce(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (event.target.name === "itemSpecialInstructions") {
+        dispatch({
+          type: "switchComponent",
+          payload: {
+            name: event.target.name,
+            value: event.target.checked ? "1" : "0",
+          },
+        });
+      }
+      if (event.target.name === "itemAvailability") {
+        dispatch({
+          type: "switchComponent",
+          payload: {
+            name: event.target.name,
+            value: event.target.checked ? "0" : "1",
+          },
+        });
+      }
+    },
+    300
+  );
 
   const addShortLongTags = () => {
     const checkShortDesc =
@@ -252,6 +256,18 @@ const AddEditItem = ({
       payload: {},
     });
   };
+
+  const handleFieldChange = debounce(
+    (e: { target: { name: any; value: any } }) => {
+      if (e.target.value) {
+        dispatch({
+          type: "textField",
+          payload: { name: e.target.name, value: e.target.value },
+        });
+      }
+    },
+    300
+  );
 
   const handleAddEditItem = async () => {
     if (!state.itemCategory.label) {
@@ -456,15 +472,17 @@ const AddEditItem = ({
               <TdTextField
                 name="itemName"
                 label="Item Name"
-                value={state.itemName}
+                // value={state.itemName}
+                defaultValue={state.itemName}
                 error={state.fieldError.itemNameField === "" ? false : true}
                 helperText={state.fieldError.itemNameField}
-                onChange={(e) =>
-                  dispatch({
-                    type: "textField",
-                    payload: { name: e.target.name, value: e.target.value },
-                  })
-                }
+                onChange={handleFieldChange}
+                // onChange={(e) =>
+                //   dispatch({
+                //     type: "textField",
+                //     payload: { name: e.target.name, value: e.target.value },
+                //   })
+                // }
               />
             </Grid>
           </Grid>
@@ -476,15 +494,17 @@ const AddEditItem = ({
                   name="itemPrice"
                   type="number"
                   label="Item Price"
-                  value={state.itemPrice}
+                  defaultValue={state.itemPrice}
+                  // value={state.itemPrice}
                   error={state.fieldError.itemPriceField === "" ? false : true}
                   helperText={state.fieldError.itemPriceField}
-                  onChange={(e) =>
-                    dispatch({
-                      type: "textField",
-                      payload: { name: e.target.name, value: e.target.value },
-                    })
-                  }
+                  onChange={handleFieldChange}
+                  // onChange={(e) =>
+                  //   dispatch({
+                  //     type: "textField",
+                  //     payload: { name: e.target.name, value: e.target.value },
+                  //   })
+                  // }
                 />
               </Grid>
               <Grid item xs={6} sx={{ ml: "8px" }}>
@@ -492,13 +512,15 @@ const AddEditItem = ({
                   name="itemTax"
                   type="number"
                   label="Tax %"
-                  value={state.itemTax}
-                  onChange={(e) =>
-                    dispatch({
-                      type: "textField",
-                      payload: { name: e.target.name, value: e.target.value },
-                    })
-                  }
+                  defaultValue={state.itemTax}
+                  // value={state.itemTax}
+                  onChange={handleFieldChange}
+                  // onChange={(e) =>
+                  //   dispatch({
+                  //     type: "textField",
+                  //     payload: { name: e.target.name, value: e.target.value },
+                  //   })
+                  // }
                 />
               </Grid>
             </Grid>
@@ -546,7 +568,8 @@ const AddEditItem = ({
             <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
               <TdTextField
                 name="itemSpecialNote"
-                value={state.itemSpecialNote}
+                defaultValue={state.itemSpecialNote}
+                // value={state.itemSpecialNote}
                 rows={2}
                 multiline={true}
                 type="text"
@@ -556,12 +579,7 @@ const AddEditItem = ({
                     height: "unset !important",
                   },
                 }}
-                onChange={(e) =>
-                  dispatch({
-                    type: "textField",
-                    payload: { name: e.target.name, value: e.target.value },
-                  })
-                }
+                onChange={handleFieldChange}
               />
             </Grid>
           </Grid>
@@ -572,7 +590,8 @@ const AddEditItem = ({
             <Grid item xs={12} sx={{ display: "flex", mb: "15px" }}>
               {/* 1 and 0 => item not available and available respectively */}
               <CustomizedSwitch
-                checked={state.itemAvailability === "0"}
+                defaultChecked={state.itemAvailability === "0"}
+                // checked={state.itemAvailability === "0"}
                 name="itemAvailability"
                 label="Availability"
                 sx={{
@@ -585,7 +604,8 @@ const AddEditItem = ({
               />
               {/* 1 and 0 => allow and don't allow special instruction respectively */}
               <CustomizedSwitch
-                checked={state.itemSpecialInstructions === "1"}
+                defaultChecked={state.itemSpecialInstructions === "1"}
+                // checked={state.itemSpecialInstructions === "1"}
                 name="itemSpecialInstructions"
                 label="Special Instructions"
                 onChange={handleSwitchChange}

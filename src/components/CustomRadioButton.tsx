@@ -12,7 +12,8 @@ import {
 type radioButtonTypes<T extends React.ElementType> = {
   renderAs?: T;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  value: string | SVGSVGElement;
+  value?: string | SVGSVGElement;
+  defaultValue?: string | SVGSVGElement;
   label?: string;
   options?: { value: string; label: string }[];
   sx?: object;
@@ -52,6 +53,7 @@ const radioButtonStyle = {
 const CustomRadioButton = <T extends React.ElementType = "select">({
   onChange,
   value,
+  defaultValue,
   options,
   count,
   row,
@@ -99,7 +101,13 @@ const CustomRadioButton = <T extends React.ElementType = "select">({
           ...sx,
         }}
       >
-        <RadioGroup row={row} onChange={onChange} value={value} {...rest}>
+        <RadioGroup
+          row={row}
+          onChange={onChange}
+          value={value}
+          defaultValue={defaultValue}
+          {...rest}
+        >
           {options?.map<object>((option, index) => (
             <Stack direction="row" alignItems="center" spacing={0.5}>
               <FormControlLabel
