@@ -23,32 +23,7 @@ interface filtersProps {
   productLoading?: boolean;
   productData: any;
 }
-let countObj = {
-  withImages: 0,
-  withNoImages: 0,
-  available: 0,
-  unAvailable: 0,
-  availableWithImg: 0,
-  unAvailableWithImg: 0,
-  availableWithNoImg: 0,
-  unAvailableWithNoImg: 0,
-  displayNone: 0,
-  displayWeb: 0,
-  displayPOS: 0,
-};
-interface menuItemProps {
-  withImages: ProductResponseItem[];
-  withNoImages: ProductResponseItem[];
-  available: ProductResponseItem[];
-  unAvailable: ProductResponseItem[];
-  availableWithImg: ProductResponseItem[];
-  unAvailableWithImg: ProductResponseItem[];
-  availableWithNoImg: ProductResponseItem[];
-  unAvailableWithNoImg: ProductResponseItem[];
-  displayNone: ProductResponseItem[];
-  displayWeb: ProductResponseItem[];
-  displayPOS: ProductResponseItem[];
-}
+
 const Filters = ({
   items,
   setItems,
@@ -57,11 +32,22 @@ const Filters = ({
 }: //  count
 filtersProps) => {
   const [toggleFilter, setToggleFilter] = useState<SVGSVGElement | null>(null);
-  const [count, setCount] = useState(countObj);
+  const [count, setCount] = useState({
+    withImages: 0,
+    withNoImages: 0,
+    available: 0,
+    unAvailable: 0,
+    availableWithImg: 0,
+    unAvailableWithImg: 0,
+    availableWithNoImg: 0,
+    unAvailableWithNoImg: 0,
+    displayNone: 0,
+    displayWeb: 0,
+    displayPOS: 0,
+  });
   const open = Boolean(toggleFilter);
   const id = open ? "simple-popover" : undefined;
   const dispatch = useDispatch();
-  // const [menuItem, setMenuItem] = useState<menuItemProps[] | []>([]);
   const {
     productColumns,
     CountError,
@@ -78,103 +64,71 @@ filtersProps) => {
 
   // Group  the data
   const groupData = (items: ProductResponse["items"]) => {
-    let result = [];
-    let array: menuItemProps[] = [];
     if (
       items !== null &&
       items.length > 0
       // && items[0] !== ""
     ) {
-      result = items.reduce((r, a) => {
-        r[a.category] = r[a.category] || [];
-        r[a.category].push(a);
-        return r;
-      }, Object.create(null));
+      let withNoImages = 0,
+        withImages = 0,
+        available = 0,
+        unAvailable = 0,
+        availableWithImg = 0,
+        unAvailableWithImg = 0,
+        availableWithNoImg = 0,
+        unAvailableWithNoImg = 0,
+        displayNone = 0,
+        displayWeb = 0,
+        displayPOS = 0;
 
-      let categoryWiseItems: any = Object.entries(result);
-      let withNoImages: any = [],
-        withImages: any = [],
-        available: any = [],
-        unAvailable: any = [],
-        availableWithImg: any = [],
-        unAvailableWithImg: any = [],
-        availableWithNoImg: any = [],
-        unAvailableWithNoImg: any = [],
-        displayNone: any = [],
-        displayWeb: any = [],
-        displayPOS: any = [];
-      // for (let i = 0; i < categoryWiseItems.length; i++) {
-      // categoryWiseItems[i][1]
       productData.items &&
-        productData.items.map((e: ProductResponseItem) => {
-          // items with no image
-          e.image.includes("no_image") && withNoImages.push(e);
+        productData.items.map((item: ProductResponseItem) => {
           // items with image
-          !e.image.includes("no_image") && withImages.push(e);
+          !item.image.includes("no_image") && withImages++;
+          // items with no image
+          item.image.includes("no_image") && withNoImages++;
           // items available
-          e.status === "0" && available.push(e);
+          item.status === "0" && available++;
           // items unavailable
-          e.status === "1" && unAvailable.push(e);
+          item.status === "1" && unAvailable++;
           // items with images and avialable
-          e.status === "0" &&
-            !e.image.includes("no_image") &&
-            availableWithImg.push(e);
+          item.status === "0" &&
+            !item.image.includes("no_image") &&
+            availableWithImg++;
           // items with images but unavialable
-          e.status === "1" &&
-            !e.image.includes("no_image") &&
-            unAvailableWithImg.push(e);
+          item.status === "1" &&
+            !item.image.includes("no_image") &&
+            unAvailableWithImg++;
           // items with no images and avialable
-          e.status === "0" &&
-            e.image.includes("no_image") &&
-            availableWithNoImg.push(e);
+          item.status === "0" &&
+            item.image.includes("no_image") &&
+            availableWithNoImg++;
           // items with no images and also unavialable
-          e.status === "1" &&
-            e.image.includes("no_image") &&
-            unAvailableWithNoImg.push(e);
+          item.status === "1" &&
+            item.image.includes("no_image") &&
+            unAvailableWithNoImg++;
           // items not displaying at anywhere
-          e.display_source === "1" && displayNone.push(e);
+          item.display_source === "1" && displayNone++;
           // items only displaying on the web
-          e.display_source === "2" && displayWeb.push(e);
+          item.display_source === "2" && displayWeb++;
           // items only displaying on the pos
-          e.display_source === "3" && displayPOS.push(e);
+          item.display_source === "3" && displayPOS++;
         });
 
-      // set Data of all
-      array.push({
-        // menuItems: categoryWiseItems[i][1],
+      // set Count of all
+      setCount({
         withImages,
         withNoImages,
-
         available,
         unAvailable,
         availableWithImg,
         unAvailableWithImg,
         availableWithNoImg,
         unAvailableWithNoImg,
-
         displayNone,
         displayWeb,
         displayPOS,
       });
-      // }
-      // set Count of all
-      setCount({
-        withImages: withImages.length,
-        withNoImages: withNoImages.length,
-
-        available: available.length,
-        unAvailable: unAvailable.length,
-        availableWithImg: availableWithImg.length,
-        unAvailableWithImg: unAvailableWithImg.length,
-        availableWithNoImg: availableWithNoImg.length,
-        unAvailableWithNoImg: unAvailableWithNoImg.length,
-
-        displayNone: displayNone.length,
-        displayWeb: displayWeb.length,
-        displayPOS: displayPOS.length,
-      });
-
-      // setMenuItem(array);
     }
   };
 
@@ -683,6 +637,7 @@ filtersProps) => {
     // close filter modal
     setToggleFilter(null);
   };
+  console.log("COUNT", count);
 
   return (
     <>
