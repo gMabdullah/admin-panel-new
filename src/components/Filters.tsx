@@ -637,7 +637,6 @@ filtersProps) => {
     // close filter modal
     setToggleFilter(null);
   };
-  console.log("COUNT", count);
 
   return (
     <>
