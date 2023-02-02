@@ -1,18 +1,5 @@
 import React, { createContext, useReducer } from "react";
 
-interface ProductsContextInterface {
-  state: State;
-  dispatch: React.Dispatch<Action>;
-}
-
-interface Action {
-  type: string;
-  payload: {
-    name?: string;
-    value?: any;
-  };
-}
-
 interface State {
   allCategories: DropdownValue[];
   allBrands: DropdownValue[];

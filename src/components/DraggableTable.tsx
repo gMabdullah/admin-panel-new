@@ -32,7 +32,10 @@ interface TablePropsType {
     options?: RefetchOptions | undefined
   ) => AxiosPromise<any>;
   productLoading?: boolean;
-  handleDrawerToggle: () => void;
+  triggerEditProduct: (
+    itemId: string,
+    dispatch: React.Dispatch<Action>
+  ) => void;
   checkBox?: boolean;
 }
 
@@ -41,7 +44,7 @@ const DraggableTable = ({
   shortDragDropItems,
   getProductsAPI,
   productLoading,
-  handleDrawerToggle,
+  triggerEditProduct,
   checkBox = false,
 }: TablePropsType) => {
   const { decimalPlaces, productColumns } = useSelector((state) => state.main);
@@ -185,7 +188,7 @@ const DraggableTable = ({
                                         row={row}
                                         getProductsAPI={getProductsAPI}
                                         productLoading={productLoading}
-                                        handleDrawerToggle={handleDrawerToggle}
+                                        triggerEditProduct={triggerEditProduct}
                                       />
                                     ) : (
                                       <Typography className="tableColumnCss">

@@ -9,13 +9,14 @@ import {
   IconButton,
   TablePagination,
 } from "@mui/material";
-
 import AddTwoToneIcon from "@mui/icons-material/AddTwoTone";
 import SortByAlphaIcon from "@mui/icons-material/SortByAlpha";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { SelectChangeEvent } from "@mui/material/Select";
+
 import useAxios from "axios-hooks";
 import { debounce } from "lodash";
+
 import MainCard from "components/cards/MainCard";
 import DraggableTable from "components/DraggableTable";
 import CustomButton from "components/CustomButton";
@@ -25,14 +26,24 @@ import CategoriesDropdown from "components/readytouseComponents/CategoriesDropdo
 import MenuTypesDropdown from "components/readytouseComponents/MenuTypesDropdown";
 import { OrderListingSkeleton } from "components/skeleton/OrderListingSkeleton";
 import Loader from "components/Loader";
+import Notify from "components/Notify";
 
 import AddEditItem from "products/AddEditItem";
 import { gridIconsCss } from "./Styles";
 import { useDispatch, useSelector } from "store";
-import { bulkActions, itemExportColumns, keysOfItems } from "../constants";
+import {
+  bulkActions,
+  itemExportColumns,
+  keysOfItems,
+  weightUnits,
+} from "../constants";
 import { ProductsProvider, ProductsContext } from "./context/ProductsContext";
 import { setProductColumn, toggleDatePicker } from "../store/slices/Main";
-import { reorder, sortMenuItems } from "orders/HelperFunctions";
+import {
+  getLocalStorage,
+  reorder,
+  sortMenuItems,
+} from "orders/HelperFunctions";
 import TdTextField from "components/TdTextField";
 
 import { searchFieldStyle } from "business/Styles";
@@ -84,7 +95,12 @@ let countObj = {
   displayPOS: 0,
 };
 const Items = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch(),
+    { state } = useContext(ProductsContext);
+
+  // state.itemName = "klklklkl";
+  // console.log("ssssssssssssssssstate = ", state);
+
   const { eatout_id, user_id } = JSON.parse(
     localStorage.getItem("businessInfo")!
   );
@@ -98,6 +114,7 @@ const Items = () => {
   const [items, setItems] = useState<ProductResponse["items"] | []>([]);
   const [applyFilters, setApplyFilters] = React.useState(false);
   const [toggleDrawer, setToggleDrawer] = useState(false);
+  const [drawerSkeleton, setDrawerSkeleton] = useState(false);
   const [itemsCount, setItemsCount] = useState(100);
   const [importExportDropDownValue, setImportExportDropDownValue] =
     useState<string>("import_export");
@@ -109,8 +126,13 @@ const Items = () => {
   const [sequenceItem, setSequenceItem] = useState([]);
   const [searchQueryItems, setSearchQueryItems] = useState<string>("");
   const [linearLoader, setLinearLoader] = useState<boolean>(false);
-  const { state } = useContext(ProductsContext);
+  // const { state } = useContext(ProductsContext);
   const [count, setCount] = useState(countObj);
+  const [notify, setNotify] = useState<boolean>(false);
+  const [notifyMessage, setNotifyMessage] = useState("");
+  const [notifyType, setNotifyType] = useState<
+    "success" | "info" | "warning" | "error"
+  >("info");
   // const [menuItem, setMenuItem] = useState<any>([]);
   //   {
   //   withImages: [],
@@ -137,6 +159,14 @@ const Items = () => {
       },
       { manual: true }
     );
+
+  // get single item API call (for edit item)
+  const [{}, singleItemAPICall] = useAxios(
+    {
+      method: "get",
+    },
+    { manual: true }
+  );
 
   const handleSearchChange = debounce((e: { target: { value: string } }) => {
     (async () => {
@@ -321,15 +351,194 @@ const Items = () => {
     setPage(0);
   };
 
+  //xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+  const triggerEditProduct = async (
+    itemId: string,
+    dispatch: React.Dispatch<Action>
+  ) => {
+    // alert("triggerEditProduct");
+    // open the add/edit item drawer
+    handleDrawerToggle();
+
+    // state.itemName = "klklklkl";
+
+    setDrawerSkeleton(true);
+
+    // get single item API call (for edit item)
+    const {
+      data,
+      // data: { items },
+    } = await singleItemAPICall({
+      url: `/product_details?business_id=${
+        getLocalStorage().eatout_id
+      }&item_id=${itemId}&admin_id=${getLocalStorage().user_id}&source=biz`,
+    });
+
+    if (data) {
+      const { items } = data;
+
+      //removed the selected item from available options for product grouping
+      const availableProductsToGroup = state.allItemsForGrouping.filter(
+        (item: { value: any }) => item.value !== items[0].menu_item_id
+      );
+
+      // const optionSets =
+      //   items[0].options.length > 0
+      //     ? items[0].options.map((option: { id: string; name: string }) => ({
+      //         value: option.id,
+      //         label: option.name,
+      //       }))
+      //     : [
+      //         {
+      //           value: "",
+      //           label: "",
+      //         },
+      //       ];
+
+      // check item can either be grouped or not
+      if (items[0].is_grouped === true && items[0].is_parent === false) {
+        dispatch({
+          type: "editItem",
+          payload: { name: "allowItemsGrouping", value: true },
+        });
+      }
+
+      // filter the selected category
+      const selectedCategory = state.allCategories.filter(
+        (category: { value: any }) => category.value === items[0].menu_cat_id
+      );
+
+      // set value for weight unit dropdown
+      const selectedItemWeightUnit = weightUnits.filter(
+        (unit) => unit.value === items[0].weight_unit.trim().toLowerCase()
+      );
+
+      // setDrawerSkeleton(false);
+
+      // console.log("items[0]", items);
+
+      dispatch({
+        type: "populateEditItemValues",
+        payload: {
+          value: {
+            allItemsForGrouping: availableProductsToGroup,
+            itemCategory:
+              selectedCategory.length === 0
+                ? {
+                    value: "",
+                    label: "",
+                  }
+                : selectedCategory[0],
+
+            itemName: data.items[0].name,
+            itemPrice: items[0].price,
+            itemTax: items[0].tax,
+
+            itemBrand: items[0].item_brand[0].brand_name
+              ? {
+                  value: items[0].item_brand[0].brand_id,
+                  label: items[0].item_brand[0].brand_name,
+                }
+              : {
+                  value: "",
+                  label: "",
+                },
+
+            // itemOptionSets: optionSets,
+            itemOptionSets: items[0].options.map(
+              (option: { id: string; name: string }) => ({
+                value: option.id,
+                label: option.name,
+              })
+            ),
+
+            itemToGroup: items[0].grouped_products.map(
+              (product: { product_id: string; sku: string; name: string }) => ({
+                value: product.product_id,
+                label: product.sku
+                  ? product.name + " (" + product.sku + ")"
+                  : product.name,
+              })
+            ),
+
+            itemSpecialNote: items[0].note,
+            itemAvailability: items[0].status, // 1 and 0 => item not available and available respectively
+            itemSpecialInstructions: items[0].allow_note, // 1 and 0 => allow and don't allow special instruction respectively
+            itemDisplay: items[0].display_source, // 0, 1, 2, and 3 => display (all , none, web, and pos) respectively
+
+            itemDiscount: items[0].discount_display,
+            itemDiscountStart: items[0].discount_start_at,
+            itemDiscountExpiry: items[0].discount_expiry,
+
+            itemDescription: items[0].desc, //////////////////having desc for editor also => check with editor
+            itemShortDescription: "",
+            itemLongDescription: "",
+
+            itemWeight: items[0].weight_value,
+            itemWeightUnit: selectedItemWeightUnit[0],
+
+            itemPricePer: items[0].price_per,
+            itemMinimumQuantity: items[0].min_qty,
+
+            itemCost: items[0].item_cost,
+
+            itemSku: items[0].sku,
+            itemUnitPrice: items[0].unit_price,
+            itemProductCode: items[0].product_code,
+            itemUniversalProductCode: items[0].upc,
+            itemPallets: items[0].pallet,
+            itemPalletPrice: items[0].pallet_price,
+            itemCartons: items[0].carton,
+            itemMaximumDistance: items[0].max_distance,
+            itemNutritions:
+              items[0].nutritions.length > 0
+                ? JSON.parse(items[0].nutritions)
+                : "",
+
+            editItem: {
+              editItemFlag: true,
+              editItemId: items[0].menu_item_id,
+            },
+          },
+        },
+      });
+
+      setDrawerSkeleton(false);
+
+      // console.log("state after dispatch = ", state);
+    } else {
+      alert("lklklklk");
+      setNotifyMessage("Something went wrong");
+      setNotifyType("error");
+      setNotify(true);
+    }
+  };
+
+  const closeNotify = () => setNotify(false);
+
+  //xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
   return (
     <ProductsProvider>
+      {notify && (
+        <Notify
+          message={notifyMessage}
+          type={notifyType}
+          notify={notify}
+          closeNotify={closeNotify}
+        />
+      )}
+
       {toggleDrawer && (
         <AddEditItem
           toggleDrawer={toggleDrawer}
+          drawerSkeleton={drawerSkeleton}
           handleDrawerToggle={handleDrawerToggle}
           getProductApi={getProductsAPI}
         />
       )}
+
       <Suspense
         fallback={
           <div>
@@ -485,7 +694,7 @@ const Items = () => {
                 items={items}
                 setSequenceItem={setSequenceItem}
                 shortDragDropItems={shortDragDropItems}
-                handleDrawerToggle={handleDrawerToggle}
+                triggerEditProduct={triggerEditProduct}
                 checkBox={bulkActionsValue !== "bulkActions"}
               />
               <TablePagination
