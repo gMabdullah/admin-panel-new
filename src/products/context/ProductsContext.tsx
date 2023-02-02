@@ -5,6 +5,7 @@ interface State {
   allBrands: DropdownValue[];
   allItemsForGrouping: DropdownValue[];
   allOptionSets: DropdownValue[];
+  allAttributes: AllAttributesType[];
   itemCategory: DropdownValue;
   itemName: string;
   itemPrice: string;
@@ -49,6 +50,7 @@ const initialState: State = {
   allBrands: [],
   allItemsForGrouping: [],
   allOptionSets: [],
+  allAttributes: [],
   itemCategory: {
     value: "",
     label: "",

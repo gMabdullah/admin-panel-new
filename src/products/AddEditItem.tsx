@@ -54,14 +54,22 @@ const AddEditItem = ({
     [addCategoryModal, setAddCategoryModal] = useState(false);
   const { state, dispatch } = useContext(ProductsContext);
 
-  // console.log("add edit item state = ", state);
+  console.log("add edit item state = ", state);
 
   // option sets API call payload
-  const optionSetsAPIPayload = () => {
+  const optionSetsOrAttributesAPIPayload = (categoryId = "") => {
     const formData = new FormData();
+
+    // categoryId to get attributes
+    if (categoryId) {
+      formData.append("category_id", categoryId);
+      formData.append("type", "1");
+    }
+
     formData.append("eatout_id", getLocalStorage().eatout_id);
     formData.append("admin_id", getLocalStorage().user_id);
     formData.append("source", "biz");
+
     return formData;
   };
 
@@ -85,34 +93,61 @@ const AddEditItem = ({
   );
 
   // option sets API call
-  const [{ data: allOptionSets }, optionSetsAPICall] = useAxios({
-    url: "/get_option_sets",
-    method: "POST",
-    data: optionSetsAPIPayload(),
-  });
-
-  useEffect(() => {
-    // status 1 => getting required response from API
-    if (
-      allOptionSets &&
-      allOptionSets.status === "1" &&
-      Array.isArray(allOptionSets.result)
-    ) {
-      const optionSets = allOptionSets.result.map(
-        (optionSet: { id: string; name: string }) => ({
-          value: optionSet.id,
-          label: optionSet.name,
-        })
-      );
-      state.allOptionSets = optionSets.sort(compareItem);
+  const [{}, optionSetsOrAttributesAPICall] = useAxios(
+    {
+      url: "/get_option_sets",
+      method: "POST",
+      data: optionSetsOrAttributesAPIPayload(),
+    },
+    {
+      manual: true,
     }
-  }, [allOptionSets]);
+  );
+
+  // useEffect(() => {
+  //   // status 1 => getting required response from API
+  //   if (
+  //     allOptionSets &&
+  //     allOptionSets.status === "1" &&
+  //     Array.isArray(allOptionSets.result)
+  //   ) {
+  //     alert("alloptionsets");
+  //     const optionSets = allOptionSets.result.map(
+  //       (optionSet: { id: string; name: string }) => ({
+  //         value: optionSet.id,
+  //         label: optionSet.name,
+  //       })
+  //     );
+  //     state.allOptionSets = optionSets.sort(compareItem);
+  //   }
+  // }, [allOptionSets]);
 
   useEffect(() => {
-    richEditor && splitShortLongDescription();
+    (async () => {
+      // api call for option sets
+      const { data } = await optionSetsOrAttributesAPICall({
+        data: optionSetsOrAttributesAPIPayload(),
+      });
+
+      // console.log("api data = ", data);
+
+      // status 1 => getting required response from API
+      if (data && data.status === "1" && Array.isArray(data.result)) {
+        // alert("data");
+        const optionSets = data.result.map(
+          (optionSet: { id: string; name: string }) => ({
+            value: optionSet.id,
+            label: optionSet.name,
+          })
+        );
+        state.allOptionSets = optionSets.sort(compareItem);
+      }
+
+      richEditor && splitShortLongDescription();
+    })();
   }, []);
 
-  const handleCategorySelection = (
+  const handleCategorySelection = async (
     event: React.ChangeEvent<{}>,
     value: any,
     name: string
@@ -124,6 +159,35 @@ const AddEditItem = ({
         value: value,
       },
     });
+
+    // api call for attributes
+    const { data } = await optionSetsOrAttributesAPICall({
+      data: optionSetsOrAttributesAPIPayload(value.value),
+    });
+
+    console.log("attributes data = ", data);
+
+    if (data && data.status === "1" && Array.isArray(data.result)) {
+      const allAttributes = data.result.map((attribute: any) => ({
+        attributeId: attribute.id,
+        attributeName: attribute.name,
+        attributeValue: { value: "", label: "" },
+        attributeOptions: attribute.items.map((option: any) => ({
+          value: option.id,
+          label: option.name,
+        })),
+      }));
+
+      console.log("desired object = ", allAttributes);
+
+      dispatch({
+        type: "dropDown",
+        payload: {
+          name: "allAttributes",
+          value: allAttributes,
+        },
+      });
+    }
   };
 
   const handleBrandSelection = (
@@ -163,6 +227,21 @@ const AddEditItem = ({
       type: "dropDown",
       payload: {
         name: "itemToGroup",
+        value: value,
+      },
+    });
+  };
+
+  const handleAttributesSelection = (
+    event: React.ChangeEvent<{}>,
+    value: any,
+    // index:number
+    name: string
+  ) => {
+    dispatch({
+      type: "dropDown",
+      payload: {
+        name: "itemBrand",
         value: value,
       },
     });
@@ -593,6 +672,37 @@ const AddEditItem = ({
                   />
                 </Grid>
               </Grid>
+
+              {/* xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx */}
+
+              {state.allAttributes.length > 0 && (
+                <Grid
+                  container
+                  spacing={{ xs: 1 }}
+                  columns={{ xs: 2 }}
+                  sx={{ mb: "24px" }}
+                >
+                  {state.allAttributes.map((attribute: any, index: number) => (
+                    <Grid
+                      item
+                      xs={1}
+                      key={index}
+                      sx={{
+                        p: "8px 0px 0px  8px !important",
+                      }}
+                    >
+                      <DropDownSearch
+                        label={attribute.attributeName}
+                        value={attribute.attributeValue}
+                        options={attribute.attributeOptions}
+                        handleChange={() => handleAttributesSelection}
+                      />
+                    </Grid>
+                  ))}
+                </Grid>
+              )}
+
+              {/* xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx */}
 
               <Divider sx={{ mb: "15px" }} />
 
