@@ -146,7 +146,13 @@ const DraggableTable = ({
                                   <TableCell
                                     key={column.key}
                                     align={column.align}
-                                    style={{ width: column?.width }}
+                                    style={{
+                                      width: column?.width,
+                                      marginLeft: `${
+                                        column.key === "price" &&
+                                        "10px !important"
+                                      }`,
+                                    }}
                                   >
                                     {column.key === "image" ? (
                                       <Suspense fallback={<Loader />}>
