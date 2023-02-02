@@ -64,11 +64,7 @@ filtersProps) => {
 
   // Group  the data
   const groupData = (items: ProductResponse["items"]) => {
-    if (
-      items !== null &&
-      items.length > 0
-      // && items[0] !== ""
-    ) {
+    if (items && Object.entries(items[0]).length > 1 && items.length > 0) {
       let withNoImages = 0,
         withImages = 0,
         available = 0,
@@ -84,35 +80,39 @@ filtersProps) => {
       productData.items &&
         productData.items.map((item: ProductResponseItem) => {
           // items with image
-          !item.image.includes("no_image") && withImages++;
+          item && !item.image.includes("no_image") && withImages++;
           // items with no image
-          item.image.includes("no_image") && withNoImages++;
+          item && item.image.includes("no_image") && withNoImages++;
           // items available
-          item.status === "0" && available++;
+          item && item.status === "0" && available++;
           // items unavailable
-          item.status === "1" && unAvailable++;
+          item && item.status === "1" && unAvailable++;
           // items with images and avialable
-          item.status === "0" &&
+          item &&
+            item.status === "0" &&
             !item.image.includes("no_image") &&
             availableWithImg++;
           // items with images but unavialable
-          item.status === "1" &&
+          item &&
+            item.status === "1" &&
             !item.image.includes("no_image") &&
             unAvailableWithImg++;
           // items with no images and avialable
-          item.status === "0" &&
+          item &&
+            item.status === "0" &&
             item.image.includes("no_image") &&
             availableWithNoImg++;
           // items with no images and also unavialable
-          item.status === "1" &&
+          item &&
+            item.status === "1" &&
             item.image.includes("no_image") &&
             unAvailableWithNoImg++;
           // items not displaying at anywhere
-          item.display_source === "1" && displayNone++;
+          item && item.display_source === "1" && displayNone++;
           // items only displaying on the web
-          item.display_source === "2" && displayWeb++;
+          item && item.display_source === "2" && displayWeb++;
           // items only displaying on the pos
-          item.display_source === "3" && displayPOS++;
+          item && item.display_source === "3" && displayPOS++;
         });
 
       // set Count of all
