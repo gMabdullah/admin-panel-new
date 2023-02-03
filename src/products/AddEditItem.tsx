@@ -677,32 +677,23 @@ const AddEditItem = ({
 
               {state.allAttributes.length > 0 && (
                 <>
-                  <Grid
-                    item
-                    xs={12}
-                    sx={{ mb: "18px" }}
-                    // key={index}
-                    // sx={{
-                    //   p: "8px 0px 0px  8px !important",
-                    // }}
-                  >
+                  <Grid item xs={12}>
                     <Typography variant="h5">Attributes</Typography>
                   </Grid>
                   <Grid
                     container
-                    rowSpacing={{ xs: 3 }}
-                    columnSpacing={{ xs: 1 }}
+                    spacing={{ xs: 1 }}
                     columns={{ xs: 2 }}
                     sx={{ mb: "24px" }}
                   >
                     {state.allAttributes.map(
-                      (attribute: any, index: number) => (
+                      (attribute: AllAttributesType, index: number) => (
                         <Grid
                           item
                           xs={1}
                           key={index}
                           sx={{
-                            p: "8px 0px 0px  8px !important",
+                            p: "24px 0px 0px  8px !important",
                           }}
                         >
                           <DropDownSearch
