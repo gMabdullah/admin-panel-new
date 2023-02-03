@@ -54,11 +54,11 @@ const isFloat = (n: number) => {
 };
 interface menuExcelPropsType {
   importType: string;
-  setImportExportDropDownValue: React.Dispatch<React.SetStateAction<string>>;
+  setImportExportValue: React.Dispatch<React.SetStateAction<string>>;
 }
 const ImportMenuExcel = ({
   importType,
-  setImportExportDropDownValue,
+  setImportExportValue,
 }: menuExcelPropsType) => {
   const [itemsUpdated, setUpdatedItems] = useState([]);
   const [validationError, setValidationError] = useState(false);
@@ -67,7 +67,7 @@ const ImportMenuExcel = ({
   const { eatout_id, user_id } = getLocalStorage();
   const toggleBulkUploadModal = () => {
     setBulkUploadModal((prevState) => !prevState);
-    setImportExportDropDownValue("");
+    setImportExportValue("");
   };
   const [notify, setNotify] = useState<boolean>(false);
   const [itemMessage, setItemMessage] = useState("");

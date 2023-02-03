@@ -55,7 +55,7 @@ import Filters from "components/Filters";
 const ImportMenuExcel = lazy(() => import("./sections/ImportMenuExcel"));
 
 let toggleSorting = true;
-const dropdownBulkAction = [
+const dropdownImportExport = [
   {
     label: "Import/Export",
     value: "import_export",
@@ -116,7 +116,7 @@ const Items = () => {
   const [toggleDrawer, setToggleDrawer] = useState(false);
   const [drawerSkeleton, setDrawerSkeleton] = useState(false);
   const [itemsCount, setItemsCount] = useState(100);
-  const [importExportDropDownValue, setImportExportDropDownValue] =
+  const [importExportValue, setImportExportValue] =
     useState<string>("import_export");
   const [bulkActionsValue, setBulkActionsValue] =
     useState<string>("bulkActions");
@@ -307,8 +307,8 @@ const Items = () => {
     setBulkActionsValue(value);
   };
 
-  const handleDropDownChange = (
-    event: SelectChangeEvent<typeof importExportDropDownValue>
+  const handleImportExportChange = (
+    event: SelectChangeEvent<typeof importExportValue>
   ) => {
     const {
       target: { value },
@@ -321,7 +321,7 @@ const Items = () => {
       link.click();
       link.remove();
     }
-    setImportExportDropDownValue(value);
+    setImportExportValue(value);
   };
 
   // Drag And Drop Shorting
@@ -546,17 +546,17 @@ const Items = () => {
           </div>
         }
       >
-        {(importExportDropDownValue === "Import New Items" ||
-          importExportDropDownValue === "Update Existing Item") && (
+        {(importExportValue === "Import New Items" ||
+          importExportValue === "Update Existing Item") && (
           <ImportMenuExcel
-            importType={importExportDropDownValue}
-            setImportExportDropDownValue={setImportExportDropDownValue}
+            importType={importExportValue}
+            setImportExportValue={setImportExportValue}
           />
         )}
       </Suspense>
       {(productLoading || sortLoading) && <Loader />}
 
-      {importExportDropDownValue == "Export Items (.xlsx)" && (
+      {importExportValue == "Export Items (.xlsx)" && (
         <ExcelExport
           tableData={itemExportColumns}
           listingData={productData.items}
@@ -604,9 +604,9 @@ const Items = () => {
                 />
 
                 <DropDown
-                  options={dropdownBulkAction}
-                  value={importExportDropDownValue}
-                  handleChange={handleDropDownChange}
+                  options={dropdownImportExport}
+                  value={importExportValue}
+                  handleChange={handleImportExportChange}
                   defaultValue="import_export"
                   isStaticDropDown={true}
                   sx={{ mr: "11px" }}
@@ -661,6 +661,7 @@ const Items = () => {
             </Grid>
           </Grid>
         </Grid>
+
         <Grid container>
           {items && (
             <Grid item xs={12}>
@@ -683,6 +684,7 @@ const Items = () => {
             </Grid>
           )}
         </Grid>
+
         <Box sx={{ width: "100%", overflow: "hidden" }}>
           {productData === undefined ? (
             <OrderListingSkeleton />
