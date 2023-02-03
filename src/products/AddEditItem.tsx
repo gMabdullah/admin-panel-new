@@ -36,6 +36,7 @@ import {
 } from "orders/HelperFunctions";
 import { canadaPostMaximumDistance } from "../constants";
 import { useSelector } from "store";
+import { setSeconds } from "date-fns";
 
 interface AddEditItemProps {
   toggleDrawer: boolean;
@@ -51,7 +52,8 @@ const AddEditItem = ({
   getProductApi,
 }: AddEditItemProps) => {
   const { richEditor } = useSelector((state) => state.main),
-    [addCategoryModal, setAddCategoryModal] = useState(false);
+    [addCategoryModal, setAddCategoryModal] = useState(false),
+    [selectedAttributeIndex, setSelectedAttributeIndex] = useState<number>();
   const { state, dispatch } = useContext(ProductsContext);
 
   console.log("add edit item state = ", state);
@@ -156,35 +158,53 @@ const AddEditItem = ({
       type: "dropDown",
       payload: {
         name: "itemCategory",
-        value: value,
+        value: value
+          ? value
+          : {
+              value: "",
+              label: "",
+            },
       },
     });
 
-    // api call for attributes
-    const { data } = await optionSetsOrAttributesAPICall({
-      data: optionSetsOrAttributesAPIPayload(value.value),
-    });
+    console.log("category dropdown value = ", value);
 
-    console.log("attributes data = ", data);
+    if (value) {
+      // api call for attributes
+      const { data } = await optionSetsOrAttributesAPICall({
+        data: optionSetsOrAttributesAPIPayload(value.value),
+      });
 
-    if (data && data.status === "1" && Array.isArray(data.result)) {
-      const allAttributes = data.result.map((attribute: any) => ({
-        attributeId: attribute.id,
-        attributeName: attribute.name,
-        attributeValue: { value: "", label: "" },
-        attributeOptions: attribute.items.map((option: any) => ({
-          value: option.id,
-          label: option.name,
-        })),
-      }));
+      console.log("attributes data = ", data);
 
-      console.log("desired object = ", allAttributes);
+      if (data && data.status === "1" && Array.isArray(data.result)) {
+        const allAttributes = data.result.map((attribute: any) => ({
+          attributeId: attribute.id,
+          attributeName: attribute.name,
+          attributeValue: { value: "", label: "" },
+          attributeOptions: attribute.items.map((option: any) => ({
+            value: option.id,
+            label: option.name,
+          })),
+        }));
 
+        console.log("desired object = ", allAttributes);
+
+        dispatch({
+          type: "dropDown",
+          payload: {
+            name: "allAttributes",
+            value: allAttributes,
+          },
+        });
+      }
+    } else {
+      // reset allAttributes array
       dispatch({
         type: "dropDown",
         payload: {
           name: "allAttributes",
-          value: allAttributes,
+          value: [],
         },
       });
     }
@@ -199,7 +219,12 @@ const AddEditItem = ({
       type: "dropDown",
       payload: {
         name: "itemBrand",
-        value: value,
+        value: value
+          ? value
+          : {
+              value: "",
+              label: "",
+            },
       },
     });
   };
@@ -232,17 +257,20 @@ const AddEditItem = ({
     });
   };
 
-  const handleAttributesSelection = (
-    event: React.ChangeEvent<{}>,
-    value: any,
-    // index:number
-    name: string
-  ) => {
+  const handleAttributesSelection = (value: any, index: number) => {
     dispatch({
-      type: "dropDown",
+      type: "allAttributes",
       payload: {
-        name: "itemBrand",
-        value: value,
+        name: "allAttributes",
+        value: {
+          value: value
+            ? value
+            : {
+                value: "",
+                label: "",
+              },
+          index,
+        },
       },
     });
   };
@@ -700,7 +728,9 @@ const AddEditItem = ({
                             label={attribute.attributeName}
                             value={attribute.attributeValue}
                             options={attribute.attributeOptions}
-                            handleChange={() => handleAttributesSelection}
+                            handleChange={(event, value, name) =>
+                              handleAttributesSelection(value, index)
+                            }
                           />
                         </Grid>
                       )
