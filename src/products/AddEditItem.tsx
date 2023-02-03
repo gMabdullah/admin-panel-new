@@ -36,7 +36,6 @@ import {
 } from "orders/HelperFunctions";
 import { canadaPostMaximumDistance } from "../constants";
 import { useSelector } from "store";
-import { setSeconds } from "date-fns";
 
 interface AddEditItemProps {
   toggleDrawer: boolean;
@@ -58,7 +57,7 @@ const AddEditItem = ({
 
   console.log("add edit item state = ", state);
 
-  // option sets API call payload
+  // option sets & attributes API call payload
   const optionSetsOrAttributesAPIPayload = (categoryId = "") => {
     const formData = new FormData();
 
@@ -94,7 +93,7 @@ const AddEditItem = ({
     { manual: true }
   );
 
-  // option sets API call
+  // option sets & attributes API call
   const [{}, optionSetsOrAttributesAPICall] = useAxios(
     {
       url: "/get_option_sets",
@@ -106,24 +105,6 @@ const AddEditItem = ({
     }
   );
 
-  // useEffect(() => {
-  //   // status 1 => getting required response from API
-  //   if (
-  //     allOptionSets &&
-  //     allOptionSets.status === "1" &&
-  //     Array.isArray(allOptionSets.result)
-  //   ) {
-  //     alert("alloptionsets");
-  //     const optionSets = allOptionSets.result.map(
-  //       (optionSet: { id: string; name: string }) => ({
-  //         value: optionSet.id,
-  //         label: optionSet.name,
-  //       })
-  //     );
-  //     state.allOptionSets = optionSets.sort(compareItem);
-  //   }
-  // }, [allOptionSets]);
-
   useEffect(() => {
     (async () => {
       // api call for option sets
@@ -131,11 +112,8 @@ const AddEditItem = ({
         data: optionSetsOrAttributesAPIPayload(),
       });
 
-      // console.log("api data = ", data);
-
       // status 1 => getting required response from API
       if (data && data.status === "1" && Array.isArray(data.result)) {
-        // alert("data");
         const optionSets = data.result.map(
           (optionSet: { id: string; name: string }) => ({
             value: optionSet.id,
@@ -167,15 +145,12 @@ const AddEditItem = ({
       },
     });
 
-    console.log("category dropdown value = ", value);
-
+    // call API for attributes if we have selected a category
     if (value) {
       // api call for attributes
       const { data } = await optionSetsOrAttributesAPICall({
         data: optionSetsOrAttributesAPIPayload(value.value),
       });
-
-      console.log("attributes data = ", data);
 
       if (data && data.status === "1" && Array.isArray(data.result)) {
         const allAttributes = data.result.map((attribute: any) => ({
@@ -187,8 +162,6 @@ const AddEditItem = ({
             label: option.name,
           })),
         }));
-
-        console.log("desired object = ", allAttributes);
 
         dispatch({
           type: "dropDown",
