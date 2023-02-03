@@ -36,7 +36,9 @@ interface TablePropsType {
     itemId: string,
     dispatch: React.Dispatch<Action>
   ) => void;
-  checkBox?: boolean;
+  setSelectedRowIds: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedRowIds: string[];
+  // checkBox?: boolean;
 }
 
 const DraggableTable = ({
@@ -45,9 +47,29 @@ const DraggableTable = ({
   getProductsAPI,
   productLoading,
   triggerEditProduct,
-  checkBox = false,
-}: TablePropsType) => {
+  setSelectedRowIds,
+  selectedRowIds,
+}: // checkBox = false,
+TablePropsType) => {
+  // const [selectedRows, setSelectedRows] = useState([]);
+  // const [selectedRows, setSelectedRows] = useState(false);
   const { decimalPlaces, productColumns } = useSelector((state) => state.main);
+
+  const handleRowSelectionChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    itemId: string
+  ) => {
+    // if (selectedRowIds.length > 0) {
+    if (e.target.checked) {
+      setSelectedRowIds([...selectedRowIds, itemId]);
+      // setSelectedItemId(itemId);
+    } else {
+      // if (selectedRowIds.length > 0) {
+      setSelectedRowIds(selectedRowIds.filter((rowId) => rowId !== itemId));
+      // }
+    }
+    // }
+  };
 
   const handleDragEnd = (result: any) => {
     const sortArray = [
@@ -99,11 +121,16 @@ const DraggableTable = ({
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
-                {checkBox && (
-                  <TableCell>
-                    <Checkbox sx={{ p: "unset" }} />
-                  </TableCell>
-                )}
+                {/* {checkBox && ( */}
+                <TableCell>
+                  <Checkbox
+                    //             checked={selectedRows}
+                    // onChange={handleselectedRowsChange}
+
+                    sx={{ p: "unset" }}
+                  />
+                </TableCell>
+                {/* )} */}
 
                 {productColumns?.map((column: any) =>
                   column.selected ? (
@@ -139,11 +166,20 @@ const DraggableTable = ({
                               {...provided.dragHandleProps}
                               isDragging={snapshot.isDragging}
                             >
-                              {checkBox && (
-                                <TableCell>
-                                  <Checkbox sx={{ p: "unset" }} />
-                                </TableCell>
-                              )}
+                              {/* {checkBox && ( */}
+                              <TableCell>
+                                <Checkbox
+                                  // checked={selectedRows}
+                                  onChange={(e) =>
+                                    handleRowSelectionChange(
+                                      e,
+                                      row.menu_item_id
+                                    )
+                                  }
+                                  sx={{ p: "unset" }}
+                                />
+                              </TableCell>
+                              {/* )} */}
                               {productColumns?.map((column) =>
                                 column.selected ? (
                                   <TableCell

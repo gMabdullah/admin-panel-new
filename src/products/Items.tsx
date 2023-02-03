@@ -112,6 +112,7 @@ const Items = () => {
   const { selectedMenu, selectedBranch, selectedCategory, selectedBrand } =
     useSelector((state) => state.dropdown);
   const [items, setItems] = useState<ProductResponse["items"] | []>([]);
+  const [selectedRowIds, setSelectedRowIds] = useState<string[]>([]);
   const [applyFilters, setApplyFilters] = React.useState(false);
   const [toggleDrawer, setToggleDrawer] = useState(false);
   const [drawerSkeleton, setDrawerSkeleton] = useState(false);
@@ -305,6 +306,9 @@ const Items = () => {
     } = event;
 
     setBulkActionsValue(value);
+
+    console.log("bulk action value = ", bulkActionsValue);
+    console.log("selected item id = ", selectedRowIds);
   };
 
   const handleImportExportChange = (
@@ -595,6 +599,7 @@ const Items = () => {
             >
               <Stack direction={"row"} justifyContent={"center"}>
                 <DropDown
+                  disabled={selectedRowIds.length > 0 ? false : true}
                   options={bulkActions}
                   value={bulkActionsValue}
                   handleChange={handleBulkActionsChange}
@@ -604,6 +609,7 @@ const Items = () => {
                 />
 
                 <DropDown
+                  disabled={selectedRowIds.length > 0 ? true : false}
                   options={dropdownImportExport}
                   value={importExportValue}
                   handleChange={handleImportExportChange}
@@ -613,6 +619,7 @@ const Items = () => {
                 />
 
                 <CustomButton
+                  disabled={selectedRowIds.length > 0 ? true : false}
                   variant={"contained"}
                   color={"secondary"}
                   startIcon={<AddTwoToneIcon />}
@@ -629,11 +636,24 @@ const Items = () => {
         <Grid container mb={"16px"}>
           <Grid item xs={12} display={"flex"}>
             <Grid item xs={9}>
-              <MenuTypesDropdown applyFilter={applyButtonFilter} />
-              <BranchesDropdown applyFilter={applyButtonFilter} />
-              <BrandsDropdown applyFilter={applyButtonFilter} />
-              <CategoriesDropdown applyFilter={applyButtonFilter} />
+              <MenuTypesDropdown
+                disabled={selectedRowIds.length > 0 ? true : false}
+                applyFilter={applyButtonFilter}
+              />
+              <BranchesDropdown
+                disabled={selectedRowIds.length > 0 ? true : false}
+                applyFilter={applyButtonFilter}
+              />
+              <BrandsDropdown
+                disabled={selectedRowIds.length > 0 ? true : false}
+                applyFilter={applyButtonFilter}
+              />
+              <CategoriesDropdown
+                disabled={selectedRowIds.length > 0 ? true : false}
+                applyFilter={applyButtonFilter}
+              />
             </Grid>
+
             <Grid item xs={3} sx={gridIconsCss}>
               <Stack
                 spacing={0.5}
@@ -674,13 +694,6 @@ const Items = () => {
               >
                 {`${items.length} Item(s)`}
               </Typography>
-              {bulkActionsValue !== "bulkActions" && (
-                <CustomButton
-                  onClick={() => setBulkActionsValue("bulkActions")}
-                >
-                  Cancel
-                </CustomButton>
-              )}
             </Grid>
           )}
         </Grid>
@@ -697,7 +710,9 @@ const Items = () => {
                 setSequenceItem={setSequenceItem}
                 shortDragDropItems={shortDragDropItems}
                 triggerEditProduct={triggerEditProduct}
-                checkBox={bulkActionsValue !== "bulkActions"}
+                setSelectedRowIds={setSelectedRowIds}
+                selectedRowIds={selectedRowIds}
+                // checkBox={bulkActionsValue !== "bulkActions"}
               />
               <TablePagination
                 component="div"

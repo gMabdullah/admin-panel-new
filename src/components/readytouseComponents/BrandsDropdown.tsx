@@ -14,7 +14,7 @@ import { ProductsContext } from "products/context/ProductsContext";
 // required apply button handler to call respective api
 // 1 - use this type "dropdownTypes"
 
-const BrandsDropdown = ({ applyFilter }: dropdownTypes) => {
+const BrandsDropdown = ({ applyFilter, disabled }: dropdownTypes) => {
   console.log("BrandsDropdown component");
 
   const dispatch = useDispatch();
@@ -100,6 +100,7 @@ const BrandsDropdown = ({ applyFilter }: dropdownTypes) => {
 
   return (
     <MultiSelectDropDown
+      disabled={disabled}
       value={BrandName}
       onChange={handleBrandChange}
       dropDownList={brands}

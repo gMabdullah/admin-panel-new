@@ -13,7 +13,7 @@ import { setSelectedMenu } from "store/slices/Dropdown";
 // required apply button handler to call respective api
 // 1 - use this type "dropdownTypes"
 
-const MenuTypesDropdown = ({ applyFilter }: dropdownTypes) => {
+const MenuTypesDropdown = ({ applyFilter, disabled }: dropdownTypes) => {
   const dispatch = useDispatch();
   const [menus, setMenus] = useState<DropDownListType[]>([]);
   const [menuName, setMenuName] = useState<string[]>(["Menu"]);
@@ -87,6 +87,7 @@ const MenuTypesDropdown = ({ applyFilter }: dropdownTypes) => {
 
   return (
     <MultiSelectDropDown
+      disabled={disabled}
       value={menuName}
       onChange={handleChange}
       dropDownList={menus}

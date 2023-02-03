@@ -8,7 +8,7 @@ import { getLocalStorage } from "orders/HelperFunctions";
 import { useDispatch } from "store";
 import { setSelectedBranch } from "store/slices/Dropdown";
 
-const BranchesDropdown = ({ applyFilter }: dropdownTypes) => {
+const BranchesDropdown = ({ applyFilter, disabled }: dropdownTypes) => {
   const dispatch = useDispatch();
   const [branches, setBranches] = useState<DropDownListType[]>([]);
   const [branchName, setBranchName] = useState<string[]>(["All Branches"]);
@@ -76,6 +76,7 @@ const BranchesDropdown = ({ applyFilter }: dropdownTypes) => {
 
   return (
     <MultiSelectDropDown
+      disabled={disabled}
       value={branchName}
       onChange={handleBranchChange}
       dropDownList={branches}

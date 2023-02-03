@@ -14,6 +14,7 @@ type DropDownType<T extends React.ElementType> = {
   name?: string;
   value?: string;
   error?: boolean;
+  disabled?: boolean;
   sx?: object;
   isStaticDropDown?: boolean;
   helperText?: React.ReactNode;
@@ -87,13 +88,6 @@ const useStyles = makeStyles((theme) => ({
     "& .MuiOutlinedInput-notchedOutline": {
       border: "none",
     },
-    "& .Mui-disabled": {
-      color: "#FFFFFF",
-      opacity: 0.6,
-    },
-    "& .Mui-disabled .MuiOutlinedInput-notchedOutline": {
-      border: "20px solid #484850",
-    },
   },
 
   icon: {
@@ -126,6 +120,7 @@ const MenuProps = {
 const DropDown = <T extends React.ElementType = "select">({
   options,
   defaultValue,
+  disabled,
   label,
   value,
   name,
@@ -141,6 +136,7 @@ const DropDown = <T extends React.ElementType = "select">({
   return (
     <>
       <FormControl
+        disabled={disabled}
         variant="outlined"
         classes={{
           root: isStaticDropDown

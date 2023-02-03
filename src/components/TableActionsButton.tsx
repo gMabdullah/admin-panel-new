@@ -37,7 +37,7 @@ const TableActionsButton = ({
   const open = Boolean(anchorEl);
   const ITEM_HEIGHT = 37;
 
-  const { state, dispatch } = useContext(ProductsContext);
+  const { dispatch } = useContext(ProductsContext);
 
   const payload = () => {
     const formData = new FormData();
