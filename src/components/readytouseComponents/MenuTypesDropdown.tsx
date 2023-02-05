@@ -91,7 +91,7 @@ const MenuTypesDropdown = ({ applyFilter, disabled }: dropdownTypes) => {
       value={menuName}
       onChange={handleChange}
       dropDownList={menus}
-      sx={{ width: "160px", height: "40px", ml: "8px" }}
+      sx={{ width: "160px", height: "40px" }}
       // Get on Change function from parent where this component is using.
       onChangeButton={applyFilter}
     />

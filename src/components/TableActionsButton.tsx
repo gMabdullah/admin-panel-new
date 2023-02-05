@@ -4,12 +4,9 @@ import { IconButton, Menu, MenuItem, Typography } from "@mui/material";
 import { EditTwoTone, DeleteTwoTone, MoreVert } from "@mui/icons-material";
 
 import useAxios, { RefetchOptions } from "axios-hooks";
-// import { RefetchOptions } from "axios-hooks";
 import { AxiosPromise, AxiosRequestConfig } from "axios";
 
 import { ProductsContext } from "products/context/ProductsContext";
-import { getLocalStorage } from "orders/HelperFunctions";
-import { weightUnits } from "../constants";
 
 interface itemProps {
   row: any;
@@ -18,6 +15,7 @@ interface itemProps {
     options?: RefetchOptions | undefined
   ) => AxiosPromise<any>;
   productLoading?: boolean;
+  disableOnRowSelection?: boolean;
   triggerEditProduct: (
     itemId: string,
     dispatch: React.Dispatch<Action>
@@ -28,6 +26,7 @@ const TableActionsButton = ({
   row,
   getProductsAPI,
   productLoading,
+  disableOnRowSelection,
   triggerEditProduct,
 }: itemProps) => {
   const { eatout_id, user_id } = JSON.parse(
@@ -92,6 +91,7 @@ const TableActionsButton = ({
   const handleClose = () => setAnchorEl(null);
 
   if (deleteError) return <p>Delete Product Failed</p>;
+
   return (
     <>
       <IconButton
@@ -117,7 +117,9 @@ const TableActionsButton = ({
       >
         <MenuItem
           onClick={editProduct}
-          disabled={(productLoading || deleteLoading) && true}
+          disabled={
+            (productLoading || deleteLoading || disableOnRowSelection) && true
+          }
         >
           <EditTwoTone sx={{ fontSize: "1.3rem" }} />
           <Typography
@@ -132,7 +134,9 @@ const TableActionsButton = ({
         </MenuItem>
         <MenuItem
           onClick={deleteProduct}
-          disabled={(productLoading || deleteLoading) && true}
+          disabled={
+            (productLoading || deleteLoading || disableOnRowSelection) && true
+          }
         >
           <DeleteTwoTone sx={{ fontSize: "1.3rem" }} />
           <Typography

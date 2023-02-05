@@ -92,7 +92,7 @@ const CategoriesDropdown = ({ applyFilter, disabled }: dropdownTypes) => {
     }
     // send values to reducer for consuming in api call
     dispatch(setSelectedCategory(valueForApiFilter));
-    // set comma seperated labes in dropdown header
+    // set comma separated labels in dropdown header
     setCategoriesName(selectedLabels);
   };
 

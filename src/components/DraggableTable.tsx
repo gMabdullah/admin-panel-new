@@ -1,10 +1,9 @@
-import React, { useEffect, useState, Suspense } from "react";
+import React, { Suspense } from "react";
 
 import {
   Typography,
   Stack,
   Tooltip,
-  CardMedia,
   TableBody,
   Table,
   TableCell,
@@ -23,8 +22,9 @@ import { AxiosPromise, AxiosRequestConfig } from "axios";
 import { RefetchOptions } from "axios-hooks";
 import Loader from "./Loader";
 const AddMenuImages = React.lazy(() => import("imageSection/AddMenuImages"));
+
 interface TablePropsType {
-  items?: ProductResponse["items"];
+  items?: ProductResponse["items"] | [];
   setSequenceItem?: any;
   shortDragDropItems?: any;
   getProductsAPI: (
@@ -38,7 +38,6 @@ interface TablePropsType {
   ) => void;
   setSelectedRowIds: React.Dispatch<React.SetStateAction<string[]>>;
   selectedRowIds: string[];
-  // checkBox?: boolean;
 }
 
 const DraggableTable = ({
@@ -51,25 +50,28 @@ const DraggableTable = ({
   selectedRowIds,
 }: // checkBox = false,
 TablePropsType) => {
-  // const [selectedRows, setSelectedRows] = useState([]);
-  // const [selectedRows, setSelectedRows] = useState(false);
   const { decimalPlaces, productColumns } = useSelector((state) => state.main);
+
+  const handleAllRowsSelection = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      items && setSelectedRowIds(items.map((item) => item.menu_item_id));
+    } else {
+      setSelectedRowIds([]);
+    }
+  };
 
   const handleRowSelectionChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     itemId: string
   ) => {
-    // if (selectedRowIds.length > 0) {
     if (e.target.checked) {
       setSelectedRowIds([...selectedRowIds, itemId]);
-      // setSelectedItemId(itemId);
     } else {
-      // if (selectedRowIds.length > 0) {
       setSelectedRowIds(selectedRowIds.filter((rowId) => rowId !== itemId));
-      // }
     }
-    // }
   };
+
+  const isRowSelected = (itemId: string) => selectedRowIds.includes(itemId);
 
   const handleDragEnd = (result: any) => {
     const sortArray = [
@@ -121,16 +123,19 @@ TablePropsType) => {
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
-                {/* {checkBox && ( */}
                 <TableCell>
                   <Checkbox
-                    //             checked={selectedRows}
-                    // onChange={handleselectedRowsChange}
+                    checked={selectedRowIds.length > 0 ? true : false}
+                    onChange={handleAllRowsSelection}
+                    sx={{
+                      p: "unset",
 
-                    sx={{ p: "unset" }}
+                      // "&.Mui-checked": {
+                      //   color: "#2196F3",
+                      // },
+                    }}
                   />
                 </TableCell>
-                {/* )} */}
 
                 {productColumns?.map((column: any) =>
                   column.selected ? (
@@ -166,20 +171,25 @@ TablePropsType) => {
                               {...provided.dragHandleProps}
                               isDragging={snapshot.isDragging}
                             >
-                              {/* {checkBox && ( */}
                               <TableCell>
                                 <Checkbox
-                                  // checked={selectedRows}
+                                  checked={isRowSelected(row.menu_item_id)}
                                   onChange={(e) =>
                                     handleRowSelectionChange(
                                       e,
                                       row.menu_item_id
                                     )
                                   }
-                                  sx={{ p: "unset" }}
+                                  sx={{
+                                    p: "unset",
+
+                                    // "&.Mui-checked": {
+                                    //   color: "#2196F3",
+                                    // },
+                                  }}
                                 />
                               </TableCell>
-                              {/* )} */}
+
                               {productColumns?.map((column) =>
                                 column.selected ? (
                                   <TableCell
@@ -225,6 +235,11 @@ TablePropsType) => {
                                         getProductsAPI={getProductsAPI}
                                         productLoading={productLoading}
                                         triggerEditProduct={triggerEditProduct}
+                                        disableOnRowSelection={
+                                          selectedRowIds.length > 0
+                                            ? true
+                                            : false
+                                        }
                                       />
                                     ) : (
                                       <Typography className="tableColumnCss">

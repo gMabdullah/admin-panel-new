@@ -51,6 +51,8 @@ import DropDown from "components/DropDown";
 import file from "../assets/files/downloadSample.xlsx";
 import ExcelExport from "components/ExcelExport";
 import Filters from "components/Filters";
+import CustomModal from "components/CustomModal";
+import DropDownSearch from "components/customDropDown/DropDownSearch";
 
 const ImportMenuExcel = lazy(() => import("./sections/ImportMenuExcel"));
 
@@ -98,16 +100,9 @@ const Items = () => {
   const dispatch = useDispatch(),
     { state } = useContext(ProductsContext);
 
-  // state.itemName = "klklklkl";
-  // console.log("ssssssssssssssssstate = ", state);
-
   const { eatout_id, user_id } = JSON.parse(
     localStorage.getItem("businessInfo")!
   );
-  useEffect(() => {
-    dispatch(toggleDatePicker(false));
-    dispatch(setProductColumn(keysOfItems));
-  });
 
   const { selectedMenu, selectedBranch, selectedCategory, selectedBrand } =
     useSelector((state) => state.dropdown);
@@ -127,14 +122,19 @@ const Items = () => {
   const [sequenceItem, setSequenceItem] = useState([]);
   const [searchQueryItems, setSearchQueryItems] = useState<string>("");
   const [linearLoader, setLinearLoader] = useState<boolean>(false);
-  // const { state } = useContext(ProductsContext);
   const [count, setCount] = useState(countObj);
+  const [bulkActionsModal, setBulkActionsModal] = useState(false);
+  const [selectedBrandCategory, setSelectedBrandCategory] = useState({
+    value: "",
+    label: "",
+  });
   const [notify, setNotify] = useState<boolean>(false);
   const [notifyMessage, setNotifyMessage] = useState("");
   const [notifyType, setNotifyType] = useState<
     "success" | "info" | "warning" | "error"
   >("info");
   // const [menuItem, setMenuItem] = useState<any>([]);
+
   //   {
   //   withImages: [],
   //   withNoImages: [],
@@ -149,7 +149,51 @@ const Items = () => {
   //   displayPOS: [],
   // }
 
-  // API Call For Product //
+  // bulk-actions items available & unAvailable API payload
+  const bulkAvailabilityStatusAPIPayload = (availabilityStatus = "") => {
+    const formData = new FormData();
+
+    formData.append(
+      "items",
+      JSON.stringify({
+        items: selectedRowIds.map((id) => ({
+          item_id: id,
+          rid: eatout_id,
+          status: availabilityStatus,
+        })),
+      })
+    );
+
+    formData.append("admin_id", getLocalStorage().user_id);
+    formData.append("source", "biz");
+
+    return formData;
+  };
+
+  // bulk-actions items brand & category API payload
+  const brandCategoryBulkActionsAPIPayload = () => {
+    const formData = new FormData();
+
+    selectedRowIds.forEach((itemId) => {
+      formData.append("menu_item_id[]", itemId);
+    });
+
+    if (bulkActionsValue === "brandAssociation") {
+      formData.append("brand_id", selectedBrandCategory.value);
+    } else if (bulkActionsValue === "categoryAssociation") {
+      formData.append("cat_id", selectedBrandCategory.value);
+    }
+
+    formData.append("eatout_id", getLocalStorage().eatout_id);
+    formData.append("admin_id", getLocalStorage().user_id);
+    formData.append("source", "biz");
+
+    console.log("form data = ", formData);
+
+    return formData;
+  };
+
+  // API Call For Product
   const [{ data: productData, loading: productLoading }, getProductsAPI] =
     useAxios(
       {
@@ -165,6 +209,28 @@ const Items = () => {
   const [{}, singleItemAPICall] = useAxios(
     {
       method: "get",
+    },
+    { manual: true }
+  );
+
+  // bulk-actions items available & unAvailable API call
+  const [{ data: bulkAvailabilityData }, bulkAvailabilityStatusAPICall] =
+    useAxios(
+      {
+        url: "/bulk_update_menu_status",
+        method: "post",
+        data: bulkAvailabilityStatusAPIPayload(),
+      },
+      { manual: true }
+    );
+
+  // bulk-actions items brand & category API call
+  const [
+    { data: brandCategoryBulkActionsData },
+    brandCategoryBulkActionsAPICall,
+  ] = useAxios(
+    {
+      method: "post",
     },
     { manual: true }
   );
@@ -190,6 +256,34 @@ const Items = () => {
   );
 
   /*********Get Item data from API Product for table***********/
+
+  useEffect(() => {
+    dispatch(toggleDatePicker(false));
+    dispatch(setProductColumn(keysOfItems));
+  });
+
+  // for bulk-actions APIs
+  useEffect(() => {
+    // this if condition to prevent execution on first render
+    if (items.length > 0) {
+      if (
+        (brandCategoryBulkActionsData &&
+          brandCategoryBulkActionsData.status === "1") ||
+        (bulkAvailabilityData && bulkAvailabilityData.status === "1")
+      ) {
+        // fetch updated products
+        getProductsAPI();
+
+        setNotifyMessage("Bulk action applied successfully");
+        setNotifyType("success");
+        setNotify(true);
+      } else {
+        setNotifyMessage("Something went wrong");
+        setNotifyType("error");
+        setNotify(true);
+      }
+    }
+  }, [bulkAvailabilityData, brandCategoryBulkActionsData]);
 
   useEffect(() => {
     (async () => {
@@ -298,6 +392,7 @@ const Items = () => {
     setToggleDrawer((state) => !state);
   };
 
+  // function from bulk-actions dropdown
   const handleBulkActionsChange = (
     event: SelectChangeEvent<typeof bulkActionsValue>
   ) => {
@@ -307,8 +402,51 @@ const Items = () => {
 
     setBulkActionsValue(value);
 
-    console.log("bulk action value = ", bulkActionsValue);
-    console.log("selected item id = ", selectedRowIds);
+    if (
+      value === "itemAvailable" ||
+      value === "itemUnAvailable" ||
+      value === "brandDisAssociation"
+    ) {
+      setBulkActionsModal(true);
+    }
+  };
+
+  // function from bulk-actions modal
+  const applyBulkAction = () => {
+    if (
+      bulkActionsValue === "itemAvailable" ||
+      bulkActionsValue === "itemUnAvailable"
+    ) {
+      bulkAvailabilityStatusAPICall({
+        data: bulkAvailabilityStatusAPIPayload(
+          bulkActionsValue === "itemAvailable" ? "0" : "1"
+        ),
+      });
+    } else if (bulkActionsValue === "brandDisAssociation") {
+      brandCategoryBulkActionsAPICall({
+        url: "/brands_disassociation",
+        data: brandCategoryBulkActionsAPIPayload(),
+      });
+    } else if (bulkActionsValue === "brandAssociation") {
+      brandCategoryBulkActionsAPICall({
+        url: "/brands_association",
+        data: brandCategoryBulkActionsAPIPayload(),
+      });
+    } else if (bulkActionsValue === "categoryAssociation") {
+      brandCategoryBulkActionsAPICall({
+        url: "/category_association",
+        data: brandCategoryBulkActionsAPIPayload(),
+      });
+    }
+
+    toggleBulkActionsModal();
+
+    // reset brand & category dropdown value
+    setSelectedBrandCategory({ value: "", label: "" });
+  };
+
+  const toggleBulkActionsModal = () => {
+    setBulkActionsModal((prevState) => !prevState);
   };
 
   const handleImportExportChange = (
@@ -355,25 +493,16 @@ const Items = () => {
     setPage(0);
   };
 
-  //xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
   const triggerEditProduct = async (
     itemId: string,
     dispatch: React.Dispatch<Action>
   ) => {
-    // alert("triggerEditProduct");
     // open the add/edit item drawer
     handleDrawerToggle();
-
-    // state.itemName = "klklklkl";
-
     setDrawerSkeleton(true);
 
     // get single item API call (for edit item)
-    const {
-      data,
-      // data: { items },
-    } = await singleItemAPICall({
+    const { data } = await singleItemAPICall({
       url: `/product_details?business_id=${
         getLocalStorage().eatout_id
       }&item_id=${itemId}&admin_id=${getLocalStorage().user_id}&source=biz`,
@@ -417,10 +546,6 @@ const Items = () => {
       const selectedItemWeightUnit = weightUnits.filter(
         (unit) => unit.value === items[0].weight_unit.trim().toLowerCase()
       );
-
-      // setDrawerSkeleton(false);
-
-      // console.log("items[0]", items);
 
       dispatch({
         type: "populateEditItemValues",
@@ -509,10 +634,7 @@ const Items = () => {
       });
 
       setDrawerSkeleton(false);
-
-      // console.log("state after dispatch = ", state);
     } else {
-      alert("lklklklk");
       setNotifyMessage("Something went wrong");
       setNotifyType("error");
       setNotify(true);
@@ -520,8 +642,6 @@ const Items = () => {
   };
 
   const closeNotify = () => setNotify(false);
-
-  //xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
   return (
     <ProductsProvider>
@@ -558,9 +678,10 @@ const Items = () => {
           />
         )}
       </Suspense>
-      {(productLoading || sortLoading) && <Loader />}
 
-      {importExportValue == "Export Items (.xlsx)" && (
+      {(productLoading || sortLoading) && items.length > 0 && <Loader />}
+
+      {importExportValue === "Export Items (.xlsx)" && (
         <ExcelExport
           tableData={itemExportColumns}
           listingData={productData.items}
@@ -568,6 +689,74 @@ const Items = () => {
         />
       )}
 
+      <CustomModal
+        open={bulkActionsModal}
+        onClose={toggleBulkActionsModal}
+        paperStyle={{ width: "33vw" }}
+      >
+        <Stack sx={{ p: "40px" }}>
+          <Grid container>
+            <Grid item xs={12} sx={{ mb: "10px" }}>
+              <Typography variant="h3" sx={{ color: "#212121" }}>
+                {bulkActionsValue === "itemAvailable" ||
+                bulkActionsValue === "itemUnAvailable"
+                  ? "Are you sure you want to apply this action?"
+                  : "Are you sure you want to associate this action?"}
+              </Typography>
+            </Grid>
+          </Grid>
+
+          <Grid container>
+            <Grid item xs={12} sx={{ mb: "32px" }}>
+              <Typography variant="body1" sx={{ color: "#757575" }}>
+                By clicking “Yes” you agree to apply the following bulk action
+                to the selected items.
+              </Typography>
+            </Grid>
+          </Grid>
+
+          <Grid container>
+            <Grid
+              item
+              xs={12}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "end",
+              }}
+            >
+              <CustomButton
+                variant={"contained"}
+                sx={{
+                  p: "12px 44.5px",
+                  background: "#F5F5F5",
+                  color: "#212121",
+                  "&:hover": {
+                    backgroundColor: "#F5F5F5",
+                  },
+                }}
+                onClick={toggleBulkActionsModal}
+              >
+                Cancel
+              </CustomButton>
+
+              <CustomButton
+                variant={"contained"}
+                sx={{
+                  p: "12px 33.5px",
+                  ml: "12px",
+                }}
+                color={"secondary"}
+                onClick={applyBulkAction}
+              >
+                Yes, Apply
+              </CustomButton>
+            </Grid>
+          </Grid>
+        </Stack>
+      </CustomModal>
+
+      {/* items UI */}
       <MainCard
         title={
           <Grid container spacing={2}>
@@ -635,7 +824,7 @@ const Items = () => {
       >
         <Grid container mb={"16px"}>
           <Grid item xs={12} display={"flex"}>
-            <Grid item xs={9}>
+            <Grid item xs={9} sx={{ background: "red" }}>
               <MenuTypesDropdown
                 disabled={selectedRowIds.length > 0 ? true : false}
                 applyFilter={applyButtonFilter}
@@ -654,8 +843,41 @@ const Items = () => {
               />
             </Grid>
 
-            <Grid item xs={3} sx={gridIconsCss}>
+            <Grid item xs={3} sx={{ ...gridIconsCss, background: "blue" }}>
+              {bulkActionsValue === "categoryAssociation" && (
+                <DropDownSearch
+                  label="Category"
+                  value={selectedBrandCategory}
+                  options={state.allCategories}
+                  handleChange={(
+                    event: React.ChangeEvent<{}>,
+                    value: any,
+                    name: string
+                  ) => {
+                    setSelectedBrandCategory(value);
+                    toggleBulkActionsModal();
+                  }}
+                />
+              )}
+
+              {bulkActionsValue === "brandAssociation" && (
+                <DropDownSearch
+                  label="Brands"
+                  value={selectedBrandCategory}
+                  options={state.allBrands}
+                  handleChange={(
+                    event: React.ChangeEvent<{}>,
+                    value: any,
+                    name: string
+                  ) => {
+                    setSelectedBrandCategory(value);
+                    toggleBulkActionsModal();
+                  }}
+                />
+              )}
+
               <Stack
+                sx={{ ml: "25.6px" }}
                 spacing={0.5}
                 direction="row"
                 divider={
@@ -712,7 +934,6 @@ const Items = () => {
                 triggerEditProduct={triggerEditProduct}
                 setSelectedRowIds={setSelectedRowIds}
                 selectedRowIds={selectedRowIds}
-                // checkBox={bulkActionsValue !== "bulkActions"}
               />
               <TablePagination
                 component="div"
