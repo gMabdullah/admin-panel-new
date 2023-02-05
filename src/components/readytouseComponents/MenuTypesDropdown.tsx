@@ -85,7 +85,7 @@ const MenuTypesDropdown = ({ applyFilter }: dropdownTypes) => {
 
   if (error) return <span>Getting Menus Failed</span>;
 
-  return (
+  return menus.length > 2 ? (
     <MultiSelectDropDown
       value={menuName}
       onChange={handleChange}
@@ -94,6 +94,8 @@ const MenuTypesDropdown = ({ applyFilter }: dropdownTypes) => {
       // Get on Change function from parent where this component is using.
       onChangeButton={applyFilter}
     />
+  ) : (
+    <></>
   );
 };
 
