@@ -114,6 +114,11 @@ const main = createSlice({
         state.displayType = value;
       }
     },
+    resetFiltersAction(state) {
+      state.showImagesItem = "all_images";
+      state.availableItems = "all_of_stock";
+      state.displayType = "all_platforms";
+    },
   },
 });
 
@@ -126,5 +131,6 @@ export const {
   toggleDatePicker,
   setProductColumn,
   toggleColumn,
+  resetFiltersAction,
   selectedFilter,
 } = main.actions;

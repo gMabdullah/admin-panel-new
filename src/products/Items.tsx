@@ -31,7 +31,12 @@ import { gridIconsCss } from "./Styles";
 import { useDispatch, useSelector } from "store";
 import { bulkActions, itemExportColumns, keysOfItems } from "../constants";
 import { ProductsProvider, ProductsContext } from "./context/ProductsContext";
-import { setProductColumn, toggleDatePicker } from "../store/slices/Main";
+import {
+  setProductColumn,
+  toggleDatePicker,
+  resetFiltersAction,
+  selectedFilter,
+} from "../store/slices/Main";
 import { reorder, sortMenuItems } from "orders/HelperFunctions";
 import TdTextField from "components/TdTextField";
 
@@ -95,6 +100,9 @@ const Items = () => {
 
   const { selectedMenu, selectedBranch, selectedCategory, selectedBrand } =
     useSelector((state) => state.dropdown);
+  const { showImagesItem, availableItems, displayType } = useSelector(
+    (state) => state.main
+  );
   const [items, setItems] = useState<ProductResponse["items"] | []>([]);
   const [applyFilters, setApplyFilters] = React.useState(false);
   const [toggleDrawer, setToggleDrawer] = useState(false);
@@ -320,7 +328,11 @@ const Items = () => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-
+  const resetFilters = () => {
+    setItems(productData.items);
+    // reset values from store
+    dispatch(resetFiltersAction());
+  };
   return (
     <ProductsProvider>
       {toggleDrawer && (
@@ -454,7 +466,15 @@ const Items = () => {
         </Grid>
         <Grid container>
           {items && (
-            <Grid item xs={12}>
+            <Grid
+              item
+              xs={12}
+              sx={{
+                display: "flex !important",
+                alignItem: "center",
+                marginLeft: "16px",
+              }}
+            >
               <Typography
                 variant="h5"
                 sx={{
@@ -463,6 +483,21 @@ const Items = () => {
                 }}
               >
                 {`${items.length} Item(s)`}
+              </Typography>
+              <Typography
+                onClick={resetFilters}
+                variant="h5"
+                sx={{
+                  marginLeft: "16px",
+                  color: "#212121",
+                  textDecoration: "underline",
+                  cursor: "pointer",
+                }}
+              >
+                {(showImagesItem !== "all_images" ||
+                  availableItems !== "all_of_stock" ||
+                  displayType !== "all_platforms") &&
+                  "Reset Filters"}
               </Typography>
               {bulkActionsValue !== "bulkActions" && (
                 <CustomButton
