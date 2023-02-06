@@ -406,6 +406,19 @@ const AddEditItem = ({
       });
 
       return;
+    } else if (
+      !state.itemDiscount &&
+      state.itemDiscountStart &&
+      state.itemDiscountExpiry
+    ) {
+      dispatch({
+        type: "fieldError",
+        payload: {
+          name: "itemDiscountField",
+        },
+      });
+
+      return;
     }
 
     const addItemPayloadKeys = {

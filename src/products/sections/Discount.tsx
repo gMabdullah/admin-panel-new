@@ -39,14 +39,9 @@ const Discount = () => {
                 type="number"
                 label="Discount Value %"
                 defaultValue={state.itemDiscount}
-                // value={state.itemDiscount}
                 onChange={handleFieldChange}
-                // onChange={(e) =>
-                //   dispatch({
-                //     type: "textField",
-                //     payload: { name: e.target.name, value: e.target.value },
-                //   })
-                // }
+                error={state.fieldError.itemDiscountField === "" ? false : true}
+                helperText={state.fieldError.itemDiscountField}
               />
             </Grid>
           </Grid>
@@ -60,7 +55,6 @@ const Discount = () => {
                 type="date"
                 label="Discount Start"
                 defaultValue={state.itemDiscountStart}
-                // value={state.itemDiscountStart}
                 error={
                   state.fieldError.itemDiscountDateField === "" ? false : true
                 }
@@ -70,12 +64,6 @@ const Discount = () => {
                   shrink: true,
                 }}
                 onChange={handleFieldChange}
-                // onChange={(e) =>
-                //   dispatch({
-                //     type: "textField",
-                //     payload: { name: e.target.name, value: e.target.value },
-                //   })
-                // }
               />
             </Grid>
             <Grid item xs={6} sx={{ ml: "8px" }}>
@@ -84,7 +72,6 @@ const Discount = () => {
                 type="date"
                 label="Discount Expiry"
                 defaultValue={state.itemDiscountExpiry}
-                // value={state.itemDiscountExpiry}
                 error={
                   state.fieldError.itemDiscountDateField === "" ? false : true
                 }
@@ -94,12 +81,6 @@ const Discount = () => {
                   shrink: true,
                 }}
                 onChange={handleFieldChange}
-                // onChange={(e) =>
-                //   dispatch({
-                //     type: "textField",
-                //     payload: { name: e.target.name, value: e.target.value },
-                //   })
-                // }
               />
             </Grid>
           </Grid>

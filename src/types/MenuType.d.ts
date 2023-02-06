@@ -29,6 +29,7 @@ interface FieldErrors {
   itemNameField: string;
   itemPriceField: string;
   itemDiscountDateField: string;
+  itemDiscountField: string;
   itemMaximumDistanceField: string;
   itemMinimumQuantityField: string;
 }
