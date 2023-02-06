@@ -37,6 +37,14 @@ interface EditItem {
   editItemFlag: boolean;
   editItemId: string;
 }
+
+interface AllAttributesType {
+  attributeId: string;
+  attributeName: string;
+  attributeValue: DropdownValue;
+  attributeOptions: DropdownValue[];
+}
+
 //Aws Data Type
 interface AwsDataType {
   dealId: string | Blob;

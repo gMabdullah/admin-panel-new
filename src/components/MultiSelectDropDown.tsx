@@ -53,6 +53,7 @@ type MultiSelectPropType = {
   sx?: Object;
   onChangeButton?: (event?: React.MouseEvent<HTMLButtonElement>) => void;
   disableButton?: boolean;
+  disabled?: boolean;
 };
 
 const MultiSelectDropDown: React.FC<MultiSelectPropType> = ({
@@ -61,10 +62,12 @@ const MultiSelectDropDown: React.FC<MultiSelectPropType> = ({
   dropDownList,
   sx,
   disableButton,
+  disabled,
   onChangeButton,
 }) => {
   return (
     <FormControl
+      disabled={disabled}
       sx={{
         "& .MuiOutlinedInput-notchedOutline": {
           border: "unset",
@@ -81,12 +84,17 @@ const MultiSelectDropDown: React.FC<MultiSelectPropType> = ({
           background: "#F5F5F5",
           borderRadius: "58px",
           height: "fit-content",
+
           "& .MuiOutlinedInput-input": {
             background: "none",
             p: "11px 67.9px 11px 14.88px",
           },
           "& .MuiSvgIcon-root": {
             color: "#212121",
+          },
+          "& .Mui-disabled": {
+            borderRadius: "58px",
+            background: "#E2E2E2",
           },
 
           ...sx,

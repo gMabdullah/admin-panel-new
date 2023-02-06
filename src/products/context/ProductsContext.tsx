@@ -1,23 +1,11 @@
 import React, { createContext, useReducer } from "react";
 
-interface ProductsContextInterface {
-  state: State;
-  dispatch: React.Dispatch<Action>;
-}
-
-interface Action {
-  type: string;
-  payload: {
-    name?: string;
-    value?: any;
-  };
-}
-
 interface State {
   allCategories: DropdownValue[];
   allBrands: DropdownValue[];
   allItemsForGrouping: DropdownValue[];
   allOptionSets: DropdownValue[];
+  allAttributes: AllAttributesType[];
   itemCategory: DropdownValue;
   itemName: string;
   itemPrice: string;
@@ -62,6 +50,7 @@ const initialState: State = {
   allBrands: [],
   allItemsForGrouping: [],
   allOptionSets: [],
+  allAttributes: [],
   itemCategory: {
     value: "",
     label: "",
@@ -151,6 +140,16 @@ const reducer = (state: State, action: Action) => {
       };
     case "populateEditItemValues":
       return { ...state, ...action.payload.value };
+    case "allAttributes":
+      return {
+        ...state,
+        [action.payload.name!]: state.allAttributes.map((attribute, index) => {
+          if (index === action.payload.value.index) {
+            attribute.attributeValue = action.payload.value.value;
+          }
+          return attribute;
+        }),
+      };
     case "fieldError":
       return {
         ...state,
@@ -176,6 +175,7 @@ const reducer = (state: State, action: Action) => {
           label: "",
         },
         itemOptionSets: [],
+        allAttributes: [],
         itemToGroup: [],
         itemSpecialNote: "",
         itemAvailability: "0", // 1 and 0 => item not available and available respectively

@@ -2,6 +2,8 @@ import { useContext } from "react";
 
 import { Grid, Stack, Typography } from "@mui/material";
 
+import { debounce } from "lodash";
+
 import ExpandablePanel from "components/ExpandablePanel";
 import TdTextField from "components/TdTextField";
 import RichEditor from "components/RichEditor";
@@ -14,6 +16,16 @@ const Description = () => {
     { state, dispatch } = useContext(ProductsContext);
 
   // console.log("description state = ", state);
+
+  const handleItemDescription = debounce(
+    (e: { target: { name: string; value: string } }) => {
+      dispatch({
+        type: "textField",
+        payload: { name: e.target.name, value: e.target.value },
+      });
+    },
+    400
+  );
 
   return (
     <Stack>
@@ -30,6 +42,7 @@ const Description = () => {
               </Typography>
               <RichEditor
                 value={state.itemShortDescription}
+                // initialValue={state.itemShortDescription}
                 onEditorChange={(event: string) =>
                   dispatch({
                     type: "editor",
@@ -42,6 +55,7 @@ const Description = () => {
               </Typography>
               <RichEditor
                 value={state.itemLongDescription}
+                // initialValue={state.itemLongDescription}
                 onEditorChange={(event: string) =>
                   dispatch({
                     type: "editor",
@@ -54,17 +68,18 @@ const Description = () => {
             <Grid item xs={12} sx={{ display: "flex", mb: "22px" }}>
               <TdTextField
                 name="itemDescription"
-                value={state.itemDescription}
+                defaultValue={state.itemDescription}
+                // value={state.itemDescription}
                 rows={6}
                 multiline={true}
                 label="Description"
                 type="text"
-                onChange={(e) =>
-                  dispatch({
-                    type: "textField",
-                    payload: { name: e.target.name, value: e.target.value },
-                  })
-                }
+                onChange={handleItemDescription}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    height: "unset !important",
+                  },
+                }}
               />
             </Grid>
           )}
