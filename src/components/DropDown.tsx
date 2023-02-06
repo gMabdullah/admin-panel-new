@@ -88,6 +88,9 @@ const useStyles = makeStyles((theme) => ({
     "& .MuiOutlinedInput-notchedOutline": {
       border: "none",
     },
+    "& .Mui-disabled": {
+      backgroundColor: "#E2E2E2",
+    },
   },
 
   icon: {
