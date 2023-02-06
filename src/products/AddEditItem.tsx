@@ -456,7 +456,12 @@ const AddEditItem = ({
       }`,
       discount_expiry: state.itemDiscountExpiry,
       discount_start_at: state.itemDiscountStart,
-      attribute_ids: "",
+      attribute_ids: state.allAttributes
+        .map(
+          (attribute: { attributeValue: { value: string } }) =>
+            attribute.attributeValue.value
+        )
+        .join(),
       product_group_ids: state.itemToGroup
         .map((item: { value: string }) => item.value)
         .join(),

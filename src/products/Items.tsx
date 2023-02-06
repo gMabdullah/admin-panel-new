@@ -824,7 +824,7 @@ const Items = () => {
       >
         <Grid container mb={"16px"}>
           <Grid item xs={12} display={"flex"}>
-            <Grid item xs={9} sx={{ background: "red" }}>
+            <Grid item xs={9}>
               <MenuTypesDropdown
                 disabled={selectedRowIds.length > 0 ? true : false}
                 applyFilter={applyButtonFilter}
@@ -843,7 +843,7 @@ const Items = () => {
               />
             </Grid>
 
-            <Grid item xs={3} sx={{ ...gridIconsCss, background: "blue" }}>
+            <Grid item xs={3} sx={{ ...gridIconsCss }}>
               {bulkActionsValue === "categoryAssociation" && (
                 <DropDownSearch
                   label="Category"
