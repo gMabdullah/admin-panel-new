@@ -423,6 +423,20 @@ const Items = () => {
     }
   };
 
+  const handleBrandCategoryBulkAction = (
+    event: React.ChangeEvent<{}>,
+    value: any,
+    name: string
+  ) => {
+    if (value) {
+      setSelectedBrandCategory(value);
+      toggleBulkActionsModal();
+    } else {
+      // on removal of selected value
+      setSelectedBrandCategory({ value: "", label: "" });
+    }
+  };
+
   // function from bulk-actions modal
   const applyBulkAction = () => {
     if (
@@ -859,14 +873,7 @@ const Items = () => {
                   value={selectedBrandCategory}
                   options={state.allCategories}
                   popupIcon={<ArrowDropDownTwoToneIcon />}
-                  handleChange={(
-                    event: React.ChangeEvent<{}>,
-                    value: any,
-                    name: string
-                  ) => {
-                    setSelectedBrandCategory(value);
-                    toggleBulkActionsModal();
-                  }}
+                  handleChange={handleBrandCategoryBulkAction}
                 />
               )}
 
@@ -876,14 +883,7 @@ const Items = () => {
                   value={selectedBrandCategory}
                   options={state.allBrands}
                   popupIcon={<ArrowDropDownTwoToneIcon />}
-                  handleChange={(
-                    event: React.ChangeEvent<{}>,
-                    value: any,
-                    name: string
-                  ) => {
-                    setSelectedBrandCategory(value);
-                    toggleBulkActionsModal();
-                  }}
+                  handleChange={handleBrandCategoryBulkAction}
                 />
               )}
 
