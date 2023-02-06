@@ -4,10 +4,30 @@ import { Grid, Stack } from "@mui/material";
 
 import ExpandablePanel from "components/ExpandablePanel";
 import TdTextField from "components/TdTextField";
+import DropDownSearch from "components/customDropDown/DropDownSearch";
 import { ProductsContext } from "../context/ProductsContext";
+import { weightUnits } from "../../constants";
 
 const Inventory = () => {
-  const { dispatch } = useContext(ProductsContext);
+  const { state, dispatch } = useContext(ProductsContext);
+
+  // console.log("inventory state = ", state);
+
+  const handleWeightUnitSelection = (
+    event: React.ChangeEvent<{}>,
+    value: any,
+    name: string
+  ) => {
+    console.log("weight unit value = ", value);
+
+    dispatch({
+      type: "dropDown",
+      payload: {
+        name: "itemWeightUnit",
+        value: value,
+      },
+    });
+  };
 
   return (
     <Stack>
@@ -23,6 +43,7 @@ const Inventory = () => {
                 name="itemWeight"
                 type="number"
                 label="Item Weight"
+                value={state.itemWeight}
                 onChange={(e) =>
                   dispatch({
                     type: "textField",
@@ -32,10 +53,16 @@ const Inventory = () => {
               />
             </Grid>
             <Grid item xs={6} sx={{ ml: "8px" }}>
-              <TdTextField label="Weight Unit" />
+              <DropDownSearch
+                label="Weight Unit"
+                value={state.itemWeightUnit}
+                options={weightUnits}
+                handleChange={handleWeightUnitSelection}
+              />
             </Grid>
           </Grid>
         </Grid>
+
         <Grid container>
           <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
             <Grid item xs={6}>
@@ -43,6 +70,7 @@ const Inventory = () => {
                 name="itemPricePer"
                 type="number"
                 label="Price Per"
+                value={state.itemPricePer}
                 onChange={(e) =>
                   dispatch({
                     type: "textField",
@@ -56,6 +84,13 @@ const Inventory = () => {
                 name="itemMinimumQuantity"
                 type="number"
                 label="Minimum Quantity"
+                value={state.itemMinimumQuantity}
+                error={
+                  state.fieldError.itemMinimumQuantityField === ""
+                    ? false
+                    : true
+                }
+                helperText={state.fieldError.itemMinimumQuantityField}
                 onChange={(e) =>
                   dispatch({
                     type: "textField",
@@ -66,13 +101,15 @@ const Inventory = () => {
             </Grid>
           </Grid>
         </Grid>
+
         <Grid container>
           <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
             <Grid item xs={6}>
               <TdTextField
-                name="itemCartons"
+                name="itemCost"
                 type="number"
-                label="No. of Cartons"
+                label="Item Cost"
+                value={state.itemCost}
                 onChange={(e) =>
                   dispatch({
                     type: "textField",
@@ -83,12 +120,14 @@ const Inventory = () => {
             </Grid>
           </Grid>
         </Grid>
+
         <Grid container>
           <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
             <Grid item xs={6}>
               <TdTextField
                 name="itemSku"
                 label="SKU"
+                value={state.itemSku}
                 onChange={(e) =>
                   dispatch({
                     type: "textField",
@@ -102,6 +141,7 @@ const Inventory = () => {
                 name="itemUnitPrice"
                 type="number"
                 label="Unit Price"
+                value={state.itemUnitPrice}
                 onChange={(e) =>
                   dispatch({
                     type: "textField",
@@ -112,12 +152,14 @@ const Inventory = () => {
             </Grid>
           </Grid>
         </Grid>
+
         <Grid container>
           <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
             <Grid item xs={6}>
               <TdTextField
                 name="itemProductCode"
                 label="Product Code"
+                value={state.itemProductCode}
                 onChange={(e) =>
                   dispatch({
                     type: "textField",
@@ -130,6 +172,7 @@ const Inventory = () => {
               <TdTextField
                 name="itemUniversalProductCode"
                 label="Universal Product Code"
+                value={state.itemUniversalProductCode}
                 onChange={(e) =>
                   dispatch({
                     type: "textField",
@@ -140,6 +183,7 @@ const Inventory = () => {
             </Grid>
           </Grid>
         </Grid>
+
         <Grid container>
           <Grid item xs={12} sx={{ display: "flex", mb: "22px" }}>
             <Grid item xs={6}>
@@ -147,6 +191,7 @@ const Inventory = () => {
                 name="itemPallets"
                 type="number"
                 label="No of Pallets"
+                value={state.itemPallets}
                 onChange={(e) =>
                   dispatch({
                     type: "textField",
@@ -160,6 +205,46 @@ const Inventory = () => {
                 name="itemPalletPrice"
                 type="number"
                 label="Pallet Price"
+                value={state.itemPalletPrice}
+                onChange={(e) =>
+                  dispatch({
+                    type: "textField",
+                    payload: { name: e.target.name, value: e.target.value },
+                  })
+                }
+              />
+            </Grid>
+          </Grid>
+        </Grid>
+
+        <Grid container>
+          <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
+            <Grid item xs={6}>
+              <TdTextField
+                name="itemCartons"
+                type="number"
+                label="No. of Cartons"
+                value={state.itemCartons}
+                onChange={(e) =>
+                  dispatch({
+                    type: "textField",
+                    payload: { name: e.target.name, value: e.target.value },
+                  })
+                }
+              />
+            </Grid>
+            <Grid item xs={6} sx={{ ml: "8px" }}>
+              <TdTextField
+                name="itemMaximumDistance"
+                type="number"
+                label="Maximum Distance"
+                value={state.itemMaximumDistance}
+                error={
+                  state.fieldError.itemMaximumDistanceField === ""
+                    ? false
+                    : true
+                }
+                helperText={state.fieldError.itemMaximumDistanceField}
                 onChange={(e) =>
                   dispatch({
                     type: "textField",

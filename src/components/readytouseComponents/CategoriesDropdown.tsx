@@ -98,7 +98,7 @@ const CategoriesDropdown = ({ applyFilter }: dropdownTypes) => {
 
   if (error) return <span>Getting Categories Failed</span>;
 
-  return (
+  return categories.length > 2 ? (
     <MultiSelectDropDown
       value={CategoriesName}
       onChange={handleCategoryChange}
@@ -106,6 +106,8 @@ const CategoriesDropdown = ({ applyFilter }: dropdownTypes) => {
       sx={{ width: "160px", height: "40px", ml: "8px" }} // Get on Change function from parent where this component is using.
       onChangeButton={applyFilter}
     />
+  ) : (
+    <></>
   );
 };
 

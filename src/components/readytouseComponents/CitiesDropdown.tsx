@@ -75,7 +75,7 @@ const CitiesDropdown = ({ applyFilter }: dropdownTypes) => {
   };
 
   if (error) return <span>Getting Cities Failed</span>;
-  return (
+  return citiesList.length > 2 ? (
     <MultiSelectDropDown
       value={city}
       onChange={handleCityChange}
@@ -84,6 +84,8 @@ const CitiesDropdown = ({ applyFilter }: dropdownTypes) => {
       onChangeButton={applyFilter}
       disableButton={city.length == 0 ? true : false}
     />
+  ) : (
+    <></>
   );
 };
 

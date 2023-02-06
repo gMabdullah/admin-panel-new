@@ -158,7 +158,7 @@ const NavItem = ({ item, level }: NavItemProps) => {
             )} */}
       </ListItemButton>
 
-      {(item.title === "Performance" || item.title === "Inventory") && (
+      {/* {(item.title === "Performance" || item.title === "Inventory") && (
         <Divider
           sx={{
             m: "10.5px 0px",
@@ -167,7 +167,7 @@ const NavItem = ({ item, level }: NavItemProps) => {
             border: "1px solid rgba(0, 0, 0, 0.06)",
           }}
         />
-      )}
+      )} */}
     </>
   );
 };

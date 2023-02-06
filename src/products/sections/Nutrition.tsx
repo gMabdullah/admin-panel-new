@@ -1,7 +1,7 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
-import { DeleteTwoTone, EditTwoTone } from "@mui/icons-material";
-import { Grid, Stack, Box } from "@mui/material";
+import { DeleteTwoTone, EditTwoTone, Add } from "@mui/icons-material";
+import { Grid, Stack, Box, IconButton } from "@mui/material";
 import {
   DataGrid,
   GridActionsCellItem,
@@ -25,6 +25,7 @@ const useStyles = makeStyles(() => ({
 const Nutrition = () => {
   const classes = useStyles();
   const { state } = useContext(ProductsContext);
+  const [fieldError, setFieldError] = useState("");
   const [nutritionRows, setNutritionRows] = useState<
     ItemDetailsResponseItemNutritionsTable[] | []
   >([]);
@@ -37,12 +38,27 @@ const Nutrition = () => {
     nutrition: { name: "", value: "", id: "" },
   });
 
+  // for edit item
+  useEffect(() => {
+    // if it is not array & not empty string
+    if (state.editItem.editItemFlag && Array.isArray(state.itemNutritions)) {
+      setNutritionRows(
+        state.itemNutritions.map((item: any, index: any) => ({
+          ...item,
+          id: index + 1,
+        }))
+      );
+    }
+  }, []);
+
   const handleChange = (e: { target: { value: string; name: string } }) => {
     setNutrition({ ...nutrition, [e.target.name]: e.target.value });
   };
 
   const addEditNutrition = () => {
     if (nutrition.name && nutrition.value) {
+      setFieldError("");
+
       if (editNutrition.editFlag) {
         const updatedNutrition = nutritionRows.map((item, index) => {
           if (item.id === editNutrition.nutrition.id) {
@@ -78,14 +94,14 @@ const Nutrition = () => {
         value: "",
       });
     } else {
-      // set field error;
+      setFieldError("Required*");
     }
   };
 
   const deleteNutrition = (itemId: number) => {
     if (!editNutrition.editFlag) {
       const nutritionArray = nutritionRows.filter((item, index) => {
-        if (item.id !== String(itemId)) {
+        if (String(item.id) !== String(itemId)) {
           return item;
         } else {
           // update state in useReducer hook
@@ -177,30 +193,43 @@ const Nutrition = () => {
         }}
       >
         <Grid container>
-          <Grid item xs={12} sx={{ display: "flex", mb: "12px", mt: "24px" }}>
-            <Grid item xs={6}>
-              <TdTextField
-                name="name"
-                label="Nutrition Name"
-                value={nutrition.name}
-                onChange={handleChange}
-                // error={fieldError.address === "" ? false : true}
-                // helperText={fieldError.address}
-              />
-            </Grid>
-            <Grid item xs={6} sx={{ ml: "8px" }}>
-              <TdTextField
-                name="value"
-                label="Nutrition Value"
-                value={nutrition.value}
-                onChange={handleChange}
-                // error={fieldError.address === "" ? false : true}
-                // helperText={fieldError.address}
-              />
-            </Grid>
+          <Grid item xs={12} sx={{ display: "flex", mb: "25px", mt: "24px" }}>
+            <TdTextField
+              name="name"
+              label="Nutrition Name"
+              value={nutrition.name}
+              onChange={handleChange}
+              error={fieldError === "" ? false : true}
+              helperText={fieldError}
+            />
+            <TdTextField
+              name="value"
+              label="Nutrition Value"
+              value={nutrition.value}
+              onChange={handleChange}
+              sx={{ ml: "7px" }}
+              error={fieldError === "" ? false : true}
+              helperText={fieldError}
+            />
+            <IconButton
+              onClick={addEditNutrition}
+              sx={{
+                background: "#24335E",
+                borderRadius: "8px",
+                height: "48px",
+                width: "48px",
+                ml: "7px",
+                "&:hover": {
+                  backgroundColor: "#24335E",
+                },
+              }}
+            >
+              <Add htmlColor="#FFFFFF" fontSize="medium" />
+            </IconButton>
           </Grid>
         </Grid>
-        <CustomButton
+
+        {/* <CustomButton
           sx={{
             color: "#DB154D",
             fontSize: "13px",
@@ -210,7 +239,8 @@ const Nutrition = () => {
           onClick={addEditNutrition}
         >
           {editNutrition.editFlag ? "Update Nutrition" : " Add Nutrition"}
-        </CustomButton>
+        </CustomButton> */}
+
         {nutritionRows.length > 0 && (
           <Box
             sx={{

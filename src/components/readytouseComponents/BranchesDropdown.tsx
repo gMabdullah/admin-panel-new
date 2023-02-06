@@ -74,7 +74,7 @@ const BranchesDropdown = ({ applyFilter }: dropdownTypes) => {
 
   if (error) return <span>Getting Branches Failed</span>;
 
-  return (
+  return branches.length > 2 ? (
     <MultiSelectDropDown
       value={branchName}
       onChange={handleBranchChange}
@@ -82,6 +82,8 @@ const BranchesDropdown = ({ applyFilter }: dropdownTypes) => {
       sx={{ width: "160px", height: "40px", ml: "8px" }}
       onChangeButton={applyFilter}
     />
+  ) : (
+    <></>
   );
 };
 

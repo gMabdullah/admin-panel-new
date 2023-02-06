@@ -33,9 +33,20 @@ interface TypeKeyOfItem {
   keysOfItems: {
     key: string;
     value: string;
+    selected: boolean;
     align?: "left" | "center" | "right" | "justify" | "inherit" | undefined;
     width?: string;
   }[];
+}
+interface FiltersProps {
+  name: string;
+  key: string;
+  options: Options[];
+}
+
+interface Options {
+  label: string;
+  value: string;
 }
 
 interface ProductResponseInfo {

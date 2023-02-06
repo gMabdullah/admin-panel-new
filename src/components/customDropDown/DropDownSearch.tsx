@@ -1,7 +1,7 @@
 import React from "react";
 
 import { Autocomplete, Chip, TextField } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import { Close, ExpandMore } from "@mui/icons-material";
 
 import { useStyles } from "./DropDownStyles";
 
@@ -14,10 +14,9 @@ interface DropDownListTypeSearchType {
   isError?: boolean;
   label?: string;
   placeholder?: string;
-  value?: DropDownListType[];
+  value: DropDownListType | DropDownListType[] | [];
   helperText?: string;
-  onChange: (selected: DropDownListType[]) => void;
-  dropDownList: DropDownListType[];
+  options: DropDownListType[];
   disabled?: boolean;
   isMultiSelect?: boolean;
   name?: string;
@@ -26,6 +25,7 @@ interface DropDownListTypeSearchType {
     value: any,
     name: string
   ) => void;
+  popupIcon?: React.ReactNode;
 }
 
 const DropDownSearch = ({
@@ -33,15 +33,15 @@ const DropDownSearch = ({
   label,
   placeholder,
   value,
-  onChange,
   helperText,
-  dropDownList,
+  options,
   handleChange,
   disabled,
-  name,
   isMultiSelect,
+  popupIcon,
 }: DropDownListTypeSearchType) => {
   const classes = useStyles();
+
   const renderTags = (tagValue: any, getTagProps: any) =>
     tagValue.map((option: DropDownListType, index: number) => (
       <Chip
@@ -49,7 +49,7 @@ const DropDownSearch = ({
         label={option.label}
         {...getTagProps({ index })}
         className={classes.chip}
-        deleteIcon={<CloseIcon />}
+        deleteIcon={<Close />}
       />
     ));
 
@@ -58,12 +58,15 @@ const DropDownSearch = ({
       <Autocomplete
         disabled={disabled}
         multiple={isMultiSelect}
-        id="checkboxes-tags-demo"
-        options={dropDownList}
-        disableCloseOnSelect
+        id="dropdown-search"
+        value={value}
+        options={options}
+        isOptionEqualToValue={(option, value) => option.label === value.label}
+        getOptionLabel={(option) => (option.label ? option.label : "")}
+        filterSelectedOptions
+        disableCloseOnSelect={isMultiSelect ? true : false}
         onChange={handleChange}
-        clearOnBlur={true}
-        getOptionLabel={(option) => option.label}
+        popupIcon={popupIcon ? popupIcon : <ExpandMore />}
         renderInput={(params) => (
           <TextField
             {...params}

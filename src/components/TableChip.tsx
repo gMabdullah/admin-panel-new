@@ -13,7 +13,7 @@ const TableChip = ({ statusValue }: propsType) => {
 
         alignItems: "center",
         mr: "16px",
-        ml: "10px",
+        //  ml: "10px",
 
         "& .MuiChip-label": {
           p: "unset",

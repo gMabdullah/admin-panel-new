@@ -8,14 +8,9 @@ interface ProductsContextInterface {
 interface Action {
   type: string;
   payload: {
-    name: string;
-    value: any;
+    name?: string;
+    value?: any;
   };
-}
-
-interface DropdownValue {
-  value: string;
-  label: string;
 }
 
 interface State {
@@ -23,35 +18,43 @@ interface State {
   allBrands: DropdownValue[];
   allItemsForGrouping: DropdownValue[];
   allOptionSets: DropdownValue[];
-  itemCategoryId: string;
+  itemCategory: DropdownValue;
   itemName: string;
   itemPrice: string;
   itemTax: string;
-  itemBrand: string;
-  // itemOptionSets => multi select dropdown
-  itemToGroup: string;
+  itemBrand: DropdownValue;
+  itemOptionSets: DropdownValue[];
+  itemToGroup: DropdownValue[];
   itemSpecialNote: string;
   itemAvailability: string;
   itemSpecialInstructions: string;
   itemDisplay: string;
-  // discountstate 1
-  // discountstate 2
-  // discountstate 3
+
+  itemDiscount: string;
+  itemDiscountStart: string;
+  itemDiscountExpiry: string;
+
   itemDescription: string;
-  // itemShortDescription:string
-  // itemLongDescription:string
+  itemShortDescription: string;
+  itemLongDescription: string;
   itemWeight: string;
-  // itemWeightUnit: { value: "", label: "" },  => single select dropdown
+  itemWeightUnit: DropdownValue;
   itemPricePer: string;
   itemMinimumQuantity: string;
-  itemCartons: string;
+
+  itemCost: string;
   itemSku: string;
   itemUnitPrice: string;
   itemProductCode: string;
   itemUniversalProductCode: string;
   itemPallets: string;
   itemPalletPrice: string;
+  itemCartons: string;
+  itemMaximumDistance: string;
   itemNutritions: string | ItemDetailsResponseItemNutritions[];
+  fieldError: FieldErrors;
+  editItem: EditItem;
+  allowItemsGrouping: boolean;
 }
 
 const initialState: State = {
@@ -59,35 +62,66 @@ const initialState: State = {
   allBrands: [],
   allItemsForGrouping: [],
   allOptionSets: [],
-  itemCategoryId: "",
+  itemCategory: {
+    value: "",
+    label: "",
+  },
   itemName: "",
   itemPrice: "",
   itemTax: "",
-  itemBrand: "",
-  // itemOptionSets => multi select dropdown
-  itemToGroup: "",
+  itemBrand: {
+    value: "",
+    label: "",
+  },
+  itemOptionSets: [],
+
+  itemToGroup: [],
   itemSpecialNote: "",
   itemAvailability: "0", // 1 and 0 => item not available and available respectively
   itemSpecialInstructions: "0", // 1 and 0 => allow and don't allow special instruction respectively
   itemDisplay: "0", // 0, 1, 2, and 3 => display (all , none, web, and pos) respectively
-  // discountstate 1
-  // discountstate 2
-  // discountstate 3
+
+  itemDiscount: "",
+  itemDiscountStart: "",
+  itemDiscountExpiry: "",
+
   itemDescription: "",
-  // itemShortDescription:'',
-  // itemLongDescription:'',
+  itemShortDescription: "",
+  itemLongDescription: "",
+
   itemWeight: "",
-  // itemWeightUnit: { value: "", label: "" }, => single select dropdown
+  itemWeightUnit: {
+    value: "",
+    label: "",
+  },
+
   itemPricePer: "",
-  itemMinimumQuantity: "",
-  itemCartons: "",
+  itemMinimumQuantity: "1",
+
+  itemCost: "0",
+
   itemSku: "",
   itemUnitPrice: "",
   itemProductCode: "",
   itemUniversalProductCode: "",
   itemPallets: "",
   itemPalletPrice: "",
+  itemCartons: "",
+  itemMaximumDistance: "0",
   itemNutritions: "",
+  fieldError: {
+    itemCategoryField: "",
+    itemNameField: "",
+    itemPriceField: "",
+    itemDiscountDateField: "",
+    itemMaximumDistanceField: "",
+    itemMinimumQuantityField: "",
+  },
+  editItem: {
+    editItemFlag: false,
+    editItemId: "",
+  },
+  allowItemsGrouping: false,
 };
 
 export const ProductsContext = createContext<ProductsContextInterface>({
@@ -101,9 +135,95 @@ const reducer = (state: State, action: Action) => {
     case "radioButton":
     case "switchComponent":
     case "dropDown":
-      return { ...state, [action.payload.name]: action.payload.value };
+    case "editor":
+    case "editItem":
+      return {
+        ...state,
+        fieldError: {
+          itemCategoryField: "",
+          itemNameField: "",
+          itemPriceField: "",
+          itemDiscountDateField: "",
+          itemMaximumDistanceField: "",
+          itemMinimumQuantityField: "",
+        },
+        [action.payload.name!]: action.payload.value,
+      };
+    case "populateEditItemValues":
+      return { ...state, ...action.payload.value };
+    case "fieldError":
+      return {
+        ...state,
+        [action.type]: {
+          ...state.fieldError,
+          [action.payload.name!]: action.payload.value
+            ? action.payload.value
+            : "Required*",
+        },
+      };
     case "clearState":
-      return { ...state, age: action.payload };
+      return {
+        ...state,
+        itemCategory: {
+          value: "",
+          label: "",
+        },
+        itemName: "",
+        itemPrice: "",
+        itemTax: "",
+        itemBrand: {
+          value: "",
+          label: "",
+        },
+        itemOptionSets: [],
+        itemToGroup: [],
+        itemSpecialNote: "",
+        itemAvailability: "0", // 1 and 0 => item not available and available respectively
+        itemSpecialInstructions: "0", // 1 and 0 => allow and don't allow special instruction respectively
+        itemDisplay: "0", // 0, 1, 2, and 3 => display (all , none, web, and pos) respectively
+
+        itemDiscount: "",
+        itemDiscountStart: "",
+        itemDiscountExpiry: "",
+
+        itemDescription: "",
+        itemShortDescription: "",
+        itemLongDescription: "",
+
+        itemWeight: "",
+        itemWeightUnit: {
+          value: "",
+          label: "",
+        },
+
+        itemPricePer: "",
+        itemMinimumQuantity: "1",
+
+        itemCost: "0",
+
+        itemSku: "",
+        itemUnitPrice: "",
+        itemProductCode: "",
+        itemUniversalProductCode: "",
+        itemPallets: "",
+        itemPalletPrice: "",
+        itemCartons: "",
+        itemMaximumDistance: "0",
+        itemNutritions: "",
+        fieldError: {
+          itemCategoryField: "",
+          itemNameField: "",
+          itemPriceField: "",
+          itemDiscountDateField: "",
+          itemMaximumDistanceField: "",
+          itemMinimumQuantityField: "",
+        },
+        editItem: {
+          editItemFlag: false,
+          editItemId: "",
+        },
+        allowItemsGrouping: false,
+      };
     default:
       return state;
   }

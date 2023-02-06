@@ -3,6 +3,13 @@ import { makeStyles } from "@mui/styles";
 export const useStyles: any = makeStyles((theme) => ({
   root: {
     width: "100%",
+
+    // height of multi select
+    "& .MuiAutocomplete-hasPopupIcon.css-5cam8j-MuiAutocomplete-root .MuiOutlinedInput-root, .MuiAutocomplete-hasClearIcon.css-5cam8j-MuiAutocomplete-root .MuiOutlinedInput-root":
+      {
+        minHeight: "48px",
+      },
+
     "& div.MuiOutlinedInput-multiline": {
       fontSize: 13,
     },
@@ -68,7 +75,7 @@ export const useStyles: any = makeStyles((theme) => ({
     },
   },
   chip: {
-    height: "32px",
+    padding: "9px 12px",
     width: "fitContent !important",
     background: "#E5E7EB !important",
     fontFamily: "Roboto",
@@ -76,12 +83,11 @@ export const useStyles: any = makeStyles((theme) => ({
     fontWeight: "500",
     fontSize: "12px",
     color: "#212121",
-    marginLeft: "8px",
-    marginTop: "3px",
-    marginBottom: "3px",
+    margin: "2px 7px 2px 0",
     borderRadius: "50px !important",
     "& .MuiChip-deleteIcon": {
-      marginLeft: "auto",
+      margin: "unset",
+      fontSize: "12px",
     },
   },
 }));

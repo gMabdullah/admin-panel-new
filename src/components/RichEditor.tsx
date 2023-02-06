@@ -11,13 +11,11 @@ import { TINY_EDITOR_API_KEY } from "../constants";
 import { formatDate, getLocalStorage } from "orders/HelperFunctions";
 import { AWS_BUCKET_URL } from "config";
 
-interface editorProps {
-  description: string;
-  setDescription?: React.Dispatch<React.SetStateAction<string>>;
-  setDescriptionFromItem?:
-    | React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> &
-        React.ChangeEventHandler<HTMLInputElement>;
-  itemEditor?: boolean;
+interface EditorProps {
+  value: string;
+  onEditorChange: any;
+  initials?: object;
+  sx?: object;
 }
 
 interface imageAPIProps {
@@ -28,12 +26,7 @@ interface imageAPIProps {
   im_date: string;
 }
 
-const RichEditor = ({
-  description,
-  setDescription,
-  itemEditor,
-  setDescriptionFromItem,
-}: editorProps) => {
+const RichEditor = ({ value, onEditorChange, initials, sx }: EditorProps) => {
   const { eatout_id, user_id } = getLocalStorage();
 
   const payload = ({
@@ -166,26 +159,22 @@ const RichEditor = ({
   if (imageUploadError) return <span>Image Uploading Failed</span>;
 
   return (
-    <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
+    <Grid item xs={12} sx={{ display: "flex", mb: "24px", ...sx }}>
       <Editor
         apiKey={TINY_EDITOR_API_KEY}
-        value={description}
+        value={value}
+        onEditorChange={onEditorChange}
         init={{
           height: 300,
+          width: "100%",
           plugins:
             "link image code lists fullscreen autolink table " +
             "preview autosave anchor media wordcount",
           content_style:
             "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
           // images_upload_handler: imageUploadHandler,
+          ...initials,
         }}
-        // onEditorChange={(e) => {
-        //   if (itemEditor) {
-        //     setDescriptionFromItem(e);
-        //   } else {
-        //     description && setDescription(e);
-        //   }
-        // }}
       />
     </Grid>
   );

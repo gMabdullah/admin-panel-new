@@ -1138,21 +1138,28 @@ const OrderDetail = ({
           options = JSON.parse(options);
         }
         for (const key in options) {
+          let optionHeading = key;
           options[key].map((opt: any) => {
             innerOptionsName = "";
             let haveInnerOpt = opt.inner_options !== "" ? true : false;
             optionSets.push({
+              heading: optionHeading ? optionHeading : "",
               name: opt.name,
               quantity: opt.quantity,
               price: opt.price,
               weight: opt.weight,
               haveInnerOptions: haveInnerOpt,
             });
+            optionHeading = "";
             let inner_options = opt.inner_options;
             if (inner_options !== "") {
               for (const innerKey in inner_options) {
                 inner_options[innerKey].map((innerOpt: any) => {
-                  innerOptionsName = `${innerOptionsName}${innerOpt.name},`;
+                  innerOptionsName = `${innerOptionsName} ${innerOpt.name} ${
+                    parseFloat(innerOpt.price) > 0
+                      ? "(" + currency + innerOpt.price + ")"
+                      : ""
+                  },`;
                 });
               }
             }
@@ -1162,6 +1169,26 @@ const OrderDetail = ({
         }
       }
 
+      const returnInnerOptionSetInNewLine = (
+        index: number,
+        options: string
+      ) => {
+        // return InnerOptionSet In a NewLine with formatting
+        const intoArray = options.split(",");
+        return (
+          intoArray &&
+          intoArray.map((option) => (
+            <Typography
+              sx={{ color: "#212121" }}
+              variant={"subtitle2"}
+              key={index}
+            >
+              {option}
+            </Typography>
+          ))
+        );
+      };
+
       return (
         <Stack direction={"column"}>
           <Typography variant={"subtitle1"} sx={{ color: "#212121" }}>
@@ -1169,79 +1196,111 @@ const OrderDetail = ({
           </Typography>
 
           {attributes.length > 0 && (
-            <Typography
-              sx={{
-                fontFamily: "Roboto",
-                fontStyle: "normal",
-                fontWeight: "400",
-                fontSize: "12px",
-                mt: "5px",
-              }}
-            >
+            <Typography sx={{ mt: "5px" }} variant={"subtitle2"}>
               ({attributes.join()})
             </Typography>
           )}
 
           {optionSets.length > 0 && (
             <Stack //option sets stack
-              direction={"row"}
+              direction={"column"}
               spacing={1}
-              sx={{ flexWrap: "wrap" }}
             >
               {optionSets.map((e: any, index: number) => {
                 return e.haveInnerOptions ? (
-                  <Box
-                    sx={{
-                      width: "fit-content",
-                      height: "fit-content",
-                      boxSizing: "border-box",
-                      mt: "5px",
-                      p: "4px",
-                      border: "1px solid",
-                      color: "#531dab",
-                      background: "#f9f0ff",
-                      borderColor: "#d3adf7",
-                    }}
-                  >
-                    <Typography
+                  <>
+                    {/* Heading */}
+                    {e.heading && (
+                      <Typography
+                        sx={{
+                          display: "flex",
+                          marginBottom: "4px",
+                          width: "fit-content",
+                          maxWidth: "230px",
+                          color: "#212121",
+                          border: "1px solid #DB154D",
+                          backgroundColor: "rgba(219, 21, 77, 0.05)",
+                          padding: "4px 8px",
+                          borderRadius: "4px",
+                        }}
+                        variant={"h6"}
+                        key={index}
+                      >
+                        {e.heading}
+                      </Typography>
+                    )}
+                    <Box
                       sx={{
-                        display: "block !important",
-                        fontFamily: "Roboto",
-                        fontStyle: "normal",
-                        fontWeight: "500",
-                        fontSize: "12px",
+                        width: "fit-content",
+                        height: "fit-content",
+                        boxSizing: "border-box",
+                        mt: "4px !important",
+                        ml: "0px !important",
+                        p: "4px",
+                        color: "#212121",
+                        background: "#F8F5FC",
+                        border: "1px solid #673AB7",
+                        borderRadius: "4px",
                       }}
-                      key={index}
                     >
-                      {`${e.quantity}x ${e.name} `}
-                      <div>{`price ${
-                        parseFloat(e.price) * parseInt(e.quantity)
-                      }`}</div>
-                      {e.weight !== "" && e.weight !== undefined && (
-                        <div>{`weight ${
-                          parseInt(e.weight.split(" ")[0]) *
-                          parseInt(e.quantity)
-                        } ${e.weight.split(" ")[1]}`}</div>
-                      )}
-                      {e.inner_options === "" ? "" : `(${e.inner_options})`}
-                    </Typography>
-                  </Box>
+                      {/* option set */}
+                      <Typography
+                        sx={{ color: "#212121" }}
+                        variant={"subtitle1"}
+                        key={index}
+                      >
+                        {e.quantity == 1
+                          ? ` ${e.name}`
+                          : `${e.quantity}x ${e.name} `}
+                        {e.inner_options === "" ? "" : ":"}
+
+                        {e.weight !== "" && e.weight !== undefined && (
+                          <div>{`weight ${
+                            parseInt(e.weight.split(" ")[0]) *
+                            parseInt(e.quantity)
+                          } ${e.weight.split(" ")[1]}`}</div>
+                        )}
+                      </Typography>
+
+                      {/* inner option set */}
+                      {e.inner_options === ""
+                        ? ""
+                        : returnInnerOptionSetInNewLine(index, e.inner_options)}
+                    </Box>
+                  </>
                 ) : (
-                  <Box
-                    sx={{
-                      width: "fit-content",
-                      height: "fit-content",
-                      boxSizing: "border-box",
-                      mt: "5px",
-                      p: "4px",
-                      border: "1px solid",
-                      color: "#531dab",
-                      background: "#f9f0ff",
-                      borderColor: "#d3adf7",
-                    }}
-                  >
+                  <>
+                    {e.heading && (
+                      <Typography
+                        sx={{
+                          display: "flex",
+                          marginBottom: "4px",
+                          width: "fit-content",
+                          maxWidth: "230px",
+                          color: "#212121",
+                          border: "1px solid #DB154D",
+                          backgroundColor: "rgba(219, 21, 77, 0.05)",
+                          padding: "4px 8px",
+                          borderRadius: "4px",
+                        }}
+                        variant={"h6"}
+                        key={index}
+                      >
+                        {e.heading}
+                      </Typography>
+                    )}
                     <Typography
                       sx={{
+                        maxWidth: "278px",
+                        height: "fit-content",
+                        boxSizing: "border-box",
+                        mt: "4px !important",
+                        marginLeft: "0px !important",
+                        p: "4px",
+                        color: "#212121",
+                        background: "#F8F5FC",
+                        border: "1px solid #673AB7",
+                        borderRadius: "4px",
                         fontFamily: "Roboto",
                         fontStyle: "normal",
                         fontWeight: "500",
@@ -1249,10 +1308,11 @@ const OrderDetail = ({
                       }}
                       key={index}
                     >
-                      {`${e.quantity}x ${e.name} `}
-                      <div>{`price ${
-                        parseFloat(e.price) * parseInt(e.quantity)
-                      }`}</div>
+                      {e.quantity == 1
+                        ? ` ${e.name}`
+                        : `${e.quantity}x ${e.name} `}
+                      {e.inner_options === "" ? "" : ":"}
+
                       {e.weight !== "" && e.weight !== undefined && (
                         <div>{`weight ${
                           parseInt(e.weight.split(" ")[0]) *
@@ -1260,7 +1320,7 @@ const OrderDetail = ({
                         } ${e.weight.split(" ")[1]}`}</div>
                       )}
                     </Typography>
-                  </Box>
+                  </>
                 );
               })}
             </Stack>
@@ -1713,12 +1773,7 @@ const OrderDetail = ({
                         <ExcelExport
                           tableData={OrderDetailColumns}
                           orderDetailData={(() => {
-                            if (!orderFromAPI[0]) return [];
-                            return orderFromAPI[0].order_detail;
-                          })()}
-                          OrderDetailStatic={(() => {
-                            if (!orderFromAPI[0]) return [];
-                            return orderFromAPI[0];
+                            if (orderFromAPI.length > 0) return orderFromAPI[0];
                           })()}
                           exportType={"OrderDetail"}
                         />

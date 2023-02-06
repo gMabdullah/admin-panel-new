@@ -96,7 +96,7 @@ const BrandsDropdown = ({ applyFilter }: dropdownTypes) => {
 
   if (error) return <span>Getting Brands Failed</span>;
 
-  return (
+  return brands.length > 2 ? (
     <MultiSelectDropDown
       value={BrandName}
       onChange={handleBrandChange}
@@ -104,6 +104,8 @@ const BrandsDropdown = ({ applyFilter }: dropdownTypes) => {
       sx={{ width: "160px", height: "40px", ml: "8px" }} // Get on Change function from parent where this component is using.
       onChangeButton={applyFilter}
     />
+  ) : (
+    <></>
   );
 };
 

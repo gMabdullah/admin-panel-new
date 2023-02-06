@@ -1,9 +1,12 @@
-import Excel from "exceljs";
-import { saveAs } from "file-saver";
+import { useEffect } from "react";
 
 import { Stack, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import LibraryBooksTwoToneIcon from "@mui/icons-material/LibraryBooksTwoTone";
+
+import Excel from "exceljs";
+import { saveAs } from "file-saver";
+import moment from "moment";
 
 import CustomButton from "components/CustomButton";
 
@@ -31,20 +34,24 @@ type TableData = {
 
 type ExcelExportPropsType = {
   tableData: TableData[];
-  orderListData?: OrderListingResponseResult[];
-  orderDetailData?: OrderListingResponseOrderDetail[];
-  OrderDetailStatic?: any;
+  listingData?: OrderListingResponseResult[] | ProductResponseItem[];
+  orderDetailData?: OrderListingResponseResult;
   exportType: string;
 };
 
 const ExcelExport = ({
   tableData,
-  orderListData,
+  listingData,
   orderDetailData,
   exportType,
-  OrderDetailStatic,
 }: ExcelExportPropsType) => {
   const classes = useStyles();
+
+  useEffect(() => {
+    if (exportType === "ProductListing") {
+      fileExport();
+    }
+  }, [exportType]);
 
   const fileExport = async () => {
     const { eatout_name } = JSON.parse(localStorage.getItem("businessInfo")!);
@@ -67,13 +74,88 @@ const ExcelExport = ({
         });
 
         // loop through data and add each one to worksheet
-        orderListData?.forEach((singleData) => {
+        listingData?.forEach((singleData) => {
           workSheet.addRow(singleData);
         });
 
         break;
       }
+      case "ProductListing": {
+        workSheet.mergeCells("A1:W1");
+        workSheet.mergeCells("A2:W2");
 
+        workSheet.getRow(1).getCell(1).value =
+          "Follow the date format MM/DD/YYYY   &   Do not update category column";
+
+        workSheet.getRow(1).getCell(1).font = {
+          bold: true,
+          color: { argb: "DB154D" },
+          size: 14,
+        };
+
+        workSheet.getRow(1).getCell(1).alignment = {
+          vertical: "middle",
+          horizontal: "center",
+        };
+
+        workSheet.getRow(1).getCell(1).border = {
+          top: { style: "thick" },
+          left: { style: "thick" },
+          bottom: { style: "thick" },
+          right: { style: "thick" },
+        };
+
+        // adding column keys to add data
+        workSheet.columns = tableData.map((obj) => ({
+          key: obj.key,
+        }));
+
+        // adding table column heads
+        workSheet.getRow(workSheet.rowCount + 1).values = tableData.map(
+          (obj) => obj.header
+        );
+
+        let row: { [x: string]: string | number } = {};
+
+        listingData?.forEach((item: any) => {
+          tableData.forEach((obj) => {
+            // brand name column values
+            if (obj.key === "item_brand" && Array.isArray(item[obj.key])) {
+              return (row[obj.key] = item.item_brand[0].brand_name);
+            }
+
+            // discount_start date column values
+            if (obj.key === "discount_start_at" && item.discount_start_at) {
+              return (row[obj.key] = moment(item.discount_start_at).format(
+                "MM/DD/YYYY"
+              ));
+            }
+
+            // discount_expiry date column values
+            if (obj.key === "discount_expiry" && item.discount_expiry) {
+              return (row[obj.key] = moment(item.discount_expiry).format(
+                "MM/DD/YYYY"
+              ));
+            }
+
+            // description column values
+            if (obj.key === "desc" && item.desc) {
+              return (row[obj.key] = item.desc.replace(
+                /<\/?([a-zA-Z_]+?)>/g,
+                ""
+              ));
+            }
+
+            // all other column values
+            return (row[obj.key] = item[obj.key]);
+          });
+
+          // add the computed single row to the table
+          workSheet.addRow(row);
+        });
+
+        break;
+      }
       case "OrderDetail": {
         workSheet.mergeCells("A1:M1");
         workSheet.mergeCells("A2:M2");
@@ -112,55 +194,52 @@ const ExcelExport = ({
 
         // starting order details information rows
         workSheet.getRow(3).getCell(1).value = "Order #";
-        workSheet.getRow(3).getCell(2).value = `${OrderDetailStatic?.order_id}`;
+        workSheet.getRow(3).getCell(2).value = `${orderDetailData?.order_id}`;
 
         workSheet.getRow(4).getCell(1).value = "Payment Type";
         workSheet
           .getRow(4)
-          .getCell(2).value = `${OrderDetailStatic?.payment_type}`;
+          .getCell(2).value = `${orderDetailData?.payment_type}`;
 
         workSheet.getRow(5).getCell(1).value = "Order Type";
-        workSheet
-          .getRow(5)
-          .getCell(2).value = `${OrderDetailStatic?.order_type}`;
+        workSheet.getRow(5).getCell(2).value = `${orderDetailData?.order_type}`;
 
         workSheet.getRow(6).getCell(1).value = "Status";
-        workSheet.getRow(6).getCell(2).value = `${OrderDetailStatic?.status}`;
+        workSheet.getRow(6).getCell(2).value = `${orderDetailData?.status}`;
 
         workSheet.getRow(7).getCell(1).value = "Receipt #";
-        workSheet
-          .getRow(7)
-          .getCell(2).value = `${OrderDetailStatic?.receipt_no}`;
+        workSheet.getRow(7).getCell(2).value = `${orderDetailData?.receipt_no}`;
 
         workSheet.getRow(8).getCell(1).value = "Date";
-        workSheet.getRow(8).getCell(2).value = `${OrderDetailStatic?.date}`;
-        // `${OrderDetailStatic?.date}` ?
+        workSheet.getRow(8).getCell(2).value = `${orderDetailData?.date}`;
+        // `${orderDetailData?.date}` ?
         workSheet.getRow(9).getCell(1).value = "Pickup Time";
         workSheet
           .getRow(9)
-          .getCell(2).value = `${OrderDetailStatic?.pickup_time}`;
+          .getCell(2).value = `${orderDetailData?.pickup_time}`;
 
         workSheet.getRow(10).getCell(1).value = "Name";
-        workSheet.getRow(10).getCell(2).value = `${OrderDetailStatic?.name}`;
+        workSheet.getRow(10).getCell(2).value = `${orderDetailData?.name}`;
 
         workSheet.getRow(11).getCell(1).value = "Address";
-        workSheet.getRow(11).getCell(2).value = `${OrderDetailStatic?.address}`;
+        workSheet.getRow(11).getCell(2).value = `${orderDetailData?.address}`;
 
         workSheet.getRow(12).getCell(1).value = "Email";
         workSheet
           .getRow(12)
-          .getCell(2).value = `${OrderDetailStatic?.user_email}`;
+          .getCell(2).value = `${orderDetailData?.user_email}`;
 
         workSheet.getRow(13).getCell(1).value = "Landline";
         workSheet
           .getRow(13)
-          .getCell(2).value = `${OrderDetailStatic?.landline_number}`;
+          .getCell(2).value = `${orderDetailData?.landline_number}`;
 
         workSheet.getRow(14).getCell(1).value = "Phone";
         workSheet
           .getRow(14)
-          .getCell(2).value = `${OrderDetailStatic?.mobile_number}`;
+          .getCell(2).value = `${orderDetailData?.mobile_number}`;
 
+        // adding styles to order details information rows
         let headerRows = 3;
         while (headerRows < 15) {
           workSheet.getRow(headerRows).getCell(1).font = {
@@ -175,18 +254,21 @@ const ExcelExport = ({
           headerRows++;
         }
 
+        // adding column keys to add data
         workSheet.columns = tableData.map((obj) => ({
           key: obj.key,
         }));
 
+        // adding table column heads
         workSheet.getRow(workSheet.rowCount + 2).values = tableData.map(
           (obj) => obj.header
         );
+
         // format option sets into comma separated string
         const formatOptionSet = () => {
           let optionSetArr = "";
-          OrderDetailStatic &&
-            OrderDetailStatic.order_detail.map(
+          orderDetailData &&
+            orderDetailData.order_detail.map(
               (item: OrderListingResponseOrderDetail) => {
                 let row = item;
                 let textToShow = "";
@@ -226,9 +308,11 @@ const ExcelExport = ({
           return optionSetArr;
         };
 
+        // populating data in table rows
         let row: { [x: string]: string | any } = {};
         let setOptionSet = "";
-        orderDetailData?.forEach(
+        orderDetailData?.order_detail?.forEach(
+          // orderDetailData?.forEach(
           (item: { [x: string]: string | number | any }) => {
             tableData.forEach((obj) => {
               if (obj.key == "options") {
@@ -248,6 +332,7 @@ const ExcelExport = ({
               return (row[obj.key] = item[obj.key]);
             });
 
+            // add the computed single row to the table
             workSheet.addRow(row);
           }
         );
@@ -264,22 +349,22 @@ const ExcelExport = ({
         workSheet.getRow(footerRows).getCell(1).value = "Total Items";
         workSheet
           .getRow(footerRows)
-          .getCell(2).value = `${OrderDetailStatic?.order_detail.length}`;
+          .getCell(2).value = `${orderDetailData?.order_detail.length}`;
 
         workSheet.getRow(footerRows + 1).getCell(1).value = "Total Price";
         workSheet
           .getRow(footerRows + 1)
-          .getCell(2).value = `${OrderDetailStatic?.total}`;
+          .getCell(2).value = `${orderDetailData?.total}`;
 
         workSheet.getRow(footerRows + 3).getCell(1).value = "Tax";
         workSheet
           .getRow(footerRows + 3)
-          .getCell(2).value = `${OrderDetailStatic?.tax}`;
+          .getCell(2).value = `${orderDetailData?.tax}`;
 
         workSheet.getRow(footerRows + 4).getCell(1).value = "Grand Total";
         workSheet
           .getRow(footerRows + 4)
-          .getCell(2).value = `${OrderDetailStatic?.grand_total}`;
+          .getCell(2).value = `${orderDetailData?.grand_total}`;
 
         workSheet.getRow(footerRows + 4).getCell(2).border = {
           top: { style: "thin" },
@@ -351,7 +436,8 @@ const ExcelExport = ({
 
   return (
     <>
-      {exportType === "OrdersList" ? (
+      {/* Return orders Listing export Button  UI */}
+      {exportType === "OrdersList" && (
         <CustomButton
           variant={"contained"}
           color={"secondary"}
@@ -365,7 +451,10 @@ const ExcelExport = ({
         >
           Export Orders
         </CustomButton>
-      ) : (
+      )}
+
+      {/* Return order details icon button UI */}
+      {exportType === "OrderDetail" && (
         <Stack
           direction="row"
           spacing={1}

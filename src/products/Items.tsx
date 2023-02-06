@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, lazy, Suspense } from "react";
 
 import {
   Typography,
@@ -13,7 +13,7 @@ import {
 import AddTwoToneIcon from "@mui/icons-material/AddTwoTone";
 import SortByAlphaIcon from "@mui/icons-material/SortByAlpha";
 import FilterListIcon from "@mui/icons-material/FilterList";
-
+import { SelectChangeEvent } from "@mui/material/Select";
 import useAxios from "axios-hooks";
 import { debounce } from "lodash";
 import MainCard from "components/cards/MainCard";
@@ -29,20 +29,65 @@ import Loader from "components/Loader";
 import AddEditItem from "products/AddEditItem";
 import { gridIconsCss } from "./Styles";
 import { useDispatch, useSelector } from "store";
-import { keysOfItems } from "../constants";
+import { bulkActions, itemExportColumns, keysOfItems } from "../constants";
 import { ProductsProvider, ProductsContext } from "./context/ProductsContext";
-import { toggleDatePicker } from "../store/slices/Main";
+import {
+  setProductColumn,
+  toggleDatePicker,
+  resetFiltersAction,
+  selectedFilter,
+} from "../store/slices/Main";
 import { reorder, sortMenuItems } from "orders/HelperFunctions";
 import TdTextField from "components/TdTextField";
-import {
-  getLocalStorage,
-  toCapitalizeFirstLetter,
-} from "orders/HelperFunctions";
+
 import { searchFieldStyle } from "business/Styles";
+import DropDown from "components/DropDown";
 import file from "../assets/files/downloadSample.xlsx";
+import ExcelExport from "components/ExcelExport";
+import Filters from "components/Filters";
+
+const ImportMenuExcel = lazy(() => import("./sections/ImportMenuExcel"));
 
 let toggleSorting = true;
-
+const dropdownBulkAction = [
+  {
+    label: "Import/Export",
+    value: "import_export",
+  },
+  {
+    label: "Import New Items",
+    value: "Import New Items",
+  },
+  {
+    label: "Update Existing Item",
+    value: "Update Existing Item",
+  },
+  {
+    label: "Export items(.pdf)",
+    value: "Export items(.pdf)",
+  },
+  {
+    label: "Export Items (.xlsx)",
+    value: "Export Items (.xlsx)",
+  },
+  {
+    label: "Download Sample",
+    value: "Download Sample",
+  },
+];
+let countObj = {
+  withImages: 0,
+  withNoImages: 0,
+  available: 0,
+  unAvailable: 0,
+  availableWithImg: 0,
+  unAvailableWithImg: 0,
+  availableWithNoImg: 0,
+  unAvailableWithNoImg: 0,
+  displayNone: 0,
+  displayWeb: 0,
+  displayPOS: 0,
+};
 const Items = () => {
   const dispatch = useDispatch();
   const { eatout_id, user_id } = JSON.parse(
@@ -50,15 +95,22 @@ const Items = () => {
   );
   useEffect(() => {
     dispatch(toggleDatePicker(false));
+    dispatch(setProductColumn(keysOfItems));
   });
 
   const { selectedMenu, selectedBranch, selectedCategory, selectedBrand } =
     useSelector((state) => state.dropdown);
-  const [items, setItems] = useState<ProductResponse["items"]>([]);
+  const { showImagesItem, availableItems, displayType } = useSelector(
+    (state) => state.main
+  );
+  const [items, setItems] = useState<ProductResponse["items"] | []>([]);
   const [applyFilters, setApplyFilters] = React.useState(false);
   const [toggleDrawer, setToggleDrawer] = useState(false);
   const [itemsCount, setItemsCount] = useState(100);
-
+  const [importExportDropDownValue, setImportExportDropDownValue] =
+    useState<string>("import_export");
+  const [bulkActionsValue, setBulkActionsValue] =
+    useState<string>("bulkActions");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(100);
   const [apiCallFlag, setApiCallFlag] = React.useState("");
@@ -66,6 +118,21 @@ const Items = () => {
   const [searchQueryItems, setSearchQueryItems] = useState<string>("");
   const [linearLoader, setLinearLoader] = useState<boolean>(false);
   const { state } = useContext(ProductsContext);
+  const [count, setCount] = useState(countObj);
+  // const [menuItem, setMenuItem] = useState<any>([]);
+  //   {
+  //   withImages: [],
+  //   withNoImages: [],
+  //   available: [],
+  //   unAvailable: [],
+  //   availableWithImg: [],
+  //   unAvailableWithImg: [],
+  //   availableWithNoImg: [],
+  //   unAvailableWithNoImg: [],
+  //   displayNone: [],
+  //   displayWeb: [],
+  //   displayPOS: [],
+  // }
 
   // API Call For Product //
   const [{ data: productData, loading: productLoading }, getProductsAPI] =
@@ -108,15 +175,6 @@ const Items = () => {
       if (productResultApi.data && productResultApi.data.items.length > 0) {
         const { items } = productResultApi.data;
         setItems(items);
-
-        state.allItemsForGrouping = items.map((item: ProductResponseItem) => {
-          if (!item.is_grouped) {
-            return {
-              value: item.menu_item_id,
-              label: item.sku ? item.name + " (" + item.sku + ")" : item.name,
-            };
-          }
-        });
       } else {
         setPage(0);
       }
@@ -155,13 +213,25 @@ const Items = () => {
       if (applyFilters) {
         setApplyFilters(false);
       }
+      // return ungroup items in an array
+      // combination of filter and map functions
+      state.allItemsForGrouping = productData.items.reduce(
+        (items: DropdownValue[], item: ProductResponseItem) => {
+          if (!item.is_grouped) {
+            items.push({
+              value: item.menu_item_id,
+              label: item.sku ? item.name + " (" + item.sku + ")" : item.name,
+            });
+          }
+          return items;
+        },
+        []
+      );
     }
   }, [productData]);
 
   useEffect(() => {
-    // setLinearLoader(true);
     getProductsAPI();
-    // setLinearLoader(false);
   }, [page, rowsPerPage]);
 
   const applyButtonFilter = () => {
@@ -205,9 +275,35 @@ const Items = () => {
     setToggleDrawer((state) => !state);
   };
 
+  const handleBulkActionsChange = (
+    event: SelectChangeEvent<typeof bulkActionsValue>
+  ) => {
+    const {
+      target: { value },
+    } = event;
+
+    setBulkActionsValue(value);
+  };
+
+  const handleDropDownChange = (
+    event: SelectChangeEvent<typeof importExportDropDownValue>
+  ) => {
+    const {
+      target: { value },
+    } = event;
+    if (value == "Download Sample") {
+      let link = document.createElement("a");
+      link.setAttribute("download", "Menu-Sample.xlsx");
+      link.href = file;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    }
+    setImportExportDropDownValue(value);
+  };
+
   // Drag And Drop Shorting
   const shortDragDropItems = async (sortArray: any) => {
-    // setLinearLoader(true);
     let shortItems: any = reorder(items, sortArray);
     setItems(shortItems);
     const formData = new FormData();
@@ -215,7 +311,6 @@ const Items = () => {
       formData.append("categoryArray[]", shortItems[index].menu_item_id);
     }
     const shortItemResponse = await shortItemId({ data: formData });
-    // setLinearLoader(false);
   };
 
   const handleChangePage = (
@@ -233,7 +328,11 @@ const Items = () => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-
+  const resetFilters = () => {
+    setItems(productData.items);
+    // reset values from store
+    dispatch(resetFiltersAction());
+  };
   return (
     <ProductsProvider>
       {toggleDrawer && (
@@ -243,8 +342,30 @@ const Items = () => {
           getProductApi={getProductsAPI}
         />
       )}
-
+      <Suspense
+        fallback={
+          <div>
+            <Loader />
+          </div>
+        }
+      >
+        {(importExportDropDownValue === "Import New Items" ||
+          importExportDropDownValue === "Update Existing Item") && (
+          <ImportMenuExcel
+            importType={importExportDropDownValue}
+            setImportExportDropDownValue={setImportExportDropDownValue}
+          />
+        )}
+      </Suspense>
       {(productLoading || sortLoading) && <Loader />}
+
+      {importExportDropDownValue == "Export Items (.xlsx)" && (
+        <ExcelExport
+          tableData={itemExportColumns}
+          listingData={productData.items}
+          exportType={"ProductListing"}
+        />
+      )}
 
       <MainCard
         title={
@@ -275,19 +396,35 @@ const Items = () => {
                 alignItems: "center",
               }}
             >
-              <CustomButton
-                variant={"contained"}
-                color={"secondary"}
-                startIcon={<AddTwoToneIcon />}
-                sx={{
-                  p: "12px 22px",
-                  height: "44px",
-                  width: "138px",
-                }}
-                onClick={handleDrawerToggle}
-              >
-                Add Item
-              </CustomButton>
+              <Stack direction={"row"} justifyContent={"center"}>
+                <DropDown
+                  options={bulkActions}
+                  value={bulkActionsValue}
+                  handleChange={handleBulkActionsChange}
+                  defaultValue="bulkActions"
+                  isStaticDropDown={true}
+                  sx={{ mr: "11px" }}
+                />
+
+                <DropDown
+                  options={dropdownBulkAction}
+                  value={importExportDropDownValue}
+                  handleChange={handleDropDownChange}
+                  defaultValue="import_export"
+                  isStaticDropDown={true}
+                  sx={{ mr: "11px" }}
+                />
+
+                <CustomButton
+                  variant={"contained"}
+                  color={"secondary"}
+                  startIcon={<AddTwoToneIcon />}
+                  sx={{ p: "12px 32px" }}
+                  onClick={handleDrawerToggle}
+                >
+                  Add Item
+                </CustomButton>
+              </Stack>
             </Grid>
           </Grid>
         } // MainCard opening tag closed here
@@ -317,18 +454,27 @@ const Items = () => {
                     <SortByAlphaIcon />
                   </IconButton>
                 </Stack>
-                <IconButton>
-                  <Stack>
-                    <FilterListIcon />
-                  </Stack>
-                </IconButton>
+                <Filters
+                  items={items}
+                  setItems={setItems}
+                  productLoading={productLoading}
+                  productData={productData}
+                />
               </Stack>
             </Grid>
           </Grid>
         </Grid>
         <Grid container>
-          {itemsCount && (
-            <Grid item xs={12}>
+          {items && (
+            <Grid
+              item
+              xs={12}
+              sx={{
+                display: "flex !important",
+                alignItem: "center",
+                marginLeft: "16px",
+              }}
+            >
               <Typography
                 variant="h5"
                 sx={{
@@ -336,8 +482,30 @@ const Items = () => {
                   color: "#212121",
                 }}
               >
-                {`${rowsPerPage} Item(s)`}
+                {`${items.length} Item(s)`}
               </Typography>
+              <Typography
+                onClick={resetFilters}
+                variant="h5"
+                sx={{
+                  marginLeft: "16px",
+                  color: "#212121",
+                  textDecoration: "underline",
+                  cursor: "pointer",
+                }}
+              >
+                {(showImagesItem !== "all_images" ||
+                  availableItems !== "all_of_stock" ||
+                  displayType !== "all_platforms") &&
+                  "Reset Filters"}
+              </Typography>
+              {bulkActionsValue !== "bulkActions" && (
+                <CustomButton
+                  onClick={() => setBulkActionsValue("bulkActions")}
+                >
+                  Cancel
+                </CustomButton>
+              )}
             </Grid>
           )}
         </Grid>
@@ -347,14 +515,17 @@ const Items = () => {
           ) : (
             <>
               <DraggableTable
+                getProductsAPI={getProductsAPI}
+                productLoading={productLoading}
                 items={items}
-                keysOfItems={keysOfItems}
                 setSequenceItem={setSequenceItem}
                 shortDragDropItems={shortDragDropItems}
+                handleDrawerToggle={handleDrawerToggle}
+                checkBox={bulkActionsValue !== "bulkActions"}
               />
               <TablePagination
                 component="div"
-                count={itemsCount}
+                count={items.length}
                 page={page}
                 onPageChange={handleChangePage}
                 rowsPerPage={rowsPerPage}

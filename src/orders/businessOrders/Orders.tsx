@@ -790,7 +790,7 @@ const Orders = () => {
                 </CustomButton>
                 <ExcelExport
                   tableData={orderListingColumns}
-                  orderListData={orders}
+                  listingData={orders}
                   exportType={"OrdersList"}
                 />
               </Grid>

@@ -12,8 +12,10 @@ type DropDownType<T extends React.ElementType> = {
   defaultValue?: string;
   label?: string;
   name?: string;
-  value: string;
+  value?: string;
   error?: boolean;
+  sx?: object;
+  isStaticDropDown?: boolean;
   helperText?: React.ReactNode;
   handleChange: (event: SelectChangeEvent) => void;
 } & React.ComponentPropsWithoutRef<T>;
@@ -34,7 +36,6 @@ const theme = createTheme({
 const useStyles = makeStyles((theme) => ({
   quantityRoot: {
     fontSize: "14px",
-    // color: "#212121",
 
     fontFamily: `Roboto`,
     fontWeight: 400,
@@ -44,8 +45,6 @@ const useStyles = makeStyles((theme) => ({
     width: "160px",
     borderRadius: "58px",
     marginRight: "8px",
-    marginBottom: "24px",
-    marginTop: "24px",
 
     "& .MuiOutlinedInput": {
       border: "58px",
@@ -54,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
       borderRadius: "58px !important",
     },
     "& .MuiList-root": {
-      paddind: "14px !important",
+      padding: "14px !important",
     },
     height: "fit-content",
     "& .MuiOutlinedInput-input": {
@@ -75,43 +74,55 @@ const useStyles = makeStyles((theme) => ({
       border: "20px solid #484850",
     },
   },
-  selectRoot: {
-    color: "#FFFFFF",
+
+  staticDropDownRoot: {
+    "& .MuiOutlinedInput-input": {
+      background: "#F5F5F5",
+      padding: "14px 40px 14px 24px !important",
+      fontSize: "13px",
+    },
+    "& .MuiOutlinedInput-root": {
+      background: "#F5F5F5",
+    },
+    "& .MuiOutlinedInput-notchedOutline": {
+      border: "none",
+    },
+    "& .Mui-disabled": {
+      color: "#FFFFFF",
+      opacity: 0.6,
+    },
+    "& .Mui-disabled .MuiOutlinedInput-notchedOutline": {
+      border: "20px solid #484850",
+    },
   },
+
   icon: {
     color: "#212121",
     Width: "6.67px",
     Height: "3.33px",
   },
-  selectPaper: {
-    backgroundColor: "#1E1E24",
-    border: "1px solid #484850",
-    borderRadius: "5px",
-    color: "#FFFFFF",
-  },
 }));
+
 const MenuProps = {
   PaperProps: {
     sx: {
-      width: "211px",
-      maxHeight: "262px !important",
-      marginTop: "8px",
-      boxShadow: "0px 1px 4px rgba(0, 0, 0, 0.1)",
-
-      marginLeft: "22px",
+      width: "224px",
+      marginTop: "6px",
+      boxShadow: "0px 1px 14px rgba(0, 0, 0, 0.1)",
       background: "#FFFFFF",
-      borderRadius: "unset",
+      borderRadius: "8px",
+      p: "unset",
 
-      "& .MuiOutlinedInput-input": {
-        background: "none",
-        p: "11px 67.9px 11px 14.88px",
+      "& .MuiList-root": {
+        padding: "unset",
       },
-      "& .Mui-checked": {
-        color: "#2196F3",
+      "& .MuiMenuItem-root": {
+        p: "16px",
       },
     },
   },
 };
+
 const DropDown = <T extends React.ElementType = "select">({
   options,
   defaultValue,
@@ -119,6 +130,8 @@ const DropDown = <T extends React.ElementType = "select">({
   value,
   name,
   error,
+  sx,
+  isStaticDropDown,
   helperText,
   handleChange,
   ...rest
@@ -130,18 +143,34 @@ const DropDown = <T extends React.ElementType = "select">({
       <FormControl
         variant="outlined"
         classes={{
-          root: classes.quantityRoot,
+          root: isStaticDropDown
+            ? classes.staticDropDownRoot
+            : classes.quantityRoot,
         }}
       >
         <Select
           error={error}
-          // helperText={helperText}
           classes={{
             icon: classes.icon,
           }}
           name={name}
+          sx={{
+            borderRadius: isStaticDropDown
+              ? "8px !important"
+              : "58px !important",
+            "& .MuiOutlinedInput-root": {
+              borderRadius: isStaticDropDown
+                ? "8px !important"
+                : "58px !important",
+            },
+            "& .MuiOutlinedInput": {
+              border: "58px",
+            },
+
+            ...sx,
+          }}
           defaultValue={defaultValue}
-          value={value ? value : ""}
+          value={isStaticDropDown ? defaultValue : value ? value : ""}
           onChange={handleChange}
           MenuProps={MenuProps}
         >
@@ -163,4 +192,5 @@ const DropDown = <T extends React.ElementType = "select">({
     </>
   );
 };
+
 export default DropDown;

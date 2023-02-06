@@ -1,6 +1,15 @@
 import React, { useContext, useEffect, useState } from "react";
 
-import { Stack, Typography, Grid, Divider } from "@mui/material";
+import {
+  Stack,
+  Typography,
+  Grid,
+  Divider,
+  Autocomplete,
+  TextField,
+  IconButton,
+} from "@mui/material";
+import { Add } from "@mui/icons-material";
 
 import useAxios from "axios-hooks";
 
@@ -24,6 +33,7 @@ import {
   getLocalStorage,
   toCapitalizeFirstLetter,
 } from "orders/HelperFunctions";
+import { canadaPostMaximumDistance } from "../constants";
 import { useSelector } from "store";
 
 interface AddEditItemProps {
@@ -38,20 +48,17 @@ const AddEditItem = ({
   getProductApi,
 }: AddEditItemProps) => {
   const { richEditor } = useSelector((state) => state.main),
-    [shortDescription, setShortDescription] = useState(""),
-    [longDescription, setLongDescription] = useState(""),
     [addCategoryModal, setAddCategoryModal] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<DropDownListType[]>(
-    []
-  );
-  const [selectedBrand, setSelectedBrand] = useState<DropDownListType[]>([]);
-  const [selectedOptionSet, setSelectedOptionSet] = useState<
-    DropDownListType[]
-  >([]);
-  const [selectedGroupedItem, setSelectedGroupedItem] = useState<
-    DropDownListType[]
-  >([]);
   const { state, dispatch } = useContext(ProductsContext);
+
+  // option sets API call payload
+  const optionSetsAPIPayload = () => {
+    const formData = new FormData();
+    formData.append("eatout_id", getLocalStorage().eatout_id);
+    formData.append("admin_id", getLocalStorage().user_id);
+    formData.append("source", "biz");
+    return formData;
+  };
 
   // add item API call payload
   const addItemAPIPayload = (item: any) => {
@@ -71,15 +78,6 @@ const AddEditItem = ({
     },
     { manual: true }
   );
-
-  // option sets API call payload
-  const optionSetsAPIPayload = () => {
-    const formData = new FormData();
-    formData.append("eatout_id", getLocalStorage().eatout_id);
-    formData.append("admin_id", getLocalStorage().user_id);
-    formData.append("source", "biz");
-    return formData;
-  };
 
   // option sets API call
   const [{ data: allOptionSets }, optionSetsAPICall] = useAxios({
@@ -109,12 +107,60 @@ const AddEditItem = ({
     richEditor && splitShortLongDescription();
   }, []);
 
-  const handleChange = (
+  const handleCategorySelection = (
     event: React.ChangeEvent<{}>,
     value: any,
     name: string
   ) => {
-    setSelectedCategory(value.value);
+    dispatch({
+      type: "dropDown",
+      payload: {
+        name: "itemCategory",
+        value: value,
+      },
+    });
+  };
+
+  const handleBrandSelection = (
+    event: React.ChangeEvent<{}>,
+    value: any,
+    name: string
+  ) => {
+    dispatch({
+      type: "dropDown",
+      payload: {
+        name: "itemBrand",
+        value: value,
+      },
+    });
+  };
+
+  const handleOptionSetsSelection = (
+    event: React.ChangeEvent<{}>,
+    value: any,
+    name: string
+  ) => {
+    dispatch({
+      type: "dropDown",
+      payload: {
+        name: "itemOptionSets",
+        value: value,
+      },
+    });
+  };
+
+  const handleItemsToGroupSelection = (
+    event: React.ChangeEvent<{}>,
+    value: any,
+    name: string
+  ) => {
+    dispatch({
+      type: "dropDown",
+      payload: {
+        name: "itemToGroup",
+        value: value,
+      },
+    });
   };
 
   const toggleCategoryModal = () => {
@@ -130,7 +176,13 @@ const AddEditItem = ({
         itemDescription.indexOf("<short_desc>"),
         itemDescription.indexOf("</short_desc>")
       );
-      setShortDescription(shortDesc);
+      // setShortDescription(shortDesc);
+
+      // update description state of editor
+      dispatch({
+        type: "editor",
+        payload: { name: "itemShortDescription", value: shortDesc },
+      });
     }
     // check if long description tag exist
     if (itemDescription && itemDescription.includes("<long_desc>")) {
@@ -138,7 +190,13 @@ const AddEditItem = ({
         itemDescription.indexOf("<long_desc>"),
         itemDescription.indexOf("</long_desc>")
       );
-      setLongDescription(longDesc);
+      // setLongDescription(longDesc);
+
+      // update description state of editor
+      dispatch({
+        type: "editor",
+        payload: { name: "itemLongDescription", value: longDesc },
+      });
     }
     // if short and long description doesn't exist
     if (
@@ -146,7 +204,11 @@ const AddEditItem = ({
       !itemDescription.includes("<short_desc>") &&
       !itemDescription.includes("<long_desc>")
     ) {
-      setLongDescription(itemDescription);
+      // update description state of editor
+      dispatch({
+        type: "editor",
+        payload: { name: "itemLongDescription", value: itemDescription },
+      });
     }
   }
 
@@ -173,20 +235,84 @@ const AddEditItem = ({
 
   const addShortLongTags = () => {
     const checkShortDesc =
-        shortDescription &&
-        `<short_desc>${shortDescription}</short_desc>`.toString(),
+        state.itemShortDescription &&
+        `<short_desc>${state.itemShortDescription}</short_desc>`.toString(),
       checkLongDesc =
-        longDescription &&
-        `<long_desc>${longDescription}</long_desc>`.toString(),
+        state.itemLongDescription &&
+        `<long_desc>${state.itemLongDescription}</long_desc>`.toString(),
       combineIt = `${checkShortDesc}${checkLongDesc}`;
     return combineIt.replace(/\n|\t/g, " ");
   };
 
-  const addItemCallback = async () => {
+  const handleDrawerClose = () => {
+    handleDrawerToggle();
+
+    dispatch({
+      type: "clearState",
+      payload: {},
+    });
+  };
+
+  const handleAddEditItem = async () => {
+    if (!state.itemCategory.label) {
+      dispatch({
+        type: "fieldError",
+        payload: { name: "itemCategoryField" },
+      });
+
+      return;
+    } else if (!state.itemName) {
+      dispatch({
+        type: "fieldError",
+        payload: { name: "itemNameField" },
+      });
+
+      return;
+    } else if (!state.itemPrice) {
+      dispatch({
+        type: "fieldError",
+        payload: { name: "itemPriceField" },
+      });
+
+      return;
+    } else if (Number(state.itemMaximumDistance) > canadaPostMaximumDistance) {
+      dispatch({
+        type: "fieldError",
+        payload: {
+          name: "itemMaximumDistanceField",
+          value: "Max distance: 10000",
+        },
+      });
+
+      return;
+    } else if (Number(state.itemMinimumQuantity) < 1) {
+      dispatch({
+        type: "fieldError",
+        payload: {
+          name: "itemMinimumQuantityField",
+          value: "Min quantity: 1",
+        },
+      });
+
+      return;
+    } else if (
+      (state.itemDiscountStart ? 1 : 0) ^ (state.itemDiscountExpiry ? 1 : 0)
+    ) {
+      dispatch({
+        type: "fieldError",
+        payload: {
+          name: "itemDiscountDateField",
+        },
+      });
+
+      return;
+    }
+
     const addItemPayloadKeys = {
-      item_id: "",
+      // id for edit item otherwise it is empty string
+      item_id: state.editItem.editItemId,
       eatout_id: getLocalStorage().eatout_id,
-      category_id: selectedCategory ? selectedCategory : "",
+      category_id: state.itemCategory.value,
       name: toCapitalizeFirstLetter(state.itemName).trim(),
       description: richEditor
         ? addShortLongTags().split('"').join("'").replace(/\n/g, "")
@@ -195,20 +321,27 @@ const AddEditItem = ({
       special_note: state.itemSpecialNote,
       price: state.itemPrice,
       tax: state.itemTax,
-      tags_ids: "",
-      discount: "0", // required in api
+      discount: state.itemDiscount,
       weight: state.itemWeight,
       sku: state.itemSku.trim(),
       product_code: state.itemProductCode.trim(),
       universal_product_code: state.itemUniversalProductCode.trim(),
       unit_price: state.itemUnitPrice,
-      carton_size: "", // required in api
+      carton_size: state.itemCartons,
       carton_price: "", // required in api
-      pallet_size: "", // required in api
+      pallet_size: state.itemPallets,
       pallet_price: state.itemPalletPrice,
-      brand_id: "",
-      option_sets: "[]",
-      nutritions: state.itemNutritions,
+      brand_id: state.itemBrand.value,
+      option_sets: state.itemOptionSets
+        ? JSON.stringify(
+            state.itemOptionSets.map((option: any) => ({
+              id: option.value,
+            }))
+          )
+        : JSON.stringify([]),
+      nutritions: state.itemNutritions
+        ? JSON.stringify(state.itemNutritions)
+        : "",
       suggestions: "", // required in api
       branches: "", // required in api
       status: state.itemAvailability,
@@ -218,73 +351,89 @@ const AddEditItem = ({
       price_per: state.itemPricePer,
       min_qty: state.itemMinimumQuantity,
       images: "", // required in api
-      item_weight_with_unit: "",
-      // item_weight_with_unit: `${itemWeight} ${
-      //   Object.keys(WeightUnit).length > 0 ? WeightUnit.value : ""
-      // }`.trim(),
-      discount_expiry: "",
-      discount_start_at: "",
+      item_weight_with_unit: `${state.itemWeight}${
+        state.itemWeightUnit && state.itemWeightUnit.value
+      }`,
+      discount_expiry: state.itemDiscountExpiry,
+      discount_start_at: state.itemDiscountStart,
       attribute_ids: "",
-      product_group_ids: "",
-      max_distance: "0",
-      // max_distance: maxDistance ? maxDistance : "0",
+      product_group_ids: state.itemToGroup
+        .map((item: { value: string }) => item.value)
+        .join(),
+      max_distance: state.itemMaximumDistance,
+      item_cost: state.itemCost,
     };
 
     await addItemAPICall({
       data: addItemAPIPayload({ items: [addItemPayloadKeys] }),
     });
 
-    getProductApi();
     handleDrawerToggle();
+    getProductApi();
+
+    // if (state.editItem.editItemFlag) {
+    dispatch({
+      type: "clearState",
+      payload: {},
+    });
+    // }
   };
 
   return (
-    <CustomDrawer
-      title="Add Item"
-      buttonText="Save"
-      anchor="right"
-      open={toggleDrawer}
-      onClose={handleDrawerToggle}
-      handleCancelClick={handleDrawerToggle}
-      onClick={addItemCallback}
-    >
+    <>
       {addCategoryModal && (
-        <CustomModal
-          title="Add Category"
-          buttonText="Add Category"
-          open={addCategoryModal}
-          onClose={toggleCategoryModal}
-          children={<AddCategory toggleCategoryModal={toggleCategoryModal} />}
-          paperStyle={{
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: "45vw",
-            position: "absolute",
-          }}
-          scrollbarStyle={{
-            height: "100%",
-            maxHeight: "98vh",
-            overflowX: "hidden",
-            borderRadius: "8px",
-          }}
+        <AddCategory
+          addCategoryModal={addCategoryModal}
+          toggleCategoryModal={toggleCategoryModal}
         />
       )}
-      <Stack sx={{ p: "32px 25px 0px" }}>
-        <Typography variant="h5" sx={{ mb: "24px" }}>
-          Item Category
-        </Typography>
-        <Grid container>
-          <Grid item xs={12} sx={{ display: "flex", mb: "12px" }}>
-            <DropDownSearch
-              label="Category"
-              dropDownList={state.allCategories}
-              onChange={setSelectedCategory}
-              handleChange={handleChange}
-            />
+
+      <CustomDrawer
+        title={state.editItem.editItemFlag ? "Edit Item" : "Add Item"}
+        buttonText={state.editItem.editItemFlag ? "Update" : "Add"}
+        anchor="right"
+        open={toggleDrawer}
+        onClose={handleDrawerClose}
+        handleCancelClick={handleDrawerClose}
+        onClick={handleAddEditItem}
+      >
+        <Stack sx={{ p: "32px 25px 0px" }}>
+          <Typography variant="h5" sx={{ mb: "24px" }}>
+            Item Category
+          </Typography>
+
+          <Grid container>
+            <Grid item xs={12} sx={{ display: "flex" }}>
+              <DropDownSearch
+                label="Category"
+                value={state.itemCategory}
+                options={state.allCategories}
+                handleChange={handleCategorySelection}
+                isError={
+                  state.fieldError.itemCategoryField === "" ? false : true
+                }
+                helperText={state.fieldError.itemCategoryField}
+              />
+
+              <IconButton
+                onClick={toggleCategoryModal}
+                sx={{
+                  background: "#24335E",
+                  borderRadius: "8px",
+                  height: "48px",
+                  width: "48px",
+                  ml: "7px",
+                  "&:hover": {
+                    backgroundColor: "#24335E",
+                  },
+                }}
+              >
+                <Add htmlColor="#FFFFFF" fontSize="medium" />
+              </IconButton>
+            </Grid>
           </Grid>
-        </Grid>
-        <Grid container>
+
+          {/* <Grid container>
           <Grid item xs={12}>
             <CustomButton
               onClick={toggleCategoryModal}
@@ -298,42 +447,18 @@ const AddEditItem = ({
               Add New Category
             </CustomButton>
           </Grid>
-        </Grid>
-        <Divider sx={{ m: "24px 0 31px" }} />
-        <Grid container>
-          <Grid item xs={12} sx={{ mb: "24px" }}>
-            <TdTextField
-              name="itemName"
-              label="Item Name"
-              onChange={(e) =>
-                dispatch({
-                  type: "textField",
-                  payload: { name: e.target.name, value: e.target.value },
-                })
-              }
-            />
-          </Grid>
-        </Grid>
-        <Grid container>
-          <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
-            <Grid item xs={6}>
+        </Grid> */}
+
+          <Divider sx={{ m: "31px 0" }} />
+
+          <Grid container>
+            <Grid item xs={12} sx={{ mb: "24px" }}>
               <TdTextField
-                name="itemPrice"
-                type="number"
-                label="Item Price"
-                onChange={(e) =>
-                  dispatch({
-                    type: "textField",
-                    payload: { name: e.target.name, value: e.target.value },
-                  })
-                }
-              />
-            </Grid>
-            <Grid item xs={6} sx={{ ml: "8px" }}>
-              <TdTextField
-                name="itemTax"
-                type="number"
-                label="Tax %"
+                name="itemName"
+                label="Item Name"
+                value={state.itemName}
+                error={state.fieldError.itemNameField === "" ? false : true}
+                helperText={state.fieldError.itemNameField}
                 onChange={(e) =>
                   dispatch({
                     type: "textField",
@@ -343,99 +468,144 @@ const AddEditItem = ({
               />
             </Grid>
           </Grid>
-        </Grid>
-        <Grid container>
-          <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
-            <Grid item xs={6}>
+
+          <Grid container>
+            <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
+              <Grid item xs={6}>
+                <TdTextField
+                  name="itemPrice"
+                  type="number"
+                  label="Item Price"
+                  value={state.itemPrice}
+                  error={state.fieldError.itemPriceField === "" ? false : true}
+                  helperText={state.fieldError.itemPriceField}
+                  onChange={(e) =>
+                    dispatch({
+                      type: "textField",
+                      payload: { name: e.target.name, value: e.target.value },
+                    })
+                  }
+                />
+              </Grid>
+              <Grid item xs={6} sx={{ ml: "8px" }}>
+                <TdTextField
+                  name="itemTax"
+                  type="number"
+                  label="Tax %"
+                  value={state.itemTax}
+                  onChange={(e) =>
+                    dispatch({
+                      type: "textField",
+                      payload: { name: e.target.name, value: e.target.value },
+                    })
+                  }
+                />
+              </Grid>
+            </Grid>
+          </Grid>
+
+          <Grid container>
+            <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
+              <Grid item xs={6}>
+                <DropDownSearch
+                  label="Brands"
+                  value={state.itemBrand}
+                  options={state.allBrands}
+                  handleChange={handleBrandSelection}
+                />
+              </Grid>
+            </Grid>
+          </Grid>
+
+          <Grid container>
+            <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
               <DropDownSearch
-                label="Brands"
-                dropDownList={state.allBrands}
-                onChange={setSelectedBrand}
+                label="Option Sets"
+                value={state.itemOptionSets}
+                options={state.allOptionSets}
+                handleChange={handleOptionSetsSelection}
+                isMultiSelect={true}
               />
             </Grid>
           </Grid>
-        </Grid>
-        <Grid container>
-          <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
-            <DropDownSearch
-              label="Option Sets"
-              dropDownList={state.allOptionSets}
-              onChange={setSelectedOptionSet}
-              isMultiSelect={true}
-            />
+
+          <Grid container>
+            <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
+              <DropDownSearch
+                label="Items to Group"
+                value={state.itemToGroup}
+                options={state.allItemsForGrouping}
+                handleChange={handleItemsToGroupSelection}
+                isMultiSelect={true}
+                disabled={state.allowItemsGrouping}
+              />
+            </Grid>
           </Grid>
-        </Grid>
-        <Grid container>
-          <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
-            <DropDownSearch
-              label="Items to Group"
-              dropDownList={state.allItemsForGrouping}
-              onChange={setSelectedGroupedItem}
-              isMultiSelect={true}
-            />
+
+          <Grid container>
+            <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
+              <TdTextField
+                name="itemSpecialNote"
+                value={state.itemSpecialNote}
+                rows={2}
+                multiline={true}
+                type="text"
+                label="Special Note"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    height: "unset !important",
+                  },
+                }}
+                onChange={(e) =>
+                  dispatch({
+                    type: "textField",
+                    payload: { name: e.target.name, value: e.target.value },
+                  })
+                }
+              />
+            </Grid>
           </Grid>
-        </Grid>
-        <Grid container>
-          <Grid item xs={12} sx={{ display: "flex", mb: "24px" }}>
-            <TdTextField
-              name="itemSpecialNote"
-              rows={2}
-              multiline={true}
-              type="text"
-              label="Special Note"
-              onChange={(e) =>
-                dispatch({
-                  type: "textField",
-                  payload: { name: e.target.name, value: e.target.value },
-                })
-              }
-            />
+
+          <Divider sx={{ mb: "15px" }} />
+
+          <Grid container>
+            <Grid item xs={12} sx={{ display: "flex", mb: "15px" }}>
+              {/* 1 and 0 => item not available and available respectively */}
+              <CustomizedSwitch
+                checked={state.itemAvailability === "0"}
+                name="itemAvailability"
+                label="Availability"
+                sx={{
+                  "& .MuiFormControlLabel-root": {
+                    mr: "28px",
+                    ml: "-6px",
+                  },
+                }}
+                onChange={handleSwitchChange}
+              />
+              {/* 1 and 0 => allow and don't allow special instruction respectively */}
+              <CustomizedSwitch
+                checked={state.itemSpecialInstructions === "1"}
+                name="itemSpecialInstructions"
+                label="Special Instructions"
+                onChange={handleSwitchChange}
+              />
+            </Grid>
           </Grid>
-        </Grid>
-        <Divider sx={{ mb: "15px" }} />
-        <Grid container>
-          <Grid item xs={12} sx={{ display: "flex", mb: "15px" }}>
-            {/* 1 and 0 => item not available and available respectively */}
-            <CustomizedSwitch
-              checked={state.itemAvailability === "0"}
-              // value={state.itemAvailability}
-              name="itemAvailability"
-              label="Availability"
-              sx={{
-                "& .MuiFormControlLabel-root": {
-                  mr: "28px",
-                  ml: "-6px",
-                },
-              }}
-              onChange={handleSwitchChange}
-            />
-            {/* 1 and 0 => allow and don't allow special instruction respectively */}
-            <CustomizedSwitch
-              checked={state.itemSpecialInstructions === "1"}
-              // value={state.itemSpecialInstructions}
-              name="itemSpecialInstructions"
-              label="Special Instructions"
-              onChange={handleSwitchChange}
-            />
-          </Grid>
-        </Grid>
-        <Divider sx={{ mb: "24px" }} />
-        <Display />
-        <Divider sx={{ mt: "16px" }} />
-        <Discount />
-        <Divider />
-        <Description
-          shortDescription={shortDescription}
-          longDescription={longDescription}
-          setShortDescription={setShortDescription}
-          setLongDescription={setLongDescription}
-        />
-        <Divider />
-        <Inventory />
-        <Divider />
-        <Nutrition />
-      </Stack>
-    </CustomDrawer>
+
+          <Divider sx={{ mb: "24px" }} />
+          <Display />
+          <Divider sx={{ mt: "16px" }} />
+          <Discount />
+          <Divider />
+          <Description />
+          <Divider />
+          <Inventory />
+          <Divider />
+          <Nutrition />
+        </Stack>
+      </CustomDrawer>
+    </>
   );
 };
 export default AddEditItem;

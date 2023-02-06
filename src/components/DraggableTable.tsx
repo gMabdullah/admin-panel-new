@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 
 import {
   Typography,
@@ -11,29 +11,40 @@ import {
   TableHead,
   TableRow,
   TableContainer,
+  Checkbox,
 } from "@mui/material";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 import { useSelector } from "store";
 import TableChip from "./TableChip";
-
+import TableActionsButton from "./TableActionsButton";
+import { AxiosPromise, AxiosRequestConfig } from "axios";
+import { RefetchOptions } from "axios-hooks";
+import Loader from "./Loader";
+const AddMenuImages = React.lazy(() => import("imageSection/AddMenuImages"));
 interface TablePropsType {
-  items?: ProductResponse["items"];
-  keysOfItems: TypeKeyOfItem["keysOfItems"];
+  items: ProductResponse["items"];
   setSequenceItem?: any;
   shortDragDropItems?: any;
+  getProductsAPI: (
+    config?: AxiosRequestConfig<any> | undefined,
+    options?: RefetchOptions | undefined
+  ) => AxiosPromise<any>;
+  productLoading?: boolean;
+  handleDrawerToggle: () => void;
+  checkBox?: boolean;
 }
 
 const DraggableTable = ({
   items,
-  keysOfItems,
-  setSequenceItem,
   shortDragDropItems,
+  getProductsAPI,
+  productLoading,
+  handleDrawerToggle,
+  checkBox = false,
 }: TablePropsType) => {
-  const { decimalPlaces } = useSelector((state) => state.main);
-  const [linearLoader, setLinearLoader] = useState<boolean>(true);
+  const { decimalPlaces, productColumns } = useSelector((state) => state.main);
 
   const handleDragEnd = (result: any) => {
     const sortArray = [
@@ -42,7 +53,6 @@ const DraggableTable = ({
         destination: result.destination.index,
       },
     ];
-    //setSequenceItem(sortArray)
     shortDragDropItems(sortArray);
     // handle the end of a drag and drop event here
   };
@@ -86,96 +96,134 @@ const DraggableTable = ({
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
-                {keysOfItems?.map((column: any) => (
-                  <TableCell
-                    key={column.key}
-                    align={column.align}
-                    style={{ width: column?.width }}
-                  >
-                    {column.value}
+                {checkBox && (
+                  <TableCell>
+                    <Checkbox sx={{ p: "unset" }} />
                   </TableCell>
-                ))}
+                )}
+
+                {productColumns?.map((column: any) =>
+                  column.selected ? (
+                    <TableCell
+                      key={column.key}
+                      align={column.align}
+                      style={{ width: column?.width }}
+                    >
+                      {column.value}
+                    </TableCell>
+                  ) : (
+                    ""
+                  )
+                )}
               </TableRow>
             </TableHead>
-            <Droppable droppableId="table">
-              {(provided, snapshot) => (
-                <TableBody ref={provided.innerRef}>
-                  {items &&
-                    items.map((row: any, index: number) => (
-                      <Draggable
-                        key={index}
-                        draggableId={index + ""}
-                        index={index}
-                      >
-                        {(provided: any, snapshot) => {
-                          return (
-                            // Drag and drop on table
-                            <TableRow
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                              isDragging={snapshot.isDragging}
-                            >
-                              {keysOfItems?.map((column) => (
-                                <TableCell
-                                  key={column.key}
-                                  align={column.align}
-                                  style={{ width: column?.width }}
-                                >
-                                  {column.key === "image" ? (
-                                    <CardMedia
-                                      component="img"
-                                      image={row[column.key]}
-                                      alt="Burger"
-                                      sx={{
-                                        height: "52px",
-                                        width: "52px",
-                                        display: "flex",
-                                        justifyContent: "center",
-                                        alignItems: "center",
+
+            {items[0] !== undefined &&
+            items !== null &&
+            items[0].toString() == "" ? (
+              <div>No Data Found</div>
+            ) : (
+              <Droppable droppableId="table">
+                {(provided, snapshot) => (
+                  <TableBody ref={provided.innerRef}>
+                    {items &&
+                      items.map((row: any, index: number) => (
+                        <Draggable
+                          key={index}
+                          draggableId={index + ""}
+                          index={index}
+                        >
+                          {(provided: any, snapshot) => {
+                            return (
+                              // Drag and drop on table
+                              <TableRow
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                isDragging={snapshot.isDragging}
+                              >
+                                {checkBox && (
+                                  <TableCell>
+                                    <Checkbox sx={{ p: "unset" }} />
+                                  </TableCell>
+                                )}
+                                {productColumns?.map((column) =>
+                                  column.selected ? (
+                                    <TableCell
+                                      key={column.key}
+                                      align={column.align}
+                                      style={{
+                                        width: column?.width,
+                                        marginLeft: `${
+                                          column.key === "price" &&
+                                          "10px !important"
+                                        }`,
                                       }}
-                                    />
-                                  ) : column.key === "name" ? (
-                                    <>
-                                      <Typography variant="h5">
-                                        {row[column.key]}
-                                      </Typography>
-                                      <Tooltip
-                                        placement="top-start"
-                                        title={row.desc}
-                                      >
-                                        <div
-                                          className="menu-description-css"
-                                          style={{ fontSize: "10px" }}
-                                        >
-                                          {row.desc}
-                                        </div>
-                                      </Tooltip>
-                                    </>
-                                  ) : column.key === "price" ? (
-                                    addCurrency(row[column.key], row.currency)
-                                  ) : column.key === "discount" ? (
-                                    addCurrency(row[column.key], "")
-                                  ) : column.key === "status" ? (
-                                    <TableChip statusValue={row[column.key]} />
-                                  ) : column.value === "Actions" ? (
-                                    <MoreVertIcon />
+                                    >
+                                      {column.key === "image" ? (
+                                        <Suspense fallback={<Loader />}>
+                                          <AddMenuImages
+                                            imageUrl={row[column.key]}
+                                            itemId={row.menu_item_id}
+                                          />
+                                        </Suspense>
+                                      ) : column.key === "name" ? (
+                                        <>
+                                          <Typography variant="h5">
+                                            {row[column.key]}
+                                          </Typography>
+                                          <Tooltip
+                                            placement="top-start"
+                                            title={row.desc}
+                                          >
+                                            <div
+                                              className="menu-description-css"
+                                              style={{ fontSize: "10px" }}
+                                            >
+                                              {row.desc}
+                                            </div>
+                                          </Tooltip>
+                                        </>
+                                      ) : column.key === "price" ? (
+                                        addCurrency(
+                                          row[column.key],
+                                          row.currency
+                                        )
+                                      ) : column.key === "discount" ? (
+                                        addCurrency(row[column.key], "")
+                                      ) : column.key === "status" ? (
+                                        <TableChip
+                                          statusValue={row[column.key]}
+                                        />
+                                      ) : column.value === "Actions" ? (
+                                        <TableActionsButton
+                                          row={row}
+                                          getProductsAPI={getProductsAPI}
+                                          productLoading={productLoading}
+                                          handleDrawerToggle={
+                                            handleDrawerToggle
+                                          }
+                                        />
+                                      ) : (
+                                        <Typography className="tableColumnCss">
+                                          {row[column.key]}
+                                        </Typography>
+                                      )}
+                                    </TableCell>
                                   ) : (
-                                    <Typography className="tableColumnCss">
-                                      {row[column.key]}
-                                    </Typography>
-                                  )}
-                                </TableCell>
-                              ))}
-                            </TableRow>
-                          );
-                        }}
-                      </Draggable>
-                    ))}
-                  {provided.placeholder}
-                </TableBody>
-              )}
-            </Droppable>
+                                    ""
+                                  )
+                                )}
+                              </TableRow>
+                            );
+                          }}
+                        </Draggable>
+                      ))}
+                    {provided.placeholder}
+                  </TableBody>
+                )}
+              </Droppable>
+            )}
           </Table>
         </TableContainer>
       </DragDropContext>
