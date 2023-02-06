@@ -9,10 +9,11 @@ import {
   IconButton,
   TablePagination,
 } from "@mui/material";
+import { SelectChangeEvent } from "@mui/material/Select";
 import AddTwoToneIcon from "@mui/icons-material/AddTwoTone";
+import ArrowDropDownTwoToneIcon from "@mui/icons-material/ArrowDropDownTwoTone";
 import SortByAlphaIcon from "@mui/icons-material/SortByAlpha";
 import FilterListIcon from "@mui/icons-material/FilterList";
-import { SelectChangeEvent } from "@mui/material/Select";
 
 import useAxios from "axios-hooks";
 import { debounce } from "lodash";
@@ -262,6 +263,14 @@ const Items = () => {
     dispatch(setProductColumn(keysOfItems));
   });
 
+  // reset bulk-actions state on de-selecting all rows
+  useEffect(() => {
+    // if(selectedRowIds.length<1 && (bulkActionsValue === "brandAssociation" || bulkActionsValue === "categoryAssociation"))
+    if (selectedRowIds.length < 1) {
+      setBulkActionsValue("bulkActions");
+    }
+  }, [selectedRowIds]);
+
   // for bulk-actions APIs
   useEffect(() => {
     // this if condition to prevent execution on first render
@@ -278,7 +287,7 @@ const Items = () => {
         setNotifyType("success");
         setNotify(true);
       } else {
-        setNotifyMessage("Something went wrong");
+        setNotifyMessage("Something went wrong with bulk action!");
         setNotifyType("error");
         setNotify(true);
       }
@@ -408,6 +417,9 @@ const Items = () => {
       value === "brandDisAssociation"
     ) {
       setBulkActionsModal(true);
+    } else {
+      // reset brand & category dropdown value
+      setSelectedBrandCategory({ value: "", label: "" });
     }
   };
 
@@ -440,9 +452,6 @@ const Items = () => {
     }
 
     toggleBulkActionsModal();
-
-    // reset brand & category dropdown value
-    setSelectedBrandCategory({ value: "", label: "" });
   };
 
   const toggleBulkActionsModal = () => {
@@ -849,6 +858,7 @@ const Items = () => {
                   label="Category"
                   value={selectedBrandCategory}
                   options={state.allCategories}
+                  popupIcon={<ArrowDropDownTwoToneIcon />}
                   handleChange={(
                     event: React.ChangeEvent<{}>,
                     value: any,
@@ -865,6 +875,7 @@ const Items = () => {
                   label="Brands"
                   value={selectedBrandCategory}
                   options={state.allBrands}
+                  popupIcon={<ArrowDropDownTwoToneIcon />}
                   handleChange={(
                     event: React.ChangeEvent<{}>,
                     value: any,
