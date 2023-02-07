@@ -229,7 +229,7 @@ const Items = () => {
         await getProductsAPI();
       }
     })();
-  }, 1000);
+  }, 500);
 
   // API call for sorting
   const [{ error: storingError, loading: sortLoading }, shortItemId] = useAxios(
