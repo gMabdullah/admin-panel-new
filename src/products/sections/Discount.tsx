@@ -12,7 +12,7 @@ import { ProductsContext } from "../context/ProductsContext";
 const Discount = () => {
   const { state, dispatch } = useContext(ProductsContext);
 
-  console.log("discount component");
+  // console.log("discount component");
 
   const handleFieldChange = debounce(
     (e: { target: { name: string; value: string } }) => {
@@ -42,8 +42,6 @@ const Discount = () => {
                 onChange={handleFieldChange}
                 error={state.fieldError === "itemDiscount" ? true : false}
                 helperText={"Required*"}
-                // error={state.fieldError.itemDiscountField === "" ? false : true}
-                // helperText={state.fieldError.itemDiscountField}
               />
             </Grid>
           </Grid>

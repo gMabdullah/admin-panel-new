@@ -10,7 +10,6 @@ import {
 } from "@mui/x-data-grid";
 import { makeStyles } from "@mui/styles";
 
-import CustomButton from "components/CustomButton";
 import ExpandablePanel from "components/ExpandablePanel";
 import TdTextField from "components/TdTextField";
 import { ProductsContext } from "../context/ProductsContext";
@@ -23,8 +22,6 @@ const useStyles = makeStyles(() => ({
 }));
 
 const Nutrition = () => {
-  console.log("Nutrition component");
-
   const classes = useStyles();
   const { state } = useContext(ProductsContext);
   const [fieldError, setFieldError] = useState("");
@@ -230,18 +227,6 @@ const Nutrition = () => {
             </IconButton>
           </Grid>
         </Grid>
-
-        {/* <CustomButton
-          sx={{
-            color: "#DB154D",
-            fontSize: "13px",
-            lineHeight: "unset",
-            mb: "17px",
-          }}
-          onClick={addEditNutrition}
-        >
-          {editNutrition.editFlag ? "Update Nutrition" : " Add Nutrition"}
-        </CustomButton> */}
 
         {nutritionRows.length > 0 && (
           <Box

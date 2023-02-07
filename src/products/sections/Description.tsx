@@ -69,7 +69,6 @@ const Description = () => {
               <TdTextField
                 name="itemDescription"
                 defaultValue={state.itemDescription}
-                // value={state.itemDescription}
                 rows={6}
                 multiline={true}
                 label="Description"

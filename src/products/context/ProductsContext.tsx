@@ -41,7 +41,6 @@ interface State {
   itemMaximumDistance: string;
   itemNutritions: string | ItemDetailsResponseItemNutritions[];
   fieldError: string;
-  // fieldError: FieldErrors;
   editItem: EditItem;
   allowItemsGrouping: boolean;
 }
@@ -100,15 +99,6 @@ const initialState: State = {
   itemMaximumDistance: "0",
   itemNutritions: "",
   fieldError: "",
-  // fieldError: {
-  //   itemCategoryField: "",
-  //   itemNameField: "",
-  //   itemPriceField: "",
-  //   itemDiscountDateField: "",
-  //   itemDiscountField: "",
-  //   itemMaximumDistanceField: "",
-  //   itemMinimumQuantityField: "",
-  // },
   editItem: {
     editItemFlag: false,
     editItemId: "",
@@ -147,16 +137,6 @@ const reducer = (state: State, action: Action) => {
           return attribute;
         }),
       };
-    // case "fieldError":
-    //   return {
-    //     ...state,
-    //     [action.type]: {
-    //       ...state.fieldError,
-    //       [action.payload.name!]: action.payload.value
-    //         ? action.payload.value
-    //         : "Required*",
-    //     },
-    //   };
     case "clearState":
       return {
         ...state,
@@ -208,15 +188,6 @@ const reducer = (state: State, action: Action) => {
         itemMaximumDistance: "0",
         itemNutritions: "",
         fieldError: "",
-        // fieldError: {
-        //   itemCategoryField: "",
-        //   itemNameField: "",
-        //   itemPriceField: "",
-        //   itemDiscountDateField: "",
-        //   itemDiscountField: "",
-        //   itemMaximumDistanceField: "",
-        //   itemMinimumQuantityField: "",
-        // },
         editItem: {
           editItemFlag: false,
           editItemId: "",

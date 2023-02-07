@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 
 import { Stack, Typography } from "@mui/material";
 
@@ -42,7 +42,6 @@ const Display = () => {
           { label: "POS", value: "3" },
         ]}
         defaultValue={itemDisplay}
-        // value={itemDisplay}
         onChange={displayChangeHandler}
       />
     </Stack>

@@ -24,16 +24,6 @@ interface DropdownValue {
   label: string;
 }
 
-interface FieldErrors {
-  itemCategoryField: string;
-  itemNameField: string;
-  itemPriceField: string;
-  itemDiscountDateField: string;
-  itemDiscountField: string;
-  itemMaximumDistanceField: string;
-  itemMinimumQuantityField: string;
-}
-
 interface EditItem {
   editItemFlag: boolean;
   editItemId: string;
