@@ -166,7 +166,19 @@ const RichEditor = ({
   if (imageUploadError) return <span>Image Uploading Failed</span>;
 
   return (
-    <Grid item xs={12} sx={{ display: "flex", mb: "24px", ...sx }}>
+    <Grid
+      item
+      xs={12}
+      sx={{
+        display: "flex",
+        mb: "24px",
+        "& .tox-tinymce": {
+          border: "1px solid rgba(0, 0, 0, 0.23)",
+        },
+
+        ...sx,
+      }}
+    >
       <Editor
         apiKey={TINY_EDITOR_API_KEY}
         initialValue={initialValue}
