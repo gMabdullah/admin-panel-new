@@ -86,7 +86,15 @@ TablePropsType) => {
 
   const addCurrency = (value: any, currency: any) => {
     return (
-      <Stack direction="row" spacing={0.25} sx={{ alignItems: "center" }}>
+      <Stack
+        direction="row"
+        spacing={0.25}
+        sx={{
+          alignItems: "center",
+          textAlign: "right !important",
+          justifyContent: "end",
+        }}
+      >
         {currency !== "" && (
           <Typography
             sx={{
@@ -204,10 +212,6 @@ TablePropsType) => {
                                       align={column.align}
                                       style={{
                                         width: column?.width,
-                                        marginLeft: `${
-                                          column.key === "price" &&
-                                          "10px !important"
-                                        }`,
                                       }}
                                     >
                                       {column.key === "image" ? (
@@ -239,7 +243,7 @@ TablePropsType) => {
                                           row[column.key],
                                           row.currency
                                         )
-                                      ) : column.key === "discount" ? (
+                                      ) : column.key === "discount_display" ? (
                                         addCurrency(row[column.key], "")
                                       ) : column.key === "status" ? (
                                         <TableChip
