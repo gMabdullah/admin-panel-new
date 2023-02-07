@@ -40,8 +40,10 @@ const Discount = () => {
                 label="Discount Value %"
                 defaultValue={state.itemDiscount}
                 onChange={handleFieldChange}
-                error={state.fieldError.itemDiscountField === "" ? false : true}
-                helperText={state.fieldError.itemDiscountField}
+                error={state.fieldError === "itemDiscount" ? true : false}
+                helperText={"Required*"}
+                // error={state.fieldError.itemDiscountField === "" ? false : true}
+                // helperText={state.fieldError.itemDiscountField}
               />
             </Grid>
           </Grid>
@@ -55,10 +57,8 @@ const Discount = () => {
                 type="date"
                 label="Discount Start"
                 defaultValue={state.itemDiscountStart}
-                error={
-                  state.fieldError.itemDiscountDateField === "" ? false : true
-                }
-                helperText={state.fieldError.itemDiscountDateField}
+                error={state.fieldError === "itemDiscountStart" ? true : false}
+                helperText={"Required*"}
                 disablePrevDates={true}
                 InputLabelProps={{
                   shrink: true,
@@ -72,10 +72,8 @@ const Discount = () => {
                 type="date"
                 label="Discount Expiry"
                 defaultValue={state.itemDiscountExpiry}
-                error={
-                  state.fieldError.itemDiscountDateField === "" ? false : true
-                }
-                helperText={state.fieldError.itemDiscountDateField}
+                error={state.fieldError === "itemDiscountExpiry" ? true : false}
+                helperText={"Required*"}
                 disablePrevDates={true}
                 InputLabelProps={{
                   shrink: true,

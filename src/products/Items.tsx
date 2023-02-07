@@ -34,6 +34,7 @@ import { gridIconsCss } from "./Styles";
 import { useDispatch, useSelector } from "store";
 import {
   bulkActions,
+  dropdownImportExport,
   itemExportColumns,
   keysOfItems,
   weightUnits,
@@ -63,32 +64,7 @@ import DropDownSearch from "components/customDropDown/DropDownSearch";
 const ImportMenuExcel = lazy(() => import("./sections/ImportMenuExcel"));
 
 let toggleSorting = true;
-const dropdownImportExport = [
-  {
-    label: "Import/Export",
-    value: "import_export",
-  },
-  {
-    label: "Import New Items",
-    value: "Import New Items",
-  },
-  {
-    label: "Update Existing Item",
-    value: "Update Existing Item",
-  },
-  {
-    label: "Export items(.pdf)",
-    value: "Export items(.pdf)",
-  },
-  {
-    label: "Export Items (.xlsx)",
-    value: "Export Items (.xlsx)",
-  },
-  {
-    label: "Download Sample",
-    value: "Download Sample",
-  },
-];
+
 let countObj = {
   withImages: 0,
   withNoImages: 0,
@@ -102,6 +78,7 @@ let countObj = {
   displayWeb: 0,
   displayPOS: 0,
 };
+
 const Items = () => {
   const dispatch = useDispatch(),
     { state } = useContext(ProductsContext);
@@ -130,7 +107,6 @@ const Items = () => {
   const [apiCallFlag, setApiCallFlag] = React.useState("");
   const [sequenceItem, setSequenceItem] = useState([]);
   const [searchQueryItems, setSearchQueryItems] = useState<string>("");
-  const [linearLoader, setLinearLoader] = useState<boolean>(false);
   const [count, setCount] = useState(countObj);
   const [bulkActionsModal, setBulkActionsModal] = useState(false);
   const [selectedBrandCategory, setSelectedBrandCategory] = useState({
@@ -255,7 +231,7 @@ const Items = () => {
     })();
   }, 1000);
 
-  // API Call For Shorting //
+  // API call for sorting
   const [{ error: storingError, loading: sortLoading }, shortItemId] = useAxios(
     {
       url: "/sort_items",
@@ -264,8 +240,6 @@ const Items = () => {
     { manual: true }
   );
 
-  /*********Get Item data from API Product for table***********/
-
   useEffect(() => {
     dispatch(toggleDatePicker(false));
     dispatch(setProductColumn(keysOfItems));
@@ -273,7 +247,6 @@ const Items = () => {
 
   // reset bulk-actions state on de-selecting all rows
   useEffect(() => {
-    // if(selectedRowIds.length<1 && (bulkActionsValue === "brandAssociation" || bulkActionsValue === "categoryAssociation"))
     if (selectedRowIds.length < 1) {
       setBulkActionsValue("bulkActions");
     }
@@ -281,7 +254,7 @@ const Items = () => {
 
   // for bulk-actions APIs
   useEffect(() => {
-    // this if condition to prevent execution on first render
+    // checking length to prevent execution on first render
     if (items.length > 0) {
       if (
         (brandCategoryBulkActionsData &&
@@ -306,7 +279,6 @@ const Items = () => {
   useEffect(() => {
     (async () => {
       const productResultApi = await getProductsAPI();
-      //setLinearLoader(true)
       if (productResultApi.data && productResultApi.data.items.length > 0) {
         const { items } = productResultApi.data;
         setItems(items);
@@ -324,9 +296,7 @@ const Items = () => {
   useEffect(() => {
     // api call to update the item list according to filters
     if (applyFilters) {
-      // setLinearLoader(true);
       getProductsAPI();
-      // setLinearLoader(false);
     }
   }, [applyFilters]);
 
@@ -403,7 +373,6 @@ const Items = () => {
 
     const formData = new FormData();
 
-    // setLinearLoader(true);
     sortItems?.map(({ menu_item_id }) => {
       formData.append("categoryArray[]", menu_item_id);
     });
@@ -411,7 +380,6 @@ const Items = () => {
       data: formData,
     });
     setItems(sortItems);
-    // setLinearLoader(false);
   };
 
   const handleDrawerToggle = () => {
@@ -454,7 +422,7 @@ const Items = () => {
     }
   };
 
-  // function from bulk-actions modal
+  // function from bulk-actions modal on applying bulk-action
   const applyBulkAction = () => {
     if (
       bulkActionsValue === "itemAvailable" ||
@@ -535,6 +503,7 @@ const Items = () => {
 
   const resetFilters = () => {
     setItems(productData.items);
+
     // reset values from store
     dispatch(resetFiltersAction());
   };
@@ -561,19 +530,6 @@ const Items = () => {
       const availableProductsToGroup = state.allItemsForGrouping.filter(
         (item: { value: any }) => item.value !== items[0].menu_item_id
       );
-
-      // const optionSets =
-      //   items[0].options.length > 0
-      //     ? items[0].options.map((option: { id: string; name: string }) => ({
-      //         value: option.id,
-      //         label: option.name,
-      //       }))
-      //     : [
-      //         {
-      //           value: "",
-      //           label: "",
-      //         },
-      //       ];
 
       // check item can either be grouped or not
       if (items[0].is_grouped === true && items[0].is_parent === false) {
@@ -620,7 +576,6 @@ const Items = () => {
                   label: "",
                 },
 
-            // itemOptionSets: optionSets,
             itemOptionSets: items[0].options.map(
               (option: { id: string; name: string }) => ({
                 value: option.id,

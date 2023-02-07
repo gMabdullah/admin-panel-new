@@ -102,11 +102,9 @@ const Inventory = () => {
                 defaultValue={state.itemMinimumQuantity}
                 // value={state.itemMinimumQuantity}
                 error={
-                  state.fieldError.itemMinimumQuantityField === ""
-                    ? false
-                    : true
+                  state.fieldError === "itemMinimumQuantity" ? true : false
                 }
-                helperText={state.fieldError.itemMinimumQuantityField}
+                helperText={"Min quantity: 1"}
                 onChange={handleFieldChange}
                 // onChange={(e) =>
                 //   dispatch({
@@ -274,11 +272,9 @@ const Inventory = () => {
                 defaultValue={state.itemMaximumDistance}
                 // value={state.itemMaximumDistance}
                 error={
-                  state.fieldError.itemMaximumDistanceField === ""
-                    ? false
-                    : true
+                  state.fieldError === "itemMaximumDistance" ? true : false
                 }
-                helperText={state.fieldError.itemMaximumDistanceField}
+                helperText={"Max distance: 10000"}
                 onChange={handleFieldChange}
                 // onChange={(e) =>
                 //   dispatch({

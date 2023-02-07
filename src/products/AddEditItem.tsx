@@ -51,8 +51,7 @@ const AddEditItem = ({
   getProductApi,
 }: AddEditItemProps) => {
   const { richEditor } = useSelector((state) => state.main),
-    [addCategoryModal, setAddCategoryModal] = useState(false),
-    [selectedAttributeIndex, setSelectedAttributeIndex] = useState<number>();
+    [addCategoryModal, setAddCategoryModal] = useState(false);
   const { state, dispatch } = useContext(ProductsContext);
 
   console.log("add edit item state = ", state);
@@ -261,7 +260,6 @@ const AddEditItem = ({
         itemDescription.indexOf("<short_desc>"),
         itemDescription.indexOf("</short_desc>")
       );
-      // setShortDescription(shortDesc);
 
       // update description state of editor
       dispatch({
@@ -275,7 +273,6 @@ const AddEditItem = ({
         itemDescription.indexOf("<long_desc>"),
         itemDescription.indexOf("</long_desc>")
       );
-      // setLongDescription(longDesc);
 
       // update description state of editor
       dispatch({
@@ -357,51 +354,49 @@ const AddEditItem = ({
     if (!state.itemCategory.label) {
       dispatch({
         type: "fieldError",
-        payload: { name: "itemCategoryField" },
+        payload: { name: "fieldError", value: "itemCategory" },
       });
 
       return;
     } else if (!state.itemName) {
       dispatch({
         type: "fieldError",
-        payload: { name: "itemNameField" },
+        payload: { name: "fieldError", value: "itemName" },
       });
 
       return;
     } else if (!state.itemPrice) {
       dispatch({
         type: "fieldError",
-        payload: { name: "itemPriceField" },
+        payload: { name: "fieldError", value: "itemPrice" },
       });
 
       return;
     } else if (Number(state.itemMaximumDistance) > canadaPostMaximumDistance) {
       dispatch({
         type: "fieldError",
-        payload: {
-          name: "itemMaximumDistanceField",
-          value: "Max distance: 10000",
-        },
+        payload: { name: "fieldError", value: "itemMaximumDistance" },
       });
 
       return;
     } else if (Number(state.itemMinimumQuantity) < 1) {
       dispatch({
         type: "fieldError",
-        payload: {
-          name: "itemMinimumQuantityField",
-          value: "Min quantity: 1",
-        },
+        payload: { name: "fieldError", value: "itemMinimumQuantity" },
       });
 
       return;
     } else if (
       (state.itemDiscountStart ? 1 : 0) ^ (state.itemDiscountExpiry ? 1 : 0)
     ) {
+      // this if condition uses XOR gate and throws error if any one date field is empty
       dispatch({
         type: "fieldError",
         payload: {
-          name: "itemDiscountDateField",
+          name: "fieldError",
+          value: state.itemDiscountStart
+            ? "itemDiscountExpiry"
+            : "itemDiscountStart",
         },
       });
 
@@ -414,7 +409,8 @@ const AddEditItem = ({
       dispatch({
         type: "fieldError",
         payload: {
-          name: "itemDiscountField",
+          name: "fieldError",
+          value: "itemDiscount",
         },
       });
 
@@ -422,7 +418,7 @@ const AddEditItem = ({
     }
 
     const addItemPayloadKeys = {
-      // id for edit item otherwise it is empty string
+      // item_id for edit item otherwise it is empty string
       item_id: state.editItem.editItemId,
       eatout_id: getLocalStorage().eatout_id,
       category_id: state.itemCategory.value,
@@ -489,12 +485,10 @@ const AddEditItem = ({
     handleDrawerToggle();
     getProductApi();
 
-    // if (state.editItem.editItemFlag) {
     dispatch({
       type: "clearState",
       payload: {},
     });
-    // }
   };
 
   return (
@@ -531,10 +525,8 @@ const AddEditItem = ({
                     value={state.itemCategory}
                     options={state.allCategories}
                     handleChange={handleCategorySelection}
-                    isError={
-                      state.fieldError.itemCategoryField === "" ? false : true
-                    }
-                    helperText={state.fieldError.itemCategoryField}
+                    isError={state.fieldError === "itemCategory" ? true : false}
+                    helperText={"Required*"}
                   />
 
                   <IconButton
@@ -555,22 +547,6 @@ const AddEditItem = ({
                 </Grid>
               </Grid>
 
-              {/* <Grid container>
-          <Grid item xs={12}>
-            <CustomButton
-              onClick={toggleCategoryModal}
-              sx={{
-                p: "unset",
-                color: "#DB154D",
-                fontSize: "13px",
-                lineHeight: "unset",
-              }}
-            >
-              Add New Category
-            </CustomButton>
-          </Grid>
-        </Grid> */}
-
               <Divider sx={{ m: "31px 0" }} />
 
               <Grid container>
@@ -578,17 +554,10 @@ const AddEditItem = ({
                   <TdTextField
                     name="itemName"
                     label="Item Name"
-                    // value={state.itemName}
                     defaultValue={state.itemName}
-                    error={state.fieldError.itemNameField === "" ? false : true}
-                    helperText={state.fieldError.itemNameField}
+                    error={state.fieldError === "itemName" ? true : false}
+                    helperText={"Required*"}
                     onChange={handleFieldChange}
-                    // onChange={(e) =>
-                    //   dispatch({
-                    //     type: "textField",
-                    //     payload: { name: e.target.name, value: e.target.value },
-                    //   })
-                    // }
                   />
                 </Grid>
               </Grid>
@@ -601,18 +570,9 @@ const AddEditItem = ({
                       type="number"
                       label="Item Price"
                       defaultValue={state.itemPrice}
-                      // value={state.itemPrice}
-                      error={
-                        state.fieldError.itemPriceField === "" ? false : true
-                      }
-                      helperText={state.fieldError.itemPriceField}
+                      error={state.fieldError === "itemPrice" ? true : false}
+                      helperText={"Required*"}
                       onChange={handleFieldChange}
-                      // onChange={(e) =>
-                      //   dispatch({
-                      //     type: "textField",
-                      //     payload: { name: e.target.name, value: e.target.value },
-                      //   })
-                      // }
                     />
                   </Grid>
                   <Grid item xs={6} sx={{ ml: "8px" }}>
@@ -621,14 +581,7 @@ const AddEditItem = ({
                       type="number"
                       label="Tax %"
                       defaultValue={state.itemTax}
-                      // value={state.itemTax}
                       onChange={handleFieldChange}
-                      // onChange={(e) =>
-                      //   dispatch({
-                      //     type: "textField",
-                      //     payload: { name: e.target.name, value: e.target.value },
-                      //   })
-                      // }
                     />
                   </Grid>
                 </Grid>
@@ -677,7 +630,6 @@ const AddEditItem = ({
                   <TdTextField
                     name="itemSpecialNote"
                     defaultValue={state.itemSpecialNote}
-                    // value={state.itemSpecialNote}
                     rows={2}
                     multiline={true}
                     type="text"
@@ -691,8 +643,6 @@ const AddEditItem = ({
                   />
                 </Grid>
               </Grid>
-
-              {/* xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx */}
 
               {state.allAttributes.length > 0 && (
                 <>
@@ -730,8 +680,6 @@ const AddEditItem = ({
                 </>
               )}
 
-              {/* xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx */}
-
               <Divider sx={{ mb: "15px" }} />
 
               <Grid container>
@@ -753,7 +701,6 @@ const AddEditItem = ({
                   {/* 1 and 0 => allow and don't allow special instruction respectively */}
                   <CustomizedSwitch
                     defaultChecked={state.itemSpecialInstructions === "1"}
-                    // checked={state.itemSpecialInstructions === "1"}
                     name="itemSpecialInstructions"
                     label="Special Instructions"
                     onChange={handleSwitchChange}

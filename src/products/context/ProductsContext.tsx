@@ -40,7 +40,8 @@ interface State {
   itemCartons: string;
   itemMaximumDistance: string;
   itemNutritions: string | ItemDetailsResponseItemNutritions[];
-  fieldError: FieldErrors;
+  fieldError: string;
+  // fieldError: FieldErrors;
   editItem: EditItem;
   allowItemsGrouping: boolean;
 }
@@ -98,15 +99,16 @@ const initialState: State = {
   itemCartons: "",
   itemMaximumDistance: "0",
   itemNutritions: "",
-  fieldError: {
-    itemCategoryField: "",
-    itemNameField: "",
-    itemPriceField: "",
-    itemDiscountDateField: "",
-    itemDiscountField: "",
-    itemMaximumDistanceField: "",
-    itemMinimumQuantityField: "",
-  },
+  fieldError: "",
+  // fieldError: {
+  //   itemCategoryField: "",
+  //   itemNameField: "",
+  //   itemPriceField: "",
+  //   itemDiscountDateField: "",
+  //   itemDiscountField: "",
+  //   itemMaximumDistanceField: "",
+  //   itemMinimumQuantityField: "",
+  // },
   editItem: {
     editItemFlag: false,
     editItemId: "",
@@ -127,17 +129,10 @@ const reducer = (state: State, action: Action) => {
     case "dropDown":
     case "editor":
     case "editItem":
+    case "fieldError":
       return {
         ...state,
-        fieldError: {
-          itemCategoryField: "",
-          itemNameField: "",
-          itemPriceField: "",
-          itemDiscountDateField: "",
-          itemDiscountField: "",
-          itemMaximumDistanceField: "",
-          itemMinimumQuantityField: "",
-        },
+        fieldError: "",
         [action.payload.name!]: action.payload.value,
       };
     case "populateEditItemValues":
@@ -152,16 +147,16 @@ const reducer = (state: State, action: Action) => {
           return attribute;
         }),
       };
-    case "fieldError":
-      return {
-        ...state,
-        [action.type]: {
-          ...state.fieldError,
-          [action.payload.name!]: action.payload.value
-            ? action.payload.value
-            : "Required*",
-        },
-      };
+    // case "fieldError":
+    //   return {
+    //     ...state,
+    //     [action.type]: {
+    //       ...state.fieldError,
+    //       [action.payload.name!]: action.payload.value
+    //         ? action.payload.value
+    //         : "Required*",
+    //     },
+    //   };
     case "clearState":
       return {
         ...state,
@@ -212,15 +207,16 @@ const reducer = (state: State, action: Action) => {
         itemCartons: "",
         itemMaximumDistance: "0",
         itemNutritions: "",
-        fieldError: {
-          itemCategoryField: "",
-          itemNameField: "",
-          itemPriceField: "",
-          itemDiscountDateField: "",
-          itemDiscountField: "",
-          itemMaximumDistanceField: "",
-          itemMinimumQuantityField: "",
-        },
+        fieldError: "",
+        // fieldError: {
+        //   itemCategoryField: "",
+        //   itemNameField: "",
+        //   itemPriceField: "",
+        //   itemDiscountDateField: "",
+        //   itemDiscountField: "",
+        //   itemMaximumDistanceField: "",
+        //   itemMinimumQuantityField: "",
+        // },
         editItem: {
           editItemFlag: false,
           editItemId: "",

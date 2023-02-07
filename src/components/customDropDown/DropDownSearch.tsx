@@ -74,7 +74,7 @@ const DropDownSearch = ({
             variant="outlined"
             label={label}
             placeholder={placeholder}
-            helperText={helperText}
+            helperText={isError && helperText}
           />
         )}
         renderTags={isMultiSelect ? renderTags : undefined}
