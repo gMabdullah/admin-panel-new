@@ -89,9 +89,8 @@ const Items = () => {
 
   const { selectedMenu, selectedBranch, selectedCategory, selectedBrand } =
     useSelector((state) => state.dropdown);
-  const { showImagesItem, availableItems, displayType } = useSelector(
-    (state) => state.main
-  );
+  const { showImagesItem, availableItems, displayType, productColumns } =
+    useSelector((state) => state.main);
   const [items, setItems] = useState<ProductResponse["items"] | []>([]);
   const [selectedRowIds, setSelectedRowIds] = useState<string[]>([]);
   const [applyFilters, setApplyFilters] = React.useState(false);
@@ -242,8 +241,12 @@ const Items = () => {
 
   useEffect(() => {
     dispatch(toggleDatePicker(false));
-    dispatch(setProductColumn(keysOfItems));
+    // dispatch(setProductColumn(keysOfItems));
   });
+
+  useEffect(() => {
+    dispatch(setProductColumn(keysOfItems));
+  }, []);
 
   // reset bulk-actions state on de-selecting all rows
   useEffect(() => {

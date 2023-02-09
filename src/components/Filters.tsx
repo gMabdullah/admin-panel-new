@@ -50,6 +50,7 @@ filtersProps) => {
   const dispatch = useDispatch();
   const {
     productColumns,
+    columnsCount,
     CountError,
     showImagesItem,
     availableItems,
@@ -697,7 +698,22 @@ filtersProps) => {
             </>
           ))}
 
-          <Typography variant="h3">Custom Columns</Typography>
+          <Typography variant="h3">
+            Custom Columns
+            {columnsCount <= 3 && CountError && (
+              <div
+                style={{
+                  display: "inline",
+                  color: "red",
+                  marginLeft: "10px",
+                  fontSize: "0.9rem",
+                  fontWeight: 400,
+                }}
+              >
+                {CountError}
+              </div>
+            )}
+          </Typography>
           <Grid container>
             <Grid
               item

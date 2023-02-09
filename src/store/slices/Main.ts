@@ -86,22 +86,34 @@ const main = createSlice({
     },
     // product columns
     setProductColumn(state, action) {
-      state.productColumns = action.payload;
+      const columns = action.payload;
+      state.productColumns = columns;
+      let count = 0;
+
+      columns &&
+        columns.map((column: any) => {
+          column.selected && count++;
+        });
+      state.columnsCount = count;
     },
     toggleColumn(state, action) {
       const key = action.payload.key;
       const value = action.payload.value;
+      let count = 0;
+      state.productColumns.map((column: any) => {
+        column.selected && count++;
 
-      state.productColumns.forEach((column: any) => {
-        state.columnsCount += column.selected ? 1 : 0;
         if (key == column.key) {
-          // if ((key == "name" || key == "") && state.columnsCount <= 2) {
-          //   state.CountError = "At least name and actions should be visible";
-          // }
-
-          column.selected = value;
+          if (state.columnsCount <= 3 && !value) {
+            state.CountError = "All columns can't be hide";
+          } else {
+            column.selected = value;
+            state.CountError = "";
+          }
         }
       });
+      // set Count of switches
+      state.columnsCount = count;
     },
     selectedFilter(state, action) {
       const name = action.payload.name;
