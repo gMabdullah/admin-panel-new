@@ -79,14 +79,14 @@ export const IQBAL_BUSINESS_ID = 12092,
     {
       key: "price",
       value: "Price",
-      align: "center",
+      align: "right",
       selected: true,
       // width: "10%",
     },
     {
-      key: "discount",
+      key: "discount_display",
       value: "Discount",
-      align: "center",
+      align: "right",
       selected: true,
       width: "18%",
     },
@@ -277,5 +277,32 @@ export const IQBAL_BUSINESS_ID = 12092,
     {
       label: "Category Association",
       value: "categoryAssociation",
+    },
+  ],
+  // ImportExport dropdown in items
+  dropdownImportExport = [
+    {
+      label: "Import/Export",
+      value: "import_export",
+    },
+    {
+      label: "Import New Items",
+      value: "Import New Items",
+    },
+    {
+      label: "Update Existing Item",
+      value: "Update Existing Item",
+    },
+    {
+      label: "Export items(.pdf)",
+      value: "Export items(.pdf)",
+    },
+    {
+      label: "Export Items (.xlsx)",
+      value: "Export Items (.xlsx)",
+    },
+    {
+      label: "Download Sample",
+      value: "Download Sample",
     },
   ];

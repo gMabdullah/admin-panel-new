@@ -43,4 +43,5 @@ interface Cart {
 }
 interface dropdownTypes {
   applyFilter: () => void;
+  disabled?: boolean;
 }

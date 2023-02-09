@@ -2,7 +2,6 @@ import React from "react";
 
 import { withStyles } from "@mui/styles";
 import { InputAdornment, TextField, IconButton } from "@mui/material";
-
 import {
   Email,
   SearchOutlined,
@@ -228,7 +227,7 @@ const TdTextField = <T extends React.ElementType = "input">({
       onKeyDown={onKeyDown}
       rows={rows}
       texttransform={textTransform ? textTransform : ""}
-      helperText={helperText}
+      helperText={error && helperText}
       onChange={onChange}
       onBlur={onBlur}
       defaultValue={defaultValue}

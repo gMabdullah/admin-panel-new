@@ -162,3 +162,16 @@ interface ProductResponseMenuType {
   id: string;
   name: string;
 }
+
+interface ProductsContextInterface {
+  state: State;
+  dispatch: React.Dispatch<Action>;
+}
+
+interface Action {
+  type: string;
+  payload: {
+    name?: string;
+    value?: any;
+  };
+}

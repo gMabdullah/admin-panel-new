@@ -1,23 +1,11 @@
 import React, { createContext, useReducer } from "react";
 
-interface ProductsContextInterface {
-  state: State;
-  dispatch: React.Dispatch<Action>;
-}
-
-interface Action {
-  type: string;
-  payload: {
-    name?: string;
-    value?: any;
-  };
-}
-
 interface State {
   allCategories: DropdownValue[];
   allBrands: DropdownValue[];
   allItemsForGrouping: DropdownValue[];
   allOptionSets: DropdownValue[];
+  allAttributes: AllAttributesType[];
   itemCategory: DropdownValue;
   itemName: string;
   itemPrice: string;
@@ -52,7 +40,7 @@ interface State {
   itemCartons: string;
   itemMaximumDistance: string;
   itemNutritions: string | ItemDetailsResponseItemNutritions[];
-  fieldError: FieldErrors;
+  fieldError: string;
   editItem: EditItem;
   allowItemsGrouping: boolean;
 }
@@ -62,6 +50,7 @@ const initialState: State = {
   allBrands: [],
   allItemsForGrouping: [],
   allOptionSets: [],
+  allAttributes: [],
   itemCategory: {
     value: "",
     label: "",
@@ -109,14 +98,7 @@ const initialState: State = {
   itemCartons: "",
   itemMaximumDistance: "0",
   itemNutritions: "",
-  fieldError: {
-    itemCategoryField: "",
-    itemNameField: "",
-    itemPriceField: "",
-    itemDiscountDateField: "",
-    itemMaximumDistanceField: "",
-    itemMinimumQuantityField: "",
-  },
+  fieldError: "",
   editItem: {
     editItemFlag: false,
     editItemId: "",
@@ -137,29 +119,23 @@ const reducer = (state: State, action: Action) => {
     case "dropDown":
     case "editor":
     case "editItem":
+    case "fieldError":
       return {
         ...state,
-        fieldError: {
-          itemCategoryField: "",
-          itemNameField: "",
-          itemPriceField: "",
-          itemDiscountDateField: "",
-          itemMaximumDistanceField: "",
-          itemMinimumQuantityField: "",
-        },
+        fieldError: "",
         [action.payload.name!]: action.payload.value,
       };
     case "populateEditItemValues":
       return { ...state, ...action.payload.value };
-    case "fieldError":
+    case "allAttributes":
       return {
         ...state,
-        [action.type]: {
-          ...state.fieldError,
-          [action.payload.name!]: action.payload.value
-            ? action.payload.value
-            : "Required*",
-        },
+        [action.payload.name!]: state.allAttributes.map((attribute, index) => {
+          if (index === action.payload.value.index) {
+            attribute.attributeValue = action.payload.value.value;
+          }
+          return attribute;
+        }),
       };
     case "clearState":
       return {
@@ -176,6 +152,7 @@ const reducer = (state: State, action: Action) => {
           label: "",
         },
         itemOptionSets: [],
+        allAttributes: [],
         itemToGroup: [],
         itemSpecialNote: "",
         itemAvailability: "0", // 1 and 0 => item not available and available respectively
@@ -210,14 +187,7 @@ const reducer = (state: State, action: Action) => {
         itemCartons: "",
         itemMaximumDistance: "0",
         itemNutritions: "",
-        fieldError: {
-          itemCategoryField: "",
-          itemNameField: "",
-          itemPriceField: "",
-          itemDiscountDateField: "",
-          itemMaximumDistanceField: "",
-          itemMinimumQuantityField: "",
-        },
+        fieldError: "",
         editItem: {
           editItemFlag: false,
           editItemId: "",

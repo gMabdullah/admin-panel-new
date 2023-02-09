@@ -1,10 +1,9 @@
-import React, { useEffect, useState, Suspense } from "react";
+import React, { Suspense } from "react";
 
 import {
   Typography,
   Stack,
   Tooltip,
-  CardMedia,
   TableBody,
   Table,
   TableCell,
@@ -23,8 +22,9 @@ import { AxiosPromise, AxiosRequestConfig } from "axios";
 import { RefetchOptions } from "axios-hooks";
 import Loader from "./Loader";
 const AddMenuImages = React.lazy(() => import("imageSection/AddMenuImages"));
+
 interface TablePropsType {
-  items: ProductResponse["items"];
+  items?: ProductResponse["items"] | [];
   setSequenceItem?: any;
   shortDragDropItems?: any;
   getProductsAPI: (
@@ -32,8 +32,12 @@ interface TablePropsType {
     options?: RefetchOptions | undefined
   ) => AxiosPromise<any>;
   productLoading?: boolean;
-  handleDrawerToggle: () => void;
-  checkBox?: boolean;
+  triggerEditProduct: (
+    itemId: string,
+    dispatch: React.Dispatch<Action>
+  ) => void;
+  setSelectedRowIds: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedRowIds: string[];
 }
 
 const DraggableTable = ({
@@ -41,10 +45,33 @@ const DraggableTable = ({
   shortDragDropItems,
   getProductsAPI,
   productLoading,
-  handleDrawerToggle,
-  checkBox = false,
-}: TablePropsType) => {
+  triggerEditProduct,
+  setSelectedRowIds,
+  selectedRowIds,
+}: // checkBox = false,
+TablePropsType) => {
   const { decimalPlaces, productColumns } = useSelector((state) => state.main);
+
+  const handleAllRowsSelection = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      items && setSelectedRowIds(items.map((item) => item.menu_item_id));
+    } else {
+      setSelectedRowIds([]);
+    }
+  };
+
+  const handleRowSelectionChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    itemId: string
+  ) => {
+    if (e.target.checked) {
+      setSelectedRowIds([...selectedRowIds, itemId]);
+    } else {
+      setSelectedRowIds(selectedRowIds.filter((rowId) => rowId !== itemId));
+    }
+  };
+
+  const isRowSelected = (itemId: string) => selectedRowIds.includes(itemId);
 
   const handleDragEnd = (result: any) => {
     const sortArray = [
@@ -59,7 +86,15 @@ const DraggableTable = ({
 
   const addCurrency = (value: any, currency: any) => {
     return (
-      <Stack direction="row" spacing={0.25} sx={{ alignItems: "center" }}>
+      <Stack
+        direction="row"
+        spacing={0.25}
+        sx={{
+          alignItems: "center",
+          textAlign: "right !important",
+          justifyContent: "end",
+        }}
+      >
         {currency !== "" && (
           <Typography
             sx={{
@@ -96,11 +131,19 @@ const DraggableTable = ({
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
-                {checkBox && (
-                  <TableCell>
-                    <Checkbox sx={{ p: "unset" }} />
-                  </TableCell>
-                )}
+                <TableCell>
+                  <Checkbox
+                    checked={selectedRowIds.length > 0 ? true : false}
+                    onChange={handleAllRowsSelection}
+                    sx={{
+                      p: "unset",
+
+                      // "&.Mui-checked": {
+                      //   color: "#2196F3",
+                      // },
+                    }}
+                  />
+                </TableCell>
 
                 {productColumns?.map((column: any) =>
                   column.selected ? (
@@ -118,9 +161,10 @@ const DraggableTable = ({
               </TableRow>
             </TableHead>
 
-            {items[0] !== undefined &&
+            {items &&
+            items[0] !== undefined &&
             items !== null &&
-            items[0].toString() == "" ? (
+            items[0].toString() === "" ? (
               <div>No Data Found</div>
             ) : (
               <Droppable droppableId="table">
@@ -142,11 +186,25 @@ const DraggableTable = ({
                                 {...provided.dragHandleProps}
                                 isDragging={snapshot.isDragging}
                               >
-                                {checkBox && (
-                                  <TableCell>
-                                    <Checkbox sx={{ p: "unset" }} />
-                                  </TableCell>
-                                )}
+                                <TableCell>
+                                  <Checkbox
+                                    checked={isRowSelected(row.menu_item_id)}
+                                    onChange={(e) =>
+                                      handleRowSelectionChange(
+                                        e,
+                                        row.menu_item_id
+                                      )
+                                    }
+                                    sx={{
+                                      p: "unset",
+
+                                      // "&.Mui-checked": {
+                                      //   color: "#2196F3",
+                                      // },
+                                    }}
+                                  />
+                                </TableCell>
+
                                 {productColumns?.map((column) =>
                                   column.selected ? (
                                     <TableCell
@@ -154,10 +212,6 @@ const DraggableTable = ({
                                       align={column.align}
                                       style={{
                                         width: column?.width,
-                                        marginLeft: `${
-                                          column.key === "price" &&
-                                          "10px !important"
-                                        }`,
                                       }}
                                     >
                                       {column.key === "image" ? (
@@ -189,7 +243,7 @@ const DraggableTable = ({
                                           row[column.key],
                                           row.currency
                                         )
-                                      ) : column.key === "discount" ? (
+                                      ) : column.key === "discount_display" ? (
                                         addCurrency(row[column.key], "")
                                       ) : column.key === "status" ? (
                                         <TableChip
@@ -200,8 +254,13 @@ const DraggableTable = ({
                                           row={row}
                                           getProductsAPI={getProductsAPI}
                                           productLoading={productLoading}
-                                          handleDrawerToggle={
-                                            handleDrawerToggle
+                                          triggerEditProduct={
+                                            triggerEditProduct
+                                          }
+                                          disableOnRowSelection={
+                                            selectedRowIds.length > 0
+                                              ? true
+                                              : false
                                           }
                                         />
                                       ) : (

@@ -1,6 +1,7 @@
 import { useState } from "react";
 
-import { Stack, Grid, Typography } from "@mui/material";
+import { Stack, Grid, Typography, IconButton, Divider } from "@mui/material";
+import { HighlightOffTwoTone as CloseIcon } from "@mui/icons-material";
 
 import useAxios from "axios-hooks";
 
@@ -202,24 +203,33 @@ const AddCategory = ({
       )}
 
       <CustomModal
-        title="Add Category"
-        buttonText="Add Category"
         open={addCategoryModal}
         onClose={toggleCategoryModal}
-        paperStyle={{
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: "45vw",
-          position: "absolute",
-        }}
-        scrollbarStyle={{
-          height: "100%",
-          maxHeight: "80vh",
-          overflowX: "hidden",
-          borderRadius: "8px",
-        }}
+        scrollbarStyle={{ maxHeight: "93vh" }}
       >
+        <Grid container>
+          <Grid
+            item
+            xs={12}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              p: "40px 40px 0 !important",
+            }}
+          >
+            <Typography variant="h2" sx={{ color: "#212121" }}>
+              Add Category
+            </Typography>
+
+            <IconButton onClick={toggleCategoryModal} sx={{ p: "unset" }}>
+              <CloseIcon htmlColor="#D84315" fontSize="large" />
+            </IconButton>
+          </Grid>
+        </Grid>
+
+        <Divider sx={{ m: "16px 40px 0" }} />
+
         <Stack sx={{ p: "0 40px 40px" }}>
           <Grid container>
             <Grid item xs={12} sx={{ m: "24px 0" }}>
@@ -258,7 +268,7 @@ const AddCategory = ({
           </Grid>
 
           <Grid container>
-            <Grid item xs={12} sx={{ mb: "24px" }}>
+            <Grid item xs={12} sx={{ mb: "5px" }}>
               {richEditor ? (
                 <RichEditor
                   value={description}

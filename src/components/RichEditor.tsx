@@ -12,7 +12,8 @@ import { formatDate, getLocalStorage } from "orders/HelperFunctions";
 import { AWS_BUCKET_URL } from "config";
 
 interface EditorProps {
-  value: string;
+  value?: string;
+  initialValue?: string;
   onEditorChange: any;
   initials?: object;
   sx?: object;
@@ -26,7 +27,13 @@ interface imageAPIProps {
   im_date: string;
 }
 
-const RichEditor = ({ value, onEditorChange, initials, sx }: EditorProps) => {
+const RichEditor = ({
+  value,
+  initialValue,
+  onEditorChange,
+  initials,
+  sx,
+}: EditorProps) => {
   const { eatout_id, user_id } = getLocalStorage();
 
   const payload = ({
@@ -159,9 +166,22 @@ const RichEditor = ({ value, onEditorChange, initials, sx }: EditorProps) => {
   if (imageUploadError) return <span>Image Uploading Failed</span>;
 
   return (
-    <Grid item xs={12} sx={{ display: "flex", mb: "24px", ...sx }}>
+    <Grid
+      item
+      xs={12}
+      sx={{
+        display: "flex",
+        mb: "24px",
+        "& .tox-tinymce": {
+          border: "1px solid rgba(0, 0, 0, 0.23)",
+        },
+
+        ...sx,
+      }}
+    >
       <Editor
         apiKey={TINY_EDITOR_API_KEY}
+        initialValue={initialValue}
         value={value}
         onEditorChange={onEditorChange}
         init={{

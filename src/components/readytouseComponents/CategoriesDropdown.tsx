@@ -11,7 +11,7 @@ import { ProductsContext } from "products/context/ProductsContext";
 // required apply button handler to call respective api
 // 1 - use this type "dropdownTypes"
 
-const CategoriesDropdown = ({ applyFilter }: dropdownTypes) => {
+const CategoriesDropdown = ({ applyFilter, disabled }: dropdownTypes) => {
   const dispatch = useDispatch();
   const { selectedCategory } = useSelector((state) => state.dropdown);
   const [categories, setCategories] = useState<DropDownListType[]>([]);
@@ -92,7 +92,7 @@ const CategoriesDropdown = ({ applyFilter }: dropdownTypes) => {
     }
     // send values to reducer for consuming in api call
     dispatch(setSelectedCategory(valueForApiFilter));
-    // set comma seperated labes in dropdown header
+    // set comma separated labels in dropdown header
     setCategoriesName(selectedLabels);
   };
 
@@ -100,6 +100,7 @@ const CategoriesDropdown = ({ applyFilter }: dropdownTypes) => {
 
   return categories.length > 2 ? (
     <MultiSelectDropDown
+      disabled={disabled}
       value={CategoriesName}
       onChange={handleCategoryChange}
       dropDownList={categories}

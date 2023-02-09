@@ -1,10 +1,19 @@
 import React, { useEffect, useState } from "react";
 
-import { Card, Grid, Stack, Typography } from "@mui/material";
-import CardMedia from "@mui/material/CardMedia";
+import {
+  Card,
+  Grid,
+  IconButton,
+  Typography,
+  CardMedia,
+  Divider,
+} from "@mui/material";
+import { HighlightOffTwoTone as CloseIcon } from "@mui/icons-material";
+
+import useAxios from "axios-hooks";
+
 import CustomModal from "components/CustomModal";
 import ImageUploader from "./ImageUploader";
-import useAxios from "axios-hooks";
 import { getLocalStorage } from "orders/HelperFunctions";
 
 interface addImagesPropType {
@@ -236,7 +245,6 @@ const AddMenuImages = ({ imageUrl, itemId }: addImagesPropType) => {
               `${fileName.slice(0, fileName.length - 5)}.jpeg`
             );
           }
-          debugger;
         };
       }
     };
@@ -266,78 +274,83 @@ const AddMenuImages = ({ imageUrl, itemId }: addImagesPropType) => {
     imageModal && getImages();
   }, [imageModal]);
   const getImages = async () => {
-    const {
-      // data,
-      data: { items },
-    } = await singleItemAPICall({
+    const { data } = await singleItemAPICall({
       url: `/product_details?business_id=${
         getLocalStorage().eatout_id
       }&item_id=${itemId}&admin_id=${getLocalStorage().user_id}&source=biz`,
     });
-    setItemDetailImages(items[0].images);
+
+    if (
+      data &&
+      Array.isArray(data.items) &&
+      Array.isArray(data.items[0].images)
+    )
+      setItemDetailImages(data.items[0].images);
   };
+
   const toggleImageModal = () => {
     setToggleImageModal((prevState) => !prevState);
   };
+
   return (
     <>
       {imageModal && (
-        <CustomModal
-          open={imageModal}
-          paperStyle={{
-            position: "absolute",
-            width: 745,
-            //   height: "fit-content",
-            left: "calc(50% - 372.5px)",
-            top: "calc(50% - 175px)",
-            background: "#FFFFFF",
-            boxShadow: "0px 0px 36px rgba(0, 0, 0, 0.13)",
-          }}
-          scrollbarStyle={{
-            height: "fit-content",
-          }}
-          onClose={toggleImageModal}
-          title={
-            <>
-              <Typography variant={"h3"}>Item Images</Typography>
-            </>
-          }
-        >
-          <>
+        <CustomModal open={imageModal} onClose={toggleImageModal}>
+          <Grid container>
             <Grid
-              padding={4}
-              container
-              rowGap={3}
-              //spacing={{ xs: 2, md: 3 }}
-              columns={{ xs: 4, sm: 8, md: 12 }}
+              item
+              xs={12}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                p: "40px 40px 0 !important",
+              }}
             >
-              {itemDetailImages.map(
-                (imagesData: singleItemImages, index: number) => (
-                  <Grid item xs={3} key={index}>
-                    <Card
-                      sx={{
-                        width: "123px",
-                        height: "123px",
-                        background: "#FAFAFA",
-                        borderRadius: "4.65728px",
-                      }}
-                    >
-                      <CardMedia
-                        component="img"
-                        alt="Burger"
-                        src={imagesData.image_thumbnail}
-                        sx={{
-                          padding: "12px",
-                        }}
-                      />
-                    </Card>
-                  </Grid>
-                )
-              )}
-              <ImageUploader handleChange={handleChange} />
-            </Grid>
+              <Typography variant={"h3"}>Item Images</Typography>
 
-            {/* <Grid
+              <IconButton onClick={toggleImageModal} sx={{ p: "unset" }}>
+                <CloseIcon htmlColor="#D84315" fontSize="large" />
+              </IconButton>
+            </Grid>
+          </Grid>
+
+          <Divider sx={{ m: "16px 40px 32px" }} />
+
+          <Grid
+            padding={4}
+            container
+            rowGap={3}
+            //spacing={{ xs: 2, md: 3 }}
+            columns={{ xs: 4, sm: 8, md: 12 }}
+          >
+            {itemDetailImages.map(
+              (imagesData: singleItemImages, index: number) => (
+                <Grid item xs={3} key={index}>
+                  <Card
+                    sx={{
+                      width: "123px",
+                      height: "123px",
+                      background: "#FAFAFA",
+                      borderRadius: "4.65728px",
+                    }}
+                  >
+                    <CardMedia
+                      component="img"
+                      alt="Burger"
+                      src={imagesData.image_thumbnail}
+                      sx={{
+                        padding: "12px",
+                      }}
+                    />
+                  </Card>
+                </Grid>
+              )
+            )}
+            <ImageUploader handleChange={handleChange} />
+          </Grid>
+
+          {/* <Grid
               container
               rowSpacing={1}
               columnSpacing={{ xs: 1, sm: 2, md: 3 }}
@@ -364,7 +377,7 @@ const AddMenuImages = ({ imageUrl, itemId }: addImagesPropType) => {
                 <ImageUploader />
               </Grid>
             </Grid> */}
-            {/* <Grid
+          {/* <Grid
               spacing={3}
               alignItems={"center"}
               padding={3.5}
@@ -393,9 +406,9 @@ const AddMenuImages = ({ imageUrl, itemId }: addImagesPropType) => {
 
               <ImageUploader />
             </Grid> */}
-          </>
         </CustomModal>
       )}
+
       <CardMedia
         component="img"
         image={imageUrl}

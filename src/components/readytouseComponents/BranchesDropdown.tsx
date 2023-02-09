@@ -8,7 +8,7 @@ import { getLocalStorage } from "orders/HelperFunctions";
 import { useDispatch } from "store";
 import { setSelectedBranch } from "store/slices/Dropdown";
 
-const BranchesDropdown = ({ applyFilter }: dropdownTypes) => {
+const BranchesDropdown = ({ applyFilter, disabled }: dropdownTypes) => {
   const dispatch = useDispatch();
   const [branches, setBranches] = useState<DropDownListType[]>([]);
   const [branchName, setBranchName] = useState<string[]>(["All Branches"]);
@@ -26,14 +26,17 @@ const BranchesDropdown = ({ applyFilter }: dropdownTypes) => {
   useEffect(() => {
     (async () => {
       const branchesList = await getBranchesAPI();
+
       // load Branches dropdown
-      if (branchesList && branchesList.data) {
+      if (branchesList && Array.isArray(branchesList.data)) {
         const branches = branchesList.data.map((item: GetBranchesResponse) => ({
           value: item.branch_id,
           label: item.location_address,
         }));
         branches.unshift({ label: "All Branches", value: "" });
         setBranches(branches);
+      } else {
+        setBranches([]);
       }
     })();
   }, []);
@@ -76,6 +79,7 @@ const BranchesDropdown = ({ applyFilter }: dropdownTypes) => {
 
   return branches.length > 2 ? (
     <MultiSelectDropDown
+      disabled={disabled}
       value={branchName}
       onChange={handleBranchChange}
       dropDownList={branches}

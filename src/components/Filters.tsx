@@ -20,15 +20,15 @@ import CustomButton from "./CustomButton";
 interface filtersProps {
   items?: ProductResponse["items"];
   setItems: React.Dispatch<React.SetStateAction<ProductResponseItem[]>>;
-  productLoading?: boolean;
   productData: any;
+  disabled: boolean;
 }
 
 const Filters = ({
   items,
   setItems,
-  productLoading,
   productData,
+  disabled,
 }: //  count
 filtersProps) => {
   const [toggleFilter, setToggleFilter] = useState<SVGSVGElement | null>(null);
@@ -50,6 +50,7 @@ filtersProps) => {
   const dispatch = useDispatch();
   const {
     productColumns,
+    columnsCount,
     CountError,
     showImagesItem,
     availableItems,
@@ -640,7 +641,7 @@ filtersProps) => {
 
   return (
     <>
-      <IconButton>
+      <IconButton disabled={disabled}>
         <Stack>
           <FilterListIcon onClick={handleClick} />
         </Stack>
@@ -697,7 +698,22 @@ filtersProps) => {
             </>
           ))}
 
-          <Typography variant="h3">Custom Columns</Typography>
+          <Typography variant="h3">
+            Custom Columns
+            {columnsCount <= 3 && CountError && (
+              <div
+                style={{
+                  display: "inline",
+                  color: "red",
+                  marginLeft: "10px",
+                  fontSize: "0.9rem",
+                  fontWeight: 400,
+                }}
+              >
+                {CountError}
+              </div>
+            )}
+          </Typography>
           <Grid container>
             <Grid
               item

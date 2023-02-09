@@ -24,19 +24,18 @@ interface DropdownValue {
   label: string;
 }
 
-interface FieldErrors {
-  itemCategoryField: string;
-  itemNameField: string;
-  itemPriceField: string;
-  itemDiscountDateField: string;
-  itemMaximumDistanceField: string;
-  itemMinimumQuantityField: string;
-}
-
 interface EditItem {
   editItemFlag: boolean;
   editItemId: string;
 }
+
+interface AllAttributesType {
+  attributeId: string;
+  attributeName: string;
+  attributeValue: DropdownValue;
+  attributeOptions: DropdownValue[];
+}
+
 //Aws Data Type
 interface AwsDataType {
   dealId: string | Blob;

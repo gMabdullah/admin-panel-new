@@ -1,6 +1,8 @@
-import { useContext } from "react";
+import React, { useContext } from "react";
 
 import { Grid, Stack } from "@mui/material";
+
+import { debounce } from "lodash";
 
 import ExpandablePanel from "components/ExpandablePanel";
 import TdTextField from "components/TdTextField";
@@ -10,11 +12,17 @@ import { ProductsContext } from "../context/ProductsContext";
 const Discount = () => {
   const { state, dispatch } = useContext(ProductsContext);
 
-  // console.log("discount state = ", state);
+  // console.log("discount component");
 
-  // console.log("discount = ", state.itemDiscount);
-  // console.log("discount start  = ", state.itemDiscountStart);
-  // console.log("discount expire = ", state.itemDiscountExpiry);
+  const handleFieldChange = debounce(
+    (e: { target: { name: string; value: string } }) => {
+      dispatch({
+        type: "textField",
+        payload: { name: e.target.name, value: e.target.value },
+      });
+    },
+    300
+  );
 
   return (
     <Stack>
@@ -30,13 +38,10 @@ const Discount = () => {
                 name="itemDiscount"
                 type="number"
                 label="Discount Value %"
-                value={state.itemDiscount}
-                onChange={(e) =>
-                  dispatch({
-                    type: "textField",
-                    payload: { name: e.target.name, value: e.target.value },
-                  })
-                }
+                defaultValue={state.itemDiscount}
+                onChange={handleFieldChange}
+                error={state.fieldError === "itemDiscount" ? true : false}
+                helperText={"Required*"}
               />
             </Grid>
           </Grid>
@@ -49,21 +54,14 @@ const Discount = () => {
                 name="itemDiscountStart"
                 type="date"
                 label="Discount Start"
-                value={state.itemDiscountStart}
-                error={
-                  state.fieldError.itemDiscountDateField === "" ? false : true
-                }
-                helperText={state.fieldError.itemDiscountDateField}
+                defaultValue={state.itemDiscountStart}
+                error={state.fieldError === "itemDiscountStart" ? true : false}
+                helperText={"Required*"}
                 disablePrevDates={true}
                 InputLabelProps={{
                   shrink: true,
                 }}
-                onChange={(e) =>
-                  dispatch({
-                    type: "textField",
-                    payload: { name: e.target.name, value: e.target.value },
-                  })
-                }
+                onChange={handleFieldChange}
               />
             </Grid>
             <Grid item xs={6} sx={{ ml: "8px" }}>
@@ -71,21 +69,14 @@ const Discount = () => {
                 name="itemDiscountExpiry"
                 type="date"
                 label="Discount Expiry"
-                value={state.itemDiscountExpiry}
-                error={
-                  state.fieldError.itemDiscountDateField === "" ? false : true
-                }
-                helperText={state.fieldError.itemDiscountDateField}
+                defaultValue={state.itemDiscountExpiry}
+                error={state.fieldError === "itemDiscountExpiry" ? true : false}
+                helperText={"Required*"}
                 disablePrevDates={true}
                 InputLabelProps={{
                   shrink: true,
                 }}
-                onChange={(e) =>
-                  dispatch({
-                    type: "textField",
-                    payload: { name: e.target.name, value: e.target.value },
-                  })
-                }
+                onChange={handleFieldChange}
               />
             </Grid>
           </Grid>

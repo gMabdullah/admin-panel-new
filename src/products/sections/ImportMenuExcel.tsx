@@ -1,11 +1,15 @@
 import React, { useState } from "react";
-import { Box, Grid, Typography } from "@mui/material";
-import CustomModal from "components/CustomModal";
+
 import { makeStyles } from "@mui/styles";
-import CustomButton from "components/CustomButton";
-import Notify from "components/Notify";
+import { Box, Divider, Grid, IconButton, Typography } from "@mui/material";
+import { HighlightOffTwoTone as CloseIcon } from "@mui/icons-material";
 
 import * as XLSX from "xlsx";
+import useAxios from "axios-hooks";
+
+import CustomModal from "components/CustomModal";
+import CustomButton from "components/CustomButton";
+import Notify from "components/Notify";
 import {
   capitalizeFLetter,
   getFormatTime,
@@ -13,7 +17,6 @@ import {
   isString,
   priceValidation,
 } from "orders/HelperFunctions";
-import useAxios from "axios-hooks";
 
 const useStyles = makeStyles({
   modal: {
@@ -38,7 +41,7 @@ const useStyles = makeStyles({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    margin: "20px !important",
+    margin: "0px 40px 32px",
   },
   button: {
     alignItem: "center",
@@ -49,16 +52,19 @@ const useStyles = makeStyles({
     border: "1px solid #DB154D",
   },
 });
+
 const isFloat = (n: number) => {
   return Number(n) === n && n % 1 !== 0;
 };
+
 interface menuExcelPropsType {
   importType: string;
-  setImportExportDropDownValue: React.Dispatch<React.SetStateAction<string>>;
+  setImportExportValue: React.Dispatch<React.SetStateAction<string>>;
 }
+
 const ImportMenuExcel = ({
   importType,
-  setImportExportDropDownValue,
+  setImportExportValue,
 }: menuExcelPropsType) => {
   const [itemsUpdated, setUpdatedItems] = useState([]);
   const [validationError, setValidationError] = useState(false);
@@ -67,13 +73,14 @@ const ImportMenuExcel = ({
   const { eatout_id, user_id } = getLocalStorage();
   const toggleBulkUploadModal = () => {
     setBulkUploadModal((prevState) => !prevState);
-    setImportExportDropDownValue("");
+    setImportExportValue("");
   };
   const [notify, setNotify] = useState<boolean>(false);
   const [itemMessage, setItemMessage] = useState("");
   const [itemNotifyType, setItemNotifyType] = useState<
     "success" | "info" | "warning" | "error"
   >("info");
+
   const payload = () => {
     const formData = new FormData();
 
@@ -83,6 +90,7 @@ const ImportMenuExcel = ({
     formData.append("source", `biz`);
     return formData;
   };
+
   const [{ loading: newBulkLoading, error: newBulkError }, addProductBulk] =
     useAxios({ url: `/bulk_upload_menu`, method: "post" }, { manual: true });
 
@@ -103,6 +111,7 @@ const ImportMenuExcel = ({
     { url: `/products_bulk_edit`, method: "post" },
     { manual: true }
   );
+
   const callBulkApi = async () => {
     const response = await addProductBulk({
       data: payload(),
@@ -274,6 +283,7 @@ const ImportMenuExcel = ({
 
     // perform the actual file upload logic here
   };
+
   ////////////// Update Menu Sheet ///////////////
   const handleUpdateImport = (files: any) => {
     let list: any = [];
@@ -449,26 +459,32 @@ const ImportMenuExcel = ({
           closeNotify={closeNotify}
         />
       )}
-      <CustomModal
-        title={
-          <Typography variant="h3">
-            {importType === "Import New Items"
-              ? "Import Menu from Excel"
-              : "Import Bulk Update"}
-          </Typography>
-        }
-        open={bulkUploadModal}
-        onClose={toggleBulkUploadModal}
-        paperStyle={{
-          position: "absolute",
-          width: 745,
-          height: 350,
-          left: "calc(50% - 372.5px)",
-          top: "calc(50% - 175px)",
-          background: "#FFFFFF",
-          boxShadow: "0px 0px 36px rgba(0, 0, 0, 0.13)",
-        }}
-      >
+      <CustomModal open={bulkUploadModal} onClose={toggleBulkUploadModal}>
+        <Grid container>
+          <Grid
+            item
+            xs={12}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              p: "40px 40px 0 !important",
+            }}
+          >
+            <Typography variant="h3">
+              {importType === "Import New Items"
+                ? "Import Menu from Excel"
+                : "Import Bulk Update"}
+            </Typography>
+
+            <IconButton onClick={toggleBulkUploadModal} sx={{ p: "unset" }}>
+              <CloseIcon htmlColor="#D84315" fontSize="large" />
+            </IconButton>
+          </Grid>
+        </Grid>
+
+        <Divider sx={{ m: "16px 40px 32px" }} />
+
         <Box className={classes.box}>
           {/* <Button  variant={"outlined"} color={"secondary"} startIcon={<CloudUploadIcon sx={{marginBottom:"2px"}}/>}
 >
@@ -489,6 +505,7 @@ const ImportMenuExcel = ({
             }}
           />
         </Box>
+
         <Grid container>
           <Grid
             item
@@ -497,7 +514,7 @@ const ImportMenuExcel = ({
               display: "flex",
               alignItems: "center",
               justifyContent: "end",
-              p: "30px !important",
+              p: "0px 40px 40px !important",
             }}
           >
             <CustomButton

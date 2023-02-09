@@ -7,19 +7,16 @@ import TdTextField from "components/TdTextField";
 import DropDownSearch from "components/customDropDown/DropDownSearch";
 import { ProductsContext } from "../context/ProductsContext";
 import { weightUnits } from "../../constants";
+import { debounce } from "lodash";
 
 const Inventory = () => {
   const { state, dispatch } = useContext(ProductsContext);
-
-  // console.log("inventory state = ", state);
 
   const handleWeightUnitSelection = (
     event: React.ChangeEvent<{}>,
     value: any,
     name: string
   ) => {
-    console.log("weight unit value = ", value);
-
     dispatch({
       type: "dropDown",
       payload: {
@@ -28,6 +25,16 @@ const Inventory = () => {
       },
     });
   };
+
+  const handleFieldChange = debounce(
+    (e: { target: { name: string; value: string } }) => {
+      dispatch({
+        type: "textField",
+        payload: { name: e.target.name, value: e.target.value },
+      });
+    },
+    300
+  );
 
   return (
     <Stack>
@@ -43,13 +50,8 @@ const Inventory = () => {
                 name="itemWeight"
                 type="number"
                 label="Item Weight"
-                value={state.itemWeight}
-                onChange={(e) =>
-                  dispatch({
-                    type: "textField",
-                    payload: { name: e.target.name, value: e.target.value },
-                  })
-                }
+                defaultValue={state.itemWeight}
+                onChange={handleFieldChange}
               />
             </Grid>
             <Grid item xs={6} sx={{ ml: "8px" }}>
@@ -70,13 +72,8 @@ const Inventory = () => {
                 name="itemPricePer"
                 type="number"
                 label="Price Per"
-                value={state.itemPricePer}
-                onChange={(e) =>
-                  dispatch({
-                    type: "textField",
-                    payload: { name: e.target.name, value: e.target.value },
-                  })
-                }
+                defaultValue={state.itemPricePer}
+                onChange={handleFieldChange}
               />
             </Grid>
             <Grid item xs={6} sx={{ ml: "8px" }}>
@@ -84,19 +81,12 @@ const Inventory = () => {
                 name="itemMinimumQuantity"
                 type="number"
                 label="Minimum Quantity"
-                value={state.itemMinimumQuantity}
+                defaultValue={state.itemMinimumQuantity}
                 error={
-                  state.fieldError.itemMinimumQuantityField === ""
-                    ? false
-                    : true
+                  state.fieldError === "itemMinimumQuantity" ? true : false
                 }
-                helperText={state.fieldError.itemMinimumQuantityField}
-                onChange={(e) =>
-                  dispatch({
-                    type: "textField",
-                    payload: { name: e.target.name, value: e.target.value },
-                  })
-                }
+                helperText={"Min quantity: 1"}
+                onChange={handleFieldChange}
               />
             </Grid>
           </Grid>
@@ -109,13 +99,8 @@ const Inventory = () => {
                 name="itemCost"
                 type="number"
                 label="Item Cost"
-                value={state.itemCost}
-                onChange={(e) =>
-                  dispatch({
-                    type: "textField",
-                    payload: { name: e.target.name, value: e.target.value },
-                  })
-                }
+                defaultValue={state.itemCost}
+                onChange={handleFieldChange}
               />
             </Grid>
           </Grid>
@@ -127,13 +112,8 @@ const Inventory = () => {
               <TdTextField
                 name="itemSku"
                 label="SKU"
-                value={state.itemSku}
-                onChange={(e) =>
-                  dispatch({
-                    type: "textField",
-                    payload: { name: e.target.name, value: e.target.value },
-                  })
-                }
+                defaultValue={state.itemSku}
+                onChange={handleFieldChange}
               />
             </Grid>
             <Grid item xs={6} sx={{ ml: "8px" }}>
@@ -141,13 +121,8 @@ const Inventory = () => {
                 name="itemUnitPrice"
                 type="number"
                 label="Unit Price"
-                value={state.itemUnitPrice}
-                onChange={(e) =>
-                  dispatch({
-                    type: "textField",
-                    payload: { name: e.target.name, value: e.target.value },
-                  })
-                }
+                defaultValue={state.itemUnitPrice}
+                onChange={handleFieldChange}
               />
             </Grid>
           </Grid>
@@ -159,26 +134,16 @@ const Inventory = () => {
               <TdTextField
                 name="itemProductCode"
                 label="Product Code"
-                value={state.itemProductCode}
-                onChange={(e) =>
-                  dispatch({
-                    type: "textField",
-                    payload: { name: e.target.name, value: e.target.value },
-                  })
-                }
+                defaultValue={state.itemProductCode}
+                onChange={handleFieldChange}
               />
             </Grid>
             <Grid item xs={6} sx={{ ml: "8px" }}>
               <TdTextField
                 name="itemUniversalProductCode"
                 label="Universal Product Code"
-                value={state.itemUniversalProductCode}
-                onChange={(e) =>
-                  dispatch({
-                    type: "textField",
-                    payload: { name: e.target.name, value: e.target.value },
-                  })
-                }
+                defaultValue={state.itemUniversalProductCode}
+                onChange={handleFieldChange}
               />
             </Grid>
           </Grid>
@@ -191,13 +156,8 @@ const Inventory = () => {
                 name="itemPallets"
                 type="number"
                 label="No of Pallets"
-                value={state.itemPallets}
-                onChange={(e) =>
-                  dispatch({
-                    type: "textField",
-                    payload: { name: e.target.name, value: e.target.value },
-                  })
-                }
+                defaultValue={state.itemPallets}
+                onChange={handleFieldChange}
               />
             </Grid>
             <Grid item xs={6} sx={{ ml: "8px" }}>
@@ -205,13 +165,8 @@ const Inventory = () => {
                 name="itemPalletPrice"
                 type="number"
                 label="Pallet Price"
-                value={state.itemPalletPrice}
-                onChange={(e) =>
-                  dispatch({
-                    type: "textField",
-                    payload: { name: e.target.name, value: e.target.value },
-                  })
-                }
+                defaultValue={state.itemPalletPrice}
+                onChange={handleFieldChange}
               />
             </Grid>
           </Grid>
@@ -224,13 +179,8 @@ const Inventory = () => {
                 name="itemCartons"
                 type="number"
                 label="No. of Cartons"
-                value={state.itemCartons}
-                onChange={(e) =>
-                  dispatch({
-                    type: "textField",
-                    payload: { name: e.target.name, value: e.target.value },
-                  })
-                }
+                defaultValue={state.itemCartons}
+                onChange={handleFieldChange}
               />
             </Grid>
             <Grid item xs={6} sx={{ ml: "8px" }}>
@@ -238,19 +188,12 @@ const Inventory = () => {
                 name="itemMaximumDistance"
                 type="number"
                 label="Maximum Distance"
-                value={state.itemMaximumDistance}
+                defaultValue={state.itemMaximumDistance}
                 error={
-                  state.fieldError.itemMaximumDistanceField === ""
-                    ? false
-                    : true
+                  state.fieldError === "itemMaximumDistance" ? true : false
                 }
-                helperText={state.fieldError.itemMaximumDistanceField}
-                onChange={(e) =>
-                  dispatch({
-                    type: "textField",
-                    payload: { name: e.target.name, value: e.target.value },
-                  })
-                }
+                helperText={"Max distance: 10000"}
+                onChange={handleFieldChange}
               />
             </Grid>
           </Grid>

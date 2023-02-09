@@ -1,9 +1,10 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 
 import { Stack, Typography } from "@mui/material";
 
 import CustomRadioButton from "components/CustomRadioButton";
 import { ProductsContext } from "../context/ProductsContext";
+import { debounce } from "lodash";
 
 const Display = () => {
   const {
@@ -11,19 +12,20 @@ const Display = () => {
     dispatch,
   } = useContext(ProductsContext);
 
-  // console.log("display component");
+  console.log("display component");
 
-  const displayChangeHandler = (event: {
-    target: { name: string; value: string };
-  }) => {
-    dispatch({
-      type: "radioButton",
-      payload: {
-        name: event.target.name,
-        value: event.target.value,
-      },
-    });
-  };
+  const displayChangeHandler = debounce(
+    (event: { target: { name: string; value: string } }) => {
+      dispatch({
+        type: "radioButton",
+        payload: {
+          name: event.target.name,
+          value: event.target.value,
+        },
+      });
+    },
+    300
+  );
 
   return (
     <Stack>
@@ -39,7 +41,7 @@ const Display = () => {
           { label: "Web", value: "2" },
           { label: "POS", value: "3" },
         ]}
-        value={itemDisplay}
+        defaultValue={itemDisplay}
         onChange={displayChangeHandler}
       />
     </Stack>
