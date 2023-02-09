@@ -776,6 +776,7 @@ const Items = () => {
               <Typography variant="h3">Menu Items</Typography>
 
               <TdTextField
+                disabled={productLoading}
                 type="search"
                 placeholder="Search Items"
                 onChange={handleSearchChange}
@@ -803,7 +804,9 @@ const Items = () => {
                 />
 
                 <DropDown
-                  disabled={selectedRowIds.length > 0 ? true : false}
+                  disabled={
+                    (selectedRowIds.length > 0 ? true : false) || productLoading
+                  }
                   options={dropdownImportExport}
                   value={importExportValue}
                   handleChange={handleImportExportChange}
@@ -813,7 +816,9 @@ const Items = () => {
                 />
 
                 <CustomButton
-                  disabled={selectedRowIds.length > 0 ? true : false}
+                  disabled={
+                    (selectedRowIds.length > 0 ? true : false) || productLoading
+                  }
                   variant={"contained"}
                   color={"secondary"}
                   startIcon={<AddTwoToneIcon />}
@@ -831,19 +836,27 @@ const Items = () => {
           <Grid item xs={12} display={"flex"}>
             <Grid item xs={9}>
               <MenuTypesDropdown
-                disabled={selectedRowIds.length > 0 ? true : false}
+                disabled={
+                  selectedRowIds.length > 0 ? true : false || productLoading
+                }
                 applyFilter={applyButtonFilter}
               />
               <BranchesDropdown
-                disabled={selectedRowIds.length > 0 ? true : false}
+                disabled={
+                  selectedRowIds.length > 0 ? true : false || productLoading
+                }
                 applyFilter={applyButtonFilter}
               />
               <BrandsDropdown
-                disabled={selectedRowIds.length > 0 ? true : false}
+                disabled={
+                  selectedRowIds.length > 0 ? true : false || productLoading
+                }
                 applyFilter={applyButtonFilter}
               />
               <CategoriesDropdown
-                disabled={selectedRowIds.length > 0 ? true : false}
+                disabled={
+                  selectedRowIds.length > 0 ? true : false || productLoading
+                }
                 applyFilter={applyButtonFilter}
               />
             </Grid>
@@ -882,14 +895,21 @@ const Items = () => {
                 }
               >
                 <Stack>
-                  <IconButton onClick={() => sortingItems()}>
+                  <IconButton
+                    disabled={
+                      selectedRowIds.length > 0 ? true : false || productLoading
+                    }
+                    onClick={() => sortingItems()}
+                  >
                     <SortByAlphaIcon />
                   </IconButton>
                 </Stack>
                 <Filters
                   items={items}
                   setItems={setItems}
-                  productLoading={productLoading}
+                  disabled={
+                    selectedRowIds.length > 0 ? true : false || productLoading
+                  }
                   productData={productData}
                 />
               </Stack>

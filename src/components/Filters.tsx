@@ -20,15 +20,15 @@ import CustomButton from "./CustomButton";
 interface filtersProps {
   items?: ProductResponse["items"];
   setItems: React.Dispatch<React.SetStateAction<ProductResponseItem[]>>;
-  productLoading?: boolean;
   productData: any;
+  disabled: boolean;
 }
 
 const Filters = ({
   items,
   setItems,
-  productLoading,
   productData,
+  disabled,
 }: //  count
 filtersProps) => {
   const [toggleFilter, setToggleFilter] = useState<SVGSVGElement | null>(null);
@@ -641,7 +641,7 @@ filtersProps) => {
 
   return (
     <>
-      <IconButton>
+      <IconButton disabled={disabled}>
         <Stack>
           <FilterListIcon onClick={handleClick} />
         </Stack>
